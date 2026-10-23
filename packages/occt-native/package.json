@@ -3,14 +3,38 @@
     "version": "0.0.0",
     "description": "Node-API bindings to the Open CASCADE geometric kernel",
     "license": "LGPL-2.1-only",
+    "files": [
+        "dist",
+        "crates/occt-neon/Cargo.toml",
+        "crates/occt-neon/build.rs",
+        "crates/occt-neon/src",
+        "crates/opencascade-sys",
+        "crates/occt-bindgen/Cargo.toml",
+        "crates/occt-bindgen/src",
+        "scripts",
+        "LICENSE",
+        "LICENSE.OCCT_EXCEPTION",
+        "SOURCE.md",
+        "THIRD_PARTY_NOTICES.md",
+        "README.md"
+    ],
     "type": "module",
     "exports": {
         ".": "./src/index.ts"
+    },
+    "publishConfig": {
+        "exports": {
+            ".": {
+                "types": "./dist/index.d.mts",
+                "default": "./dist/index.mjs"
+            }
+        }
     },
     "scripts": {
         "build:native": "node scripts/build-native.ts",
         "build:occt": "node scripts/build-occt.ts",
         "generate:bindings": "node scripts/generate-bindings.ts",
+        "prepack": "vp pack && node scripts/third-party-notices.ts",
         "test": "vp test run"
     },
     "engines": {

@@ -20,7 +20,10 @@ const OCCT = {
 
 const PACKAGE_ROOT = resolve(import.meta.dirname, "..");
 const CACHE_ROOT = join(PACKAGE_ROOT, ".occt");
-const TARGET = `${process.platform}-${process.arch}`;
+// `--arch x64|arm64` cross-builds for the other macOS architecture (run under Rosetta to test).
+const ARCH = optionValue("--arch") ?? process.arch;
+const IS_CROSS_BUILD = ARCH !== process.arch;
+const TARGET = `${process.platform}-${ARCH}`;
 const SOURCE_ARCHIVE = join(CACHE_ROOT, `${OCCT.tag}.tar.gz`);
 const SOURCE_DIR = join(CACHE_ROOT, `src-${OCCT.version}`);
 const BUILD_DIR = join(CACHE_ROOT, `build-${OCCT.version}-${TARGET}`);
@@ -67,6 +70,8 @@ const CMAKE_OPTIONS: Record<string, string> = {
     ...(process.platform === "darwin"
         ? { CMAKE_OSX_DEPLOYMENT_TARGET: MACOS_DEPLOYMENT_TARGET }
         : {}),
+    // Only set when cross-building so the host build's option stamp stays unchanged.
+    ...(IS_CROSS_BUILD ? { CMAKE_OSX_ARCHITECTURES: ARCH === "x64" ? "x86_64" : "arm64" } : {}),
 };
 
 function run(command: string, args: string[]): void {
@@ -101,22 +106,33 @@ function fetchSource(): void {
     }
 }
 
+function optionValue(flag: string): string | undefined {
+    let index = process.argv.indexOf(flag);
+    return index === -1 ? undefined : process.argv[index + 1];
+}
+
 function parseJobs(): number {
-    let flag = process.argv.indexOf("--jobs");
-    if (flag === -1) return availableParallelism();
-    let jobs = Number(process.argv[flag + 1]);
+    let value = optionValue("--jobs");
+    if (value === undefined) return availableParallelism();
+    let jobs = Number(value);
     if (!Number.isInteger(jobs) || jobs < 1) throw new Error("--jobs expects a positive integer");
     return jobs;
 }
 
-// `.occt/current` points at this platform's install so Cargo can use one DEP_OCCT_ROOT.
+// `.occt/current` points at the host install so Cargo can use one DEP_OCCT_ROOT.
 function linkCurrent(): void {
+    if (IS_CROSS_BUILD) return;
     let link = join(CACHE_ROOT, "current");
     rmSync(link, { force: true, recursive: true });
     symlinkSync(TARGET, link, process.platform === "win32" ? "junction" : "dir");
 }
 
 function main(): void {
+    if (IS_CROSS_BUILD && process.platform !== "darwin") {
+        throw new Error(
+            "--arch cross-builds are only supported on macOS; build on the target platform",
+        );
+    }
     let stampContent = JSON.stringify({ ...OCCT, target: TARGET, options: CMAKE_OPTIONS }, null, 4);
     if (existsSync(STAMP) && readFileSync(STAMP, "utf8") === stampContent) {
         console.log(`OCCT ${OCCT.version} already installed at ${INSTALL_DIR}`);

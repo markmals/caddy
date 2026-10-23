@@ -1,0 +1,37 @@
+Caddy (@roonieone/caddy)
+Copyright (c) 2026 The Caddy Contributors
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+in compliance with the License. You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+-------------------------------------------------------------------------------
+
+Caddy is a TypeScript port of the algebraic modeling API of build123d
+(https://github.com/gumyr/build123d), whose NOTICE reads:
+
+    build123d
+    Copyright (c) 2022–2025 The build123d Contributors
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at:
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    This project was originally derived from portions of the CadQuery codebase
+    (https://github.com/CadQuery/cadquery) but has since been extensively
+    refactored and restructured into an independent system.
+    CadQuery is licensed under the Apache License, Version 2.0.
+
+Statement of changes: Caddy re-implements build123d 0.13.0's algebraic API in TypeScript. Python
+modules were rewritten as TypeScript classes and functions with JavaScript naming (camelCase),
+Python operators were replaced by named methods, the builder/context-manager API was omitted, and
+the OCP (Python) kernel bindings were replaced by the native @roonieone/occt-native package.
+
+-------------------------------------------------------------------------------
+
+Caddy makes use of facilities provided by Open CASCADE Technology (OCCT, https://dev.opencascade.org),
+through @roonieone/occt-native, which is licensed under the GNU Lesser General Public License
+version 2.1 with the Open CASCADE exception. See THIRD_PARTY_NOTICES.md.

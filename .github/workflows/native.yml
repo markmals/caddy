@@ -1,0 +1,71 @@
+# Builds OCCT, the Neon addon and the per-platform npm package on every supported platform,
+# then runs the native and Caddy test suites against the freshly built artifact.
+name: native
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+    workflow_dispatch:
+
+jobs:
+    build:
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - { os: macos-15, target: darwin-arm64 }
+                    - { os: macos-13, target: darwin-x64 }
+                    - { os: ubuntu-24.04, target: linux-x64 }
+                    - { os: ubuntu-24.04-arm, target: linux-arm64 }
+                    - { os: windows-2022, target: win32-x64 }
+        runs-on: ${{ matrix.os }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: jdx/mise-action@v2
+
+            - uses: dtolnay/rust-toolchain@stable
+
+            - name: Install CMake and Ninja (Linux)
+              if: runner.os == 'Linux'
+              run: sudo apt-get update && sudo apt-get install -y cmake ninja-build
+
+            - name: Install Ninja (macOS)
+              if: runner.os == 'macOS'
+              run: brew install ninja
+
+            - name: MSVC developer environment
+              if: runner.os == 'Windows'
+              uses: ilammy/msvc-dev-cmd@v1
+
+            - name: Cache OCCT build
+              uses: actions/cache@v4
+              with:
+                  path: packages/occt-native/.occt/${{ matrix.target }}
+                  key: occt-${{ matrix.target }}-${{ hashFiles('packages/occt-native/scripts/build-occt.ts') }}
+
+            - run: pnpm install --frozen-lockfile
+
+            - run: uv sync --frozen
+
+            - name: Build OCCT 8.0.1
+              run: node packages/occt-native/scripts/build-occt.ts
+
+            - name: Build the addon
+              run: node packages/occt-native/scripts/build-native.ts --release
+
+            - name: Check generated bindings are current
+              if: runner.os == 'macOS'
+              run: node packages/occt-native/scripts/generate-bindings.ts --check
+
+            - name: Test
+              run: pnpm exec vp test run
+
+            - name: Assemble the platform package
+              run: node packages/occt-native/scripts/package-native.ts
+
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: occt-native-${{ matrix.target }}
+                  path: packages/occt-native/npm/

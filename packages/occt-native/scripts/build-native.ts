@@ -1,6 +1,6 @@
 // Builds the Neon addon and stages it with the OCCT shared libraries it loads.
 //
-// Usage: node scripts/build-native.ts [--release]
+// Usage: node scripts/build-native.ts [--release] [--arch x64|arm64 (macOS cross build)]
 // Output: native/<platform>-<arch>/occt-native.node plus the OCCT libraries in the same
 // directory (the addon and OCCT both resolve siblings via @loader_path / $ORIGIN).
 
@@ -10,7 +10,14 @@ import { basename, join, resolve } from "node:path";
 
 const PACKAGE_ROOT = resolve(import.meta.dirname, "..");
 const WORKSPACE_ROOT = resolve(PACKAGE_ROOT, "..", "..");
-const TARGET = `${process.platform}-${process.arch}`;
+const ARCH = optionValue("--arch") ?? process.arch;
+const TARGET = `${process.platform}-${ARCH}`;
+// Rust target triples for macOS cross builds; host builds use Cargo's default target.
+const CROSS_TRIPLES: Record<string, string> = {
+    x64: "x86_64-apple-darwin",
+    arm64: "aarch64-apple-darwin",
+};
+const CROSS_TRIPLE = ARCH === process.arch ? undefined : CROSS_TRIPLES[ARCH];
 const OCCT_LIB_DIR = join(
     PACKAGE_ROOT,
     ".occt",
@@ -25,10 +32,16 @@ const ADDON_FILE: Record<string, string> = {
     win32: "occt_neon.dll",
 };
 
-function run(command: string, args: string[]): string {
+function optionValue(flag: string): string | undefined {
+    let index = process.argv.indexOf(flag);
+    return index === -1 ? undefined : process.argv[index + 1];
+}
+
+function run(command: string, args: string[], env: NodeJS.ProcessEnv = process.env): string {
     let outcome = spawnSync(command, args, {
         cwd: WORKSPACE_ROOT,
         encoding: "utf8",
+        env,
         stdio: ["inherit", "pipe", "inherit"],
     });
     if (outcome.status !== 0) throw new Error(`${command} ${args.join(" ")} failed`);
@@ -68,8 +81,24 @@ function main(): void {
     let release = process.argv.includes("--release");
     let addonFile = ADDON_FILE[process.platform];
     if (addonFile === undefined) throw new Error(`unsupported platform ${process.platform}`);
-    run("cargo", ["build", "-p", "occt-neon", ...(release ? ["--release"] : [])]);
-    let built = join(WORKSPACE_ROOT, "target", release ? "release" : "debug", addonFile);
+    if (ARCH !== process.arch && (process.platform !== "darwin" || CROSS_TRIPLE === undefined)) {
+        throw new Error(`cannot cross-build ${TARGET} from ${process.platform}-${process.arch}`);
+    }
+    let cargoArgs = ["build", "-p", "occt-neon", ...(release ? ["--release"] : [])];
+    let env = process.env;
+    if (CROSS_TRIPLE !== undefined) {
+        cargoArgs.push("--target", CROSS_TRIPLE);
+        env = { ...process.env, DEP_OCCT_ROOT: join(PACKAGE_ROOT, ".occt", TARGET) };
+    }
+    run("cargo", cargoArgs, env);
+    let profile = release ? "release" : "debug";
+    let built = join(
+        WORKSPACE_ROOT,
+        "target",
+        ...(CROSS_TRIPLE ? [CROSS_TRIPLE] : []),
+        profile,
+        addonFile,
+    );
 
     // Stage beside the destination and swap it in, so concurrent test runs never load a
     // half-copied directory.
