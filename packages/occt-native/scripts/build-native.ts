@@ -5,7 +5,7 @@
 // directory (the addon and OCCT both resolve siblings via @loader_path / $ORIGIN).
 
 import { spawnSync } from "node:child_process";
-import { copyFileSync, existsSync, mkdirSync, readdirSync, realpathSync, rmSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, realpathSync, renameSync, rmSync } from "node:fs";
 import { basename, join, resolve } from "node:path";
 
 const PACKAGE_ROOT = resolve(import.meta.dirname, "..");
@@ -47,7 +47,7 @@ function linkedOcctLibraries(binary: string): string[] {
     return [...new Set(names.map(name => basename(name)))];
 }
 
-function stageOcct(addon: string): string[] {
+function stageOcct(addon: string, stageDir: string): string[] {
     let staged = new Set<string>();
     let pending = linkedOcctLibraries(addon);
     while (pending.length > 0) {
@@ -57,7 +57,7 @@ function stageOcct(addon: string): string[] {
         if (!existsSync(source))
             throw new Error(`missing OCCT library ${source}; run build-occt.ts`);
         // Copy the real file under its install name so symlinks are not needed in the package.
-        copyFileSync(realpathSync(source), join(STAGE_DIR, name));
+        copyFileSync(realpathSync(source), join(stageDir, name));
         staged.add(name);
         pending.push(...linkedOcctLibraries(source));
     }
@@ -71,13 +71,18 @@ function main(): void {
     run("cargo", ["build", "-p", "occt-neon", ...(release ? ["--release"] : [])]);
     let built = join(WORKSPACE_ROOT, "target", release ? "release" : "debug", addonFile);
 
+    // Stage beside the destination and swap it in, so concurrent test runs never load a
+    // half-copied directory.
+    let staging = `${STAGE_DIR}.staging-${process.pid}`;
+    rmSync(staging, { recursive: true, force: true });
+    mkdirSync(staging, { recursive: true });
+    copyFileSync(built, join(staging, "occt-native.node"));
+    let libraries = stageOcct(join(staging, "occt-native.node"), staging);
     rmSync(STAGE_DIR, { recursive: true, force: true });
-    mkdirSync(STAGE_DIR, { recursive: true });
-    let addon = join(STAGE_DIR, "occt-native.node");
-    copyFileSync(built, addon);
-    let libraries = stageOcct(addon);
-    console.log(`staged ${addon} with ${libraries.length} OCCT libraries`);
-    console.log(readdirSync(STAGE_DIR).length, "files in", STAGE_DIR);
+    renameSync(staging, STAGE_DIR);
+    console.log(
+        `staged ${join(STAGE_DIR, "occt-native.node")} with ${libraries.length} OCCT libraries`,
+    );
 }
 
 main();
