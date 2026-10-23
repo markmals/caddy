@@ -1,0 +1,19 @@
+{
+    "name": "@roonieone/caddy",
+    "version": "0.0.0",
+    "description": "TypeScript-first programmatic CAD modeling on native Open CASCADE",
+    "license": "Apache-2.0",
+    "type": "module",
+    "exports": {
+        ".": "./src/index.ts"
+    },
+    "scripts": {
+        "test": "vp test run"
+    },
+    "dependencies": {
+        "@roonieone/occt-native": "workspace:*"
+    },
+    "engines": {
+        "node": ">=24"
+    }
+}

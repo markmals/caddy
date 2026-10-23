@@ -1,0 +1,17 @@
+{
+    "name": "@roonieone/occt-native",
+    "version": "0.0.0",
+    "description": "Node-API bindings to the Open CASCADE geometric kernel",
+    "license": "LGPL-2.1-only",
+    "type": "module",
+    "exports": {
+        ".": "./src/index.ts"
+    },
+    "scripts": {
+        "build:occt": "node scripts/build-occt.ts",
+        "test": "vp test run"
+    },
+    "engines": {
+        "node": ">=24"
+    }
+}

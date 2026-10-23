@@ -188,6 +188,20 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0(@types/node@25.9.9)(@vitest/ui@5.0.5)(typescript@7.0.2)
 
+  examples:
+    dependencies:
+      '@roonieone/caddy':
+        specifier: workspace:*
+        version: link:../packages/caddy
+
+  packages/caddy:
+    dependencies:
+      '@roonieone/occt-native':
+        specifier: workspace:*
+        version: link:../occt-native
+
+  packages/occt-native: {}
+
 packages:
 
   '@babel/code-frame@7.29.7':

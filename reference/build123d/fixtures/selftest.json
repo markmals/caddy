@@ -1,0 +1,276 @@
+{
+  "cases": {
+    "assets/brep": {
+      "brep": "reference/build123d/fixtures/selftest/assets-brep-1.brep"
+    },
+    "metrics/box": {
+      "metrics": {
+        "area": 52.0,
+        "bounding_box": {
+          "max": [
+            1.0,
+            1.5,
+            2.0
+          ],
+          "min": [
+            -1.0,
+            -1.5,
+            -2.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            1.0000001,
+            1.5000001,
+            2.0000001
+          ],
+          "min": [
+            -1.0000001,
+            -1.5000001,
+            -2.0000001
+          ]
+        },
+        "center_of_mass": [
+          6.0071530020133584e-18,
+          1.387778780781446e-17,
+          3.700743415417189e-17
+        ],
+        "class_name": "Box",
+        "counts": {
+          "edges": 12,
+          "faces": 6,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 8,
+          "wires": 6
+        },
+        "edge_geom_types": {
+          "LINE": 12
+        },
+        "face_geom_types": {
+          "PLANE": 6
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 23.999999999999996
+      }
+    },
+    "metrics/vertex": {
+      "metrics": {
+        "area": 0.0,
+        "bounding_box": {
+          "max": [
+            1.0,
+            2.0,
+            3.0
+          ],
+          "min": [
+            1.0,
+            2.0,
+            3.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            1.0000001,
+            2.0000001,
+            3.0000001
+          ],
+          "min": [
+            0.9999999,
+            1.9999999,
+            2.9999999
+          ]
+        },
+        "center_of_mass": [
+          1.0,
+          2.0,
+          3.0
+        ],
+        "class_name": "Vertex",
+        "counts": {
+          "edges": 0,
+          "faces": 0,
+          "shells": 0,
+          "solids": 0,
+          "vertices": 1,
+          "wires": 0
+        },
+        "edge_geom_types": {},
+        "face_geom_types": {},
+        "is_valid": true,
+        "shape_type": "VERTEX",
+        "volume": 0.0
+      }
+    },
+    "metrics/wire": {
+      "metrics": {
+        "area": 0.0,
+        "bounding_box": {
+          "max": [
+            2.0,
+            2.0,
+            0.0
+          ],
+          "min": [
+            -2.0,
+            -2.0,
+            0.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            2.0000001,
+            2.0000001,
+            1e-07
+          ],
+          "min": [
+            -2.0000001,
+            -2.0000001,
+            -1e-07
+          ]
+        },
+        "center_of_mass": [
+          9.440375312507499e-15,
+          -7.03591007830629e-17,
+          0.0
+        ],
+        "class_name": "Wire",
+        "counts": {
+          "edges": 1,
+          "faces": 0,
+          "shells": 0,
+          "solids": 0,
+          "vertices": 1,
+          "wires": 1
+        },
+        "edge_geom_types": {
+          "CIRCLE": 1
+        },
+        "face_geom_types": {},
+        "is_valid": true,
+        "shape_type": "WIRE",
+        "volume": 0.0
+      }
+    },
+    "scalars/mixed": {
+      "false": false,
+      "float": 0.3333333333333333,
+      "integer": 42,
+      "matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          4.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          5.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          6.0
+        ]
+      ],
+      "negative_zero": -0.0,
+      "nested": {
+        "label": "nested",
+        "origin": [
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "null": null,
+      "numbers": [
+        1.0,
+        2.5,
+        -3.0
+      ],
+      "string": "plane",
+      "true": true
+    },
+    "serializer/location": {
+      "location": {
+        "matrix": [
+          0.8137976813493737,
+          -0.46984631039295416,
+          0.34202014332566866,
+          1.0,
+          0.5438381424823255,
+          0.823172944645501,
+          -0.16317591116653485,
+          2.0,
+          -0.20487412870286212,
+          0.3187957775971679,
+          0.9254165783983234,
+          3.0
+        ],
+        "orientation": [
+          10.0,
+          19.999999999999996,
+          29.999999999999996
+        ],
+        "position": [
+          1.0,
+          2.0,
+          3.0
+        ]
+      }
+    },
+    "serializer/plane": {
+      "plane": {
+        "origin": [
+          0.0,
+          0.0,
+          2.0
+        ],
+        "x_dir": [
+          0.7071067811865475,
+          0.7071067811865476,
+          0.0
+        ],
+        "y_dir": [
+          -0.7071067811865476,
+          0.7071067811865475,
+          0.0
+        ],
+        "z_dir": [
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    "serializer/vector": {
+      "from_tuple": [
+        -0.5,
+        0.25,
+        1e-09
+      ],
+      "from_vector": [
+        1.0,
+        2.0,
+        3.0
+      ],
+      "length": 3.7416573867739413,
+      "sum": [
+        5.0,
+        7.0,
+        9.0
+      ]
+    }
+  },
+  "reference": {
+    "build123d": "0.13.0",
+    "occt": "8.0.1",
+    "ocp": "8.0.1.1.0",
+    "python": "3.13.17"
+  },
+  "suite": "selftest"
+}

@@ -1,0 +1,11 @@
+[project]
+name = "caddy-reference"
+version = "0.0.0"
+description = "Pinned build123d oracle used to generate Caddy's differential-test fixtures"
+requires-python = ">=3.13,<3.15"
+dependencies = [
+    "build123d==0.13.0",
+]
+
+[tool.uv]
+package = false
