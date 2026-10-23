@@ -11,6 +11,7 @@ export default defineConfig({
             "target/**",
             "reference/build123d/fixtures/**",
             "reference/build123d/inventory/**",
+            "packages/occt-native/crates/opencascade-sys/bindings-report.md",
         ],
         printWidth: 100,
         tabWidth: 4,
@@ -31,7 +32,7 @@ export default defineConfig({
         },
     },
     lint: {
-        ignorePatterns: [".agents/**", "dist/**", "**/.occt/**", "target/**"],
+        ignorePatterns: [".agents/**", "dist/**", "**/.occt/**", "target/**", "**/node_modules/**"],
         options: {
             typeAware: true,
             typeCheck: true,
