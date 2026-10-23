@@ -10,6 +10,7 @@ mod kernel;
 mod measure;
 mod primitives;
 mod shape;
+mod topology;
 
 use neon::prelude::*;
 
