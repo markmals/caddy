@@ -51,4 +51,44 @@ Requirements this survey is scored against: native Node-API addon (no WASM, no b
 
 No existing package satisfies the requirement set. Of the ~20 OCCT-related npm packages found, exactly two are native: `node-occ` (NAN, OCCT 7.2.0, last published 2020, x64-only prebuilds capped at Node 13) and `occt-gltf-addon` (real Node-API, but a STEP→glTF converter with no modeling API, no Windows support, prebuilts from a third-party CDN, and no public repository). Every maintained package with full BREP coverage — `libcascade`, `occt-wasm`/`brepjs`, `@bitbybit-dev/occt`, `replicad`, `occt.ts` — is a WebAssembly build, which fails the "native Node-API" requirement outright and brings linear-memory lifetimes, multi-megabyte kernel blobs, and an Emscripten toolchain we would then own. Adopting any of them would also mean inheriting someone else's OCCT pin and binding-generation strategy instead of linking the OCCT 8.0.1 shared libraries we build ourselves to match build123d 0.13.0's `cadquery-ocp-novtk` 8.0.1.1.0 oracle.
 
-So we build `@roonieone/occt-native` ourselves on Rust + Neon + opencascade-rs. opencascade-rs already provides maintained `cxx` bridges to the OCCT C++ API (`opencascade-sys`, with `include/wrapper.hxx`) plus a safe higher-level Rust layer, so the expensive, error-prone part — hand-writing C++ shims for `BRepAlgoAPI_*`, `BRepFilletAPI_*`, `STEPControl_*`, and the `TopoDS` hierarchy — is largely done and can be repointed from its vendored OCCT 7.8.1 to our 8.0.1 build. Rust gives us RAII over OCCT handles instead of manual `delete()`. Neon emits a Node-API addon, so the ABI is stable across Node majors and one prebuilt artifact per platform/arch (macOS arm64/x64, Linux x64/arm64, Windows x64) covers every supported Node version — precisely the property that killed `node-occ`. And because we control the OCCT build, the kernel version stays locked to the oracle rather than drifting with an upstream WASM image.
+So we build `@roonieone/occt-native` ourselves on Rust + Neon + opencascade-rs. Neon emits a Node-API addon, so the ABI is stable across Node majors and one prebuilt artifact per platform/arch (macOS arm64/x64, Linux x64/arm64, Windows x64) covers every supported Node version — precisely the property that killed `node-occ`. Rust gives RAII over OCCT handles. And because we control the OCCT build, the kernel version stays locked to the oracle rather than drifting with an upstream WASM image.
+
+## Strategy: a generated opencascade-sys
+
+opencascade-rs's `opencascade-sys` is hand-written and targets OCCT 7.8.1. Using it as-is was rejected for three verified reasons (details in `docs/opencascade-rs-inventory.md`):
+
+1. **Process aborts.** cxx calls `std::terminate` when a C++ exception escapes a bridge function not declared `Result` (cxx book, `binding/result.md`). Only 2 of ~250 upstream bridge functions return `Result`; every constructor, `Build()`, `Shape()` and `TopoDS::X()` downcast can throw (for example `BRepPrimAPI_MakeBox` with a zero size, `Shape()` on a failed boolean). In Node that kills the user's process instead of throwing an `Error`.
+2. **Coverage.** No splitter, BRepExtrema, BRepCheck, ShapeFix, XCAF or stream IO, and many unreachable members; hand-extending hundreds of classes is slow and error-prone.
+3. **Version.** The oracle (build123d 0.13.0 / OCP 8.0.1) runs OCCT 8.0.1. OCCT 8 removed the `Handle_X` typedefs and moved collection typedefs to deprecated alias headers, which the hand-written headers depend on.
+
+The high-level `opencascade` crate was also rejected: it panics on user input (12 sites catalogued), depends on `glam` and `kicad-parser`, and defaults to a static OCCT 7.8.1 build.
+
+Instead `crates/opencascade-sys` is a fork whose bridges are **generated** by `crates/occt-bindgen` from the OCCT 8.0.1 headers, keeping upstream's conventions (one bridge per OCCT package, opaque classes, `UniquePtr` ownership, `Handle_*` typedefs, constructor shims) and its OCCT discovery. Hand-writing one C++ shim per Caddy operation was considered and rejected by the project owner in favour of generation.
+
+### occt-bindgen
+
+- Input: `bindings.toml` (allowlisted classes, enums, NCollection typedefs, value classes that get `clone`), the OCCT include directory, and the OCCT source tree (to map headers to the toolkits that must be linked).
+- libclang parses one umbrella translation unit. For each class it collects public constructors (including the implicit default constructor) and methods, including inherited ones (honouring C++ name hiding) and members re-exposed from protected bases by `using` declarations. Deprecated, deleted, variadic, template and most operator members are skipped (`operator()` and `operator==` bind as `call`/`eq`). Out-of-line members must carry `Standard_EXPORT` (checked in the source text) so the same bindings link on Windows.
+- Types map to `f64`/`i32`/`bool`/…, shared enums, opaque classes (by reference or `UniquePtr`), `Handle_X` for `opencascade::handle<X>`, `&str`/`String` for `const char*` and `TCollection_AsciiString`, and an in-memory `OcctStream` for `std::ostream&`/`std::istream&`. Anything else skips the member and records why in `bindings-report.md`.
+- Members whose signature cxx can express are bound directly on the class; the rest get an inline C++ shim. **Every function returns `Result`.** A custom `rust::behavior::trycatch` keeps the OCCT exception class (`Standard_DomainError: …`); OCCT 8's `Standard_Failure` derives from `std::exception`.
+- Output is deterministic and checked in; `generate-bindings.ts --check` fails when the committed bindings drift from the generator.
+- Known limitation: OCCT 8 replaced a few classes with template aliases (`BRepLProp_SLProps`, `GeomLProp_*`, `Extrema_ExtPC`); the generator does not bind template specializations yet.
+
+## Errors
+
+`occt-neon` converts every `cxx::Exception` and every algorithm failure into a JS `Error` with a stable `code` (`INVALID_ARGUMENT`, `OCCT_EXCEPTION` with `kernelException`, `OPERATION_FAILED`, `DISPOSED`, `IMPORT_FAILED`, `EXPORT_FAILED`). Boolean failures carry OCCT's own error report (`DumpErrors`). Neon converts Rust panics into exceptions, but no code path relies on panics for user input. Hardware faults inside OCCT (segmentation faults) still terminate the process, as they do in build123d.
+
+## Ownership and lifetime
+
+- A JS shape is a `JsBox<RefCell<Shape>>` holding `Option<UniquePtr<TopoDS_Shape>>`. V8 finalization drops it; `dispose` drops it early (Caddy exposes this as `Symbol.dispose`). A disposed handle raises `DISPOSED`.
+- `TopoDS_Shape` values are cheap handles sharing a reference-counted TShape; copying a handle never copies geometry, and disposing one handle never invalidates another.
+- Native objects other than shapes (builders, adaptors, geometry handles) live only for the duration of one call; geometry crosses the boundary as `Float64Array`s.
+- Native memory is invisible to V8's heap accounting, so loops that create many large intermediate shapes may defer collection; use `using`/`dispose` for deterministic release.
+
+## Threading
+
+Synchronous functions run on the JS main thread. OCCT objects are not shared across threads: shapes are not `Send`, and `JsBox` values stay on the thread of the JS context that created them (each worker thread loads its own addon instance and owns its own shapes). The addon disables OCCT's default console printers at load (translators otherwise print statistics to stdout); `setKernelMessages(true)` restores them.
+
+## Distribution
+
+OCCT is built from the pinned `V8_0_1` tarball by `scripts/build-occt.ts` as shared libraries with `@rpath`/`$ORIGIN` install names (macOS deployment target 13.5). `scripts/build-native.ts` stages `occt-native.node` with exactly the OCCT libraries in its dependency closure into `native/<platform>-<arch>/`, the layout of the per-platform npm packages. See `docs/licensing.md` for why OCCT is linked dynamically.
