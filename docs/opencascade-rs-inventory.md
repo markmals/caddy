@@ -191,7 +191,7 @@ Status legend: **direct** = usable as-is from the high-level crate; **partial** 
 | --- | --- | --- | --- |
 | STEP read (file) | `STEPControl_Reader_new`, `read_step(reader, String)`, `TransferRoots(progress) -> i32`, `one_shape_step` — `src/step_control.rs:12-23` | `Shape::read_step` — `shape.rs:551` | direct, file-path only |
 | STEP write (file) | `STEPControl_Writer_new`, `transfer_shape` (hard-codes `STEPControl_AsIs`, `include/step_control.hxx:13-15`), `write_step` — `step_control.rs:25-36` | `Shape::write_step`, `Shape::write_all_step` — `shape.rs:570,574` | partial — mode is fixed at `AsIs`; no `Interface_Static` unit/schema control |
-| STEP with names and colors (XCAF) | — | — | missing — `STEPCAFControl_Reader/Writer`, `XCAFDoc_ShapeTool`, `XCAFDoc_ColorTool`, `TDocStd_Document`, `TDataStd_Name`, `Quantity_ColorRGBA` are *all* unbound; build123d's `export_step`/`import_step` rely on them (`exporters3d.py`, `importers.py`) |
+| STEP with names and colors (XCAF) | — | — | missing — `STEPCAFControl_Reader/Writer`, `XCAFDoc_ShapeTool`, `XCAFDoc_ColorTool`, `TDocStd_Document`, `TDataStd_Name`, `Quantity_ColorRGBA` are _all_ unbound; build123d's `export_step`/`import_step` rely on them (`exporters3d.py`, `importers.py`) |
 | STEP read/write to memory | — | — | missing — only `const char*` filename overloads are wrapped |
 | STL write | `StlAPI_Writer_new`, `write_stl(writer, shape, String)` — `src/stl_api.rs:10-18` | `Shape::write_stl`, `write_stl_with_tolerance` — `shape.rs:727,731` (meshes first, writes `mesher.inner.Shape()`) | partial — `StlAPI_Writer::ASCIIMode()` is **not** bound, so ASCII/binary cannot be chosen; OCCT's default is binary |
 | STL read | — | — | missing — `RWStl::ReadFile` (build123d `brep_from_stl.py`) |
@@ -228,7 +228,7 @@ Status legend: **direct** = usable as-is from the high-level crate; **partial** 
 
 Both map to `handle_try_deref` (`include/bindings_common.hxx:21-26`), which throws `std::runtime_error` on a null handle. Nothing else — no constructor, no `Build`, no `Shape`, no reader/writer — is declared fallible.
 
-cxx's documented behaviour: *"If an exception is thrown from an `extern "C++"` function that is not declared by the CXX bridge to return Result, the program calls C++'s `std::terminate`. The behavior is equivalent to the same exception being thrown through a `noexcept` C++ function."* ([cxx.rs/binding/result.html](https://cxx.rs/binding/result.html))
+cxx's documented behaviour: _"If an exception is thrown from an `extern "C++"` function that is not declared by the CXX bridge to return Result, the program calls C++'s `std::terminate`. The behavior is equivalent to the same exception being thrown through a `noexcept` C++ function."_ ([cxx.rs/binding/result.html](https://cxx.rs/binding/result.html))
 
 Every one of the following can throw an OCCT `Standard_Failure`, and all of them are non-`Result`:
 
@@ -268,27 +268,28 @@ This is a **change from OCCT 7.x**, where `Standard_Failure` derived from `Stand
 2. **cxx's default `trycatch` already catches every OCCT exception.** The default is `catch (const std::exception &e) { fail(e.what()); }` ([cxx.rs](https://cxx.rs/binding/result.html)), and `Standard_Failure::what()` returns the OCCT message. So simply changing a bridge signature to `-> Result<T>` is sufficient to convert an OCCT failure into a `cxx::Exception` carrying the OCCT message, with no custom C++ required.
 3. A **custom `trycatch`** is still worth writing, to recover the OCCT-specific fields that `what()` drops. cxx looks up `rust::behavior::trycatch` by ordinary name lookup in any header `include!`d by the bridge, so Caddy can put this in a header included first by every bridge (e.g. alongside `bindings_common.hxx`):
 
-   ```cpp
-   #include <Standard_Failure.hxx>
-   #include <exception>
-   #include <string>
+    ```cpp
+    #include <Standard_Failure.hxx>
+    #include <exception>
+    #include <string>
 
-   namespace rust::behavior {
-   template <typename Try, typename Fail>
-   static void trycatch(Try &&func, Fail &&fail) noexcept try {
-     func();
-   } catch (const Standard_Failure &e) {
-     std::string msg = std::string(e.ExceptionType()) + ": " + e.what();
-     const char *trace = e.GetStackString();
-     if (trace && *trace) { msg += "\n"; msg += trace; }
-     fail(msg.c_str());
-   } catch (const std::exception &e) {
-     fail(e.what());
-   }
-   } // namespace rust::behavior
-   ```
+    namespace rust::behavior {
+    template <typename Try, typename Fail>
+    static void trycatch(Try &&func, Fail &&fail) noexcept try {
+      func();
+    } catch (const Standard_Failure &e) {
+      std::string msg = std::string(e.ExceptionType()) + ": " + e.what();
+      const char *trace = e.GetStackString();
+      if (trace && *trace) { msg += "\n"; msg += trace; }
+      fail(msg.c_str());
+    } catch (const std::exception &e) {
+      fail(e.what());
+    }
+    } // namespace rust::behavior
+    ```
 
-   `Standard_Failure::DefaultStackTraceLength()` defaults to 0 (no stack trace) — `Standard_Failure.hxx:77-79`; `SetDefaultStackTraceLength(n)` (`:82`) turns traces on globally and would let Caddy surface OCCT stacks in dev builds.
+    `Standard_Failure::DefaultStackTraceLength()` defaults to 0 (no stack trace) — `Standard_Failure.hxx:77-79`; `SetDefaultStackTraceLength(n)` (`:82`) turns traces on globally and would let Caddy surface OCCT stacks in dev builds.
+
 4. **Signals are still separate.** `OCC_CATCH_SIGNALS` only converts OS signals (SIGSEGV/SIGFPE) into C++ exceptions, and only when `OCC_CONVERT_SIGNALS` is defined (`OCCT-8_0_1/src/FoundationClasses/TKernel/Standard/Standard_ErrorHandler.hxx:57-89`). `opencascade-sys` defines `OCC_CONVERT_SIGNALS` **only for `windows-gnu`** (`crates/opencascade-sys/build.rs:99-101`), so on macOS/Linux a segfault inside OCCT (e.g. the known `GeomAbs_Tangent` offset crash noted at `crates/opencascade/src/primitives.rs:243`) stays a hard crash.
 
 ### (c) Where the high-level crate panics or unwraps on user input
@@ -312,7 +313,7 @@ Net: the high-level crate is written for an application (the bundled viewer/exam
 
 **Type sharing works; build-path propagation does not.**
 
-*Type sharing (works).* cxx emits an `ExternType` impl for every opaque `extern "C++"` type, so a downstream bridge re-declares the type by aliasing it:
+_Type sharing (works)._ cxx emits an `ExternType` impl for every opaque `extern "C++"` type, so a downstream bridge re-declares the type by aliasing it:
 
 ```rust
 #[cxx::bridge]
@@ -331,18 +332,21 @@ mod ffi {
 This is exactly the mechanism `opencascade-sys` already uses between its own 41 bridge modules (e.g. `type TopoDS_Shape = crate::topo_ds::TopoDS_Shape;` at `b_rep_prim_api.rs:12`). Note the module path is per-header: `opencascade_sys::topo_ds::…`, `opencascade_sys::gp::…`, `opencascade_sys::geom::…`, not a flat `ffi::`.
 
 Two caveats:
-- `UniquePtr<T>` for an externally-defined `T` requires the defining crate to have emitted the `UniquePtrTarget` impl. `opencascade-sys` does this implicitly for every type it declares, and explicitly for the `Handle_*` wrappers via the `impl UniquePtr<Handle_…> {}` blocks (`geom.rs:93-100`, `geom2d.rs:45-47`, `poly.rs:66`, `law.rs:29`, `top_tools.rs:75`). For types where the downstream crate wants `UniquePtr`/`CxxVector` and upstream did not emit the impl, the downstream bridge must add its own `impl UniquePtr<T> {}` block — which cxx rejects for foreign types, so the alternative is to return `*mut T` + a wrapper, or to patch the vendored crate.
-- `type X = other_crate::X;` requires `other_crate::X` to be the *same* `type_id`, i.e. the same C++ fully-qualified name. All `opencascade-sys` types are in the global namespace, so this holds.
 
-*Build paths (broken upstream).* Upstream `crates/opencascade-sys/Cargo.toml` has **no `links` key** (verified: the manifest is 19 lines, keys are `[package]`, `[dependencies]`, `[build-dependencies]`, `[features]`). Cargo therefore emits **no** `DEP_*` metadata from its build script, and a downstream crate's `build.rs` has no supported way to learn the OCCT include/lib directories. `crates/occt-sys/Cargo.toml` likewise has no `links` key.
+- `UniquePtr<T>` for an externally-defined `T` requires the defining crate to have emitted the `UniquePtrTarget` impl. `opencascade-sys` does this implicitly for every type it declares, and explicitly for the `Handle_*` wrappers via the `impl UniquePtr<Handle_…> {}` blocks (`geom.rs:93-100`, `geom2d.rs:45-47`, `poly.rs:66`, `law.rs:29`, `top_tools.rs:75`). For types where the downstream crate wants `UniquePtr`/`CxxVector` and upstream did not emit the impl, the downstream bridge must add its own `impl UniquePtr<T> {}` block — which cxx rejects for foreign types, so the alternative is to return `*mut T` + a wrapper, or to patch the vendored crate.
+- `type X = other_crate::X;` requires `other_crate::X` to be the _same_ `type_id`, i.e. the same C++ fully-qualified name. All `opencascade-sys` types are in the global namespace, so this holds.
+
+_Build paths (broken upstream)._ Upstream `crates/opencascade-sys/Cargo.toml` has **no `links` key** (verified: the manifest is 19 lines, keys are `[package]`, `[dependencies]`, `[build-dependencies]`, `[features]`). Cargo therefore emits **no** `DEP_*` metadata from its build script, and a downstream crate's `build.rs` has no supported way to learn the OCCT include/lib directories. `crates/occt-sys/Cargo.toml` likewise has no `links` key.
 
 How upstream resolves OCCT itself (`crates/opencascade-sys/build.rs:139-190`):
+
 1. prints `cargo:rerun-if-env-changed=DEP_OCCT_ROOT` (`:140`);
 2. with `feature = "builtin"`, calls `occt_sys::build_occt()` then **manually** `std::env::set_var("DEP_OCCT_ROOT", occt_sys::occt_path())` (`:144-146`) — `occt_path()` is `OUT_DIR/../../../../OCCT`, i.e. a shared `target/<triple>/OCCT` directory (`crates/occt-sys/src/lib.rs:13-17`);
 3. runs `cmake::Config::new("OCCT").register_dep("occt").build()` (`:150`), where `OCCT/CMakeLists.txt` is a 16-line probe that does `find_package(OpenCASCADE REQUIRED)` and writes `occ_info.txt` with `VERSION_MAJOR`, `VERSION_MINOR`, `INCLUDE_DIR`, `LIBRARY_DIR`, `BUILD_SHARED_LIBS`;
 4. parses `occ_info.txt` (`:153-172`) and emits `cargo:rustc-link-search=native=…` plus 24 `cargo:rustc-link-lib=…` lines (`:41-46`).
 
 So a downstream crate has three options, in increasing order of soundness:
+
 - re-run the same probe itself (copy `OCCT/CMakeLists.txt`, call `cmake::Config::new("OCCT")`), duplicating work but staying decoupled;
 - set `DEP_OCCT_ROOT` / `CMAKE_PREFIX_PATH` / `OpenCASCADE_DIR` in the environment for the whole build;
 - **add `links` to the sys crate and emit the paths as build metadata.** This is what Caddy's vendored copy already does: `packages/occt-native/vendor/opencascade-sys/Cargo.toml` adds `links = "opencascade"`, and its `build.rs` emits `cargo:include=`, `cargo:lib_dir=`, and `cargo:version=`, which Cargo exposes downstream as `DEP_OPENCASCADE_INCLUDE`, `DEP_OPENCASCADE_LIB_DIR`, `DEP_OPENCASCADE_VERSION`. That is the right fix and it is already in place.
@@ -351,27 +355,25 @@ So a downstream crate has three options, in increasing order of soundness:
 
 I scanned every OCCT class named in the 41 wrapper headers and the 41 bridge modules against the OCCT 8.0.1 source tree. **Every header exists** and every signature the bridges rely on still matches. The breakages are of a different kind.
 
-**E1 — The version gate rejects OCCT 8 outright (hard blocker).**
-`crates/opencascade-sys/build.rs:4` declares `const OCCT_VERSION: (u8, u8) = (7, 8);` and `:175` panics when `version_major != OCCT_VERSION.0 || version_minor < OCCT_VERSION.1`. With OCCT 8.0.1 both clauses fire (`8 != 7`, and `0 < 8`). Caddy's vendored copy replaces this with `(version_major, version_minor) < OCCT_VERSION || version_major > OCCT_MAX_MAJOR` where `OCCT_MAX_MAJOR = 8` — correct.
+**E1 — The version gate rejects OCCT 8 outright (hard blocker).** `crates/opencascade-sys/build.rs:4` declares `const OCCT_VERSION: (u8, u8) = (7, 8);` and `:175` panics when `version_major != OCCT_VERSION.0 || version_minor < OCCT_VERSION.1`. With OCCT 8.0.1 both clauses fire (`8 != 7`, and `0 < 8`). Caddy's vendored copy replaces this with `(version_major, version_minor) < OCCT_VERSION || version_major > OCCT_MAX_MAJOR` where `OCCT_MAX_MAJOR = 8` — correct.
 
-**E2 — `Handle_<Class>` typedefs are gone (hard blocker, already patched in Caddy's vendor).**
-OCCT 8.0.1 still *defines* the `DEFINE_STANDARD_HANDLE` macro (`OCCT-8_0_1/src/FoundationClasses/TKernel/Standard/Standard_Handle.hxx:498`) but almost nothing invokes it: a tree-wide grep finds **only 4 header files** containing `DEFINE_STANDARD_HANDLE`, three of which are the macro definitions themselves, plus `Standard_Type.hxx:199`, `math_SingularMatrix.hxx:25`, and `math_NotSquare.hxx:25`. Classes now spell handles as `occ::handle<T>` / `Handle(T)` directly (e.g. `BRep_Tool::Curve` returns `const occ::handle<Geom_Curve>&`, `OCCT-8_0_1/src/ModelingData/TKBRep/BRep/BRep_Tool.hxx:101`).
+**E2 — `Handle_<Class>` typedefs are gone (hard blocker, already patched in Caddy's vendor).** OCCT 8.0.1 still _defines_ the `DEFINE_STANDARD_HANDLE` macro (`OCCT-8_0_1/src/FoundationClasses/TKernel/Standard/Standard_Handle.hxx:498`) but almost nothing invokes it: a tree-wide grep finds **only 4 header files** containing `DEFINE_STANDARD_HANDLE`, three of which are the macro definitions themselves, plus `Standard_Type.hxx:199`, `math_SingularMatrix.hxx:25`, and `math_NotSquare.hxx:25`. Classes now spell handles as `occ::handle<T>` / `Handle(T)` directly (e.g. `BRep_Tool::Curve` returns `const occ::handle<Geom_Curve>&`, `OCCT-8_0_1/src/ModelingData/TKBRep/BRep/BRep_Tool.hxx:101`).
 
 The bridges name 16 such typedefs (`Handle_Geom_Curve`, `Handle_Geom_Surface`, `Handle_Geom_BSplineCurve`, `Handle_Geom_BezierCurve`, `Handle_Geom_BezierSurface`, `Handle_Geom_TrimmedCurve`, `Handle_Geom_Plane`, `Handle_Geom_CylindricalSurface`, `Handle_Geom2d_Curve`, `Handle_Geom2d_Ellipse`, `Handle_Geom2d_TrimmedCurve`, `Handle_Law_Function`, `Handle_Poly_Triangulation`, `Handle_Standard_Type`, `Handle_TColgp_HArray1OfPnt`, `Handle_TopTools_HSequenceOfShape`) and would fail to compile. Caddy's vendored `packages/occt-native/vendor/opencascade-sys/include/occt_compat.hxx` restores all 16 as `typedef opencascade::handle<T> Handle_T;`. Two notes on that file:
-- `Handle_Standard_Type` **does** still exist in OCCT 8 (`Standard_Type.hxx:199`) but marked `Standard_DEPRECATED`; redeclaring an identical typedef is legal in C++, so the compat header is harmless there on clang/gcc. On MSVC the macro produces a *class* rather than a typedef (`Standard_Handle.hxx:466-489`), and a same-named typedef would be a hard error — a cross-compile hazard if Caddy ever targets MSVC. `[INFERENCE]` — not tested.
+
+- `Handle_Standard_Type` **does** still exist in OCCT 8 (`Standard_Type.hxx:199`) but marked `Standard_DEPRECATED`; redeclaring an identical typedef is legal in C++, so the compat header is harmless there on clang/gcc. On MSVC the macro produces a _class_ rather than a typedef (`Standard_Handle.hxx:466-489`), and a same-named typedef would be a hard error — a cross-compile hazard if Caddy ever targets MSVC. `[INFERENCE]` — not tested.
 - `namespace occ` is a thin alias (`template <class T> using handle = opencascade::handle<T>;`, `Standard_Handle.hxx:415-421`) and `#define Handle(Class) opencascade::handle<Class>` is unchanged (`:447`), so `opencascade::handle<T>` in `bindings_common.hxx` and the wrapper headers still compiles.
 
-**E3 — `TopTools_*` and `TColgp_*` are now deprecated alias headers (warning noise, not a break).**
-In OCCT 8 these moved to `src/Deprecated/NCollectionAliases/` and became `Standard_DEPRECATED` typedefs over `NCollection_*`:
+**E3 — `TopTools_*` and `TColgp_*` are now deprecated alias headers (warning noise, not a break).** In OCCT 8 these moved to `src/Deprecated/NCollectionAliases/` and became `Standard_DEPRECATED` typedefs over `NCollection_*`:
+
 - `TopTools_ListOfShape` → `NCollection_List<TopoDS_Shape>` (`OCCT-8_0_1/src/Deprecated/NCollectionAliases/TopTools_ListOfShape.hxx:30`)
 - `TopTools_IndexedMapOfShape` → `NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>`
 - `TopTools_HSequenceOfShape` → `NCollection_HSequence<TopoDS_Shape>`
 - `TColgp_Array1OfDir/Array1OfPnt2d/Array2OfPnt/HArray1OfPnt` → `NCollection_Array1/Array2/HArray1<…>`
 
-They are installed unconditionally (`OCCT-8_0_1/CMakeLists.txt:1107-1109`), and `Standard_HEADER_DEPRECATED` expands to a warning, not an error (`Standard_Macro.hxx:53`). The bridges compile, with a deprecation warning per inclusion. Since the aliases are *typedefs*, the cxx-declared types resolve to the right C++ entities, and `BRepOffsetAPI_MakeThickSolid::MakeThickSolidByJoin(…, const NCollection_List<TopoDS_Shape>&, …)` (`OCCT-8_0_1/src/ModelingAlgorithms/TKOffset/BRepOffsetAPI/BRepOffsetAPI_MakeThickSolid.hxx:103-105`) binds correctly to the bridge's `&TopTools_ListOfShape` (`b_rep_offset_api.rs:48`). Recommendation: replace the alias names with `NCollection_*` in Caddy's own bridges to pre-empt their removal.
+They are installed unconditionally (`OCCT-8_0_1/CMakeLists.txt:1107-1109`), and `Standard_HEADER_DEPRECATED` expands to a warning, not an error (`Standard_Macro.hxx:53`). The bridges compile, with a deprecation warning per inclusion. Since the aliases are _typedefs_, the cxx-declared types resolve to the right C++ entities, and `BRepOffsetAPI_MakeThickSolid::MakeThickSolidByJoin(…, const NCollection_List<TopoDS_Shape>&, …)` (`OCCT-8_0_1/src/ModelingAlgorithms/TKOffset/BRepOffsetAPI/BRepOffsetAPI_MakeThickSolid.hxx:103-105`) binds correctly to the bridge's `&TopTools_ListOfShape` (`b_rep_offset_api.rs:48`). Recommendation: replace the alias names with `NCollection_*` in Caddy's own bridges to pre-empt their removal.
 
-**E4 — one deprecated overload is still used.**
-`ShapeAnalysis_FreeBounds::ConnectEdgesToWires(edges, toler, shared, wires)` is marked `Standard_DEPRECATED("Use ConnectEdgesToWires() returning handle by value instead")` in OCCT 8 (`OCCT-8_0_1/src/ModelingAlgorithms/TKShHealing/ShapeAnalysis/ShapeAnalysis_FreeBounds.hxx:128-134`); the bridge uses exactly that 4-argument form (`src/shape_analysis.rs:13-18`). It still resolves and compiles; switching to the 3-argument value-returning overload would need a wrapper that converts the returned handle into a `UniquePtr`.
+**E4 — one deprecated overload is still used.** `ShapeAnalysis_FreeBounds::ConnectEdgesToWires(edges, toler, shared, wires)` is marked `Standard_DEPRECATED("Use ConnectEdgesToWires() returning handle by value instead")` in OCCT 8 (`OCCT-8_0_1/src/ModelingAlgorithms/TKShHealing/ShapeAnalysis/ShapeAnalysis_FreeBounds.hxx:128-134`); the bridge uses exactly that 4-argument form (`src/shape_analysis.rs:13-18`). It still resolves and compiles; switching to the 3-argument value-returning overload would need a wrapper that converts the returned handle into a `UniquePtr`.
 
 **E5 — Things I checked and found unchanged.** All 24 toolkit names in `OCCT_LIBS` (`build.rs:7-32`) exist as toolkit directories in OCCT 8.0.1 (`TKMath`, `TKernel`, `TKDE`, `TKFeat`, `TKGeomBase`, `TKG2d`, `TKG3d`, `TKTopAlgo`, `TKGeomAlgo`, `TKBRep`, `TKPrim`, `TKDESTEP`, `TKDEIGES`, `TKDESTL`, `TKMesh`, `TKShHealing`, `TKFillet`, `TKBool`, `TKBO`, `TKOffset`, `TKXSBase`, `TKCAF`, `TKLCAF`, `TKXCAF`). `Standard_Boolean`/`Standard_Real`/`Standard_Integer` are still typedef'd (`Standard_TypeDef.hxx:80`). Every enum the bridges mirror has identical members and order: `TopAbs_ShapeEnum`, `TopAbs_Orientation`, `GeomAbs_CurveType`, `GeomAbs_JoinType`, `BOPAlgo_GlueEnum`, `IFSelect_ReturnStatus`, `BRepOffset_Mode` — and all are plain `enum`, not `enum class`, which matters because cxx's generated `static_assert`s reference unqualified enumerators. Signatures verified unchanged: `TopoDS_Shape::Move(loc, raiseExc=false)` / `Location(loc, raiseExc=false)` (`TopoDS_Shape.hxx:95,193`), `BRepGProp::{Linear,Surface,Volume}Properties` (`BRepGProp.hxx:88,133,196`), `BRepTools::Write(shape, const char*, progress) -> bool` and `Read(...) -> bool` (`BRepTools.hxx:323,351`), `BRepTools::OuterWire` (`:258`), `BinTools::Write/Read -> bool` (`BinTools.hxx:97,124`), `StlAPI_Writer::Write` (`StlAPI_Writer.hxx:43`), `BRepLib_ToolTriangulatedShape::ComputeNormals` (`:31,43`), `TopExp::Vertices` both overloads and `CommonVertex` (`TopExp.hxx:126,137,145`), `Poly_Triangulation(nbNodes, nbTriangles, hasUV, hasNormals)` (`Poly_Triangulation.hxx:77`), `BRepPrimAPI_MakePrism(S, V, Copy, Canonize)` (`:56`), `BRepPrimAPI_MakeRevol(S, A, D, Copy)` (`:70`), `BRepOffsetAPI_MakeOffset(Face|Wire, Join, IsOpenResult)` and `Perform(Offset, Alt)` (`:47,63,83`), `BRepOffsetAPI_MakePipeShell::SetLaw/SetMode/Add/MakeSolid` (`:152,70,133,260`), `BRepOffsetAPI_ThruSections::AddWire/CheckCompatibility` (`:88,100`), `BRepFilletAPI_MakeFillet2d::AddFillet/AddChamfer` (`:114,154`), `BRepFeat_MakeCylindricalHole::Perform/Build` (`:53,96`), `BRepBuilderAPI_MakeShapeOnMesh(const occ::handle<Poly_Triangulation>&)` (`:32`), `BRepAlgoAPI_BuilderAlgo::SectionEdges/SetGlue` (`:193,107`), `GCPnts_TangentialDeflection(const Adaptor3d_Curve&, …)` (`:77` — `BRepAdaptor_Curve` upcasts), `GeomAPI_Interpolate::Load(gp_Vec, gp_Vec, bool)` (`:143`), `ShapeUpgrade_UnifySameDomain::Shape() const` (`:135`), `gp_Trsf::{SetMirror,SetScale,SetTranslation,SetTranslationPart,Value}` (`:90,114,181,184,260`), `gp_GTrsf::{SetValue,Value}` (`:115,178`), `BRepLib::BuildCurves3d(S)` (`:107`), `Bnd_Box` accessors (`:118,143,146,161,201,208,265`), `NCollection_List::{begin,end,Append}` (`:50,53,182`).
 

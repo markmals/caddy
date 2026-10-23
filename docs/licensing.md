@@ -19,11 +19,11 @@ Everything marked **Verified** was read directly from the files or URLs cited. E
 | `@roonieone/occt-native` | JS loader, TypeScript types, Rust crate source, build scripts; `optionalDependencies` on the platform packages | Yes, as source (the cxx bridge, under the recommendation) |
 | `@roonieone/occt-native-<platform>-<arch>` | Prebuilt `caddy.node` + OCCT shared libraries (`libTK*.dylib` / `.so` / `.dll`) + OCCT resource files | Yes, as binaries (OCCT itself, plus bridge object code inside the addon) |
 
-build123d, OCP/`cadquery-ocp-novtk`, and the Python virtualenv are **development-only** oracles used for differential testing. They are never published and never linked; their licenses (Apache-2.0 for both build123d 0.13.0 and `cadquery-ocp-novtk` 8.0.1.1.0, verified from the installed `.dist-info/METADATA` files) impose no obligations on our distributed artifacts. The *algorithms* we port from build123d do create obligations — see [build123d](#build123d-apache-20-derivative-work).
+build123d, OCP/`cadquery-ocp-novtk`, and the Python virtualenv are **development-only** oracles used for differential testing. They are never published and never linked; their licenses (Apache-2.0 for both build123d 0.13.0 and `cadquery-ocp-novtk` 8.0.1.1.0, verified from the installed `.dist-info/METADATA` files) impose no obligations on our distributed artifacts. The _algorithms_ we port from build123d do create obligations — see [build123d](#build123d-apache-20-derivative-work).
 
 ## Component license table
 
-Linkage column: *dynamic* = separate file loaded at run time; *static* = object code inside `caddy.node`; *build-time* = runs on our machines, no code in the artifact; *source-derived* = we wrote new code based on it.
+Linkage column: _dynamic_ = separate file loaded at run time; _static_ = object code inside `caddy.node`; _build-time_ = runs on our machines, no code in the artifact; _source-derived_ = we wrote new code based on it.
 
 | Component | Version | License | How used | Linkage | Core obligations |
 | --- | --- | --- | --- | --- | --- |
@@ -72,7 +72,7 @@ Every OCCT source file carries this header (**verified**, e.g. `src/FoundationCl
 >
 > The object code (i.e. not a source) form of a "work that uses the Library" can incorporate material from a header file that is part of the Library. As a special exception to the GNU Lesser General Public License version 2.1, you may distribute such object code incorporating material from header files provided with the Open CASCADE Technology libraries (including code of CDL generic classes) under terms of your choice, provided that you give prominent notice in supporting documentation to this code that it makes use of or is based on facilities provided by the Open CASCADE Technology software.
 
-The operative sentence is the second one: *"you may distribute such object code incorporating material from header files ... under terms of your choice, provided that you give prominent notice in supporting documentation to this code that it makes use of or is based on facilities provided by the Open CASCADE Technology software."*
+The operative sentence is the second one: _"you may distribute such object code incorporating material from header files ... under terms of your choice, provided that you give prominent notice in supporting documentation to this code that it makes use of or is based on facilities provided by the Open CASCADE Technology software."_
 
 ### What the exception covers
 
@@ -120,17 +120,17 @@ Then, unconditionally:
 
 > You must give prominent notice with each copy of the work that the Library is used in it and that the Library and its use are covered by this License. You must supply a copy of this License. ... Also, you must do one of these things:
 
-and the options are (a) accompany with complete source for the Library *and* the "work that uses the Library" in relinkable form, (b) use a suitable shared library mechanism, (c) a written offer valid at least three years, (d) equivalent access from the same designated place, (e) verify the user already has the materials.
+and the options are (a) accompany with complete source for the Library _and_ the "work that uses the Library" in relinkable form, (b) use a suitable shared library mechanism, (c) a written offer valid at least three years, (d) equivalent access from the same designated place, (e) verify the user already has the materials.
 
 ### Option 1 — static OCCT inside `caddy.node`
 
 A single self-contained `.node` is attractive operationally: no rpath, no dylib loading order, no Windows DLL search path, no `install_name` surgery.
 
-The cost is §6(b) becomes unavailable, so we must fall back to §6(a): ship the complete OCCT source *and* "the complete machine-readable 'work that uses the Library', as object code and/or source code, so that the user can modify the Library and then relink to produce a modified executable containing the modified Library."
+The cost is §6(b) becomes unavailable, so we must fall back to §6(a): ship the complete OCCT source _and_ "the complete machine-readable 'work that uses the Library', as object code and/or source code, so that the user can modify the Library and then relink to produce a modified executable containing the modified Library."
 
 Concretely that means, per platform, publishing the addon's object files or a `staticlib` plus the exact linker invocation so a user can relink against their own OCCT. For a Rust `cdylib` that is awkward: `cargo` does not emit a reusable link kit, so we would have to produce one by hand (`--emit=obj`/`staticlib` plus a recorded link line), keep it in sync across macOS/Linux/Windows, test that it actually relinks, and host tens of megabytes of object archives per release. **[INFERENCE]** It is doable but is a recurring per-release engineering burden with real breakage risk, and a broken relink kit is a compliance failure, not just a bug.
 
-§6(c) (written offer) does not rescue static linking: the offer must cover the *same materials* as §6(a), including the relinkable form of our work. Promising to produce something we never build is worse than building it.
+§6(c) (written offer) does not rescue static linking: the offer must cover the _same materials_ as §6(a), including the relinkable form of our work. Promising to produce something we never build is worse than building it.
 
 ### Option 2 — dynamic OCCT beside the addon (recommended)
 
@@ -146,7 +146,7 @@ How each platform satisfies clause (2), i.e. "the user can drop in their own bui
 - **Linux**: `DT_RUNPATH = $ORIGIN` resolves siblings. Note `$ORIGIN` must survive the npm pack/unpack (it is encoded in the ELF, so it does) and that `RUNPATH` does not propagate to transitive deps — each OCCT library must itself carry `$ORIGIN`, which `CMAKE_INSTALL_RPATH` does provide for the OCCT libs too.
 - **Windows**: Node loads addons through libuv's `uv_dlopen`, which calls `LoadLibraryExW(filename, NULL, LOAD_WITH_ALTERED_SEARCH_PATH)` (**verified**: https://github.com/libuv/libuv/blob/v1.x/src/win/dl.c). `LOAD_WITH_ALTERED_SEARCH_PATH` makes the directory of the loaded `.node` the first directory searched for its dependent DLLs, so `TKernel.dll` and friends sitting beside `caddy.node` are found without `PATH` manipulation.
 
-The conservative reading of §6(b)(1) — "a copy of the library already present on the user's computer system" — is sometimes argued to mean a library we did not ship. Our OCCT libraries *are* present on the user's system as ordinary installed files, in a directory the user can inspect and overwrite, and we copy no library functions into the addon. To remove the argument entirely, we additionally satisfy §6(d) by making the exact corresponding source available from the same place the binary comes from, and we add a §6(c)-style three-year written offer. Belt and braces; the marginal cost is a text file and a tagged source archive. **[INFERENCE]**
+The conservative reading of §6(b)(1) — "a copy of the library already present on the user's computer system" — is sometimes argued to mean a library we did not ship. Our OCCT libraries _are_ present on the user's system as ordinary installed files, in a directory the user can inspect and overwrite, and we copy no library functions into the addon. To remove the argument entirely, we additionally satisfy §6(d) by making the exact corresponding source available from the same place the binary comes from, and we add a §6(c)-style three-year written offer. Belt and braces; the marginal cost is a text file and a tagged source archive. **[INFERENCE]**
 
 ### The reverse-engineering clause
 
@@ -166,7 +166,7 @@ Plus the OCCT exception's own condition: "prominent notice in supporting documen
 
 ### Written offer versus accompanying source
 
-- **Accompanying source** (§6(a)/§4) is the strongest and simplest: put the corresponding source *in* the artifact. For the Rust layer this is trivial — the crate source is small. For OCCT's ~500 MB source tree it would bloat every platform tarball, so we do not embed it.
+- **Accompanying source** (§6(a)/§4) is the strongest and simplest: put the corresponding source _in_ the artifact. For the Rust layer this is trivial — the crate source is small. For OCCT's ~500 MB source tree it would bloat every platform tarball, so we do not embed it.
 - **Same-place access** (§6(d)) is the pragmatic answer for OCCT: the npm package and the GitHub release both point at a pinned, immutable, publicly downloadable archive (`V8_0_1`, SHA-256 recorded) plus our build script. The script itself is in the published package.
 - **Written offer** (§6(c)) is a three-year commitment to hand over the materials "for a charge no more than the cost of performing this distribution". We should include it as a fallback in case the upstream URL ever moves, and we must therefore **archive the exact OCCT tarball ourselves** (checksum-verified) for at least three years after the last release that ships it. An offer we cannot honour is the classic LGPL compliance failure. **[INFERENCE]**
 
@@ -196,7 +196,7 @@ Build-time-only crates (`cxx-build`, `cxxbridge-*`, `cc`, `syn`, `quote`, `proc-
 
 ### Apache-2.0 / LGPL-2.1-only compatibility
 
-The FSF's position is that Apache-2.0 is incompatible with GPLv2 (and therefore LGPL-2.1) because its patent-termination and indemnification terms are restrictions GPLv2 does not permit (https://www.gnu.org/licenses/license-list.html#apache2). Apache-2.0 code can therefore not be combined *into* a work distributed under LGPL-2.1-only.
+The FSF's position is that Apache-2.0 is incompatible with GPLv2 (and therefore LGPL-2.1) because its patent-termination and indemnification terms are restrictions GPLv2 does not permit (https://www.gnu.org/licenses/license-list.html#apache2). Apache-2.0 code can therefore not be combined _into_ a work distributed under LGPL-2.1-only.
 
 Three concrete rules follow:
 
@@ -212,14 +212,11 @@ The addon implements the Node-API ABI. neon resolves the `napi_*` symbols at run
 
 ## build123d: Apache-2.0 derivative work
 
-`@roonieone/caddy` is a port of build123d's *algebraic* API: we re-implement its classes, operator semantics, algorithms, numerical tolerances, and behaviour in TypeScript, using build123d as the behavioral oracle. Even though not a line of Python is copied verbatim, a line-by-line functional port of a copyrighted library's structure and algorithms is a derivative work, and we should treat it as one rather than argue about the threshold. **[INFERENCE]**
+`@roonieone/caddy` is a port of build123d's _algebraic_ API: we re-implement its classes, operator semantics, algorithms, numerical tolerances, and behaviour in TypeScript, using build123d as the behavioral oracle. Even though not a line of Python is copied verbatim, a line-by-line functional port of a copyrighted library's structure and algorithms is a derivative work, and we should treat it as one rather than argue about the threshold. **[INFERENCE]**
 
 build123d 0.13.0 is Apache-2.0 (**verified**: `LICENSE` is the Apache 2.0 text; `pyproject`-derived metadata says `License: Apache-2.0`; per-file headers say "Copyright 2025 Gumyr ... Licensed under the Apache License, Version 2.0"). It ships a `NOTICE` file (**verified**) reading:
 
-> build123d
-> Copyright (c) 2022–2025 The build123d Contributors
-> ...
-> This project was originally derived from portions of the CadQuery codebase (https://github.com/CadQuery/cadquery) but has since been extensively refactored and restructured into an independent system. CadQuery is licensed under the Apache License, Version 2.0.
+> build123d Copyright (c) 2022–2025 The build123d Contributors ... This project was originally derived from portions of the CadQuery codebase (https://github.com/CadQuery/cadquery) but has since been extensively refactored and restructured into an independent system. CadQuery is licensed under the Apache License, Version 2.0.
 
 Apache-2.0 §4 obligations for `@roonieone/caddy`:
 
@@ -227,7 +224,7 @@ Apache-2.0 §4 obligations for `@roonieone/caddy`:
 - **§4(b)** — "cause any modified files to carry prominent notices stating that You changed the files": every ported module should carry a short header naming the build123d module it derives from and noting that it was ported to TypeScript and modified.
 - **§4(c)** — retain all copyright, patent, trademark, and attribution notices from the source form of the Work: keep Gumyr's/the contributors' copyright line in the ported files' headers.
 - **§4(d)** — because build123d ships a `NOTICE` file, our distribution must include a readable copy of its attribution notices. Ship a `NOTICE` in `@roonieone/caddy` that reproduces build123d's NOTICE content (including the CadQuery lineage) and then adds our own attribution.
-- **Statement of changes**: Apache-2.0 does not demand a separate changelog, but §4(b) is cleanest to satisfy with one explicit section. `NOTICE` should say, in substance: *"Caddy contains a TypeScript port of portions of build123d 0.13.0 (Apache-2.0). The code was translated from Python to TypeScript, restructured for the npm package layout, and modified; it is not the original build123d."*
+- **Statement of changes**: Apache-2.0 does not demand a separate changelog, but §4(b) is cleanest to satisfy with one explicit section. `NOTICE` should say, in substance: _"Caddy contains a TypeScript port of portions of build123d 0.13.0 (Apache-2.0). The code was translated from Python to TypeScript, restructured for the npm package layout, and modified; it is not the original build123d."_
 
 Trademark: Apache-2.0 §6 grants no trademark rights. Do not name the package or market it as "build123d for Node"; describe it as "a TypeScript library whose API is modeled on build123d". **[INFERENCE]**
 
@@ -257,7 +254,7 @@ Open CASCADE SAS sells a commercial license that replaces the LGPL terms entirel
 
 If we write the entire cxx bridge ourselves from OCCT's own headers and documentation, never copying `opencascade-sys` code (using it only as a "how do others shape this" reference is risky; using nothing at all is clean), then the addon contains no LGPL **source**. Its object code still embeds OCCT header material, which the OCCT exception explicitly permits "under terms of your choice". The addon could then be Apache-2.0 or MIT, while the shipped OCCT shared libraries remain LGPL and still require §6(b) + notices + corresponding source.
 
-This is the only route to a permissive addon, and it has to be decided *before* the bridge is written, not after. If the bridge work is already consulting `opencascade-sys`, pick the LGPL recommendation and move on. The practical difference for users is small: LGPL-2.1 on a dynamically-loadable native addon that anyone may replace does not restrict commercial use of `@roonieone/caddy`.
+This is the only route to a permissive addon, and it has to be decided _before_ the bridge is written, not after. If the bridge work is already consulting `opencascade-sys`, pick the LGPL recommendation and move on. The practical difference for users is small: LGPL-2.1 on a dynamically-loadable native addon that anyone may replace does not restrict commercial use of `@roonieone/caddy`.
 
 ### Alternative C — single combined package
 
@@ -278,7 +275,7 @@ Publishing one package containing both the TypeScript and the native binaries wo
 - `LICENSE` — GNU LGPL-2.1 full text.
 - `LICENSE.OCCT_EXCEPTION` — verbatim `OCCT_LGPL_EXCEPTION.txt`.
 - `NOTICE`/`README.md` — the OCCT usage notice; attribution to opencascade-rs for any derived bridge code with its copyright line retained.
-- Complete Rust crate source (`src/`, `include/`, `build.rs`, `Cargo.toml`) and `scripts/build-occt.ts` — this *is* the corresponding source that discharges §4 for the addon and names the OCCT build configuration.
+- Complete Rust crate source (`src/`, `include/`, `build.rs`, `Cargo.toml`) and `scripts/build-occt.ts` — this _is_ the corresponding source that discharges §4 for the addon and names the OCCT build configuration.
 - `THIRD_PARTY_NOTICES.md` — generated from the Cargo graph: every linked crate, its elected license, its text, its copyright.
 - `SOURCE.md` — OCCT tag `V8_0_1`, commit `b8f597c677811d1f9f4d8a97f5ae2825c0353a42`, archive URL, SHA-256, our build script path, our repo URL and release tag, plus the three-year written offer with a contact address.
 - `package.json` — `"license": "LGPL-2.1-only"`.

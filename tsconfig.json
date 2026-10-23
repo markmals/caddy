@@ -16,5 +16,11 @@
         "noEmit": true,
         "skipLibCheck": true
     },
-    "include": ["packages/*/src", "packages/*/tests", "packages/*/scripts", "examples", "reference/**/*.ts"]
+    "include": [
+        "packages/*/src",
+        "packages/*/tests",
+        "packages/*/scripts",
+        "examples",
+        "reference/**/*.ts"
+    ]
 }
