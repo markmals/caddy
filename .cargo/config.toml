@@ -1,0 +1,6 @@
+[env]
+# OCCT installation built by `node packages/occt-native/scripts/build-occt.ts` (a symlink to the
+# current platform's directory). Override by exporting DEP_OCCT_ROOT.
+DEP_OCCT_ROOT = { value = "packages/occt-native/.occt/current", relative = true }
+# Keep in sync with MACOS_DEPLOYMENT_TARGET in build-occt.ts.
+MACOSX_DEPLOYMENT_TARGET = "13.5"

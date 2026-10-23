@@ -1,0 +1,16 @@
+[package]
+name = "occt-neon"
+version = "0.1.0"
+edition = "2024"
+license = "LGPL-2.1-only"
+description = "Node-API (Neon) bindings over Open CASCADE for @roonieone/occt-native"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+cxx = "1.0.205"
+neon = "1.1.2"
+opencascade-sys = { path = "../opencascade-sys" }
+

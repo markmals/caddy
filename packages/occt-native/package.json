@@ -8,7 +8,9 @@
         ".": "./src/index.ts"
     },
     "scripts": {
+        "build:native": "node scripts/build-native.ts",
         "build:occt": "node scripts/build-occt.ts",
+        "generate:bindings": "node scripts/generate-bindings.ts",
         "test": "vp test run"
     },
     "engines": {

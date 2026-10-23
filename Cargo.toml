@@ -1,0 +1,7 @@
+[workspace]
+resolver = "3"
+members = [
+    "packages/occt-native/crates/occt-bindgen",
+    "packages/occt-native/crates/occt-neon",
+    "packages/occt-native/crates/opencascade-sys",
+]
