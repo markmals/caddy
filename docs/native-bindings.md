@@ -103,6 +103,7 @@ Importing or exporting a large assembly takes seconds, so `io`, `mesh` and the S
 - `Quantity_ColorRGBA`'s float constructor stores linear RGB. build123d's `Color` speaks sRGB, so `xde.rs` converts in both directions with `Quantity_Color::Convert_sRGB_To_LinearRGB` / `Convert_LinearRGB_To_sRGB`.
 - IGES has no stream reader in OCCT 8.0.1 (`IGESSelect_WorkLibrary` implements `ReadFile` but inherits the base `ReadStream`, which always fails), so `igesRead` takes a path and Caddy spills buffers to a scratch file.
 - Text BREP (`BRepTools`) and binary BREP (`BinTools`) are different readers that reject each other's files. They share the `.brep` extension, so the importer picks the reader from the banner: `Open CASCADE Topology V4` is binary, `CASCADE Topology V3` is text.
+- `mesh.rs` detaches with `BRepBuilderAPI_Copy`'s `copyMesh` flag set, unlike the rest of `exchange`. build123d's `Shape.mesh` leaves a triangulation on the shape so that a later `tessellate` or STL write can reuse it; keeping the mesh in the copy is what lets `shapeMesh`'s result do the same instead of being re-meshed from scratch.
 
 ## Distribution
 

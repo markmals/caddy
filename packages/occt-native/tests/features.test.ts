@@ -71,7 +71,8 @@ test("drafting one box face preserves a valid solid", () => {
         { origin: [0, 0, 0], zDirection: [0, 0, 1], xDirection: [1, 0, 0] },
         Math.PI / 36,
     );
-    expect(measure.isValid(drafted)).toBe(true);
+    expect(drafted.shape).not.toBeNull();
+    expect(measure.isValid(drafted.shape!)).toBe(true);
 });
 
 test("projecting a wire onto a solid returns wires on its surface", () => {

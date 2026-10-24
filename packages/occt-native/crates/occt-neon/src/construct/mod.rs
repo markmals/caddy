@@ -3,10 +3,15 @@
 //!
 //! Angles cross the boundary in radians and points as flat `[x, y, z, ...]` arrays.
 
+mod constrained_arcs;
+mod constrained_circles;
+mod constrained_lines;
 mod edges;
 mod faces;
+pub mod geom2d;
 mod helix;
 mod modify2d;
+mod solids;
 mod splines;
 mod wires;
 

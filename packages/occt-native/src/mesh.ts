@@ -31,6 +31,7 @@ interface MeshAddon {
     ): Promise<Uint8Array>;
     stlRead(bytes: Uint8Array): Promise<Shape>;
     shapeTessellate(shape: Shape, tolerance: number, angularTolerance: number): Promise<Triangles>;
+    shapeMesh(shape: Shape, tolerance: number, angularTolerance: number): Promise<Shape>;
 }
 
 function native(): MeshAddon {
@@ -60,4 +61,15 @@ export function tessellate(
     options: MeshOptions = DEFAULT_MESH_OPTIONS,
 ): Promise<Triangles> {
     return native().shapeTessellate(shape, options.tolerance, options.angularTolerance);
+}
+
+/**
+ * A copy of `shape` carrying a triangulation of every face (build123d `Shape.mesh`). Later
+ * meshing calls reuse it when it is at least as fine as what they ask for.
+ */
+export function triangulate(
+    shape: Shape,
+    options: MeshOptions = DEFAULT_MESH_OPTIONS,
+): Promise<Shape> {
+    return native().shapeMesh(shape, options.tolerance, options.angularTolerance);
 }

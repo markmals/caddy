@@ -7,6 +7,7 @@ use cxx::UniquePtr;
 use neon::prelude::*;
 use opencascade_sys::{
     b_rep::{BRep_Builder_new, BRep_Tool_Triangulation},
+    b_rep_builder_api::BRepBuilderAPI_Copy_new_shape_bool2,
     b_rep_mesh::{
         BRepMesh_IncrementalMesh_new_shape_real_bool_real_bool,
         Handle_BRepMesh_IncrementalMesh_get_mut,
@@ -31,8 +32,8 @@ use opencascade_sys::{
 use crate::{
     builder::progress,
     error::{OcctError, OcctResult, OrThrow, code},
-    exchange::{bytes_promise, detach, promise, shape_promise},
-    shape::ShapeCell,
+    exchange::{Detached, bytes_promise, promise, shape_promise},
+    shape::{ShapeCell, get, owned},
     topology::sub_shapes,
 };
 
@@ -153,7 +154,7 @@ fn stl_write<'cx>(
     angular_tolerance: f64,
     ascii: bool,
 ) -> JsResult<'cx, JsPromise> {
-    let shape = detach(shape).or_raise(cx)?;
+    let shape = detach_meshed(shape).or_raise(cx)?;
     let options = MeshOptions { tolerance, angular_tolerance };
     bytes_promise(cx, move || write_stl(shape.get(), &options, ascii))
 }
@@ -163,6 +164,29 @@ fn stl_read<'cx>(cx: &mut Cx<'cx>, bytes: Vec<u8>) -> JsResult<'cx, JsPromise> {
     shape_promise(cx, move || read_stl(&bytes))
 }
 
+/// `detach` keeping the triangulation, so a shape `shapeMesh` has meshed is reused rather than
+/// re-meshed — build123d's `Shape.mesh` leaves its triangulation on the shape for later calls.
+fn detach_meshed(cell: &ShapeCell) -> OcctResult<Detached> {
+    let shape = get(cell)?;
+    let mut copy = BRepBuilderAPI_Copy_new_shape_bool2(&shape, true, true)?;
+    Ok(Detached::adopt(owned(copy.pin_mut().Shape()?)))
+}
+
+#[neon::export(name = "shapeMesh")]
+fn shape_mesh<'cx>(
+    cx: &mut Cx<'cx>,
+    shape: &ShapeCell,
+    tolerance: f64,
+    angular_tolerance: f64,
+) -> JsResult<'cx, JsPromise> {
+    let shape = detach_meshed(shape).or_raise(cx)?;
+    let options = MeshOptions { tolerance, angular_tolerance };
+    shape_promise(cx, move || {
+        triangulate(shape.get(), &options)?;
+        Ok(shape.into_inner())
+    })
+}
+
 #[neon::export(name = "shapeTessellate")]
 fn shape_tessellate<'cx>(
     cx: &mut Cx<'cx>,
@@ -170,7 +194,7 @@ fn shape_tessellate<'cx>(
     tolerance: f64,
     angular_tolerance: f64,
 ) -> JsResult<'cx, JsPromise> {
-    let shape = detach(shape).or_raise(cx)?;
+    let shape = detach_meshed(shape).or_raise(cx)?;
     let options = MeshOptions { tolerance, angular_tolerance };
     promise(
         cx,

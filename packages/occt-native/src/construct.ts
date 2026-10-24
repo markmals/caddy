@@ -48,6 +48,7 @@ export interface HelixOptions {
 
 interface ConstructAddon {
     makeVertex(point: Float64Array): Shape;
+    makeAxisEdge(axis: Float64Array): Shape;
     makeLineEdge(start: Float64Array, end: Float64Array): Shape;
     makeCircleEdge(
         frame: Float64Array,
@@ -64,6 +65,58 @@ interface ConstructAddon {
         endAngle: number,
         counterClockwise: boolean,
     ): Shape;
+    makeParabolaEdge(
+        frame: Float64Array,
+        focalLength: number,
+        startAngle: number,
+        endAngle: number,
+        counterClockwise: boolean,
+    ): Shape;
+    makeHyperbolaEdge(
+        frame: Float64Array,
+        xRadius: number,
+        yRadius: number,
+        startAngle: number,
+        endAngle: number,
+        counterClockwise: boolean,
+    ): Shape;
+    constrainedArcs2TanRad(
+        edges: readonly Shape[],
+        qualifiers: Float64Array,
+        points: Float64Array,
+        radius: number,
+    ): Shape[][];
+    constrainedArcs2TanOn(
+        edges: readonly Shape[],
+        qualifiers: Float64Array,
+        points: Float64Array,
+        centerOn: Shape,
+    ): Shape[][];
+    constrainedArcs3Tan(edges: readonly Shape[], qualifiers: Float64Array): Shape[][];
+    constrainedCirclesTanCen(
+        edges: readonly Shape[],
+        qualifiers: Float64Array,
+        points: Float64Array,
+        center: Float64Array,
+    ): Shape[];
+    constrainedCirclesTanOnRad(
+        edges: readonly Shape[],
+        qualifiers: Float64Array,
+        points: Float64Array,
+        centerOn: Shape,
+        radius: number,
+    ): Shape[];
+    constrainedLines2Tan(
+        edges: readonly Shape[],
+        qualifiers: Float64Array,
+        points: Float64Array,
+    ): Shape[];
+    constrainedLinesTanOblique(
+        edges: readonly Shape[],
+        qualifiers: Float64Array,
+        reference: Float64Array,
+        angle: number,
+    ): Shape[];
     makeThreePointArc(start: Float64Array, middle: Float64Array, end: Float64Array): Shape;
     makeTangentArc(start: Float64Array, tangent: Float64Array, end: Float64Array): Shape;
     makeSplineEdge(
@@ -119,6 +172,9 @@ interface ConstructAddon {
         distance2: number,
     ): Shape;
     offsetWire2d(wire: Shape, distance: number, kind: JoinType, openResult: boolean): Shape;
+    makePlaneFace(frame: Float64Array): Shape;
+    sewFaces(faces: readonly Shape[]): Shape;
+    makeSolidFromShell(shell: Shape): Shape;
 }
 
 function native(): ConstructAddon {
@@ -137,6 +193,11 @@ function numbers(values: readonly number[] | undefined): Float64Array {
 
 export function makeVertex(point: Vec3): Shape {
     return native().makeVertex(Float64Array.from(point));
+}
+
+/** The unbounded line along `axis`, given as `[ox, oy, oz, dx, dy, dz]`. */
+export function makeAxisEdge(axis: readonly number[]): Shape {
+    return native().makeAxisEdge(Float64Array.from(axis));
 }
 
 export function makeLineEdge(start: Vec3, end: Vec3): Shape {
@@ -180,6 +241,122 @@ export function makeEllipseEdge(
         startAngle,
         endAngle,
         counterClockwise,
+    );
+}
+
+/** Parabolic arc with its vertex at the frame's origin, opening along the frame's X axis. */
+export function makeParabolaEdge(
+    frame: Frame,
+    focalLength: number,
+    startAngle: number,
+    endAngle: number,
+    counterClockwise: boolean,
+): Shape {
+    return native().makeParabolaEdge(
+        frameArray(frame),
+        focalLength,
+        startAngle,
+        endAngle,
+        counterClockwise,
+    );
+}
+
+/** Hyperbolic arc centred on the frame's origin; the radii may be given in either order. */
+export function makeHyperbolaEdge(
+    frame: Frame,
+    xRadius: number,
+    yRadius: number,
+    startAngle: number,
+    endAngle: number,
+    counterClockwise: boolean,
+): Shape {
+    return native().makeHyperbolaEdge(
+        frameArray(frame),
+        xRadius,
+        yRadius,
+        startAngle,
+        endAngle,
+        counterClockwise,
+    );
+}
+
+/**
+ * Tangency targets of the 2D constraint solvers: planar edges to touch, each with a qualifier
+ * (0 unqualified, 1 enclosing, 2 enclosed, 3 outside), and points to pass through. Edges always
+ * come before points, matching the order the solvers expect.
+ */
+export interface TangencyTargets {
+    readonly edges: readonly Shape[];
+    readonly qualifiers: readonly number[];
+    /** Flat `[x, y, ...]` coordinates of the point targets. */
+    readonly points: readonly number[];
+}
+
+function targetArgs(targets: TangencyTargets): [readonly Shape[], Float64Array, Float64Array] {
+    return [
+        targets.edges,
+        Float64Array.from(targets.qualifiers),
+        Float64Array.from(targets.points),
+    ];
+}
+
+/**
+ * Arcs of `radius` tangent to two targets. Each solution is returned as its `[minor, major]` arc
+ * pair between the two contact points.
+ */
+export function constrainedArcs2TanRad(targets: TangencyTargets, radius: number): Shape[][] {
+    return native().constrainedArcs2TanRad(...targetArgs(targets), radius);
+}
+
+/** Arcs tangent to two targets whose centre lies on `centerOn`, as `[minor, major]` pairs. */
+export function constrainedArcs2TanOn(targets: TangencyTargets, centerOn: Shape): Shape[][] {
+    return native().constrainedArcs2TanOn(...targetArgs(targets), centerOn);
+}
+
+/**
+ * Arcs tangent to three curves, as `[minor, major]` pairs running between the contacts on the
+ * first two curves.
+ */
+export function constrainedArcs3Tan(targets: TangencyTargets): Shape[][] {
+    return native().constrainedArcs3Tan(targets.edges, Float64Array.from(targets.qualifiers));
+}
+
+/** Closed circles centred on `center` and tangent to a single target. */
+export function constrainedCirclesTanCen(
+    targets: TangencyTargets,
+    center: readonly [number, number],
+): Shape[] {
+    return native().constrainedCirclesTanCen(...targetArgs(targets), Float64Array.from(center));
+}
+
+/** Closed circles of `radius` tangent to a single target with their centre on `centerOn`. */
+export function constrainedCirclesTanOnRad(
+    targets: TangencyTargets,
+    centerOn: Shape,
+    radius: number,
+): Shape[] {
+    return native().constrainedCirclesTanOnRad(...targetArgs(targets), centerOn, radius);
+}
+
+/** Lines tangent to a curve and to a second curve or through a point, trimmed between contacts. */
+export function constrainedLines2Tan(targets: TangencyTargets): Shape[] {
+    return native().constrainedLines2Tan(...targetArgs(targets));
+}
+
+/**
+ * Lines tangent to a curve at `angle` radians from the reference line `[x, y, dx, dy]`, trimmed
+ * between the contact point and the reference line.
+ */
+export function constrainedLinesTanOblique(
+    targets: TangencyTargets,
+    reference: readonly [number, number, number, number],
+    angle: number,
+): Shape[] {
+    return native().constrainedLinesTanOblique(
+        targets.edges,
+        Float64Array.from(targets.qualifiers),
+        Float64Array.from(reference),
+        angle,
     );
 }
 
@@ -323,4 +500,19 @@ export function offsetWire2d(
     openResult = false,
 ): Shape {
     return native().offsetWire2d(wire, distance, kind, openResult);
+}
+
+/** The unbounded planar face of `plane`. */
+export function makePlaneFace(plane: Frame): Shape {
+    return native().makePlaneFace(frameArray(plane));
+}
+
+/** Sews faces along their shared edges; a shell when they all connect. */
+export function sewFaces(faces: readonly Shape[]): Shape {
+    return native().sewFaces(faces);
+}
+
+/** The solid bounded by `shell`, with its faces oriented outwards. */
+export function makeSolidFromShell(shell: Shape): Shape {
+    return native().makeSolidFromShell(shell);
 }

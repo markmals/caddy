@@ -11,14 +11,15 @@ use opencascade_sys::{
         Adaptor3d_Curve, Adaptor3d_Curve_Circle, Adaptor3d_Curve_DN, Adaptor3d_Curve_Ellipse,
         Adaptor3d_Curve_Value, Handle_Adaptor3d_Curve,
     },
-    b_rep::{BRep_Tool, BRep_Tool_Curve_edge_real2, BRep_Tool_Surface_face},
+    b_rep::{BRep_Tool, BRep_Tool_Curve_edge_real2, BRep_Tool_Parameters, BRep_Tool_Surface_face},
     b_rep_adaptor::{
         BRepAdaptor_CompCurve_as_Adaptor3d_Curve, BRepAdaptor_CompCurve_new_wire_bool,
         BRepAdaptor_Curve_as_Adaptor3d_Curve, BRepAdaptor_Curve_new_edge,
-        BRepAdaptor_Surface_new_face_bool, Handle_BRepAdaptor_CompCurve,
-        Handle_BRepAdaptor_CompCurve_get, Handle_BRepAdaptor_CompCurve_to_Adaptor3d_Curve,
-        Handle_BRepAdaptor_Curve, Handle_BRepAdaptor_Curve_get,
-        Handle_BRepAdaptor_Curve_to_Adaptor3d_Curve, Handle_BRepAdaptor_Surface_get,
+        BRepAdaptor_Curve2d_new_edge_face, BRepAdaptor_Surface_new_face_bool,
+        Handle_BRepAdaptor_CompCurve, Handle_BRepAdaptor_CompCurve_get,
+        Handle_BRepAdaptor_CompCurve_to_Adaptor3d_Curve, Handle_BRepAdaptor_Curve,
+        Handle_BRepAdaptor_Curve_get, Handle_BRepAdaptor_Curve_to_Adaptor3d_Curve,
+        Handle_BRepAdaptor_Curve2d_get, Handle_BRepAdaptor_Surface_get,
     },
     b_rep_builder_api::BRepBuilderAPI_MakeVertex_new_pnt,
     b_rep_class3d::BRepClass3d_SolidClassifier_new_shape,
@@ -45,15 +46,17 @@ use opencascade_sys::{
     geom_lib::GeomLib_IsPlanarSurface_new_hsurface_real,
     gp::{
         gp_Ax3_Ax2, gp_Ax3_new, gp_Ax3_new_ax2, gp_Ax3_new_pnt_dir2, gp_Dir_new_vec,
-        gp_Lin_new_ax1, gp_Pnt_new, gp_Trsf_new, gp_Vec_new, gp_XYZ_new_real3,
+        gp_Lin_new_ax1, gp_Pnt_new, gp_Pnt2d_new, gp_Pnt2d_new_real2, gp_Trsf_new, gp_Vec_new,
+        gp_Vec2d_new, gp_XYZ_new_real3,
     },
-    shape_analysis::ShapeAnalysis_Curve,
+    int_tools::IntTools_FClass2d_new_face_real,
+    shape_analysis::{ShapeAnalysis_Curve, ShapeAnalysis_Edge_new},
     shape_fix::{
         Handle_ShapeFix_Shape_get, Handle_ShapeFix_Shape_get_mut, ShapeFix_Shape_Shape,
         ShapeFix_Shape_new_shape,
     },
-    top_abs::TopAbs_ShapeEnum,
-    top_exp::TopExp,
+    top_abs::{TopAbs_Orientation, TopAbs_ShapeEnum},
+    top_exp::{TopExp, TopExp_Explorer_new_shape_shapeenum2},
     top_tools::{
         TopTools_IndexedDataMapOfShapeListOfShape_find_from_index,
         TopTools_IndexedDataMapOfShapeListOfShape_find_index,
@@ -255,12 +258,16 @@ fn curve_conic<'cx>(cx: &mut Cx<'cx>, shape: &ShapeCell) -> NeonResult<Vec<f64>>
             let mut values = vec![1.0];
             values.extend(xyz(circle.Location()?)?);
             values.push(circle.Radius()?);
+            values.push(circle.Radius()?);
+            values.extend(dir_xyz(circle.Axis()?.Direction()?)?);
             Ok(values)
         } else if kind == GeomAbs_CurveType::GeomAbs_Ellipse {
             let ellipse = Adaptor3d_Curve_Ellipse(curve)?;
             let mut values = vec![2.0];
             values.extend(xyz(ellipse.Location()?)?);
             values.push(ellipse.MajorRadius()?);
+            values.push(ellipse.MinorRadius()?);
+            values.extend(dir_xyz(ellipse.Axis()?.Direction()?)?);
             Ok(values)
         } else {
             Ok(Vec::new())
@@ -629,4 +636,216 @@ fn faces_intersected_by_axis<'cx>(
         .or_raise(cx)?
     };
     shapes_to_js(cx, faces)
+}
+
+/// `[defined, min, max, nx, ny, nz]`: the principal curvatures of the face's surface at
+/// `(u, v)` against its own normal (`D1U ^ D1V`, as GeomLProp's surface properties take it),
+/// and that normal. `defined` is 0 where the surface is degenerate and the rest is unusable.
+#[neon::export(name = "surfaceCurvature")]
+fn surface_curvature<'cx>(
+    cx: &mut Cx<'cx>,
+    face: &ShapeCell,
+    u: f64,
+    v: f64,
+) -> NeonResult<Vec<f64>> {
+    let face = get(face).or_raise(cx)?;
+    attempt(|| {
+        let surface = BRepAdaptor_Surface_new_face_bool(TopoDS_Face_shape(&face)?, true)?;
+        let mut point = gp_Pnt_new()?;
+        let (mut du, mut dv) = (gp_Vec_new()?, gp_Vec_new()?);
+        let (mut duu, mut dvv, mut duv) = (gp_Vec_new()?, gp_Vec_new()?, gp_Vec_new()?);
+        Handle_BRepAdaptor_Surface_get(&surface)?.D2(
+            u,
+            v,
+            point.pin_mut(),
+            du.pin_mut(),
+            dv.pin_mut(),
+            duu.pin_mut(),
+            dvv.pin_mut(),
+            duv.pin_mut(),
+        )?;
+        Ok(principal_curvatures(
+            vec_xyz(&du)?,
+            vec_xyz(&dv)?,
+            vec_xyz(&duu)?,
+            vec_xyz(&dvv)?,
+            vec_xyz(&duv)?,
+        ))
+    })
+    .or_raise(cx)
+}
+
+/// Principal curvatures from the two fundamental forms, with the normal `du ^ dv` normalized.
+fn principal_curvatures(
+    du: [f64; 3],
+    dv: [f64; 3],
+    duu: [f64; 3],
+    dvv: [f64; 3],
+    duv: [f64; 3],
+) -> Vec<f64> {
+    let dot = |a: [f64; 3], b: [f64; 3]| a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+    let normal = [
+        du[1] * dv[2] - du[2] * dv[1],
+        du[2] * dv[0] - du[0] * dv[2],
+        du[0] * dv[1] - du[1] * dv[0],
+    ];
+    let length = dot(normal, normal).sqrt();
+    let (first_e, first_f, first_g) = (dot(du, du), dot(du, dv), dot(dv, dv));
+    let discriminant = first_e * first_g - first_f * first_f;
+    if length < 1e-12 || discriminant < 1e-24 {
+        return vec![0.0; 6];
+    }
+    let normal = normal.map(|value| value / length);
+    let (second_l, second_m, second_n) = (dot(duu, normal), dot(duv, normal), dot(dvv, normal));
+    let mean =
+        (first_e * second_n - 2.0 * first_f * second_m + first_g * second_l) / (2.0 * discriminant);
+    let gaussian = (second_l * second_n - second_m * second_m) / discriminant;
+    let spread = (mean * mean - gaussian).max(0.0).sqrt();
+    vec![1.0, mean - spread, mean + spread, normal[0], normal[1], normal[2]]
+}
+
+/// Every solution of BRepExtrema_DistShapeShape as `[x1, y1, z1, x2, y2, z2]` per pair, with
+/// `deflection` set on the algorithm so near-coincident solutions stay distinct. Empty when the
+/// extrema could not be computed.
+#[neon::export(name = "extremaSolutions")]
+fn extrema_solutions<'cx>(
+    cx: &mut Cx<'cx>,
+    first: &ShapeCell,
+    second: &ShapeCell,
+    deflection: f64,
+) -> NeonResult<Vec<f64>> {
+    let (first, second) = (get(first).or_raise(cx)?, get(second).or_raise(cx)?);
+    attempt(|| {
+        let mut extrema = BRepExtrema_DistShapeShape_new()?;
+        extrema.pin_mut().SetDeflection(deflection)?;
+        extrema.pin_mut().LoadS1(&first)?;
+        extrema.pin_mut().LoadS2(&second)?;
+        extrema.pin_mut().Perform(&*progress()?)?;
+        if !extrema.IsDone()? {
+            return Ok(Vec::new());
+        }
+        let mut values = Vec::new();
+        for solution in 1..=extrema.NbSolution()? {
+            values.extend(xyz(extrema.PointOnShape1(solution)?)?);
+            values.extend(xyz(extrema.PointOnShape2(solution)?)?);
+        }
+        Ok(values)
+    })
+    .or_raise(cx)
+}
+
+/// Runs `body` with the edge's 2D curve in the face's parameter space (BRepAdaptor_Curve2d).
+fn with_pcurve<T>(
+    edge: &TopoDS_Shape,
+    face: &TopoDS_Shape,
+    body: impl FnOnce(&opencascade_sys::b_rep_adaptor::BRepAdaptor_Curve2d) -> OcctResult<T>,
+) -> OcctResult<T> {
+    let pcurve =
+        BRepAdaptor_Curve2d_new_edge_face(TopoDS_Edge_shape(edge)?, TopoDS_Face_shape(face)?)?;
+    body(Handle_BRepAdaptor_Curve2d_get(&pcurve)?)
+}
+
+/// `[first, last]`: the parameter range of the edge's 2D curve on the face.
+#[neon::export(name = "pcurveRange")]
+fn pcurve_range<'cx>(cx: &mut Cx<'cx>, edge: &ShapeCell, face: &ShapeCell) -> NeonResult<Vec<f64>> {
+    let (edge, face) = (get(edge).or_raise(cx)?, get(face).or_raise(cx)?);
+    attempt(|| {
+        with_pcurve(&edge, &face, |pcurve| {
+            Ok(vec![pcurve.FirstParameter()?, pcurve.LastParameter()?])
+        })
+    })
+    .or_raise(cx)
+}
+
+/// `[u, v, du, dv]`: the point and first derivative of the edge's 2D curve on the face.
+#[neon::export(name = "pcurveDerivative")]
+fn pcurve_derivative<'cx>(
+    cx: &mut Cx<'cx>,
+    edge: &ShapeCell,
+    face: &ShapeCell,
+    parameter: f64,
+) -> NeonResult<Vec<f64>> {
+    let (edge, face) = (get(edge).or_raise(cx)?, get(face).or_raise(cx)?);
+    attempt(|| {
+        with_pcurve(&edge, &face, |pcurve| {
+            let mut point = gp_Pnt2d_new()?;
+            let mut tangent = gp_Vec2d_new()?;
+            pcurve.D1(parameter, point.pin_mut(), tangent.pin_mut())?;
+            Ok(vec![point.X()?, point.Y()?, tangent.X()?, tangent.Y()?])
+        })
+    })
+    .or_raise(cx)
+}
+
+/// `[u, v]`: the vertex's parameters on the face (BRep_Tool::Parameters).
+#[neon::export(name = "vertexParametersOnFace")]
+fn vertex_parameters_on_face<'cx>(
+    cx: &mut Cx<'cx>,
+    vertex: &ShapeCell,
+    face: &ShapeCell,
+) -> NeonResult<Vec<f64>> {
+    let (vertex, face) = (get(vertex).or_raise(cx)?, get(face).or_raise(cx)?);
+    attempt(|| {
+        let point = BRep_Tool_Parameters(TopoDS_Vertex_shape(&vertex)?, TopoDS_Face_shape(&face)?)?;
+        Ok(vec![point.X()?, point.Y()?])
+    })
+    .or_raise(cx)
+}
+
+/// The TopAbs_State of the parameter-space point `(u, v)` against the face's boundary
+/// (IntTools_FClass2d).
+#[neon::export(name = "classifyUV")]
+fn classify_uv<'cx>(
+    cx: &mut Cx<'cx>,
+    face: &ShapeCell,
+    u: f64,
+    v: f64,
+    tolerance: f64,
+) -> NeonResult<f64> {
+    let face = get(face).or_raise(cx)?;
+    attempt(|| {
+        let classifier = IntTools_FClass2d_new_face_real(TopoDS_Face_shape(&face)?, tolerance)?;
+        let state = classifier.Perform(&*gp_Pnt2d_new_real2(u, v)?, true)?;
+        Ok(f64::from(state.repr))
+    })
+    .or_raise(cx)
+}
+
+/// Whether the face's boundary runs along `edge` in the reverse direction; an error when the
+/// edge is not on the face.
+#[neon::export(name = "edgeIsReversedInFace")]
+fn edge_is_reversed_in_face<'cx>(
+    cx: &mut Cx<'cx>,
+    face: &ShapeCell,
+    edge: &ShapeCell,
+) -> NeonResult<bool> {
+    let (face, edge) = (get(face).or_raise(cx)?, get(edge).or_raise(cx)?);
+    attempt(|| {
+        let mut explorer = TopExp_Explorer_new_shape_shapeenum2(
+            &face,
+            TopAbs_ShapeEnum::TopAbs_EDGE,
+            TopAbs_ShapeEnum::TopAbs_SHAPE,
+        )?;
+        while explorer.More()? {
+            let current = explorer.Current()?;
+            if current.IsSame(&edge)? {
+                return Ok(current.Orientation()? == TopAbs_Orientation::TopAbs_REVERSED);
+            }
+            explorer.pin_mut().Next()?;
+        }
+        Err(OcctError::invalid("the edge is not on the face"))
+    })
+    .or_raise(cx)
+}
+
+/// Whether the face meets itself along `edge`, as a cylinder does at its seam
+/// (ShapeAnalysis_Edge::IsSeam).
+#[neon::export(name = "isSeamEdge")]
+fn is_seam_edge<'cx>(cx: &mut Cx<'cx>, edge: &ShapeCell, face: &ShapeCell) -> NeonResult<bool> {
+    let (edge, face) = (get(edge).or_raise(cx)?, get(face).or_raise(cx)?);
+    attempt(|| {
+        let analyzer = ShapeAnalysis_Edge_new()?;
+        Ok(analyzer.IsSeam_edge_face(TopoDS_Edge_shape(&edge)?, TopoDS_Face_shape(&face)?)?)
+    })
+    .or_raise(cx)
 }

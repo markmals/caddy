@@ -9,6 +9,7 @@ use opencascade_sys::{
     b_rep_builder_api::{
         BRepBuilderAPI_MakeEdge_as_BRepBuilderAPI_MakeShape_mut, BRepBuilderAPI_MakeEdge_new_circ,
         BRepBuilderAPI_MakeEdge_new_elips, BRepBuilderAPI_MakeEdge_new_hcurve_real2,
+        BRepBuilderAPI_MakeEdge_new_hypr, BRepBuilderAPI_MakeEdge_new_lin,
         BRepBuilderAPI_MakeEdge_new_pnt2,
         BRepBuilderAPI_MakeVertex_as_BRepBuilderAPI_MakeShape_mut,
         BRepBuilderAPI_MakeVertex_new_pnt,
@@ -16,9 +17,13 @@ use opencascade_sys::{
     gc::{
         GC_MakeArcOfCircle_new_circ_real2_bool, GC_MakeArcOfCircle_new_pnt_vec_pnt,
         GC_MakeArcOfCircle_new_pnt3, GC_MakeArcOfEllipse_new_elips_real2_bool,
+        GC_MakeArcOfHyperbola_new_hypr_real2_bool, GC_MakeArcOfParabola_new_parab_real2_bool,
     },
     geom::{Geom_Curve_Reversed, Handle_Geom_Curve_get},
-    gp::{gp_Circ, gp_Circ_new_ax2_real, gp_Elips, gp_Elips_Rotated, gp_Elips_new_ax2_real2},
+    gp::{
+        gp_Circ, gp_Circ_new_ax2_real, gp_Elips, gp_Elips_Rotated, gp_Elips_new_ax2_real2,
+        gp_Hypr_Rotated, gp_Hypr_new_ax2_real2, gp_Lin_new_ax1, gp_Parab_new_ax2_real,
+    },
     topo_ds::TopoDS_Shape,
 };
 
@@ -45,6 +50,21 @@ fn make_vertex<'cx>(cx: &mut Cx<'cx>, point: Vec<f64>) -> ShapeResult {
 fn make_line_edge<'cx>(cx: &mut Cx<'cx>, start: Vec<f64>, end: Vec<f64>) -> ShapeResult {
     attempt(|| {
         let mut maker = BRepBuilderAPI_MakeEdge_new_pnt2(&*pnt(&start)?, &*pnt(&end)?)?;
+        boxed(build(
+            BRepBuilderAPI_MakeEdge_as_BRepBuilderAPI_MakeShape_mut(maker.pin_mut()),
+            "BRepBuilderAPI_MakeEdge",
+        )?)
+    })
+    .or_raise(cx)
+}
+
+/// The unbounded line along `axis` as an edge, which the 2D constraint solvers accept as a
+/// tangency target (build123d `Edge(Axis)`).
+#[neon::export(name = "makeAxisEdge")]
+fn make_axis_edge<'cx>(cx: &mut Cx<'cx>, axis: Vec<f64>) -> ShapeResult {
+    attempt(|| {
+        let line = gp_Lin_new_ax1(&*ax1(&axis)?)?;
+        let mut maker = BRepBuilderAPI_MakeEdge_new_lin(&line)?;
         boxed(build(
             BRepBuilderAPI_MakeEdge_as_BRepBuilderAPI_MakeShape_mut(maker.pin_mut()),
             "BRepBuilderAPI_MakeEdge",
@@ -142,6 +162,78 @@ fn make_ellipse_edge<'cx>(
             GC_MakeArcOfEllipse_new_elips_real2_bool(&ellipse, alpha1, alpha2, counter_clockwise)?;
         if !maker.IsDone()? {
             return Err(OcctError::failed("GC_MakeArcOfEllipse failed"));
+        }
+        boxed(edge_from_trimmed(maker.Value()?)?)
+    })
+    .or_raise(cx)
+}
+
+/// Parabola arc with its vertex at `frame`'s origin, opening along the frame's X axis
+/// (build123d `Edge.make_parabola`).
+#[neon::export(name = "makeParabolaEdge")]
+fn make_parabola_edge<'cx>(
+    cx: &mut Cx<'cx>,
+    frame: Vec<f64>,
+    focal_length: f64,
+    start_angle: f64,
+    end_angle: f64,
+    counter_clockwise: bool,
+) -> ShapeResult {
+    attempt(|| {
+        positive(focal_length, "parabola focal length")?;
+        let parabola = gp_Parab_new_ax2_real(&*ax2(&frame)?, focal_length)?;
+        let maker = GC_MakeArcOfParabola_new_parab_real2_bool(
+            &parabola,
+            start_angle,
+            end_angle,
+            counter_clockwise,
+        )?;
+        if !maker.IsDone()? {
+            return Err(OcctError::failed("GC_MakeArcOfParabola failed"));
+        }
+        boxed(edge_from_trimmed(maker.Value()?)?)
+    })
+    .or_raise(cx)
+}
+
+/// Hyperbola branch centred on `frame`'s origin. As with ellipses OCCT wants the major radius
+/// first, so a taller-than-wide hyperbola is built swapped and rotated a quarter turn, with the
+/// arc angles corrected to match (build123d `Edge.make_hyperbola`).
+#[neon::export(name = "makeHyperbolaEdge")]
+fn make_hyperbola_edge<'cx>(
+    cx: &mut Cx<'cx>,
+    frame: Vec<f64>,
+    x_radius: f64,
+    y_radius: f64,
+    start_angle: f64,
+    end_angle: f64,
+    counter_clockwise: bool,
+) -> ShapeResult {
+    attempt(|| {
+        positive(x_radius, "hyperbola x radius")?;
+        positive(y_radius, "hyperbola y radius")?;
+        let axis = ax1(frame.get(..6).unwrap_or(&frame))?;
+        let (hyperbola, correction) = if y_radius > x_radius {
+            let swapped = gp_Hypr_new_ax2_real2(&*ax2(&frame)?, y_radius, x_radius)?;
+            (gp_Hypr_Rotated(&swapped, &axis, FRAC_PI_2)?, FRAC_PI_2)
+        } else {
+            (gp_Hypr_new_ax2_real2(&*ax2(&frame)?, x_radius, y_radius)?, 0.0)
+        };
+        if start_angle == end_angle {
+            let mut maker = BRepBuilderAPI_MakeEdge_new_hypr(&hyperbola)?;
+            return boxed(build(
+                BRepBuilderAPI_MakeEdge_as_BRepBuilderAPI_MakeShape_mut(maker.pin_mut()),
+                "BRepBuilderAPI_MakeEdge",
+            )?);
+        }
+        let maker = GC_MakeArcOfHyperbola_new_hypr_real2_bool(
+            &hyperbola,
+            start_angle - correction,
+            end_angle - correction,
+            counter_clockwise,
+        )?;
+        if !maker.IsDone()? {
+            return Err(OcctError::failed("GC_MakeArcOfHyperbola failed"));
         }
         boxed(edge_from_trimmed(maker.Value()?)?)
     })

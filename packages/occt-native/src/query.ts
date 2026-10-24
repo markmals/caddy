@@ -54,6 +54,10 @@ export interface Conic {
     readonly center: Vec3;
     /** Circle radius, or the ellipse's major radius. */
     readonly radius: number;
+    /** Circle radius, or the ellipse's minor radius. */
+    readonly minorRadius: number;
+    /** Direction of the curve's own axis, normal to its plane. */
+    readonly axis: Vec3;
 }
 
 export interface UVBounds {
@@ -72,6 +76,21 @@ export interface Closest {
 export interface Classification {
     readonly state: PointState;
     readonly onFace: boolean;
+}
+
+/** Principal curvatures of a surface at a parameter pair, against the surface's own normal. */
+export interface SurfaceCurvature {
+    /** Smallest principal curvature (negative where the surface bends away from `normal`). */
+    readonly min: number;
+    readonly max: number;
+    /** Unit normal `D1U × D1V` at the sampled point. */
+    readonly normal: Vec3;
+}
+
+/** A pair of closest points, one on each shape (one BRepExtrema_DistShapeShape solution). */
+export interface ExtremaSolution {
+    readonly onFirst: Vec3;
+    readonly onSecond: Vec3;
 }
 
 interface QueryAddon {
@@ -106,6 +125,14 @@ interface QueryAddon {
     classifyPoint(shape: Shape, point: Float64Array, tolerance: number): Float64Array;
     fixShape(shape: Shape): Shape;
     facesIntersectedByAxis(shape: Shape, axis: Float64Array, tolerance: number): Shape[];
+    surfaceCurvature(face: Shape, u: number, v: number): Float64Array;
+    extremaSolutions(first: Shape, second: Shape, deflection: number): Float64Array;
+    pcurveRange(edge: Shape, face: Shape): Float64Array;
+    pcurveDerivative(edge: Shape, face: Shape, parameter: number): Float64Array;
+    vertexParametersOnFace(vertex: Shape, face: Shape): Float64Array;
+    classifyUV(face: Shape, u: number, v: number, tolerance: number): number;
+    edgeIsReversedInFace(face: Shape, edge: Shape): boolean;
+    isSeamEdge(edge: Shape, face: Shape): boolean;
 }
 
 function native(): QueryAddon {
@@ -163,7 +190,7 @@ export function curveLengthBetween(shape: Shape, first: number, last: number): n
     return native().curveLengthBetween(shape, first, last);
 }
 
-/** Centre and radius of a circular or elliptical curve, otherwise `undefined`. */
+/** Centre, radii and axis of a circular or elliptical curve, otherwise `undefined`. */
 export function curveConic(shape: Shape): Conic | undefined {
     let values = native().curveConic(shape);
     if (values.length === 0) return undefined;
@@ -171,6 +198,8 @@ export function curveConic(shape: Shape): Conic | undefined {
         kind: values[0] === 1 ? "circle" : "ellipse",
         center: vec3(values, 1),
         radius: values[4] ?? Number.NaN,
+        minorRadius: values[5] ?? Number.NaN,
+        axis: vec3(values, 6),
     };
 }
 
@@ -287,4 +316,83 @@ export function fixShape(shape: Shape): Shape {
 /** Faces pierced by an infinite axis, nearest hits first. */
 export function facesIntersectedByAxis(shape: Shape, axis: Axis, tolerance = 1e-4): Shape[] {
     return native().facesIntersectedByAxis(shape, axisArray(axis), tolerance);
+}
+
+/**
+ * Principal curvatures of the face's surface at `(u, v)`, or `undefined` where the surface is
+ * degenerate there.
+ */
+export function surfaceCurvature(face: Shape, u: number, v: number): SurfaceCurvature | undefined {
+    let values = native().surfaceCurvature(face, u, v);
+    if (values[0] !== 1) {
+        return undefined;
+    }
+    return {
+        min: values[1] as number,
+        max: values[2] as number,
+        normal: vec3(values.subarray(3, 6)),
+    };
+}
+
+/**
+ * Every closest-point solution between two shapes. `deflection` is the precision the extrema
+ * algorithm keeps solutions apart with.
+ */
+export function extremaSolutions(
+    first: Shape,
+    second: Shape,
+    deflection: number,
+): ExtremaSolution[] {
+    let values = native().extremaSolutions(first, second, deflection);
+    let solutions: ExtremaSolution[] = [];
+    for (let offset = 0; offset < values.length; offset += 6) {
+        solutions.push({
+            onFirst: vec3(values.subarray(offset, offset + 3)),
+            onSecond: vec3(values.subarray(offset + 3, offset + 6)),
+        });
+    }
+    return solutions;
+}
+
+/** Parameter range of the edge's 2D curve in the face's parameter space. */
+export function pcurveRange(edge: Shape, face: Shape): readonly [first: number, last: number] {
+    let [first, last] = native().pcurveRange(edge, face);
+    return [first as number, last as number];
+}
+
+/** Point and tangent of the edge's 2D curve on the face, in the face's parameter space. */
+export function pcurveDerivative(
+    edge: Shape,
+    face: Shape,
+    parameter: number,
+): {
+    readonly point: readonly [u: number, v: number];
+    readonly tangent: readonly [number, number];
+} {
+    let [u, v, du, dv] = native().pcurveDerivative(edge, face, parameter);
+    return { point: [u as number, v as number], tangent: [du as number, dv as number] };
+}
+
+/** The vertex's parameters on the face (BRep_Tool::Parameters). */
+export function vertexParametersOnFace(
+    vertex: Shape,
+    face: Shape,
+): readonly [u: number, v: number] {
+    let [u, v] = native().vertexParametersOnFace(vertex, face);
+    return [u as number, v as number];
+}
+
+/** Where a parameter-space point lies relative to the face's boundary (IntTools_FClass2d). */
+export function classifyUV(face: Shape, u: number, v: number, tolerance: number): PointState {
+    return native().classifyUV(face, u, v, tolerance) as PointState;
+}
+
+/** Whether the face's boundary runs along `edge` against the edge's own direction. */
+export function edgeIsReversedInFace(face: Shape, edge: Shape): boolean {
+    return native().edgeIsReversedInFace(face, edge);
+}
+
+/** Whether the face meets itself along `edge`, as a cylinder does at its seam. */
+export function isSeamEdge(edge: Shape, face: Shape): boolean {
+    return native().isSeamEdge(edge, face);
 }

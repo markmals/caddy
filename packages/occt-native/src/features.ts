@@ -3,6 +3,17 @@ import type { Axis, Frame, Shape, Vec3 } from "./types.ts";
 import { addon } from "./addon.ts";
 import { axisArray, frameArray } from "./types.ts";
 
+/**
+ * Result of a draft: `shape` is the drafted solid, or null when OCCT refused. `failedFace` then
+ * indexes the offending face (-1 when the build itself failed) and `problematic` is the
+ * sub-shape OCCT blamed, when it named one.
+ */
+export interface DraftOutcome {
+    readonly shape: Shape | null;
+    readonly problematic: Shape | null;
+    readonly failedFace: number;
+}
+
 interface FeatureAddon {
     featureExtrude(profile: Shape, direction: Float64Array): Shape;
     featureExtrudeTaper(profile: Shape, height: number, angle: number): Shape;
@@ -34,8 +45,42 @@ interface FeatureAddon {
         tolerance: number,
     ): Shape;
     featureThicken(surface: Shape, amount: number): Shape;
-    featureDraft(solid: Shape, faces: readonly Shape[], frame: Float64Array, angle: number): Shape;
+    featureDraft(
+        solid: Shape,
+        faces: readonly Shape[],
+        frame: Float64Array,
+        angle: number,
+    ): DraftOutcome;
     featureProject(profile: Shape, target: Shape, direction: Float64Array): Shape;
+    featureHollow(
+        shape: Shape,
+        thickness: number,
+        faces: readonly Shape[],
+        kind: number,
+        tolerance: number,
+    ): Shape;
+    featureDPrism(
+        base: Shape,
+        profile: Shape,
+        basis: Shape | null,
+        upTo: Shape | null,
+        taper: number,
+        additive: boolean,
+        depth: number,
+        thruAll: boolean,
+    ): Shape;
+    featureSewSolid(faces: readonly Shape[], tolerance: number): Shape;
+    featureSew(faces: readonly Shape[], tolerance: number): Shape;
+    featureSplitByPerimeter(
+        shape: Shape,
+        edges: readonly Shape[],
+    ): { left: Shape[]; right: Shape[] };
+    featureProjectFrom(profile: Shape, target: Shape, center: Float64Array): Shape;
+    projectionAxisHits(
+        shape: Shape,
+        axis: Float64Array,
+        tolerance: number,
+    ): { points: number[]; faces: Shape[] };
 }
 
 function native(): FeatureAddon {
@@ -114,10 +159,72 @@ export function draft(
     faces: readonly Shape[],
     neutralPlane: Frame,
     angleRadians: number,
-): Shape {
+): DraftOutcome {
     return native().featureDraft(solid, faces, frameArray(neutralPlane), angleRadians);
 }
 
 export function project(profile: Shape, target: Shape, direction: Vec3): Shape {
     return native().featureProject(profile, target, Float64Array.from(direction));
+}
+
+export function projectFrom(profile: Shape, target: Shape, center: Vec3): Shape {
+    return native().featureProjectFrom(profile, target, Float64Array.from(center));
+}
+
+export function hollow(
+    shape: Shape,
+    thickness: number,
+    faces: readonly Shape[] = [],
+    kind: 0 | 1 = 0,
+    tolerance = 1e-4,
+): Shape {
+    return native().featureHollow(shape, thickness, faces, kind, tolerance);
+}
+
+export function dprism(
+    base: Shape,
+    profile: Shape,
+    options: {
+        basis?: Shape;
+        upTo?: Shape;
+        taperRadians?: number;
+        additive?: boolean;
+        depth?: number;
+        thruAll?: boolean;
+    } = {},
+): Shape {
+    return native().featureDPrism(
+        base,
+        profile,
+        options.basis ?? null,
+        options.upTo ?? null,
+        options.taperRadians ?? 0,
+        options.additive ?? true,
+        options.depth ?? 0,
+        options.thruAll ?? true,
+    );
+}
+
+export function sewSolid(faces: readonly Shape[], tolerance = 1e-6): Shape {
+    return native().featureSewSolid(faces, tolerance);
+}
+
+export function sew(faces: readonly Shape[], tolerance = 1e-6): Shape {
+    return native().featureSew(faces, tolerance);
+}
+
+export function splitByPerimeter(
+    shape: Shape,
+    edges: readonly Shape[],
+): { left: Shape[]; right: Shape[] } {
+    return native().featureSplitByPerimeter(shape, edges);
+}
+
+/** Hits of an infinite axis on a shape's surfaces, ordered along the axis direction. */
+export function axisHits(
+    shape: Shape,
+    axis: Axis,
+    tolerance = 1e-4,
+): { points: number[]; faces: Shape[] } {
+    return native().projectionAxisHits(shape, axisArray(axis), tolerance);
 }
