@@ -1,6 +1,7 @@
 // Construction of vertices, edges, wires and faces, and the 2D operations that reshape planar
 // faces. Angles are in radians.
 
+import type { Recorded } from "./history.ts";
 import type { Frame, Shape, Vec3 } from "./types.ts";
 
 import { addon } from "./addon.ts";
@@ -158,19 +159,20 @@ interface ConstructAddon {
     makeWire(edges: readonly Shape[]): Shape;
     connectEdgesToWires(edges: readonly Shape[], tolerance: number): Shape[];
     makeFace(outer: Shape, inner: readonly Shape[]): Shape;
+    makeRectFace(frame: Float64Array, width: number, height: number): Shape;
     makeSurfaceFace(
         edges: readonly Shape[],
         surfacePoints: Float64Array,
         interiorWires: readonly Shape[],
     ): Shape;
-    filletFace2d(face: Shape, vertices: readonly Shape[], radius: number): Shape;
+    filletFace2d(face: Shape, vertices: readonly Shape[], radius: number): Recorded;
     chamferFace2d(
         face: Shape,
         firstEdges: readonly Shape[],
         secondEdges: readonly Shape[],
         distance: number,
         distance2: number,
-    ): Shape;
+    ): Recorded;
     offsetWire2d(wire: Shape, distance: number, kind: JoinType, openResult: boolean): Shape;
     stitchWires(first: Shape, second: Shape): Shape;
     fixWireframe(shape: Shape, precision: number, maxTolerance: number): Shape;
@@ -466,6 +468,11 @@ export function makeFace(outer: Shape, inner: readonly Shape[] = []): Shape {
     return native().makeFace(outer, inner);
 }
 
+/** Rectangular patch of `plane`, centred on its origin: `width` along X, `height` along Y. */
+export function makeRectFace(plane: Frame, width: number, height: number): Shape {
+    return native().makeRectFace(frameArray(plane), width, height);
+}
+
 /** Possibly non-planar face filling `edges`, pulled towards `surfacePoints`. */
 export function makeSurfaceFace(
     edges: readonly Shape[],
@@ -475,14 +482,15 @@ export function makeSurfaceFace(
     return native().makeSurfaceFace(edges, coordinates(surfacePoints), interiorWires);
 }
 
-/** Rounds the listed corners of a planar face. */
-export function filletFace2d(face: Shape, vertices: readonly Shape[], radius: number): Shape {
+/** Rounds the listed corners of a planar face, with the record of what it did to its sub-shapes. */
+export function filletFace2d(face: Shape, vertices: readonly Shape[], radius: number): Recorded {
     return native().filletFace2d(face, vertices, radius);
 }
 
 /**
  * Cuts the corners of a planar face between paired edges: `distance` back along each edge of
- * `firstEdges` and `distance2` along the matching edge of `secondEdges`.
+ * `firstEdges` and `distance2` along the matching edge of `secondEdges`. Comes with the record of
+ * what the cut did to the face's sub-shapes.
  */
 export function chamferFace2d(
     face: Shape,
@@ -490,7 +498,7 @@ export function chamferFace2d(
     secondEdges: readonly Shape[],
     distance: number,
     distance2: number,
-): Shape {
+): Recorded {
     return native().chamferFace2d(face, firstEdges, secondEdges, distance, distance2);
 }
 

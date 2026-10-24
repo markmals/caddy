@@ -1,11 +1,15 @@
 // Boolean operations (OCCT BRepAlgoAPI). Results are OCCT's raw output, usually a compound.
 
+import type { Recorded } from "./history.ts";
 import type { Shape } from "./types.ts";
 
 import { addon } from "./addon.ts";
 
 /** How shared sub-shapes are glued: off, shift (touching shapes) or full (coincident faces). */
 export type GlueMode = "off" | "shift" | "full";
+
+/** The boolean algorithms, by the name `withHistory` and the operations below pass on. */
+export type BooleanKind = "fuse" | "cut" | "common" | "section";
 
 export interface BooleanOptions {
     /** Additional tolerance used to merge nearly coincident geometry (OCCT fuzzy value). */
@@ -15,19 +19,15 @@ export interface BooleanOptions {
     readonly parallel?: boolean;
 }
 
-type BooleanFunction = (
-    args: readonly Shape[],
-    tools: readonly Shape[],
-    fuzzy: number,
-    glue: GlueMode,
-    parallel: boolean,
-) => Shape;
-
 interface BooleanAddon {
-    booleanFuse: BooleanFunction;
-    booleanCut: BooleanFunction;
-    booleanCommon: BooleanFunction;
-    booleanSection: BooleanFunction;
+    booleanOperation(
+        kind: BooleanKind,
+        args: readonly Shape[],
+        tools: readonly Shape[],
+        fuzzy: number,
+        glue: GlueMode,
+        parallel: boolean,
+    ): Recorded;
     booleanSplit(
         args: readonly Shape[],
         tools: readonly Shape[],
@@ -40,20 +40,25 @@ interface BooleanAddon {
         unifyFaces: boolean,
         concatBSplines: boolean,
         allowInternalEdges: boolean,
-    ): Shape;
+    ): Recorded;
 }
 
 function native(): BooleanAddon {
     return addon<BooleanAddon>();
 }
 
-function run(
-    operation: BooleanFunction,
+/**
+ * One boolean operation, with the record of what it did to its inputs' sub-shapes; the
+ * operations below are this one with the record dropped.
+ */
+export function withHistory(
+    kind: BooleanKind,
     args: readonly Shape[],
     tools: readonly Shape[],
-    options: BooleanOptions,
-): Shape {
-    return operation(
+    options: BooleanOptions = {},
+): Recorded {
+    return native().booleanOperation(
+        kind,
         args,
         tools,
         options.fuzzyValue ?? 0,
@@ -67,7 +72,7 @@ export function fuse(
     tools: readonly Shape[],
     options: BooleanOptions = {},
 ): Shape {
-    return run(native().booleanFuse, args, tools, options);
+    return withHistory("fuse", args, tools, options).shape;
 }
 
 export function cut(
@@ -75,7 +80,7 @@ export function cut(
     tools: readonly Shape[],
     options: BooleanOptions = {},
 ): Shape {
-    return run(native().booleanCut, args, tools, options);
+    return withHistory("cut", args, tools, options).shape;
 }
 
 export function common(
@@ -83,7 +88,7 @@ export function common(
     tools: readonly Shape[],
     options: BooleanOptions = {},
 ): Shape {
-    return run(native().booleanCommon, args, tools, options);
+    return withHistory("common", args, tools, options).shape;
 }
 
 /** Intersection curves/points of `args` with `tools` (BRepAlgoAPI_Section). */
@@ -92,7 +97,7 @@ export function section(
     tools: readonly Shape[],
     options: BooleanOptions = {},
 ): Shape {
-    return run(native().booleanSection, args, tools, options);
+    return withHistory("section", args, tools, options).shape;
 }
 
 /** Splits `args` by `tools`, keeping every piece (BRepAlgoAPI_Splitter). */
@@ -111,8 +116,11 @@ export interface UnifyOptions {
     readonly allowInternalEdges?: boolean;
 }
 
-/** Merges faces and edges lying on the same geometry (ShapeUpgrade_UnifySameDomain). */
-export function unifySameDomain(shape: Shape, options: UnifyOptions = {}): Shape {
+/**
+ * Merges faces and edges lying on the same geometry (ShapeUpgrade_UnifySameDomain), with the
+ * record of what the merge did to them.
+ */
+export function unifyWithHistory(shape: Shape, options: UnifyOptions = {}): Recorded {
     return native().unifySameDomain(
         shape,
         options.unifyEdges ?? true,
@@ -120,4 +128,9 @@ export function unifySameDomain(shape: Shape, options: UnifyOptions = {}): Shape
         options.concatBSplines ?? true,
         options.allowInternalEdges ?? false,
     );
+}
+
+/** Merges faces and edges lying on the same geometry (ShapeUpgrade_UnifySameDomain). */
+export function unifySameDomain(shape: Shape, options: UnifyOptions = {}): Shape {
+    return unifyWithHistory(shape, options).shape;
 }

@@ -20,6 +20,30 @@ export interface Triangles {
     readonly indices: Uint32Array;
 }
 
+/**
+ * A {@link Triangles} soup that also carries the raw surface parameters of every node, plus the
+ * per-face slices callers need to normalise those parameters and pack them into a UV atlas.
+ *
+ * Each `face*` array holds one entry per face, in the order the faces contributed to the mesh:
+ * `faceUvOrigins` and `faceUvRanges` are the UV window the face's nodes span (a degenerate
+ * extent reported as 1), `faceArcSizes` the arc lengths of its mid isoparametric curves, and
+ * `faceFlags` a bit set of {@link FACE_REVERSED} and {@link FACE_HAS_UVS}.
+ */
+export interface UvTriangles extends Triangles {
+    readonly uvs: Float64Array;
+    readonly faceVertexCounts: Uint32Array;
+    readonly faceTriangleCounts: Uint32Array;
+    readonly faceUvOrigins: Float64Array;
+    readonly faceUvRanges: Float64Array;
+    readonly faceArcSizes: Float64Array;
+    readonly faceFlags: Uint8Array;
+}
+
+/** The face is `TopAbs_REVERSED`, so its winding and normals were flipped. */
+export const FACE_REVERSED = 1;
+/** The face's triangulation carries UV nodes; without them `uvs` is zero for every node. */
+export const FACE_HAS_UVS = 2;
+
 export const DEFAULT_MESH_OPTIONS: MeshOptions = { tolerance: 1e-3, angularTolerance: 0.1 };
 
 interface MeshAddon {
@@ -32,6 +56,12 @@ interface MeshAddon {
     stlRead(bytes: Uint8Array): Promise<Shape>;
     shapeTessellate(shape: Shape, tolerance: number, angularTolerance: number): Promise<Triangles>;
     shapeMesh(shape: Shape, tolerance: number, angularTolerance: number): Promise<Shape>;
+    shapeTessellateUvs(
+        shape: Shape,
+        tolerance: number,
+        angularTolerance: number,
+        surfaceNormals: boolean,
+    ): Promise<UvTriangles>;
 }
 
 function native(): MeshAddon {
@@ -72,4 +102,24 @@ export function triangulate(
     options: MeshOptions = DEFAULT_MESH_OPTIONS,
 ): Promise<Shape> {
     return native().shapeMesh(shape, options.tolerance, options.angularTolerance);
+}
+
+/**
+ * {@link tessellate}, plus each node's parameters on the surface it came from — the raw input
+ * to build123d's `Shape.tessellate_with_uvs`.
+ *
+ * `surfaceNormals` reports the normal the surface has at each node instead of the
+ * triangulation's own, which is what OCCT's glTF writer stores.
+ */
+export function tessellateWithUvs(
+    shape: Shape,
+    options: MeshOptions = DEFAULT_MESH_OPTIONS,
+    surfaceNormals = false,
+): Promise<UvTriangles> {
+    return native().shapeTessellateUvs(
+        shape,
+        options.tolerance,
+        options.angularTolerance,
+        surfaceNormals,
+    );
 }

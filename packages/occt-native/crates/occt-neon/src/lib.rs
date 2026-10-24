@@ -11,6 +11,8 @@ mod exchange;
 mod export2d;
 mod features;
 mod fillets;
+mod gordon;
+mod history;
 mod hlr;
 mod io;
 mod kernel;
@@ -25,7 +27,9 @@ mod query;
 mod shape;
 mod step;
 mod surfaces;
+mod text;
 mod topology;
+mod wrap;
 mod xde;
 
 use neon::prelude::*;

@@ -1,6 +1,7 @@
 //! Boolean operations (BRepAlgoAPI) and result cleanup (ShapeUpgrade_UnifySameDomain).
 //!
-//! These return OCCT's raw result shape; callers decide how to unwrap compounds.
+//! These return OCCT's raw result shape, with the record of what the operation did to its
+//! inputs' sub-shapes; callers decide how to unwrap compounds and whether to keep the record.
 
 use std::pin::Pin;
 
@@ -9,8 +10,8 @@ use neon::prelude::*;
 use opencascade_sys::{
     b_rep_algo_api::{
         BRepAlgoAPI_BooleanOperation, BRepAlgoAPI_BooleanOperation_DumpErrors,
-        BRepAlgoAPI_BooleanOperation_HasErrors, BRepAlgoAPI_BooleanOperation_SetFuzzyValue,
-        BRepAlgoAPI_BooleanOperation_SetRunParallel,
+        BRepAlgoAPI_BooleanOperation_HasErrors, BRepAlgoAPI_BooleanOperation_History,
+        BRepAlgoAPI_BooleanOperation_SetFuzzyValue, BRepAlgoAPI_BooleanOperation_SetRunParallel,
         BRepAlgoAPI_Common_as_BRepAlgoAPI_BooleanOperation_mut, BRepAlgoAPI_Common_new,
         BRepAlgoAPI_Cut_as_BRepAlgoAPI_BooleanOperation_mut, BRepAlgoAPI_Cut_new,
         BRepAlgoAPI_Fuse_as_BRepAlgoAPI_BooleanOperation_mut, BRepAlgoAPI_Fuse_new,
@@ -19,6 +20,7 @@ use opencascade_sys::{
         BRepAlgoAPI_Splitter_SetFuzzyValue, BRepAlgoAPI_Splitter_SetRunParallel,
         BRepAlgoAPI_Splitter_new,
     },
+    b_rep_tools::{Handle_BRepTools_History, Handle_BRepTools_History_clone},
     bop_algo::BOPAlgo_GlueEnum,
     occt_stream::{OcctStream, OcctStream_new, OcctStream_to_bytes},
     shape_upgrade::{
@@ -31,6 +33,7 @@ use crate::{
     builder::progress,
     error::attempt,
     error::{OcctError, OcctResult, OrThrow},
+    history::recorded,
     shape::{ShapeCell, ShapeResult, boxed, get, owned, shape_list, shapes_from_js},
 };
 
@@ -90,63 +93,72 @@ fn run_boolean(
     Ok(owned(operation.as_mut().Shape()?))
 }
 
-macro_rules! boolean_export {
-    ($export:literal, $fn_name:ident, $new:ident, $upcast:ident, $algorithm:literal) => {
-        #[neon::export(name = $export)]
-        fn $fn_name<'cx>(
-            cx: &mut Cx<'cx>,
-            arguments: Handle<'cx, JsArray>,
-            tools: Handle<'cx, JsArray>,
-            fuzzy: f64,
-            glue: String,
-            parallel: bool,
-        ) -> ShapeResult {
-            let arguments = shapes_from_js(cx, arguments)?;
-            let tools = shapes_from_js(cx, tools)?;
-            let result = attempt(|| {
-                let options = options(fuzzy, &glue, parallel)?;
-                let mut algorithm = $new()?;
-                boxed(run_boolean(
-                    $upcast(algorithm.pin_mut()),
-                    $algorithm,
-                    &arguments,
-                    &tools,
-                    &options,
-                )?)
-            });
-            result.or_raise(cx)
+/// Runs one of the boolean algorithms and takes the record it built along with its result.
+fn run_kind(
+    kind: &str,
+    arguments: &[UniquePtr<TopoDS_Shape>],
+    tools: &[UniquePtr<TopoDS_Shape>],
+    options: &BooleanOptions,
+) -> OcctResult<(UniquePtr<TopoDS_Shape>, UniquePtr<Handle_BRepTools_History>)> {
+    macro_rules! run {
+        ($new:ident, $upcast:ident, $algorithm:literal) => {{
+            let mut algorithm = $new()?;
+            let shape =
+                run_boolean($upcast(algorithm.pin_mut()), $algorithm, arguments, tools, options)?;
+            let history = BRepAlgoAPI_BooleanOperation_History(&*$upcast(algorithm.pin_mut()))?;
+            (shape, history)
+        }};
+    }
+    Ok(match kind {
+        "fuse" => run!(
+            BRepAlgoAPI_Fuse_new,
+            BRepAlgoAPI_Fuse_as_BRepAlgoAPI_BooleanOperation_mut,
+            "BRepAlgoAPI_Fuse"
+        ),
+        "cut" => run!(
+            BRepAlgoAPI_Cut_new,
+            BRepAlgoAPI_Cut_as_BRepAlgoAPI_BooleanOperation_mut,
+            "BRepAlgoAPI_Cut"
+        ),
+        "common" => run!(
+            BRepAlgoAPI_Common_new,
+            BRepAlgoAPI_Common_as_BRepAlgoAPI_BooleanOperation_mut,
+            "BRepAlgoAPI_Common"
+        ),
+        "section" => run!(
+            BRepAlgoAPI_Section_new,
+            BRepAlgoAPI_Section_as_BRepAlgoAPI_BooleanOperation_mut,
+            "BRepAlgoAPI_Section"
+        ),
+        other => {
+            return Err(OcctError::invalid(format!(
+                "unknown boolean operation `{other}` (fuse, cut, common, section)"
+            )));
         }
-    };
+    })
 }
 
-boolean_export!(
-    "booleanFuse",
-    boolean_fuse,
-    BRepAlgoAPI_Fuse_new,
-    BRepAlgoAPI_Fuse_as_BRepAlgoAPI_BooleanOperation_mut,
-    "BRepAlgoAPI_Fuse"
-);
-boolean_export!(
-    "booleanCut",
-    boolean_cut,
-    BRepAlgoAPI_Cut_new,
-    BRepAlgoAPI_Cut_as_BRepAlgoAPI_BooleanOperation_mut,
-    "BRepAlgoAPI_Cut"
-);
-boolean_export!(
-    "booleanCommon",
-    boolean_common,
-    BRepAlgoAPI_Common_new,
-    BRepAlgoAPI_Common_as_BRepAlgoAPI_BooleanOperation_mut,
-    "BRepAlgoAPI_Common"
-);
-boolean_export!(
-    "booleanSection",
-    boolean_section,
-    BRepAlgoAPI_Section_new,
-    BRepAlgoAPI_Section_as_BRepAlgoAPI_BooleanOperation_mut,
-    "BRepAlgoAPI_Section"
-);
+/// `{ shape, history }`: `arguments` combined with `tools` by `kind` (fuse, cut, common or
+/// section), and what the operation did to their sub-shapes.
+#[neon::export(name = "booleanOperation")]
+fn boolean_operation<'cx>(
+    cx: &mut Cx<'cx>,
+    kind: String,
+    arguments: Handle<'cx, JsArray>,
+    tools: Handle<'cx, JsArray>,
+    fuzzy: f64,
+    glue: String,
+    parallel: bool,
+) -> JsResult<'cx, JsObject> {
+    let arguments = shapes_from_js(cx, arguments)?;
+    let tools = shapes_from_js(cx, tools)?;
+    let (shape, history) = attempt(|| {
+        let options = options(fuzzy, &glue, parallel)?;
+        run_kind(&kind, &arguments, &tools, &options)
+    })
+    .or_raise(cx)?;
+    recorded(cx, shape, history)
+}
 
 /// Splits `arguments` by `tools` (BRepAlgoAPI_Splitter), keeping every piece.
 #[neon::export(name = "booleanSplit")]
@@ -177,8 +189,8 @@ fn boolean_split<'cx>(
     result.or_raise(cx)
 }
 
-/// Merges coplanar faces / collinear edges (ShapeUpgrade_UnifySameDomain), as build123d's
-/// `clean()` does after every boolean.
+/// `{ shape, history }`: coplanar faces and collinear edges merged (ShapeUpgrade_UnifySameDomain),
+/// as build123d's `clean()` does after every boolean, and what the merge did to the sub-shapes.
 #[neon::export(name = "unifySameDomain")]
 fn unify_same_domain<'cx>(
     cx: &mut Cx<'cx>,
@@ -187,9 +199,9 @@ fn unify_same_domain<'cx>(
     unify_faces: bool,
     concat_bsplines: bool,
     allow_internal_edges: bool,
-) -> ShapeResult {
+) -> JsResult<'cx, JsObject> {
     let shape = get(shape).or_raise(cx)?;
-    let result = attempt(|| {
+    let (unified, history) = attempt(|| {
         let mut handle = ShapeUpgrade_UnifySameDomain_new_shape_bool3(
             &shape,
             unify_edges,
@@ -199,7 +211,10 @@ fn unify_same_domain<'cx>(
         let mut upgrader = Handle_ShapeUpgrade_UnifySameDomain_get_mut(handle.pin_mut())?;
         upgrader.as_mut().AllowInternalEdges(allow_internal_edges)?;
         upgrader.as_mut().Build()?;
-        boxed(owned(upgrader.as_ref().get_ref().Shape()?))
-    });
-    result.or_raise(cx)
+        let unified = owned(upgrader.as_ref().get_ref().Shape()?);
+        let history = Handle_BRepTools_History_clone(upgrader.as_ref().get_ref().History()?);
+        Ok((unified, history))
+    })
+    .or_raise(cx)?;
+    recorded(cx, unified, history)
 }

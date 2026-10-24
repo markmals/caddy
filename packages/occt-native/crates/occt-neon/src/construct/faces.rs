@@ -1,4 +1,5 @@
-//! Faces from wires: planar faces with holes and non-planar filled surfaces.
+//! Faces from wires and from planes: planar faces with holes, bounded plane patches and
+//! non-planar filled surfaces.
 
 use cxx::UniquePtr;
 use neon::prelude::*;
@@ -6,7 +7,7 @@ use opencascade_sys::{
     b_rep::BRep_Tool,
     b_rep_builder_api::{
         BRepBuilderAPI_MakeFace_as_BRepBuilderAPI_MakeShape_mut, BRepBuilderAPI_MakeFace_new_face,
-        BRepBuilderAPI_MakeFace_new_wire_bool,
+        BRepBuilderAPI_MakeFace_new_pln_real4, BRepBuilderAPI_MakeFace_new_wire_bool,
     },
     b_rep_check::BRepCheck_Analyzer_new_shape_bool3,
     b_rep_lib::BRepLib_FindSurface_new_shape_real_bool2,
@@ -15,6 +16,7 @@ use opencascade_sys::{
         BRepOffsetAPI_MakeFilling_new_int3_bool_real4_int2,
     },
     geom_abs::GeomAbs_Shape,
+    gp::gp_Pln_new_ax3,
     shape_fix::{
         Handle_ShapeFix_Face_get, Handle_ShapeFix_Face_get_mut, Handle_ShapeFix_Shape_get,
         Handle_ShapeFix_Shape_get_mut, ShapeFix_Face_Result, ShapeFix_Face_new_face,
@@ -26,6 +28,7 @@ use opencascade_sys::{
 use crate::{
     builder::progress,
     construct::{as_edge, as_face, as_wire, build, compound_of, points},
+    convert::ax3,
     error::{OcctError, OcctResult, OrThrow, attempt},
     shape::{ShapeCell, ShapeResult, boxed, get, owned, shapes_from_js},
 };
@@ -85,6 +88,28 @@ fn make_face<'cx>(cx: &mut Cx<'cx>, outer: &ShapeCell, inner: Handle<'cx, JsArra
         Handle_ShapeFix_Face_get_mut(orienter.pin_mut())?.FixOrientation()?;
         Handle_ShapeFix_Face_get_mut(orienter.pin_mut())?.Perform(&*progress()?)?;
         boxed(ShapeFix_Face_Result(Handle_ShapeFix_Face_get(&orienter)?)?)
+    })
+    .or_raise(cx)
+}
+
+/// Rectangular patch of the plane given as a frame `[origin, zDir, xDir]`, centred on its origin
+/// and spanning `width` along its X axis and `height` along its Y axis (build123d
+/// `Face.make_rect`). Built straight from the plane, so the face carries the plane's normal and
+/// its wire starts at the `(-width/2, height/2)` corner.
+#[neon::export(name = "makeRectFace")]
+fn make_rect_face<'cx>(cx: &mut Cx<'cx>, frame: Vec<f64>, width: f64, height: f64) -> ShapeResult {
+    attempt(|| {
+        let mut maker = BRepBuilderAPI_MakeFace_new_pln_real4(
+            &*gp_Pln_new_ax3(&*ax3(&frame)?)?,
+            -width * 0.5,
+            width * 0.5,
+            -height * 0.5,
+            height * 0.5,
+        )?;
+        boxed(build(
+            BRepBuilderAPI_MakeFace_as_BRepBuilderAPI_MakeShape_mut(maker.pin_mut()),
+            "BRepBuilderAPI_MakeFace",
+        )?)
     })
     .or_raise(cx)
 }

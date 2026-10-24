@@ -2,7 +2,7 @@ import { expect, test } from "vite-plus/test";
 
 import type { Shape } from "../src/index.ts";
 
-import { ShapeType, features, measure, primitives, topology } from "../src/index.ts";
+import { ShapeType, features, history, measure, primitives, topology } from "../src/index.ts";
 
 function faceAt(shape: Shape, axis: 0 | 1 | 2, position: number): Shape {
     let face = topology.subShapes(shape, ShapeType.Face).find(candidate => {
@@ -40,10 +40,17 @@ test("a fillet and a chamfer change a box without invalidating it", () => {
     let face = topology.ancestors(box, edge, ShapeType.Face)[0]!;
     let rounded = features.fillet(box, [edge], 0.5);
     let beveled = features.chamfer(box, [edge], 0.5, 0.5, [face]);
-    expect(measure.isValid(rounded)).toBe(true);
-    expect(measure.isValid(beveled)).toBe(true);
-    expect(measure.massProperties(rounded, "volume").mass).toBeLessThan(480);
-    expect(measure.massProperties(beveled, "volume").mass).toBeLessThan(480);
+    expect(measure.isValid(rounded.shape)).toBe(true);
+    expect(measure.isValid(beveled.shape)).toBe(true);
+    expect(measure.massProperties(rounded.shape, "volume").mass).toBeLessThan(480);
+    expect(measure.massProperties(beveled.shape, "volume").mass).toBeLessThan(480);
+    // The rounded edge is gone from the result, so the record says it was removed and the fillet
+    // face was made from it.
+    let roundedEdges = topology.subShapes(rounded.shape, ShapeType.Edge);
+    expect(
+        history.classify(rounded.history, [box], [], roundedEdges).filter(flag => flag !== 0)
+            .length,
+    ).toBeGreaterThan(0);
 });
 
 test("shelling a box with one opening creates a valid hollow solid", () => {

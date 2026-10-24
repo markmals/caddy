@@ -24,7 +24,8 @@ use crate::{
     builder::progress,
     construct::{as_edge, as_face, as_vertex, as_wire, build, positive},
     error::{OcctError, OcctResult, OrThrow, attempt},
-    shape::{ShapeCell, ShapeResult, boxed, get, shapes_from_js},
+    history::{add_modified, from_algorithm, recorded},
+    shape::{ShapeCell, ShapeResult, boxed, get, owned, shapes_from_js},
 };
 
 fn join_type(kind: &str) -> OcctResult<GeomAbs_JoinType> {
@@ -46,17 +47,19 @@ fn repaired(shape: UniquePtr<TopoDS_Shape>) -> OcctResult<UniquePtr<TopoDS_Shape
     Ok(ShapeFix_Shape_Shape(Handle_ShapeFix_Shape_get(&fixer)?)?)
 }
 
-/// Replaces each listed corner of a planar face with a tangent arc of `radius`.
+/// `{ shape, history }`: each listed corner of a planar face replaced with a tangent arc of
+/// `radius`, and what the algorithm did to the face's sub-shapes. The face itself is recorded as
+/// rebuilt into the result, which `BRepFilletAPI_MakeFillet2d` does without reporting it.
 #[neon::export(name = "filletFace2d")]
 fn fillet_face_2d<'cx>(
     cx: &mut Cx<'cx>,
     face: &ShapeCell,
     vertices: Handle<'cx, JsArray>,
     radius: f64,
-) -> ShapeResult {
+) -> JsResult<'cx, JsObject> {
     let vertices = shapes_from_js(cx, vertices)?;
     let face = get(face).or_raise(cx)?;
-    attempt(|| {
+    let (shape, history) = attempt(|| {
         positive(radius, "fillet radius")?;
         if vertices.is_empty() {
             return Err(OcctError::invalid("no vertices to fillet"));
@@ -65,17 +68,25 @@ fn fillet_face_2d<'cx>(
         for vertex in &vertices {
             BRepFilletAPI_MakeFillet2d_AddFillet(maker.pin_mut(), as_vertex(vertex)?, radius)?;
         }
-        let filleted = build(
+        let filleted = repaired(build(
             BRepFilletAPI_MakeFillet2d_as_BRepBuilderAPI_MakeShape_mut(maker.pin_mut()),
             "BRepFilletAPI_MakeFillet2d",
+        )?)?;
+        let mut history = from_algorithm(
+            BRepFilletAPI_MakeFillet2d_as_BRepBuilderAPI_MakeShape_mut(maker.pin_mut()),
+            &[owned(&face)],
+            &filleted,
         )?;
-        boxed(repaired(filleted)?)
+        add_modified(&mut history, &face, &filleted)?;
+        Ok((filleted, history))
     })
-    .or_raise(cx)
+    .or_raise(cx)?;
+    recorded(cx, shape, history)
 }
 
-/// Cuts each corner of a planar face between the paired edges, `distance` back along the edge in
-/// `firstEdges` and `distance2` along the matching edge in `secondEdges`.
+/// `{ shape, history }`: each corner of a planar face between the paired edges cut, `distance`
+/// back along the edge in `firstEdges` and `distance2` along the matching edge in `secondEdges`,
+/// and what the algorithm did to the face's sub-shapes.
 #[neon::export(name = "chamferFace2d")]
 fn chamfer_face_2d<'cx>(
     cx: &mut Cx<'cx>,
@@ -84,11 +95,11 @@ fn chamfer_face_2d<'cx>(
     second_edges: Handle<'cx, JsArray>,
     distance: f64,
     distance2: f64,
-) -> ShapeResult {
+) -> JsResult<'cx, JsObject> {
     let first_edges = shapes_from_js(cx, first_edges)?;
     let second_edges = shapes_from_js(cx, second_edges)?;
     let face = get(face).or_raise(cx)?;
-    attempt(|| {
+    let (shape, history) = attempt(|| {
         positive(distance, "chamfer distance")?;
         positive(distance2, "second chamfer distance")?;
         if first_edges.is_empty() || first_edges.len() != second_edges.len() {
@@ -104,13 +115,20 @@ fn chamfer_face_2d<'cx>(
                 distance2,
             )?;
         }
-        let chamfered = build(
+        let chamfered = repaired(build(
             BRepFilletAPI_MakeFillet2d_as_BRepBuilderAPI_MakeShape_mut(maker.pin_mut()),
             "BRepFilletAPI_MakeFillet2d",
+        )?)?;
+        let mut history = from_algorithm(
+            BRepFilletAPI_MakeFillet2d_as_BRepBuilderAPI_MakeShape_mut(maker.pin_mut()),
+            &[owned(&face)],
+            &chamfered,
         )?;
-        boxed(repaired(chamfered)?)
+        add_modified(&mut history, &face, &chamfered)?;
+        Ok((chamfered, history))
     })
-    .or_raise(cx)
+    .or_raise(cx)?;
+    recorded(cx, shape, history)
 }
 
 /// Offsets a planar wire by `distance` (BRepOffsetAPI_MakeOffset). The result is a wire, or a

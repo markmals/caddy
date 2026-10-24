@@ -1,3 +1,4 @@
+import type { Recorded } from "./history.ts";
 import type { Axis, Frame, Shape, Vec3 } from "./types.ts";
 
 import { addon } from "./addon.ts";
@@ -29,7 +30,7 @@ interface FeatureAddon {
         auxiliary: Shape | null,
         auxiliaryCurvilinear: boolean,
     ): Shape;
-    featureFillet(solid: Shape, edges: readonly Shape[], radius: number): Shape;
+    featureFillet(solid: Shape, edges: readonly Shape[], radius: number): Recorded;
     featureChamfer(
         solid: Shape,
         edges: readonly Shape[],
@@ -37,7 +38,7 @@ interface FeatureAddon {
         second: number,
         angle: boolean,
         references: readonly Shape[],
-    ): Shape;
+    ): Recorded;
     featureOffset(
         shape: Shape,
         amount: number,
@@ -129,10 +130,12 @@ export function sweep(
     );
 }
 
-export function fillet(solid: Shape, edges: readonly Shape[], radius: number): Shape {
+/** `solid` with `edges` rounded, and the record of what the fillet did to its sub-shapes. */
+export function fillet(solid: Shape, edges: readonly Shape[], radius: number): Recorded {
     return native().featureFillet(solid, edges, radius);
 }
 
+/** `solid` with `edges` cut back, and the record of what the chamfer did to its sub-shapes. */
 export function chamfer(
     solid: Shape,
     edges: readonly Shape[],
@@ -140,7 +143,7 @@ export function chamfer(
     second: number,
     references: readonly Shape[],
     angle = false,
-): Shape {
+): Recorded {
     return native().featureChamfer(solid, edges, distance, second, angle, references);
 }
 

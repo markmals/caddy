@@ -1,5 +1,5 @@
 //! Faces built on an explicit surface rather than on wires, and the analytic queries that read
-//! the surface a face sits on. Angles cross the boundary in radians.
+//! the surface a face sits on or the plane a line lies in. Angles cross the boundary in radians.
 
 use cxx::UniquePtr;
 use neon::prelude::*;
@@ -16,6 +16,7 @@ use opencascade_sys::{
         BRepBuilderAPI_MakeFace_new_hsurface_real,
     },
     b_rep_fill::{BRepFill_Face, BRepFill_Shell},
+    b_rep_lib::{BRepLib_FindSurface_Surface, BRepLib_FindSurface_new_shape_real_bool2},
     b_rep_offset_api::{
         BRepOffsetAPI_MakeFilling, BRepOffsetAPI_MakeFilling_as_BRepBuilderAPI_MakeShape_mut,
         BRepOffsetAPI_MakeFilling_new_int3_bool_real4_int2,
@@ -28,7 +29,8 @@ use opencascade_sys::{
         Geom_Plane_new_ax3, Geom_RectangularTrimmedSurface_BasisSurface,
         Handle_Geom_BSplineSurface_to_Geom_Surface, Handle_Geom_BezierSurface_to_Geom_Surface,
         Handle_Geom_OffsetSurface_from_Geom_Surface, Handle_Geom_OffsetSurface_get,
-        Handle_Geom_OffsetSurface_is_null, Handle_Geom_Plane_to_Geom_Surface,
+        Handle_Geom_OffsetSurface_is_null, Handle_Geom_Plane_from_Geom_Surface,
+        Handle_Geom_Plane_get, Handle_Geom_Plane_is_null, Handle_Geom_Plane_to_Geom_Surface,
         Handle_Geom_RectangularTrimmedSurface_from_Geom_Surface,
         Handle_Geom_RectangularTrimmedSurface_get, Handle_Geom_RectangularTrimmedSurface_is_null,
         Handle_Geom_Surface, Handle_Geom_Surface_clone, Handle_Geom_Surface_get,
@@ -387,6 +389,69 @@ fn face_semi_angle<'cx>(cx: &mut Cx<'cx>, face: &ShapeCell) -> NeonResult<Vec<f6
             return Ok(Vec::new());
         }
         Ok(vec![GeomAdaptor_Surface_Cone(adaptor)?.SemiAngle()?])
+    })
+    .or_raise(cx)
+}
+
+/// `[majorRadius, minorRadius]` for a toroidal surface, empty otherwise (build123d `Face.radii`).
+#[neon::export(name = "faceRadii")]
+fn face_radii<'cx>(cx: &mut Cx<'cx>, face: &ShapeCell) -> NeonResult<Vec<f64>> {
+    let face = get(face).or_raise(cx)?;
+    attempt(|| {
+        let surface = basis_surface(&face)?;
+        let adaptor = GeomAdaptor_Surface_new_hsurface(&surface)?;
+        let adaptor = Handle_GeomAdaptor_Surface_get(&adaptor)?;
+        if adaptor.GetType()?.repr != GeomAbs_SurfaceType::GeomAbs_Torus.repr {
+            return Ok(Vec::new());
+        }
+        let torus = GeomAdaptor_Surface_Torus(adaptor)?;
+        Ok(vec![torus.MajorRadius()?, torus.MinorRadius()?])
+    })
+    .or_raise(cx)
+}
+
+/// `[radius]` for an untrimmed cylindrical or spherical surface, empty otherwise (build123d
+/// `Face.radius`).
+#[neon::export(name = "faceRadius")]
+fn face_radius<'cx>(cx: &mut Cx<'cx>, face: &ShapeCell) -> NeonResult<Vec<f64>> {
+    let face = get(face).or_raise(cx)?;
+    attempt(|| {
+        let surface = BRep_Tool_Surface_face(as_face(&face)?)?;
+        let trimmed = Handle_Geom_RectangularTrimmedSurface_from_Geom_Surface(&surface);
+        if !Handle_Geom_RectangularTrimmedSurface_is_null(&trimmed) {
+            return Ok(Vec::new());
+        }
+        let adaptor = GeomAdaptor_Surface_new_hsurface(&surface)?;
+        let adaptor = Handle_GeomAdaptor_Surface_get(&adaptor)?;
+        let kind = adaptor.GetType()?.repr;
+        if kind == GeomAbs_SurfaceType::GeomAbs_Cylinder.repr {
+            return Ok(vec![GeomAdaptor_Surface_Cylinder(adaptor)?.Radius()?]);
+        }
+        if kind == GeomAbs_SurfaceType::GeomAbs_Sphere.repr {
+            return Ok(vec![GeomAdaptor_Surface_Sphere(adaptor)?.Radius()?]);
+        }
+        Ok(Vec::new())
+    })
+    .or_raise(cx)
+}
+
+/// `[nx, ny, nz]`: the normal of the plane `BRepLib_FindSurface` fits to `shape`, searching for a
+/// plane only, or empty when it finds none (build123d `Mixin1D.normal`).
+#[neon::export(name = "shapePlaneNormal")]
+fn shape_plane_normal<'cx>(cx: &mut Cx<'cx>, shape: &ShapeCell) -> NeonResult<Vec<f64>> {
+    let shape = get(shape).or_raise(cx)?;
+    attempt(|| {
+        let finder = BRepLib_FindSurface_new_shape_real_bool2(&shape, -1.0, true, false)?;
+        if !finder.Found()? {
+            return Ok(Vec::new());
+        }
+        let surface = BRepLib_FindSurface_Surface(&finder)?;
+        let plane = Handle_Geom_Plane_from_Geom_Surface(&surface);
+        if Handle_Geom_Plane_is_null(&plane) {
+            return Ok(Vec::new());
+        }
+        let axis = Handle_Geom_Plane_get(&plane)?.Axis()?;
+        Ok(dir_xyz(axis.Direction()?)?.to_vec())
     })
     .or_raise(cx)
 }

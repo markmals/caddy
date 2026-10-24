@@ -55,6 +55,9 @@ interface SurfacesAddon {
     removeFaceHoles(face: Shape, holeWires: readonly Shape[]): Shape;
     faceAxisOfRotation(face: Shape): Float64Array;
     faceSemiAngle(face: Shape): Float64Array;
+    faceRadii(face: Shape): Float64Array;
+    faceRadius(face: Shape): Float64Array;
+    shapePlaneNormal(shape: Shape): Float64Array;
     faceDerivatives(face: Shape, u: number, v: number): Float64Array;
     makeParameterSpaceEdge(edge: Shape, face: Shape): Shape;
 }
@@ -153,6 +156,27 @@ export function faceAxisOfRotation(face: Shape): Axis | undefined {
 export function faceSemiAngle(face: Shape): number | undefined {
     let [semiAngle] = native().faceSemiAngle(face);
     return semiAngle;
+}
+
+/** Major and minor radius of a toroidal surface, or `undefined` for any other surface. */
+export function faceRadii(face: Shape): [number, number] | undefined {
+    let [major, minor] = native().faceRadii(face);
+    return major === undefined || minor === undefined ? undefined : [major, minor];
+}
+
+/** Radius of an untrimmed cylindrical or spherical surface, or `undefined` for any other. */
+export function faceRadius(face: Shape): number | undefined {
+    let [radius] = native().faceRadius(face);
+    return radius;
+}
+
+/**
+ * Normal of the plane OCCT fits to `shape` (BRepLib_FindSurface searching for a plane only), or
+ * `undefined` when it finds none.
+ */
+export function shapePlaneNormal(shape: Shape): Vec3 | undefined {
+    let values = native().shapePlaneNormal(shape);
+    return values.length === 0 ? undefined : vec3(values, 0);
 }
 
 export function faceDerivatives(face: Shape, u: number, v: number): SurfaceDerivatives {

@@ -1,31 +1,41 @@
+//! Edge fillets and chamfers (BRepFilletAPI), with the record of what the algorithm did to the
+//! solid's sub-shapes, as the booleans return theirs.
+
 use neon::prelude::*;
 use opencascade_sys::{
     b_rep_fillet_api::{
-        BRepFilletAPI_MakeChamfer_new_shape, BRepFilletAPI_MakeFillet_new_shape_filletshape,
+        BRepFilletAPI_MakeChamfer_as_BRepBuilderAPI_MakeShape_mut,
+        BRepFilletAPI_MakeChamfer_new_shape,
+        BRepFilletAPI_MakeFillet_as_BRepBuilderAPI_MakeShape_mut,
+        BRepFilletAPI_MakeFillet_new_shape_filletshape,
     },
     ch_fi3d::ChFi3d_FilletShape,
     topo_ds::{TopoDS_Edge_shape, TopoDS_Face_shape},
 };
 
 use crate::{
-    builder::finish,
+    construct::build,
     error::{OcctError, OrThrow, attempt},
-    shape::{ShapeCell, ShapeResult, get, shapes_from_js},
+    history::{from_algorithm, recorded},
+    shape::{ShapeCell, get, owned, shapes_from_js},
 };
 
+/// `{ shape, history }`: `solid` with `edges` rounded to `radius`, and what the fillet did to the
+/// solid's sub-shapes.
 #[neon::export(name = "featureFillet")]
 fn feature_fillet<'cx>(
     cx: &mut Cx<'cx>,
     solid: &ShapeCell,
     edges: Handle<'cx, JsArray>,
     radius: f64,
-) -> ShapeResult {
+) -> JsResult<'cx, JsObject> {
     let edges = shapes_from_js(cx, edges)?;
-    attempt(|| {
+    let (shape, history) = attempt(|| {
         if !radius.is_finite() || radius <= 0.0 || edges.is_empty() {
             return Err(OcctError::invalid("fillet requires edges and a positive radius"));
         }
         let solid = get(solid)?;
+        let input = [owned(&solid)];
         let mut maker = BRepFilletAPI_MakeFillet_new_shape_filletshape(
             &solid,
             ChFi3d_FilletShape::ChFi3d_Rational,
@@ -33,11 +43,23 @@ fn feature_fillet<'cx>(
         for edge in &edges {
             maker.pin_mut().Add_real_edge(radius, TopoDS_Edge_shape(edge)?)?;
         }
-        finish!(maker, "BRepFilletAPI_MakeFillet")
+        let filleted = build(
+            BRepFilletAPI_MakeFillet_as_BRepBuilderAPI_MakeShape_mut(maker.pin_mut()),
+            "BRepFilletAPI_MakeFillet",
+        )?;
+        let history = from_algorithm(
+            BRepFilletAPI_MakeFillet_as_BRepBuilderAPI_MakeShape_mut(maker.pin_mut()),
+            &input,
+            &filleted,
+        )?;
+        Ok((filleted, history))
     })
-    .or_raise(cx)
+    .or_raise(cx)?;
+    recorded(cx, shape, history)
 }
 
+/// `{ shape, history }`: `solid` with `edges` cut back, and what the chamfer did to the solid's
+/// sub-shapes.
 #[neon::export(name = "featureChamfer")]
 fn feature_chamfer<'cx>(
     cx: &mut Cx<'cx>,
@@ -47,10 +69,10 @@ fn feature_chamfer<'cx>(
     second: f64,
     angle: bool,
     references: Handle<'cx, JsArray>,
-) -> ShapeResult {
+) -> JsResult<'cx, JsObject> {
     let edges = shapes_from_js(cx, edges)?;
     let references = shapes_from_js(cx, references)?;
-    attempt(|| {
+    let (shape, history) = attempt(|| {
         if !distance.is_finite()
             || distance <= 0.0
             || !second.is_finite()
@@ -63,6 +85,7 @@ fn feature_chamfer<'cx>(
             ));
         }
         let solid = get(solid)?;
+        let input = [owned(&solid)];
         let mut maker = BRepFilletAPI_MakeChamfer_new_shape(&solid)?;
         for (edge, reference) in edges.iter().zip(&references) {
             let face = TopoDS_Face_shape(reference)?;
@@ -77,7 +100,17 @@ fn feature_chamfer<'cx>(
                 )?;
             }
         }
-        finish!(maker, "BRepFilletAPI_MakeChamfer")
+        let chamfered = build(
+            BRepFilletAPI_MakeChamfer_as_BRepBuilderAPI_MakeShape_mut(maker.pin_mut()),
+            "BRepFilletAPI_MakeChamfer",
+        )?;
+        let history = from_algorithm(
+            BRepFilletAPI_MakeChamfer_as_BRepBuilderAPI_MakeShape_mut(maker.pin_mut()),
+            &input,
+            &chamfered,
+        )?;
+        Ok((chamfered, history))
     })
-    .or_raise(cx)
+    .or_raise(cx)?;
+    recorded(cx, shape, history)
 }
