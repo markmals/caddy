@@ -27,9 +27,11 @@ jobs:
 
             - uses: dtolnay/rust-toolchain@stable
 
-            - name: Install CMake and Ninja (Linux)
+            # libfontconfig-dev: OCCT links fontconfig (and expat) for font enumeration on
+            # Linux once USE_FREETYPE is on.
+            - name: Install CMake, Ninja and fontconfig (Linux)
               if: runner.os == 'Linux'
-              run: sudo apt-get update && sudo apt-get install -y cmake ninja-build
+              run: sudo apt-get update && sudo apt-get install -y cmake ninja-build libfontconfig-dev
 
             - name: Install Ninja (macOS)
               if: runner.os == 'macOS'
@@ -39,17 +41,17 @@ jobs:
               if: runner.os == 'Windows'
               uses: ilammy/msvc-dev-cmd@v1
 
-            - name: Cache OCCT build
+            - name: Cache OCCT and FreeType build
               uses: actions/cache@v4
               with:
                   path: packages/occt-native/.occt/${{ matrix.target }}
-                  key: occt-${{ matrix.target }}-${{ hashFiles('packages/occt-native/scripts/build-occt.ts') }}
+                  key: occt-${{ matrix.target }}-${{ hashFiles('packages/occt-native/scripts/build-occt.ts', 'packages/occt-native/scripts/build-freetype.ts') }}
 
             - run: pnpm install --frozen-lockfile
 
             - run: uv sync --frozen
 
-            - name: Build OCCT 8.0.1
+            - name: Build FreeType and OCCT 8.0.1
               run: node packages/occt-native/scripts/build-occt.ts
 
             - name: Build the addon

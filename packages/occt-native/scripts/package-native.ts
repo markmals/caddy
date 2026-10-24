@@ -7,6 +7,7 @@
 import { copyFileSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
+import { FREETYPE } from "./build-freetype.ts";
 import { renderThirdPartyNotices } from "./third-party-notices.ts";
 
 const PACKAGE_ROOT = resolve(import.meta.dirname, "..");
@@ -28,26 +29,39 @@ function platformManifest(version: string): Record<string, unknown> {
     return {
         name: `@roonieone/occt-native-${target}`,
         version,
-        description: `Prebuilt @roonieone/occt-native addon and OCCT 8.0.1 libraries for ${target}`,
-        license: "LGPL-2.1-only",
+        description:
+            `Prebuilt @roonieone/occt-native addon with the OCCT 8.0.1 and ` +
+            `FreeType ${FREETYPE.version} libraries for ${target}`,
+        license: "Apache-2.0 AND LGPL-2.1-only WITH OCCT-exception-1.0 AND FTL",
         os: [process.platform],
         cpu: [ARCH],
         ...(process.platform === "linux" ? { libc: ["glibc"] } : {}),
-        files: ["*.node", "*.dylib", "*.so*", "*.dll", "*.md", "LICENSE*", "occt-build.json"],
+        files: [
+            "*.node",
+            "*.dylib",
+            "*.so*",
+            "*.dll",
+            "*.md",
+            "LICENSE*",
+            "occt-build.json",
+            "freetype-build.json",
+        ],
     };
 }
 
 const REPLACING_OCCT = `# Replacing the OCCT libraries
 
 This package links Open CASCADE Technology dynamically, as permitted by the GNU LGPL-2.1 §6(b).
-The OCCT shared libraries (\`libTK*\`) sit next to \`occt-native.node\` and are found through
-\`@loader_path\` (macOS), \`$ORIGIN\` (Linux) or the addon's directory (Windows).
+The OCCT shared libraries (\`libTK*\`) and the FreeType library they use sit next to
+\`occt-native.node\` and are found through \`@loader_path\` (macOS), \`$ORIGIN\` (Linux) or the
+addon's directory (Windows).
 
 To use a modified OCCT:
 
 1. Get the corresponding source (see \`SOURCE.md\`) and apply your changes.
 2. Build it with the same configuration: \`node scripts/build-occt.ts\` from the
-   @roonieone/occt-native source tree reproduces the options recorded in \`occt-build.json\`.
+   @roonieone/occt-native source tree reproduces the options recorded in \`occt-build.json\`,
+   against the FreeType recorded in \`freetype-build.json\`.
 3. Copy the rebuilt libraries over the files in this directory, keeping their file names
    (the install names, e.g. \`libTKBO.8.0.dylib\`). The OCCT ABI must stay compatible with 8.0.
 4. Restart Node.js.
@@ -65,13 +79,13 @@ function main(): void {
     rmSync(outDir, { recursive: true, force: true });
     mkdirSync(outDir, { recursive: true });
     for (let file of readdirSync(stageDir)) copyFileSync(join(stageDir, file), join(outDir, file));
-    for (let file of ["LICENSE", "LICENSE.OCCT_EXCEPTION", "SOURCE.md"]) {
+    for (let file of ["LICENSE", "LICENSE.LGPL-2.1", "LICENSE.OCCT_EXCEPTION", "SOURCE.md"]) {
         copyFileSync(join(PACKAGE_ROOT, file), join(outDir, file));
     }
-    copyFileSync(
-        join(PACKAGE_ROOT, ".occt", STAGED_TARGET, "occt-build.json"),
-        join(outDir, "occt-build.json"),
-    );
+    // LICENSE.FREETYPE already came from the stage directory, beside the library it covers.
+    for (let stamp of ["occt-build.json", "freetype-build.json"]) {
+        copyFileSync(join(PACKAGE_ROOT, ".occt", STAGED_TARGET, stamp), join(outDir, stamp));
+    }
     writeFileSync(join(outDir, "REPLACING_OCCT.md"), REPLACING_OCCT);
     writeFileSync(
         join(outDir, "THIRD_PARTY_NOTICES.md"),

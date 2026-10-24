@@ -1,9 +1,10 @@
-// Builds the pinned OCCT release as shared libraries for the current platform.
+// Builds the pinned OCCT release, and the FreeType it needs, as shared libraries for the
+// current platform.
 //
 // Shared (not static) libraries keep OCCT replaceable by end users, which is how the
 // distributed addon satisfies LGPL-2.1 §6(b). See docs/licensing.md.
 //
-// Usage: node scripts/build-occt.ts [--jobs N]
+// Usage: node scripts/build-occt.ts [--jobs N] [--arch x64|arm64 (macOS cross build)]
 // Output: .occt/<platform>-<arch>/{include,lib,share}
 
 import { spawnSync } from "node:child_process";
@@ -11,6 +12,8 @@ import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { availableParallelism } from "node:os";
 import { join, resolve } from "node:path";
+
+import { FREETYPE, FREETYPE_LINK_LIBRARY, installFreetype } from "./build-freetype.ts";
 
 const OCCT = {
     version: "8.0.1",
@@ -48,12 +51,16 @@ const CMAKE_OPTIONS: Record<string, string> = {
     INSTALL_DIR_INCLUDE: "include/opencascade",
     INSTALL_SAMPLES: "OFF",
     INSTALL_TEST_CASES: "OFF",
+    // FreeType is installed into the same prefix by build-freetype.ts and staged beside the
+    // addon, so OCCT must not copy it into lib/ under a second name.
+    INSTALL_FREETYPE: "OFF",
     USE_D3D: "OFF",
     USE_DRACO: "OFF",
     USE_EIGEN: "OFF",
     USE_FFMPEG: "OFF",
     USE_FREEIMAGE: "OFF",
-    USE_FREETYPE: "OFF",
+    // Font_FontMgr, Font_FTFont, StdPrs_BRepFont and Font_BRepTextBuilder need FreeType.
+    USE_FREETYPE: "ON",
     USE_GLES2: "OFF",
     USE_OPENGL: "OFF",
     USE_OPENVR: "OFF",
@@ -73,6 +80,26 @@ const CMAKE_OPTIONS: Record<string, string> = {
     // Only set when cross-building so the host build's option stamp stays unchanged.
     ...(IS_CROSS_BUILD ? { CMAKE_OSX_ARCHITECTURES: ARCH === "x64" ? "x86_64" : "arm64" } : {}),
 };
+
+/**
+ * Points OCCT's freetype.cmake straight at our install prefix. These are absolute paths, so
+ * they stay out of CMAKE_OPTIONS (and the stamp) and are passed like INSTALL_DIR is; setting
+ * every variable also stops OCCT's search from picking up a Homebrew or system FreeType.
+ */
+function freetypeDefines(): string[] {
+    let library = FREETYPE_LINK_LIBRARY[process.platform];
+    if (library === undefined) throw new Error(`unsupported platform ${process.platform}`);
+    let includeDir = join(INSTALL_DIR, "include", "freetype2");
+    return [
+        `-D3RDPARTY_FREETYPE_DIR=${INSTALL_DIR}`,
+        `-D3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build=${includeDir}`,
+        `-D3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2=${includeDir}`,
+        `-D3RDPARTY_FREETYPE_LIBRARY=${join(INSTALL_DIR, "lib", library)}`,
+        ...(process.platform === "win32"
+            ? [`-D3RDPARTY_FREETYPE_DLL=${join(INSTALL_DIR, "bin", "freetype.dll")}`]
+            : []),
+    ];
+}
 
 function run(command: string, args: string[]): void {
     console.log(`$ ${command} ${args.join(" ")}`);
@@ -133,13 +160,26 @@ function main(): void {
             "--arch cross-builds are only supported on macOS; build on the target platform",
         );
     }
-    let stampContent = JSON.stringify({ ...OCCT, target: TARGET, options: CMAKE_OPTIONS }, null, 4);
+    mkdirSync(CACHE_ROOT, { recursive: true });
+    installFreetype({
+        cacheRoot: CACHE_ROOT,
+        installDir: INSTALL_DIR,
+        arch: ARCH,
+        jobs: parseJobs(),
+        macosDeploymentTarget: MACOS_DEPLOYMENT_TARGET,
+    });
+
+    // The FreeType version is part of the stamp: changing it has to rebuild OCCT too.
+    let stampContent = JSON.stringify(
+        { ...OCCT, freetype: FREETYPE, target: TARGET, options: CMAKE_OPTIONS },
+        null,
+        4,
+    );
     if (existsSync(STAMP) && readFileSync(STAMP, "utf8") === stampContent) {
         console.log(`OCCT ${OCCT.version} already installed at ${INSTALL_DIR}`);
         linkCurrent();
         return;
     }
-    mkdirSync(CACHE_ROOT, { recursive: true });
     fetchSource();
 
     let defines = Object.entries(CMAKE_OPTIONS).map(([key, value]) => `-D${key}=${value}`);
@@ -152,10 +192,14 @@ function main(): void {
         "Ninja",
         `-DINSTALL_DIR=${INSTALL_DIR}`,
         ...defines,
+        ...freetypeDefines(),
     ]);
     run("cmake", ["--build", BUILD_DIR, "--parallel", String(parseJobs())]);
     run("cmake", ["--install", BUILD_DIR]);
     writeFileSync(STAMP, stampContent);
+    // Nothing reads the build tree after the install, and it costs a few hundred megabytes
+    // per target; the stamp above, not ninja, is what keeps repeated runs cheap.
+    rmSync(BUILD_DIR, { recursive: true, force: true });
     linkCurrent();
     console.log(`OCCT ${OCCT.version} installed at ${INSTALL_DIR}`);
 }

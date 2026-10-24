@@ -1,8 +1,9 @@
-// Builds the Neon addon and stages it with the OCCT shared libraries it loads.
+// Builds the Neon addon and stages it with the OCCT and FreeType shared libraries it loads.
 //
 // Usage: node scripts/build-native.ts [--release] [--arch x64|arm64 (macOS cross build)]
-// Output: native/<platform>-<arch>/occt-native.node plus the OCCT libraries in the same
-// directory (the addon and OCCT both resolve siblings via @loader_path / $ORIGIN).
+// Output: native/<platform>-<arch>/occt-native.node plus the libraries in the same directory
+// (the addon and OCCT both resolve siblings via @loader_path / $ORIGIN), and FreeType's
+// license, which has to travel with the library it covers.
 
 import { spawnSync } from "node:child_process";
 import { copyFileSync, existsSync, mkdirSync, realpathSync, renameSync, rmSync } from "node:fs";
@@ -18,12 +19,8 @@ const CROSS_TRIPLES: Record<string, string> = {
     arm64: "aarch64-apple-darwin",
 };
 const CROSS_TRIPLE = ARCH === process.arch ? undefined : CROSS_TRIPLES[ARCH];
-const OCCT_LIB_DIR = join(
-    PACKAGE_ROOT,
-    ".occt",
-    TARGET,
-    process.platform === "win32" ? "bin" : "lib",
-);
+// OCCT and FreeType share one install prefix (see scripts/build-occt.ts).
+const LIB_DIR = join(PACKAGE_ROOT, ".occt", TARGET, process.platform === "win32" ? "bin" : "lib");
 const STAGE_DIR = join(PACKAGE_ROOT, "native", TARGET);
 
 const ADDON_FILE: Record<string, string> = {
@@ -48,31 +45,33 @@ function run(command: string, args: string[], env: NodeJS.ProcessEnv = process.e
     return outcome.stdout;
 }
 
-/** OCCT libraries a binary links directly, by their install name (e.g. libTKBO.8.0.dylib). */
-function linkedOcctLibraries(binary: string): string[] {
+/**
+ * Bundled libraries a binary links directly, by their install name (e.g. libTKBO.8.0.dylib,
+ * libfreetype.6.dylib). Everything else it links is part of the platform.
+ */
+function linkedLibraries(binary: string): string[] {
     let output =
         process.platform === "darwin"
             ? run("otool", ["-L", binary])
             : process.platform === "linux"
               ? run("readelf", ["-d", binary])
               : run("dumpbin", ["/DEPENDENTS", binary]);
-    let names = output.match(/(?:lib)?TK[A-Za-z0-9]+[.\w]*\.(?:dylib|so[.\d]*|dll)/g) ?? [];
-    return [...new Set(names.map(name => basename(name)))];
+    let pattern = /(?:lib)?(?:TK[A-Za-z0-9]+|freetype)[.\w]*\.(?:dylib|so[.\d]*|dll)/g;
+    return [...new Set((output.match(pattern) ?? []).map(name => basename(name)))];
 }
 
-function stageOcct(addon: string, stageDir: string): string[] {
+function stageLibraries(addon: string, stageDir: string): string[] {
     let staged = new Set<string>();
-    let pending = linkedOcctLibraries(addon);
+    let pending = linkedLibraries(addon);
     while (pending.length > 0) {
         let name = pending.pop()!;
         if (staged.has(name)) continue;
-        let source = join(OCCT_LIB_DIR, name);
-        if (!existsSync(source))
-            throw new Error(`missing OCCT library ${source}; run build-occt.ts`);
+        let source = join(LIB_DIR, name);
+        if (!existsSync(source)) throw new Error(`missing library ${source}; run build-occt.ts`);
         // Copy the real file under its install name so symlinks are not needed in the package.
         copyFileSync(realpathSync(source), join(stageDir, name));
         staged.add(name);
-        pending.push(...linkedOcctLibraries(source));
+        pending.push(...linkedLibraries(source));
     }
     return [...staged].sort();
 }
@@ -106,12 +105,13 @@ function main(): void {
     rmSync(staging, { recursive: true, force: true });
     mkdirSync(staging, { recursive: true });
     copyFileSync(built, join(staging, "occt-native.node"));
-    let libraries = stageOcct(join(staging, "occt-native.node"), staging);
+    let libraries = stageLibraries(join(staging, "occt-native.node"), staging);
+    let license = join(PACKAGE_ROOT, ".occt", TARGET, "share", "freetype", "LICENSE.FREETYPE");
+    if (!existsSync(license)) throw new Error(`missing ${license}; run build-occt.ts`);
+    copyFileSync(license, join(staging, "LICENSE.FREETYPE"));
     rmSync(STAGE_DIR, { recursive: true, force: true });
     renameSync(staging, STAGE_DIR);
-    console.log(
-        `staged ${join(STAGE_DIR, "occt-native.node")} with ${libraries.length} OCCT libraries`,
-    );
+    console.log(`staged ${join(STAGE_DIR, "occt-native.node")} with ${libraries.length} libraries`);
 }
 
 main();
