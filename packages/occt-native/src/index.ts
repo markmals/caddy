@@ -1,9 +1,14 @@
 export * as booleans from "./booleans.ts";
+export * as construct from "./construct.ts";
+export type { JoinType } from "./construct.ts";
 export * from "./errors.ts";
+export * as features from "./features.ts";
 export * as io from "./io.ts";
 export * from "./kernel.ts";
 export * as measure from "./measure.ts";
+export * as mesh from "./mesh.ts";
 export * as primitives from "./primitives.ts";
+export * as query from "./query.ts";
 export * as shapes from "./shape.ts";
 export * as topology from "./topology.ts";
 export * from "./types.ts";

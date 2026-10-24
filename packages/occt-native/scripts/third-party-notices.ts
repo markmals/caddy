@@ -73,7 +73,7 @@ function crateLicenses(): CrateLicense[] {
         crates.push({
             name,
             version,
-            license: String(entry["license"] ?? "see license files"),
+            license: typeof entry["license"] === "string" ? entry["license"] : "see license files",
             texts,
         });
     }

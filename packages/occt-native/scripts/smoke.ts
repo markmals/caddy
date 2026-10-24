@@ -24,12 +24,19 @@ let hole = primitives.makeCylinder(5, 10, {
 let part = booleans.cut([plate], [hole]);
 let expected = 80 * 40 * 5 - Math.PI * 25 * 5;
 check("volume", measure.massProperties(part, "volume").mass, expected, 1e-6);
-let step = io.writeStep(part);
-check(
-    "STEP round-trip volume",
-    measure.massProperties(io.readStep(step), "volume").mass,
-    expected,
-    1e-6,
+let step = await io.writeStep(
+    { shape: part, label: "plate", color: null, subShapeColors: "none", children: [] },
+    {
+        lengthUnitMeters: 0.001,
+        writePCurves: true,
+        precisionMode: io.StepPrecisionMode.Average,
+        originatingSystem: "caddy smoke test",
+        name: "",
+        timestamp: "",
+    },
 );
+let [root] = await io.readStep(step);
+if (root === undefined) throw new Error("STEP file contains no shape");
+check("STEP round-trip volume", measure.massProperties(root.shape, "volume").mass, expected, 1e-6);
 if (!measure.isValid(part)) throw new Error("result is not a valid shape");
 console.log(`ok OCCT ${occtVersion()} on ${process.platform}-${process.arch}`);

@@ -1,16 +1,28 @@
 //! Neon (Node-API) addon exposing OCCT to JavaScript through the generated opencascade-sys
 //! bindings. Exports are registered with `#[neon::export]` in each module.
 
+mod assembly;
 mod booleans;
 mod builder;
+mod construct;
 mod convert;
 mod error;
+mod exchange;
+mod features;
+mod fillets;
 mod io;
 mod kernel;
+mod marshal;
 mod measure;
+mod mesh;
+mod offset;
 mod primitives;
+mod projection;
+mod query;
 mod shape;
+mod step;
 mod topology;
+mod xde;
 
 use neon::prelude::*;
 

@@ -89,6 +89,21 @@ Instead `crates/opencascade-sys` is a fork whose bridges are **generated** by `c
 
 Synchronous functions run on the JS main thread. OCCT objects are not shared across threads: shapes are not `Send`, and `JsBox` values stay on the thread of the JS context that created them (each worker thread loads its own addon instance and owns its own shapes). The addon disables OCCT's default console printers at load (translators otherwise print statistics to stdout); `setKernelMessages(true)` restores them.
 
+### Data exchange on the worker pool
+
+Importing or exporting a large assembly takes seconds, so `io`, `mesh` and the STEP entry points return promises and do their work on Node's worker pool (`cx.task(...).promise(...)`, driven by `crates/occt-neon/src/exchange.rs`). Two OCCT properties decide how that is allowed to happen.
+
+**Shapes are deep-copied before they leave the JS thread.** A `TopoDS_Shape` is a handle onto a `TopoDS_TShape` whose sub-shape list, tolerances and cached triangulation the exporters mutate — `BRepMesh_IncrementalMesh` attaches a triangulation to every face it meshes, and `Poly_Triangulation::ComputeNormals` writes into it. Reference counters are atomic in OCCT 8 (`Standard_Transient::myRefCount_` is a `std::atomic_int`), so moving a handle to another thread is sound on its own, but two threads reaching the same TShape is not. `exchange::detach` therefore runs `BRepBuilderAPI_Copy` on the JS thread and hands the worker geometry nothing else can see; the `Detached` newtype carries the `unsafe impl Send` and the argument for it. JavaScript keeps using — or disposing — the original while the export runs.
+
+**The exchange layer is process-wide.** `Interface_Static` parameters (`write.precision.mode`, `write.surfacecurve.mode`), the controller registry installed by `STEPControl_Controller::Init` and `Message::DefaultMessenger` are singletons. Two concurrent STEP writes would read each other's settings, so every worker body runs under one process-wide `EXCHANGE` mutex: exchange work overlaps JavaScript, never itself.
+
+### Format quirks worth knowing
+
+- STEP goes through XCAF (`STEPCAFControl_Writer`/`Reader` over a `TDocStd_Document`), which is the only route to product names and colours. `STEPCAFControl_Writer::Transfer` switches to multi-file mode whenever its `theIsMulti` prefix is non-null, and `WriteStream` then refuses to write; the generated bindings map an empty `&str` onto `nullptr` for `const char*` parameters OCCT declares with a null default, which is how the in-memory writer stays single-file.
+- `Quantity_ColorRGBA`'s float constructor stores linear RGB. build123d's `Color` speaks sRGB, so `xde.rs` converts in both directions with `Quantity_Color::Convert_sRGB_To_LinearRGB` / `Convert_LinearRGB_To_sRGB`.
+- IGES has no stream reader in OCCT 8.0.1 (`IGESSelect_WorkLibrary` implements `ReadFile` but inherits the base `ReadStream`, which always fails), so `igesRead` takes a path and Caddy spills buffers to a scratch file.
+- Text BREP (`BRepTools`) and binary BREP (`BinTools`) are different readers that reject each other's files. They share the `.brep` extension, so the importer picks the reader from the banner: `Open CASCADE Topology V4` is binary, `CASCADE Topology V3` is text.
+
 ## Distribution
 
 OCCT is built from the pinned `V8_0_1` tarball by `scripts/build-occt.ts` as shared libraries with `@rpath`/`$ORIGIN` install names (macOS deployment target 13.5). `scripts/build-native.ts` stages `occt-native.node` with exactly the OCCT libraries in its dependency closure into `native/<platform>-<arch>/`, the layout of the per-platform npm packages. See `docs/licensing.md` for why OCCT is linked dynamically.

@@ -1,4 +1,9 @@
+import { mkdtemp, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { describe, expect, test } from "vite-plus/test";
+
+import type { Shape } from "../src/index.ts";
 
 import {
     OcctErrorCode,
@@ -7,6 +12,7 @@ import {
     io,
     isOcctError,
     measure,
+    mesh,
     primitives,
     shapes,
     topology,
@@ -21,6 +27,17 @@ function expectOcctError(action: () => unknown, code: OcctErrorCode): void {
         return;
     }
     throw new Error(`expected an OcctError with code ${code}`);
+}
+
+async function expectOcctRejection(work: Promise<unknown>, code: OcctErrorCode): Promise<void> {
+    try {
+        await work;
+    } catch (error) {
+        expect(isOcctError(error)).toBe(true);
+        expect(isOcctError(error) && error.code).toBe(code);
+        return;
+    }
+    throw new Error(`expected a rejection with code ${code}`);
 }
 
 describe("primitives and measurement", () => {
@@ -120,21 +137,56 @@ describe("placement", () => {
 });
 
 describe("serialization", () => {
-    test("STEP and BREP round trips preserve volume", () => {
+    function bareStepNode(shape: Shape): io.StepWriteNode {
+        return { shape, label: "", color: null, subShapeColors: "none", children: [] };
+    }
+
+    test("STEP and BREP round trips preserve volume", async () => {
         let sphere = primitives.makeSphere(3);
         let volume = measure.massProperties(sphere, "volume").mass;
-        let fromStep = io.readStep(io.writeStep(sphere));
-        let fromBrep = io.readBrep(io.writeBrep(sphere));
-        expect(measure.massProperties(fromStep, "volume").mass).toBeCloseTo(volume, 6);
+        let stepBytes = await io.writeStep(bareStepNode(sphere), {
+            lengthUnitMeters: 0.001,
+            writePCurves: true,
+            precisionMode: io.StepPrecisionMode.Average,
+            originatingSystem: "caddy",
+            name: "",
+            timestamp: "",
+        });
+        let [root] = await io.readStep(stepBytes);
+        let fromBrep = await io.readBrep(await io.writeBrep(sphere));
+        let fromBinaryBrep = await io.readBrep(await io.writeBrep(sphere, true), true);
+        expect(measure.massProperties(root!.shape, "volume").mass).toBeCloseTo(volume, 6);
         expect(measure.massProperties(fromBrep, "volume").mass).toBeCloseTo(volume, 12);
-        expect(new TextDecoder().decode(io.writeStep(sphere).subarray(0, 13))).toBe(
-            "ISO-10303-21;",
-        );
+        expect(measure.massProperties(fromBinaryBrep, "volume").mass).toBeCloseTo(volume, 12);
+        expect(new TextDecoder().decode(stepBytes.subarray(0, 13))).toBe("ISO-10303-21;");
     });
 
-    test("malformed STEP data is reported as IMPORT_FAILED", () => {
-        expectOcctError(
-            () => io.readStep(new TextEncoder().encode("not a step file")),
+    test("STL and IGES round trips keep the shape's extent", async () => {
+        let box = primitives.makeBox(2, 3, 4);
+        let fromStl = await mesh.readStl(await mesh.writeStl(box));
+        expect(measure.boundingBox(fromStl)?.max?.[0]).toBeCloseTo(2, 3);
+
+        let path = join(await mkdtemp(join(tmpdir(), "caddy-iges-")), "box.iges");
+        await writeFile(path, await io.writeIges(box));
+        let fromIges = await io.readIges(path);
+        expect(measure.boundingBox(fromIges)?.max).toEqual([2, 3, 4]);
+    });
+
+    test("tessellation covers every face with outward normals", async () => {
+        let box = primitives.makeBox(1, 1, 1);
+        let triangles = await mesh.tessellate(box);
+        expect(triangles.indices.length).toBe(36);
+        expect(triangles.positions.length).toBe(triangles.normals.length);
+        expect(
+            [...triangles.normals].every(
+                value => Math.abs(Math.abs(value) - 1) < 1e-9 || Math.abs(value) < 1e-9,
+            ),
+        ).toBe(true);
+    });
+
+    test("malformed STEP data is reported as IMPORT_FAILED", async () => {
+        await expectOcctRejection(
+            io.readStep(new TextEncoder().encode("not a step file")),
             OcctErrorCode.ImportFailed,
         );
     });

@@ -50,6 +50,15 @@ pub fn boxed(shape: UniquePtr<TopoDS_Shape>) -> OcctResult<Boxed<ShapeCell>> {
     Ok(Boxed(RefCell::new(Shape(Some(shape)))))
 }
 
+/// Boxes one shape as a JavaScript value, rejecting null results.
+pub fn into_js<'cx>(
+    cx: &mut Cx<'cx>,
+    shape: UniquePtr<TopoDS_Shape>,
+) -> OcctResult<Handle<'cx, ShapeBox>> {
+    let Boxed(cell) = boxed(shape)?;
+    Ok(cx.boxed(cell))
+}
+
 /// Takes an owned handle copy of a shape referenced by an OCCT algorithm.
 pub fn owned(shape: &TopoDS_Shape) -> UniquePtr<TopoDS_Shape> {
     TopoDS_Shape_clone(shape)

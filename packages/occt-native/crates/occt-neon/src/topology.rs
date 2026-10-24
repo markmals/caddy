@@ -37,7 +37,10 @@ pub fn shape_enum(value: f64) -> OcctResult<TopAbs_ShapeEnum> {
 /// Distinct sub-shapes of `kind` in TopExp_Explorer order. A sub-shape met several times (with
 /// different orientations) keeps its first position but takes the last occurrence, matching
 /// build123d's dict-based de-duplication.
-pub fn sub_shapes(shape: &TopoDS_Shape, kind: TopAbs_ShapeEnum) -> OcctResult<Vec<UniquePtr<TopoDS_Shape>>> {
+pub fn sub_shapes(
+    shape: &TopoDS_Shape,
+    kind: TopAbs_ShapeEnum,
+) -> OcctResult<Vec<UniquePtr<TopoDS_Shape>>> {
     let mut explorer =
         TopExp_Explorer_new_shape_shapeenum2(shape, kind, TopAbs_ShapeEnum::TopAbs_SHAPE)?;
     let mut seen = TopTools_IndexedMapOfShape_new()?;
@@ -58,7 +61,11 @@ pub fn sub_shapes(shape: &TopoDS_Shape, kind: TopAbs_ShapeEnum) -> OcctResult<Ve
 }
 
 #[neon::export(name = "subShapes")]
-fn sub_shapes_export<'cx>(cx: &mut Cx<'cx>, shape: &ShapeCell, kind: f64) -> JsResult<'cx, JsArray> {
+fn sub_shapes_export<'cx>(
+    cx: &mut Cx<'cx>,
+    shape: &ShapeCell,
+    kind: f64,
+) -> JsResult<'cx, JsArray> {
     let shapes = {
         let shape = get(shape).or_raise(cx)?;
         attempt(|| sub_shapes(&shape, shape_enum(kind)?)).or_raise(cx)?
