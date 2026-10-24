@@ -67,13 +67,13 @@ pub fn build(
 
 /// Splits a flat coordinate array into points.
 pub fn points(values: &[f64], what: &str) -> OcctResult<Vec<UniquePtr<gp_Pnt>>> {
-    if values.is_empty() || values.len() % 3 != 0 {
+    if values.is_empty() || !values.len().is_multiple_of(3) {
         return Err(OcctError::invalid(format!(
             "{what} must be a non-empty multiple of three coordinates, got {}",
             values.len()
         )));
     }
-    values.chunks_exact(3).map(pnt).collect()
+    values.as_chunks::<3>().0.iter().map(|point| pnt(point)).collect()
 }
 
 pub fn point_array(points: &[UniquePtr<gp_Pnt>]) -> OcctResult<UniquePtr<TColgp_Array1OfPnt>> {

@@ -74,7 +74,12 @@ fn load_tangents(
     point_count: usize,
     scale: bool,
 ) -> OcctResult<()> {
-    let vectors = tangents.chunks_exact(3).map(vector).collect::<OcctResult<Vec<_>>>()?;
+    let vectors = tangents
+        .as_chunks::<3>()
+        .0
+        .iter()
+        .map(|tangent| vector(tangent))
+        .collect::<OcctResult<Vec<_>>>()?;
     if vectors.len() == 2 && point_count != 2 {
         let (first, last) = (&vectors[0], &vectors[1]);
         return Ok(builder.pin_mut().Load_vec2_bool(first, last, scale)?);
@@ -119,7 +124,7 @@ fn make_spline_edge<'cx>(
 ) -> ShapeResult {
     attempt(|| {
         let interpolation_points = points(&points_flat, "spline points")?;
-        if tangents.len() % 3 != 0 {
+        if !tangents.len().is_multiple_of(3) {
             return Err(OcctError::invalid("spline tangents must be whole 3D vectors"));
         }
         let handle = point_handle(&interpolation_points)?;

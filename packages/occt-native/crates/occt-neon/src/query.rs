@@ -189,7 +189,7 @@ fn curve_frame<'cx>(
         let mut normal = gp_Vec_new()?;
         let mut binormal = gp_Vec_new()?;
         let mut trihedron = Handle_GeomFill_TrihedronLaw_get_mut(law.pin_mut())?;
-        if !trihedron.as_mut().SetCurve(&*curve)? {
+        if !trihedron.as_mut().SetCurve(&curve)? {
             return Err(OcctError::failed("unable to initialize the curve frame"));
         }
         if !trihedron.as_mut().D0(
@@ -919,7 +919,7 @@ fn curve_crossings<'cx>(
     tolerance: f64,
 ) -> NeonResult<Vec<f64>> {
     let edge = get(edge).or_raise(cx)?;
-    let other = other.map(|cell| get(cell)).transpose().or_raise(cx)?;
+    let other = other.map(get).transpose().or_raise(cx)?;
     attempt(|| {
         let face = BRepBuilderAPI_MakeFace_new_pln(&*gp_Pln_new_ax3(&*ax3(&plane)?)?)?;
         let surface = BRep_Tool_Surface_face(face.Face()?)?;

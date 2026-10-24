@@ -46,6 +46,10 @@ fn main() {
         .flag_if_supported("-Wno-unused-parameter")
         // OCCT 8 marks the TColgp_*/TopTools_* alias headers deprecated via #pragma message.
         .flag_if_supported("-Wno-#pragma-messages")
+        // `UniquePtr<T>` deletes through a `T*` that our shims always created as exactly `T`
+        // (`std::make_unique<T>`), so a non-virtual base destructor is never involved, while
+        // OCCT value classes such as `IntAna2d_IntPoint` are virtual without a virtual dtor.
+        .flag_if_supported("-Wno-delete-non-abstract-non-virtual-dtor")
         .include(&occt.include_dir)
         .include("include")
         .compile("opencascade-sys-bridges");
@@ -91,11 +95,7 @@ impl OcctConfig {
         // Exposed to dependents as DEP_OPENCASCADE_*.
         println!("cargo:include={}", include_dir.display());
         println!("cargo:lib_dir={}", library_dir.display());
-        Self {
-            include_dir,
-            library_dir,
-            is_dynamic,
-        }
+        Self { include_dir, library_dir, is_dynamic }
     }
 }
 

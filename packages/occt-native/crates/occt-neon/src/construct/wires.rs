@@ -71,10 +71,10 @@ fn make_wire<'cx>(cx: &mut Cx<'cx>, edges: Handle<'cx, JsArray>) -> ShapeResult 
         let mut maker = BRepBuilderAPI_MakeWire_new()?;
         maker.pin_mut().Add_listofshape(&*shape_list(&edges)?)?;
         maker.pin_mut().Build(&*progress()?)?;
-        if !maker.IsDone()? {
-            if let Some(failure) = wire_failure(maker.Error()?) {
-                return Err(failure);
-            }
+        if !maker.IsDone()?
+            && let Some(failure) = wire_failure(maker.Error()?)
+        {
+            return Err(failure);
         }
         boxed(TopoDS_Wire_to_TopoDS_Shape(maker.pin_mut().Wire()?))
     })
@@ -116,10 +116,10 @@ fn stitch_wires<'cx>(cx: &mut Cx<'cx>, first: &ShapeCell, second: &ShapeCell) ->
         maker.pin_mut().Add_wire(as_wire(&first)?)?;
         maker.pin_mut().Add_wire(as_wire(&second)?)?;
         maker.pin_mut().Build(&*progress()?)?;
-        if !maker.IsDone()? {
-            if let Some(failure) = wire_failure(maker.Error()?) {
-                return Err(failure);
-            }
+        if !maker.IsDone()?
+            && let Some(failure) = wire_failure(maker.Error()?)
+        {
+            return Err(failure);
         }
         boxed(TopoDS_Wire_to_TopoDS_Shape(maker.pin_mut().Wire()?))
     })

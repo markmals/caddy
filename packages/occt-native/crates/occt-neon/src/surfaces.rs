@@ -85,7 +85,7 @@ fn weight_grid(values: &[f64], columns: usize) -> OcctResult<UniquePtr<TColStd_A
 }
 
 fn grid_rows(count: usize, columns: usize, what: &str) -> OcctResult<usize> {
-    if columns == 0 || count == 0 || count % columns != 0 {
+    if columns == 0 || count == 0 || !count.is_multiple_of(columns) {
         return Err(OcctError::invalid(format!(
             "{what} must form a rectangular grid, got {count} values in rows of {columns}"
         )));

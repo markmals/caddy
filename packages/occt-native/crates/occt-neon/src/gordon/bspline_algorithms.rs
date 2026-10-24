@@ -311,7 +311,7 @@ pub(crate) fn compute_params_bspline_surf(points: &PointGrid, alpha: f64) -> (Ve
 
 /// Knot vector from interpolation parameters, Park (2000).
 pub(crate) fn knots_from_curve_parameters(
-    params: &mut Vec<f64>,
+    params: &mut [f64],
     degree: usize,
     closed_curve: bool,
 ) -> OcctResult<Vec<f64>> {
@@ -329,7 +329,7 @@ pub(crate) fn knots_from_curve_parameters(
     inner_knots[0] = params[0];
     inner_knots[n_inner_knots - 1] = params[params.len() - 1];
 
-    if closed_curve && degree % 2 == 0 {
+    if closed_curve && degree.is_multiple_of(2) {
         let m = params.len() - 2;
         let mut deltas = vec![0.0; m + 1];
         for index in 0..=m {
@@ -348,7 +348,7 @@ pub(crate) fn knots_from_curve_parameters(
                 "inner knots size must match parameters size for closed curves",
             ));
         }
-        inner_knots = params.clone();
+        inner_knots = params.to_vec();
     } else {
         for j in 1..params.len() - degree {
             let sum: f64 = params[j..j + degree].iter().sum();

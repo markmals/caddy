@@ -101,7 +101,7 @@ fn split_point(curve: &Curve) -> OcctResult<f64> {
         }
     }
     if curve.multiplicity(sharpest)? > 1 {
-        return Ok(curve.knot(sharpest)?);
+        return curve.knot(sharpest);
     }
     Ok(midpoint)
 }

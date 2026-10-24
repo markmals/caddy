@@ -97,7 +97,7 @@ pub fn shape_promise<'cx>(
     promise(
         cx,
         move || work().map(Detached::adopt),
-        |cx, shape| Ok(into_js(cx, shape.into_inner()).or_raise(cx)?),
+        |cx, shape| into_js(cx, shape.into_inner()).or_raise(cx),
     )
 }
 
@@ -106,5 +106,5 @@ pub fn bytes_promise<'cx>(
     cx: &mut Cx<'cx>,
     work: impl FnOnce() -> OcctResult<Vec<u8>> + Send + 'static,
 ) -> JsResult<'cx, JsPromise> {
-    promise(cx, work, |cx, bytes| Ok(JsUint8Array::from_slice(cx, &bytes)?))
+    promise(cx, work, |cx, bytes| JsUint8Array::from_slice(cx, &bytes))
 }

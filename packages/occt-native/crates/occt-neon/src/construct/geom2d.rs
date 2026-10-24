@@ -191,14 +191,14 @@ pub fn tangencies(
     if qualifiers.len() != edges.len() {
         return Err(OcctError::invalid("one tangency qualifier is required per edge"));
     }
-    if points.len() % 2 != 0 {
+    if !points.len().is_multiple_of(2) {
         return Err(OcctError::invalid("tangency points must be [x, y] pairs"));
     }
     let mut targets = Vec::with_capacity(edges.len() + points.len() / 2);
     for (edge, value) in edges.iter().zip(qualifiers) {
         targets.push(Tangency::Curve(qualified_edge(edge, qualifier(*value)?)?));
     }
-    for point in points.chunks_exact(2) {
+    for point in points.as_chunks::<2>().0 {
         targets.push(Tangency::Point(cartesian_point(point[0], point[1])?));
     }
     Ok(targets)

@@ -98,7 +98,7 @@ fn hidden_line_edges<'cx>(
                 camera.len()
             )));
         }
-        if focus.is_some_and(|focus| !(focus > 0.0)) {
+        if focus.is_some_and(|focus| focus.is_nan() || focus <= 0.0) {
             return Err(OcctError::invalid("focus must be a positive focal length"));
         }
         let origin = pnt(&camera[0..3])?;

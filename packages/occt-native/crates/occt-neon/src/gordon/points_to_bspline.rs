@@ -97,8 +97,8 @@ impl PointsToBSplineInterpolation {
         let mut rhs = Matrix::zeros(n_params, 3);
         for row in 0..n_params {
             let point = self.points[row];
-            for axis in 0..3 {
-                rhs.set(row, axis, point[axis]);
+            for (axis, coordinate) in point.into_iter().enumerate() {
+                rhs.set(row, axis, coordinate);
             }
         }
 
@@ -112,8 +112,8 @@ impl PointsToBSplineInterpolation {
         }
 
         let mut poles = vec![[0.0; 3]; n_control_points];
-        for row in 0..n_params {
-            poles[row] = [solution.at(row, 0), solution.at(row, 1), solution.at(row, 2)];
+        for (row, pole) in poles[..n_params].iter_mut().enumerate() {
+            *pole = [solution.at(row, 0), solution.at(row, 1), solution.at(row, 2)];
         }
         if closed {
             for index in 0..degree {

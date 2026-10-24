@@ -224,8 +224,8 @@ impl BSplineApproxInterp {
             let mut targets = Matrix::zeros(n_approximated, 3);
             for (row, index) in self.index_of_approximated.iter().enumerate() {
                 let point = self.points[*index];
-                for axis in 0..3 {
-                    targets.set(row, axis, point[axis]);
+                for (axis, coordinate) in point.into_iter().enumerate() {
+                    targets.set(row, axis, coordinate);
                 }
             }
             let basis = bspline_basis_mat(self.degree, &flat_knots, &approximated_params, 0)?;
@@ -241,8 +241,8 @@ impl BSplineApproxInterp {
                     self.index_of_interpolated.iter().map(|index| params[*index]).collect();
                 for (row, index) in self.index_of_interpolated.iter().enumerate() {
                     let point = self.points[*index];
-                    for axis in 0..3 {
-                        pinned.set(row, axis, point[axis]);
+                    for (axis, coordinate) in point.into_iter().enumerate() {
+                        pinned.set(row, axis, coordinate);
                     }
                 }
                 let basis = bspline_basis_mat(self.degree, &flat_knots, &interpolated_params, 0)?;

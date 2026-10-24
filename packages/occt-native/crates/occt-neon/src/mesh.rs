@@ -395,7 +395,7 @@ fn write_surface_normals(
     let mut point = gp_Pnt_new()?;
     let mut along_u = gp_Vec_new()?;
     let mut along_v = gp_Vec_new()?;
-    for (node, slot) in normals.chunks_exact_mut(3).enumerate() {
+    for (node, slot) in normals.as_chunks_mut::<3>().0.iter_mut().enumerate() {
         surface.D1(
             uvs[node * 2],
             uvs[node * 2 + 1],
