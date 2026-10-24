@@ -6,8 +6,8 @@ Caddy is a TypeScript-first CAD library for Node.js on native Open CASCADE (OCCT
 
 | Path | What |
 | --- | --- |
-| `packages/caddy` | `@roonieone/caddy` — public TypeScript API (Apache-2.0, ports build123d) |
-| `packages/occt-native` | `@roonieone/occt-native` — typed TS API over the Neon addon (LGPL-2.1-only) |
+| `packages/caddy` | `@roonieone/caddy` — public TypeScript API (Apache-2.0; ports build123d and bd_materials) |
+| `packages/occt-native` | `@roonieone/occt-native` — typed TS API over the Neon addon (Apache-2.0; the platform packages also ship OCCT under LGPL-2.1 with the Open CASCADE exception and FreeType under the FTL) |
 | `packages/occt-native/crates/opencascade-sys` | cxx bindings to OCCT, **generated** by occt-bindgen from `bindings.toml` |
 | `packages/occt-native/crates/occt-bindgen` | libclang generator for opencascade-sys |
 | `packages/occt-native/crates/occt-neon` | Neon addon composing the bindings into JS functions |

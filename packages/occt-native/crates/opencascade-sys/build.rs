@@ -1,8 +1,8 @@
 //! Compiles the generated cxx bridges and links the OCCT toolkits they need.
 //!
-//! OCCT is located with CMake's `find_package(OpenCASCADE)` (see `OCCT/CMakeLists.txt`); point
-//! it at an installation with `DEP_OCCT_ROOT`. The bindings in `src/` are generated from one
-//! OCCT version, so the major.minor version must match `OCCT_VERSION`.
+//! `DEP_OCCT_ROOT` names the OCCT installation (`.cargo/config.toml` points it at the one
+//! `scripts/build-occt.ts` installs). The bindings in `src/` are generated from one OCCT
+//! version, so the major.minor version must match `OCCT_VERSION`.
 
 use std::{
     env, fs,
@@ -62,39 +62,53 @@ struct OcctConfig {
 }
 
 impl OcctConfig {
+    /// Reads an OCCT installation laid out as `scripts/build-occt.ts` installs it
+    /// (`INSTALL_DIR_LAYOUT=Unix`): headers in `include/opencascade`, libraries in `lib`, and on
+    /// Windows the DLLs in `bin`.
     fn detect() -> Self {
         println!("cargo:rerun-if-env-changed=DEP_OCCT_ROOT");
-        let dst = cmake::Config::new("OCCT").register_dep("occt").build();
-        let info = fs::read_to_string(dst.join("share").join("occ_info.txt"))
-            .expect("OCCT/CMakeLists.txt did not report the OCCT installation");
-        let value = |key: &str| {
-            info.lines()
-                .find_map(|line| line.strip_prefix(key)?.strip_prefix('='))
-                .unwrap_or_else(|| panic!("occ_info.txt is missing {key}"))
-                .to_owned()
-        };
-        let version = (
-            value("VERSION_MAJOR").parse::<u8>().expect("major version"),
-            value("VERSION_MINOR").parse::<u8>().expect("minor version"),
-        );
+        let root = PathBuf::from(env::var_os("DEP_OCCT_ROOT").expect(
+            "DEP_OCCT_ROOT must point at an OCCT installation (packages/occt-native/scripts/build-occt.ts)",
+        ));
+        let include_dir = root.join("include").join("opencascade");
+        let library_dir = root.join("lib");
+        let version_header = include_dir.join("Standard_Version.hxx");
+        println!("cargo:rerun-if-changed={}", version_header.display());
+        let version = header_version(&version_header);
         assert!(
             version == OCCT_VERSION,
-            "found OCCT {}.{}, but the bindings were generated for {}.{}; set DEP_OCCT_ROOT to a \
-             matching installation or regenerate the bindings",
+            "found OCCT {}.{} in {}, but the bindings were generated for {}.{}; set DEP_OCCT_ROOT \
+             to a matching installation or regenerate the bindings",
             version.0,
             version.1,
+            root.display(),
             OCCT_VERSION.0,
             OCCT_VERSION.1,
         );
-        let config = Self {
-            include_dir: PathBuf::from(value("INCLUDE_DIR")),
-            library_dir: PathBuf::from(value("LIBRARY_DIR")),
-            is_dynamic: value("BUILD_SHARED_LIBS") == "ON",
-        };
-        assert!(Path::new(&config.include_dir).is_dir(), "OCCT include dir does not exist");
+        let is_dynamic = ["lib/libTKernel.dylib", "lib/libTKernel.so", "bin/TKernel.dll"]
+            .iter()
+            .any(|library| root.join(library).exists());
         // Exposed to dependents as DEP_OPENCASCADE_*.
-        println!("cargo:include={}", config.include_dir.display());
-        println!("cargo:lib_dir={}", config.library_dir.display());
-        config
+        println!("cargo:include={}", include_dir.display());
+        println!("cargo:lib_dir={}", library_dir.display());
+        Self {
+            include_dir,
+            library_dir,
+            is_dynamic,
+        }
     }
+}
+
+/// `OCC_VERSION_MAJOR` and `OCC_VERSION_MINOR` from OCCT's `Standard_Version.hxx`.
+fn header_version(header: &Path) -> (u8, u8) {
+    let source = fs::read_to_string(header)
+        .unwrap_or_else(|error| panic!("cannot read {}: {error}", header.display()));
+    let define = |name: &str| {
+        source
+            .lines()
+            .find_map(|line| line.trim().strip_prefix("#define ")?.strip_prefix(name))
+            .and_then(|value| value.trim().parse::<u8>().ok())
+            .unwrap_or_else(|| panic!("{} does not define {name}", header.display()))
+    };
+    (define("OCC_VERSION_MAJOR "), define("OCC_VERSION_MINOR "))
 }

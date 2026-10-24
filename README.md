@@ -13,7 +13,7 @@ await caddy.export(part, { name: "plate.step", type: CADFileType.Step });
 | Package | What | License |
 | --- | --- | --- |
 | [`@roonieone/caddy`](packages/caddy) | The TypeScript API | Apache-2.0 |
-| [`@roonieone/occt-native`](packages/occt-native) | Neon addon over generated OCCT bindings, plus prebuilt per-platform packages | LGPL-2.1-only |
+| [`@roonieone/occt-native`](packages/occt-native) | Neon addon over generated OCCT bindings, plus prebuilt per-platform packages | Apache-2.0 (platform packages also carry OCCT under LGPL-2.1 with the Open CASCADE exception and FreeType under the FTL) |
 
 Runnable examples live in [`examples/`](examples) (`node examples/step-export/index.ts`).
 

@@ -32,6 +32,19 @@ the OCP (Python) kernel bindings were replaced by the native @roonieone/occt-nat
 
 -------------------------------------------------------------------------------
 
+Caddy's material catalog is a TypeScript port of bd_materials
+(https://github.com/bernhard-42/bd_materials), Copyright 2026 Bernhard Walter, licensed under the
+Apache License, Version 2.0.
+
+Statement of changes: src/materials ports bd_materials 0.2.5 to TypeScript. The Python modules were
+rewritten with JavaScript naming (camelCase) and trailing options objects, frozen dataclasses
+became interfaces and immutable catalog objects, and the material, finish and process registries
+were restructured for the npm package layout; it is not the original bd_materials.
+
+-------------------------------------------------------------------------------
+
 Caddy makes use of facilities provided by Open CASCADE Technology (OCCT, https://dev.opencascade.org),
-through @roonieone/occt-native, which is licensed under the GNU Lesser General Public License
-version 2.1 with the Open CASCADE exception. See THIRD_PARTY_NOTICES.md.
+through @roonieone/occt-native. That package is licensed under the Apache License, Version 2.0;
+OCCT itself is covered by the GNU Lesser General Public License version 2.1 with the Open CASCADE
+exception, whose text ships as @roonieone/occt-native/LICENSE.LGPL-2.1 and
+@roonieone/occt-native/LICENSE.OCCT_EXCEPTION. See THIRD_PARTY_NOTICES.md.

@@ -2,7 +2,7 @@
     "name": "@roonieone/occt-native",
     "version": "0.0.0",
     "description": "Node-API bindings to the Open CASCADE geometric kernel",
-    "license": "LGPL-2.1-only",
+    "license": "Apache-2.0",
     "files": [
         "dist",
         "crates/occt-neon/Cargo.toml",
@@ -13,7 +13,9 @@
         "crates/occt-bindgen/src",
         "scripts",
         "LICENSE",
+        "LICENSE.LGPL-2.1",
         "LICENSE.OCCT_EXCEPTION",
+        "licenses",
         "SOURCE.md",
         "THIRD_PARTY_NOTICES.md",
         "README.md"

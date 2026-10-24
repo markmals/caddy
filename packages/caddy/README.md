@@ -39,6 +39,6 @@ Node.js 24 or newer. The native kernel comes from [`@roonieone/occt-native`](../
 
 ## License
 
-Apache-2.0. Caddy is a derivative work of build123d (Apache-2.0); see `NOTICE` and `THIRD_PARTY_NOTICES.md`.
+Apache-2.0. Caddy is a derivative work of build123d (Apache-2.0) and of bd_materials (Apache-2.0); see `NOTICE` and `THIRD_PARTY_NOTICES.md`.
 
-Caddy makes use of facilities provided by the Open CASCADE Technology software, through `@roonieone/occt-native` (LGPL-2.1-only with the Open CASCADE exception).
+Caddy makes use of facilities provided by the Open CASCADE Technology software, through `@roonieone/occt-native` (Apache-2.0), whose per-platform packages ship OCCT itself under the GNU LGPL version 2.1 with the Open CASCADE exception.

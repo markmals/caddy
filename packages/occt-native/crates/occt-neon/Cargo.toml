@@ -2,7 +2,7 @@
 name = "occt-neon"
 version = "0.1.0"
 edition = "2024"
-license = "LGPL-2.1-only"
+license = "Apache-2.0"
 description = "Node-API (Neon) bindings over Open CASCADE for @roonieone/occt-native"
 publish = false
 

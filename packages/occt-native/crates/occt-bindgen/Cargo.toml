@@ -2,7 +2,7 @@
 name = "occt-bindgen"
 version = "0.1.0"
 edition = "2024"
-license = "LGPL-2.1-only"
+license = "Apache-2.0"
 description = "Generates opencascade-sys cxx bridges from OCCT headers via libclang"
 publish = false
 

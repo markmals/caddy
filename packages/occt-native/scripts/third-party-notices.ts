@@ -132,12 +132,42 @@ function occtInternals(): string {
     ].join("\n");
 }
 
+// FreeType License §3 asks binary distributions to credit the project in their documentation.
+const FREETYPE_NOTICE = [
+    "## FreeType 2.14.3 (FTL)",
+    "",
+    "OCCT's font support loads `libfreetype`, shipped beside the addon. Portions of this software are copyright © 2026 The FreeType Project (www.freetype.org). All rights reserved. FreeType is used under the FreeType License (FTL), not the GPLv2 alternative; its bundled zlib (Jean-loup Gailly and Mark Adler) and BDF/PCF driver notices are reproduced with the license in `LICENSE.FREETYPE`.",
+    "",
+].join("\n");
+
+/** Algorithms ported from other projects into the addon's own sources. */
+function portedCode(): string {
+    let scipy = readFileSync(join(PACKAGE_ROOT, "licenses", "scipy-BSD-3-Clause.txt"), "utf8");
+    return [
+        "## Code ported into the addon",
+        "",
+        "### ocp_gordon 0.3.1 (Apache-2.0)",
+        "",
+        "`crates/occt-neon/src/gordon` is derived from ocp_gordon, Copyright 2018 German Aerospace Center (DLR), itself a port of TiGL's Gordon surface code. Licensed under the Apache License 2.0, the same text as `LICENSE`.",
+        "",
+        "### SciPy 1.18.1 (BSD-3-Clause)",
+        "",
+        "`crates/occt-neon/src/gordon/optimize.rs` ports SciPy's BFGS, Wolfe line search and bounded scalar minimiser.",
+        "",
+        "```text",
+        scipy.trimEnd(),
+        "```",
+        "",
+    ].join("\n");
+}
+
 export function renderThirdPartyNotices(options: { includeOcctInternals: boolean }): string {
     let sections = [
         "# Third-party notices",
         "",
-        "`occt-native.node` links Open CASCADE Technology 8.0.1 dynamically (GNU LGPL-2.1 with the Open CASCADE exception; see `LICENSE` and `LICENSE.OCCT_EXCEPTION`) and statically links the Rust crates below. Where a crate is dual-licensed, the MIT (or other non-Apache) option is elected.",
+        "`occt-native.node` (Apache-2.0, see `LICENSE`) links Open CASCADE Technology 8.0.1 dynamically (GNU LGPL-2.1 with the Open CASCADE exception; see `LICENSE.LGPL-2.1` and `LICENSE.OCCT_EXCEPTION`) and statically links the Rust crates below.",
         "",
+        portedCode(),
         "## Rust crates linked into the addon",
         "",
     ];
@@ -146,7 +176,7 @@ export function renderThirdPartyNotices(options: { includeOcctInternals: boolean
         for (let { file, text } of crate.texts)
             sections.push(`${file}:`, "", "```text", text, "```", "");
     }
-    if (options.includeOcctInternals) sections.push(occtInternals());
+    if (options.includeOcctInternals) sections.push(occtInternals(), FREETYPE_NOTICE);
     return `${sections.join("\n")}\n`;
 }
 

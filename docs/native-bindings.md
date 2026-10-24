@@ -63,7 +63,7 @@ opencascade-rs's `opencascade-sys` is hand-written and targets OCCT 7.8.1. Using
 
 The high-level `opencascade` crate was also rejected: it panics on user input (12 sites catalogued), depends on `glam` and `kicad-parser`, and defaults to a static OCCT 7.8.1 build.
 
-Instead `crates/opencascade-sys` is a fork whose bridges are **generated** by `crates/occt-bindgen` from the OCCT 8.0.1 headers, keeping upstream's conventions (one bridge per OCCT package, opaque classes, `UniquePtr` ownership, `Handle_*` typedefs, constructor shims) and its OCCT discovery. Hand-writing one C++ shim per Caddy operation was considered and rejected by the project owner in favour of generation.
+Instead `crates/opencascade-sys` holds bridges that are **generated** by `crates/occt-bindgen` from the OCCT 8.0.1 headers, keeping upstream's conventions (one bridge per OCCT package, opaque classes, `UniquePtr` ownership, `Handle_*` typedefs, constructor shims) but none of its code: `build.rs` reads the OCCT installation produced by `scripts/build-occt.ts` directly, instead of upstream's CMake probe. Hand-writing one C++ shim per Caddy operation was considered and rejected by the project owner in favour of generation.
 
 ### occt-bindgen
 

@@ -18,7 +18,7 @@ npm installs exactly one prebuilt platform package as an optional dependency:
 | `@roonieone/occt-native-linux-arm64-gnu` | Linux arm64, glibc         |
 | `@roonieone/occt-native-win32-x64`       | Windows x64                |
 
-Each contains `occt-native.node` and the OCCT shared libraries it loads from its own directory.
+Each contains `occt-native.node` plus the OCCT and FreeType shared libraries it loads from its own directory.
 
 ## API
 
@@ -44,6 +44,8 @@ node scripts/build-native.ts --release
 
 ## License
 
-LGPL-2.1-only; see `LICENSE`. This package makes use of facilities provided by the Open CASCADE Technology software, which is licensed under LGPL-2.1 with the Open CASCADE exception (`LICENSE.OCCT_EXCEPTION`).
+Apache-2.0; see `LICENSE`. Every cxx binding in `crates/opencascade-sys` is generated from the OCCT headers by `crates/occt-bindgen`, so the addon itself contains no copyleft source. `crates/occt-neon/src/gordon` is a port of ocp_gordon (Apache-2.0) and of parts of SciPy (BSD-3-Clause); `THIRD_PARTY_NOTICES.md` carries those attributions along with every linked crate's license.
 
-The OCCT libraries are shared libraries in the platform package directory, so you can replace them with your own build of the same OCCT version: build OCCT with `scripts/build-occt.ts` (or your own CMake configuration using the options in `occt-build.json`) and copy the libraries over the shipped ones, keeping their file names. `THIRD_PARTY_NOTICES.md` in each platform package lists every bundled component and its license.
+This package makes use of facilities provided by the Open CASCADE Technology software. OCCT itself is licensed under the GNU LGPL version 2.1 with the Open CASCADE exception: it is linked dynamically, its text ships as `LICENSE.LGPL-2.1`, and the exception as `LICENSE.OCCT_EXCEPTION`. The platform packages additionally ship FreeType, used under the FreeType License (FTL) rather than GPLv2, with its notices in `LICENSE.FREETYPE`; portions of this software are copyright © 2026 The FreeType Project (www.freetype.org), all rights reserved. Each platform package therefore declares `Apache-2.0 AND LGPL-2.1-only WITH OCCT-exception-1.0 AND FTL`.
+
+The OCCT and FreeType libraries are shared libraries in the platform package directory, so you can replace them with your own build of the same versions: run `scripts/build-occt.ts`, which builds both (or use your own CMake configuration with the options recorded in `occt-build.json` and `freetype-build.json`), and copy the libraries over the shipped ones, keeping their file names. `THIRD_PARTY_NOTICES.md` in each platform package lists every bundled component and its license.
