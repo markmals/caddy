@@ -6,6 +6,14 @@ import { Location } from "./location.ts";
 import { Plane } from "./plane.ts";
 import { angleBetween, Vector } from "./vector.ts";
 
+/** Options of {@link Axis#isCoaxial}. */
+export interface CoaxialOptions {
+    /** How far the directions may differ, in degrees; defaults to 1e-5. */
+    readonly angularTolerance?: number;
+    /** How far each origin may lie off the other axis; defaults to 1e-5. */
+    readonly linearTolerance?: number;
+}
+
 /** An immutable infinite line: a point plus a unit direction (build123d `Axis`). */
 export class Axis {
     readonly position: Vector;
@@ -61,7 +69,9 @@ export class Axis {
      * OCCT's documentation says "parallel", but `gp_Ax1::IsCoaxial` compares directions with
      * `IsEqual`, so a reversed axis is not coaxial.
      */
-    isCoaxial(other: Axis, angularTolerance = 1e-5, linearTolerance = 1e-5): boolean {
+    isCoaxial(other: Axis, options: CoaxialOptions = {}): boolean {
+        let angularTolerance = options.angularTolerance ?? 1e-5;
+        let linearTolerance = options.linearTolerance ?? 1e-5;
         let toOther = this.position.sub(other.position).cross(other.direction).length;
         let toSelf = other.position.sub(this.position).cross(this.direction).length;
         return (

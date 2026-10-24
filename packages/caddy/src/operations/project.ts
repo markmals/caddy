@@ -53,7 +53,7 @@ export function project(
     });
     if (lines.length === 0 && faces.length === 0) return localPoints;
 
-    let shapeBounds = new Compound([...lines, ...faces]).boundingBox(undefined, false);
+    let shapeBounds = new Compound([...lines, ...faces]).boundingBox({ optimal: false });
     let screenSize = 3 * shapeBounds.diagonal;
     if (screenSize === 0) throw new GeometryError("Cannot project a zero-size shape");
     let screen = makeFaceRect(screenSize, screenSize, workplane);

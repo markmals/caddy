@@ -1,4 +1,5 @@
 export { Axis } from "./axis.ts";
+export type { CoaxialOptions } from "./axis.ts";
 export { BoundingBox, toAlignOffset } from "./bounding-box.ts";
 export { Color } from "./color.ts";
 export { DEG2RAD, GEOM_TOLERANCE, RAD2DEG, TOLERANCE } from "./constants.ts";
@@ -15,4 +16,4 @@ export { roundTo } from "./rounding.ts";
 export { Transform } from "./transform.ts";
 export type { CoordinateSystem } from "./transform.ts";
 export { Vector } from "./vector.ts";
-export type { VectorLike } from "./vector.ts";
+export type { VectorLike, VectorTransformOptions } from "./vector.ts";

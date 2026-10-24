@@ -19,6 +19,7 @@ export type { ArcOptions } from "./edge-makers.ts";
 export { reverseEdge, trimEdge, trimEdgeToLength, trimEdgeToOther } from "./edge-trim.ts";
 export { AngularDirection, ContinuityLevel, LengthMode, Sagitta, Tangency } from "./enums.ts";
 export { makeFaceRect, makeSurface } from "./face-makers.ts";
+export type { SurfaceOptions } from "./face-makers.ts";
 export { chamferFace2D, chamferWire2D, filletFace2D, filletWire2D } from "./fillet-chamfer-2d.ts";
 export { frameOf } from "./frame.ts";
 export { offset2D } from "./offset-2d.ts";
@@ -44,6 +45,7 @@ export {
     makeWirePolygon,
     makeWireRect,
 } from "./wire-makers.ts";
+export type { PolygonOptions } from "./wire-makers.ts";
 
 export { Airfoil, parseNaca4 } from "./objects/airfoil.ts";
 export type { AirfoilOptions, NacaParameters } from "./objects/airfoil.ts";

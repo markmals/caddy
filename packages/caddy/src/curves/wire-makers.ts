@@ -46,8 +46,15 @@ export function makeWireEllipse(
     return makeWire([arc, makeLine(arc.endPoint(), arc.startPoint())]);
 }
 
+/** Options of {@link makeWirePolygon} and {@link Wire.makePolygon}. */
+export interface PolygonOptions {
+    /** Close the polyline back to the first point; defaults to true. */
+    readonly close?: boolean;
+}
+
 /** Polyline through the points, closed back to the first unless `close` is false. */
-export function makeWirePolygon(points: readonly VectorLike[], close = true): Wire {
+export function makeWirePolygon(points: readonly VectorLike[], options: PolygonOptions = {}): Wire {
+    let close = options.close ?? true;
     let corners = points.map(point => Vector.from(point).toTuple());
     return castWire("Wire.makePolygon", () => construct.makePolygonWire(corners, close));
 }
@@ -60,8 +67,5 @@ export function makeWireRect(width: number, height: number, plane: Plane = Plane
         [-width / 2, -height / 2, 0],
         [-width / 2, height / 2, 0],
     ];
-    return makeWirePolygon(
-        corners.map(corner => plane.fromLocalCoords(corner)),
-        true,
-    );
+    return makeWirePolygon(corners.map(corner => plane.fromLocalCoords(corner)));
 }

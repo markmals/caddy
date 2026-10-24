@@ -22,7 +22,7 @@ export const propertyCases: OracleCases = {
         expectPoint(expected, "center_mass", solid.center(CenterOf.Mass));
         expectPoint(expected, "center_bounding_box", solid.center(CenterOf.BoundingBox));
         expectBoundsRecord(expected, "bounds_optimal", solid.boundingBox());
-        expectBoundsRecord(expected, "bounds_coarse", solid.boundingBox(undefined, false));
+        expectBoundsRecord(expected, "bounds_coarse", solid.boundingBox({ optimal: false }));
         expect(solid.isValid).toBe(fixtureBoolean(expected, "is_valid"));
         expect(solid.shapeType).toBe(fixtureString(expected, "shape_type"));
         expect(solid.geomType).toBe(fixtureString(expected, "geom_type"));
@@ -33,7 +33,7 @@ export const propertyCases: OracleCases = {
         expectPoint(expected, "center_mass", solid.center(CenterOf.Mass));
         expectPoint(expected, "center_bounding_box", solid.center(CenterOf.BoundingBox));
         expectBoundsRecord(expected, "bounds_optimal", solid.boundingBox());
-        expectBoundsRecord(expected, "bounds_coarse", solid.boundingBox(undefined, false));
+        expectBoundsRecord(expected, "bounds_coarse", solid.boundingBox({ optimal: false }));
     },
     "properties/face": expected => {
         let top = box().faces().sortBy(Axis.Z).last;

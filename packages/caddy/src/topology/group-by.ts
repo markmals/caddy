@@ -30,7 +30,12 @@ export class GroupBy<T extends Shape = Shape> implements Iterable<ShapeList<T>> 
     readonly #keys: readonly GroupKey[];
     readonly #keyOf: (shape: T) => GroupKey;
 
-    constructor(keyOf: (shape: T) => GroupKey, shapes: Iterable<T>, reverse = false) {
+    constructor(
+        keyOf: (shape: T) => GroupKey,
+        shapes: Iterable<T>,
+        options: { readonly reverse?: boolean } = {},
+    ) {
+        let reverse = options.reverse ?? false;
         this.#keyOf = keyOf;
         let keyed = Array.from(shapes, shape => ({ shape, key: keyOf(shape) }));
         keyed.sort((a, b) => (reverse ? compareKeys(b.key, a.key) : compareKeys(a.key, b.key)));

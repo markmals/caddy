@@ -20,13 +20,16 @@ export const transformCases: OracleCases = {
         expectPlaced(expected, box().translate([3, -2, 1]));
     },
     "transform/translate-geometry": expected => {
-        expectPlaced(expected, box().translate([3, -2, 1], true));
+        expectPlaced(expected, box().translate([3, -2, 1], { transform: true }));
     },
     "transform/rotate": expected => {
         expectPlaced(expected, box().rotate(Axis.Z, 35));
     },
     "transform/rotate-geometry": expected => {
-        expectPlaced(expected, box().rotate(new Axis([1, 1, 0], [0, 1, 1]), 35, true));
+        expectPlaced(
+            expected,
+            box().rotate(new Axis([1, 1, 0], [0, 1, 1]), 35, { transform: true }),
+        );
     },
     "transform/scale-uniform": expected => {
         expectPlaced(expected, box().scale(2));

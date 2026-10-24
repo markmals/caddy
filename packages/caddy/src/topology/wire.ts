@@ -3,6 +3,7 @@ import type * as occt from "@roonieone/occt-native";
 import { construct, query, ShapeType, topology } from "@roonieone/occt-native";
 
 import type { ArcOptions } from "../curves/edge-makers.ts";
+import type { PolygonOptions } from "../curves/wire-makers.ts";
 import type { VectorLike } from "../geometry/vector.ts";
 import type { CurvePosition } from "./mixin1d.ts";
 import type { ShapeOptions } from "./shape.ts";
@@ -173,8 +174,8 @@ export class Wire extends Mixin1D {
     }
 
     /** Straight segments through the points, closed back to the first unless told not to. */
-    static makePolygon(points: readonly VectorLike[], close = true): Wire {
-        return makeWirePolygon(points, close);
+    static makePolygon(points: readonly VectorLike[], options?: PolygonOptions): Wire {
+        return makeWirePolygon(points, options);
     }
 
     /** A rectangle centred on the plane's origin. */

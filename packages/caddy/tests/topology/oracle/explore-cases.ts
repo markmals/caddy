@@ -116,9 +116,9 @@ export const exploreCases: OracleCases = {
         expect(new Compound([box()]).unwrap().constructor.name).toBe(
             fixtureString(expected, "unwrapped_class"),
         );
-        expect(new Compound([new Compound([box()])]).unwrap(false).constructor.name).toBe(
-            fixtureString(expected, "unwrapped_shallow_class"),
-        );
+        expect(
+            new Compound([new Compound([box()])]).unwrap({ fully: false }).constructor.name,
+        ).toBe(fixtureString(expected, "unwrapped_shallow_class"));
         expectClose(expected, "volume", nested.volume, MASS_TOLERANCE);
     },
     "explore/wire-edges": expected => {

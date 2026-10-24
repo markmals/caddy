@@ -76,9 +76,9 @@ export abstract class Mixin2D extends Shape {
                             !commonEdges.some(
                                 boundary =>
                                     edge
-                                        .boundingBox(undefined, false)
+                                        .boundingBox({ optimal: false })
                                         .intersects(
-                                            boundary.boundingBox(undefined, false),
+                                            boundary.boundingBox({ optimal: false }),
                                             tolerance,
                                         ) && edge.distanceTo(boundary) <= tolerance,
                             ),

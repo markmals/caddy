@@ -34,7 +34,7 @@ export const inertiaCases: OracleCases = {
         );
     },
     "properties/inertia-rotated": expected => {
-        let solid = box().rotate(Axis.Z, 30, true);
+        let solid = box().rotate(Axis.Z, 30, { transform: true });
         expectMatrixClose(expected, "matrix", solid.matrixOfInertia, MASS_TOLERANCE);
         expectNumbersClose(expected, "static_moments", solid.staticMoments, MASS_TOLERANCE);
         expectNumbersClose(

@@ -181,7 +181,7 @@ describe("curve objects reject invalid input", () => {
                 [4, 0],
                 [4, 3],
             ],
-            false,
+            { close: false },
         );
         expect(() => wire.fillet2D(0.5, wire.vertices())).toThrow(/must join exactly two edges/);
     });
@@ -193,14 +193,14 @@ describe("curve objects reject invalid input", () => {
                 [4, 0],
                 [4, 3],
             ],
-            false,
+            { close: false },
         );
         let elsewhere = Wire.makePolygon(
             [
                 [100, 100],
                 [101, 100],
             ],
-            false,
+            { close: false },
         );
         expect(() => wire.fillet2D(0.5, elsewhere.vertices())).toThrow(
             /Could not find fillet vertex/,
@@ -214,7 +214,7 @@ describe("curve objects reject invalid input", () => {
                 [4, 0],
                 [4, 3],
             ],
-            false,
+            { close: false },
         );
         let corner = wire.vertices().sortByDistance([4, 0, 0]).first;
         expect(wire.fillet2D(0.5, [corner]).edges().length, "edge count").toBe(3);

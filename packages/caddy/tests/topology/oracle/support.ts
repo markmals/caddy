@@ -161,7 +161,7 @@ export function expectShapeMetrics(expected: FixtureCase, key: string, shape: Sh
         fixtureBoolean(metrics, "is_valid"),
     );
     expectMetricBounds(metrics, "bounding_box", shape.boundingBox());
-    expectMetricBounds(metrics, "bounding_box_coarse", shape.boundingBox(undefined, false));
+    expectMetricBounds(metrics, "bounding_box_coarse", shape.boundingBox({ optimal: false }));
     expectClose(metrics, "volume", shape.volume, MASS_TOLERANCE);
     expectClose(metrics, "area", shape.area, MASS_TOLERANCE);
     if (fixtureValue(metrics, "center_of_mass") !== null) {

@@ -115,13 +115,18 @@ export const curveCases: OracleCases = {
         expectLocation(
             expected,
             "line_x_dir",
-            line.locationAt(0.25, PositionMode.Parameter, FrameMethod.Frenet, [0, 0, 1]),
+            line.locationAt(0.25, PositionMode.Parameter, {
+                frameMethod: FrameMethod.Frenet,
+                xDir: [0, 0, 1],
+            }),
         );
         expectLocation(expected, "circle_frenet", circle.locationAt(0.25));
         expectLocation(
             expected,
             "circle_corrected",
-            circle.locationAt(0.25, PositionMode.Parameter, FrameMethod.Corrected),
+            circle.locationAt(0.25, PositionMode.Parameter, {
+                frameMethod: FrameMethod.Corrected,
+            }),
         );
     },
     "wire/location-at": expected => {
@@ -130,7 +135,7 @@ export const curveCases: OracleCases = {
         expectLocation(
             expected,
             "corrected",
-            wire.locationAt(0.25, PositionMode.Parameter, FrameMethod.Corrected),
+            wire.locationAt(0.25, PositionMode.Parameter, { frameMethod: FrameMethod.Corrected }),
         );
         expectLocation(
             expected,

@@ -99,7 +99,7 @@ export const listCases: OracleCases = {
     "shapelist/sort-by-axis": expected => {
         let faces = notchedBox().faces();
         expectCenters(expected, "by_z", faces.sortBy(Axis.Z));
-        expectCenters(expected, "by_x_reversed", faces.sortBy(Axis.X, true));
+        expectCenters(expected, "by_x_reversed", faces.sortBy(Axis.X, { reverse: true }));
         expectCenters(expected, "vertices_by_y", box().vertices().sortBy(Axis.Y));
     },
     "shapelist/sort-by-measure": expected => {
@@ -141,7 +141,11 @@ export const listCases: OracleCases = {
     "shapelist/sort-by-distance": expected => {
         let vertices = box().vertices();
         expectCenters(expected, "from_point", vertices.sortByDistance([0, 0, 0]));
-        expectCenters(expected, "from_point_reversed", vertices.sortByDistance([0, 0, 0], true));
+        expectCenters(
+            expected,
+            "from_point_reversed",
+            vertices.sortByDistance([0, 0, 0], { reverse: true }),
+        );
         let pointBox = new Solid(primitives.makeBox(1, 1, 1)).moved(new Pos(20, 3, 2));
         expectCenters(expected, "from_shape", box().faces().sortByDistance(pointBox));
     },

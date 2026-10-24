@@ -22,7 +22,7 @@ export type TrimmingTool = Plane | Face | Shell;
  * a bounded shape identically and needs no unbounded-surface binding.
  */
 export function cuttingFace(shape: Shape, plane: Plane): Shape {
-    let box = shape.boundingBox(undefined, false);
+    let box = shape.boundingBox({ optimal: false });
     let reach = Math.max(...box.min.toTuple().map(Math.abs), ...box.max.toTuple().map(Math.abs));
     let half = reach + box.diagonal;
     let corners = [

@@ -29,7 +29,7 @@ export function expectShapeMetrics(expected: FixtureCase, shape: Shape): void {
     expectBounds(fixtureRecord(metrics, "bounding_box"), shape.boundingBox());
     expectBounds(
         fixtureRecord(metrics, "bounding_box_coarse"),
-        shape.boundingBox(undefined, false),
+        shape.boundingBox({ optimal: false }),
     );
     expectClose(metrics, "volume", shape.volume, MASS_TOLERANCE);
     expectClose(metrics, "area", shape.area, MASS_TOLERANCE);

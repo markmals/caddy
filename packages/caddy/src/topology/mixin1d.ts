@@ -41,6 +41,14 @@ import { Shape } from "./shape.ts";
 /** build123d's `TOLERANCE`: how far a line may deviate from a shared plane. */
 const COMMON_PLANE_TOLERANCE = 1e-6;
 
+/** Options of {@link Mixin1D#locationAt}. */
+export interface LocationAtOptions {
+    /** How the frame is built; defaults to {@link FrameMethod.Frenet}. */
+    readonly frameMethod?: FrameMethod;
+    /** Direction the frame's X axis aims at, instead of the curve's natural normal. */
+    readonly xDir?: VectorLike;
+}
+
 /** Options of {@link Mixin1D#commonPlane}. */
 export interface CommonPlaneOptions {
     /** How far the lines may deviate from the plane; defaults to 1e-6. */
@@ -185,9 +193,10 @@ export abstract class Mixin1D extends Shape {
     locationAt(
         distance: number,
         positionMode: PositionMode = PositionMode.Parameter,
-        frameMethod: FrameMethod = FrameMethod.Frenet,
-        xDir?: VectorLike,
+        options: LocationAtOptions = {},
     ): Location {
+        let frameMethod = options.frameMethod ?? FrameMethod.Frenet;
+        let xDir = options.xDir;
         let reverseDistance = this.isForward
             ? distance
             : positionMode === PositionMode.Parameter

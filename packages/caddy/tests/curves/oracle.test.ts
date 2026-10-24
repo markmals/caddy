@@ -400,7 +400,7 @@ oracleSuite("curves", {
                     [4, 0],
                     [4, 3],
                 ],
-                false,
+                { close: false },
             ),
         ),
     "wire/make-rect": expected => expectCurve(expected, Wire.makeRect(8, 5)),

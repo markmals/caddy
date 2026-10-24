@@ -167,8 +167,8 @@ function maximalContacts(
 
 function overlapping(first: Shape, second: Shape, tolerance: number): boolean {
     return first
-        .boundingBox(undefined, false)
-        .intersects(second.boundingBox(undefined, false), tolerance);
+        .boundingBox({ optimal: false })
+        .intersects(second.boundingBox({ optimal: false }), tolerance);
 }
 
 /** Endpoints and tangencies where a curve meets a solid's boundary. */

@@ -109,7 +109,7 @@ oracleSuite("operations", {
                 [0, 0, 5],
                 [0, 0, 10],
             ],
-            false,
+            { close: false },
         );
         expectShapeMetrics(expected, sweep(new Rectangle(4, 3).faces()[0]!, path));
     },
@@ -194,7 +194,7 @@ oracleSuite("operations", {
                 [0, 0, 8],
                 [6, 0, 8],
             ],
-            false,
+            { close: false },
         );
         expectShapeMetrics(
             expected,

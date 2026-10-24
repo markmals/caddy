@@ -182,13 +182,13 @@ export const vectorCases: OracleCases = {
         expectVectorClose(
             expected,
             "direction_forward",
-            point.transform(frame.forwardTransform, true).toTuple(),
+            point.transform(frame.forwardTransform, { isDirection: true }).toTuple(),
             ANGULAR_TOLERANCE,
         );
         expectVectorClose(
             expected,
             "direction_reverse",
-            point.transform(frame.reverseTransform, true).toTuple(),
+            point.transform(frame.reverseTransform, { isDirection: true }).toTuple(),
             ANGULAR_TOLERANCE,
         );
     },

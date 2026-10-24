@@ -10,6 +10,12 @@ import { roundTo } from "./rounding.ts";
 /** Anything that can be read as a position or direction in space. */
 export type VectorLike = Vector | readonly number[];
 
+/** Options of {@link Vector#transform}. */
+export interface VectorTransformOptions {
+    /** Treat the vector as a direction: rotate and re-normalize it instead of moving a point. */
+    readonly isDirection?: boolean;
+}
+
 /**
  * OCCT switches between `acos` and `asin` at 45° because each is better conditioned on one side
  * of that boundary (`gp_Dir::Angle`). The literal is OCCT's, not `sqrt(2)/2`.
@@ -162,8 +168,10 @@ export class Vector {
      * Positions are translated and scaled; directions (`isDirection`) are only rotated and are
      * re-normalized, matching `gp_Pnt::Transformed` and `gp_Dir::Transformed`.
      */
-    transform(transform: Transform, isDirection = false): Vector {
-        return isDirection ? transform.applyDirection(this) : transform.apply(this);
+    transform(transform: Transform, options: VectorTransformOptions = {}): Vector {
+        return options.isDirection === true
+            ? transform.applyDirection(this)
+            : transform.apply(this);
     }
 
     /** Round every coordinate to `digits` decimal places. */

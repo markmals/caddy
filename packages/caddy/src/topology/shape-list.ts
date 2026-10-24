@@ -36,6 +36,12 @@ export interface FilterOptions {
 /** What {@link ShapeList#sortBy} and {@link ShapeList#groupBy} order by. */
 export type SortCriterion<T extends Shape> = ((shape: T) => GroupKey) | Axis | SortBy | CurveLike;
 
+/** Options of {@link ShapeList#sortBy} and {@link ShapeList#sortByDistance}. */
+export interface SortOptions {
+    /** Sort from the largest key down. */
+    readonly reverse?: boolean;
+}
+
 /** Options of {@link ShapeList#groupBy}. */
 export interface GroupOptions {
     /** Order the groups from the largest key down. */
@@ -228,7 +234,8 @@ export class ShapeList<T extends Shape = Shape> extends Array<T> {
      * a key function (build123d `sort_by`). Sorting by radius, area or volume drops shapes
      * without that measure.
      */
-    sortBy(criterion: SortCriterion<T> = Axis.Z, reverse = false): ShapeList<T> {
+    sortBy(criterion: SortCriterion<T> = Axis.Z, options: SortOptions = {}): ShapeList<T> {
+        let reverse = options.reverse ?? false;
         let key = this.#sortKey(criterion);
         let keyed = this.flatMap(shape => {
             let value = key(shape);
@@ -242,8 +249,8 @@ export class ShapeList<T extends Shape = Shape> extends Array<T> {
     }
 
     /** Sort by the minimal distance to `other` (build123d `sort_by_distance`). */
-    sortByDistance(other: Shape | VectorLike, reverse = false): ShapeList<T> {
-        return this.sortBy(shape => shape.distanceTo(other), reverse);
+    sortByDistance(other: Shape | VectorLike, options: SortOptions = {}): ShapeList<T> {
+        return this.sortBy(shape => shape.distanceTo(other), options);
     }
 
     /**
@@ -254,7 +261,7 @@ export class ShapeList<T extends Shape = Shape> extends Array<T> {
         let tolDigits = options.tolDigits ?? 6;
         let key = this.#sortKey(criterion);
         let keyOf = (shape: T): GroupKey => roundedKey(key(shape), tolDigits);
-        return new GroupBy(keyOf, this, options.reverse ?? false);
+        return new GroupBy(keyOf, this, { reverse: options.reverse ?? false });
     }
 
     #sortKey(criterion: SortCriterion<T>): (shape: T) => GroupKey | undefined {

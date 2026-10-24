@@ -2,6 +2,7 @@ import type * as occt from "@roonieone/occt-native";
 
 import { construct, measure, query, ShapeType } from "@roonieone/occt-native";
 
+import type { SurfaceOptions } from "../curves/face-makers.ts";
 import type { VectorLike } from "../geometry/vector.ts";
 import type { ExtrudeOptions } from "../operations/solids.ts";
 import type { Part } from "./composite.ts";
@@ -236,12 +237,8 @@ export class Face extends Mixin2D {
      * A possibly non-planar face filling `exterior`, pulled towards `surfacePoints` and
      * pierced by `interiorWires`.
      */
-    static makeSurface(
-        exterior: Wire | Iterable<Edge>,
-        surfacePoints?: readonly VectorLike[],
-        interiorWires?: Iterable<Wire>,
-    ): Face {
-        return makeSurface(exterior, surfacePoints, interiorWires);
+    static makeSurface(exterior: Wire | Iterable<Edge>, options: SurfaceOptions = {}): Face {
+        return makeSurface(exterior, options);
     }
 
     /** Rounds the listed corners of this planar face. */

@@ -77,6 +77,23 @@ export interface TouchOptions {
     readonly tolerance?: number;
 }
 
+/** Options for {@link Shape#boundingBox}. */
+export interface BoundingBoxOptions {
+    /**
+     * Accepted for parity with build123d, which takes it but never applies it; ignored the same
+     * way.
+     */
+    readonly tolerance?: number;
+    /** Compute the tight box rather than the cheaper, looser one; defaults to true. */
+    readonly optimal?: boolean;
+}
+
+/** Options for {@link Shape#translate} and {@link Shape#rotate}. */
+export interface MoveOptions {
+    /** Rebuild the geometry itself instead of only moving the shape's location. */
+    readonly transform?: boolean;
+}
+
 /** Either side of an algebraic operation: one shape or several. */
 export type ShapeOperand = Shape | Iterable<Shape>;
 
@@ -296,8 +313,8 @@ export abstract class Shape {
      * Axis-aligned bounds. build123d accepts a `tolerance` but never applies it, so it is accepted
      * here for parity and ignored the same way. An empty shape yields an all-zero box.
      */
-    boundingBox(tolerance?: number, optimal = true): BoundingBox {
-        void tolerance;
+    boundingBox(options: BoundingBoxOptions = {}): BoundingBox {
+        let optimal = options.optimal ?? true;
         let bounds = native("Bounding box", () => measure.boundingBox(this.wrapped, optimal));
         if (bounds === undefined) {
             return new BoundingBox([0, 0, 0], [0, 0, 0]);
@@ -452,15 +469,19 @@ export abstract class Shape {
     }
 
     /** A copy translated by `vector`; with `transform` the geometry itself is rebuilt. */
-    translate(vector: VectorLike, transform = false): this {
+    translate(vector: VectorLike, options: MoveOptions = {}): this {
         let translation = Transform.fromTranslation(Vector.from(vector));
-        return transform ? this.applyTransform(translation) : this.moved(new Location(translation));
+        return options.transform === true
+            ? this.applyTransform(translation)
+            : this.moved(new Location(translation));
     }
 
     /** A copy rotated `angle` degrees about `axis`; with `transform` the geometry is rebuilt. */
-    rotate(axis: Axis, angle: number, transform = false): this {
+    rotate(axis: Axis, angle: number, options: MoveOptions = {}): this {
         let rotation = Transform.fromAxisRotation(axis.position, axis.direction, angle * DEG2RAD);
-        return transform ? this.applyTransform(rotation) : this.moved(new Location(rotation));
+        return options.transform === true
+            ? this.applyTransform(rotation)
+            : this.moved(new Location(rotation));
     }
 
     /**

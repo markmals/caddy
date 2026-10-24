@@ -28,18 +28,22 @@ export function makeFaceRect(width: number, height: number, plane: Plane = Plane
     return castFace("Face.makeRect", () => construct.makeFace(outline.wrapped, []));
 }
 
+/** Options of {@link makeSurface} and {@link Face.makeSurface}. */
+export interface SurfaceOptions {
+    /** Points the surface is pulled through, besides the boundary. */
+    readonly surfacePoints?: readonly VectorLike[];
+    /** Wires cutting holes into the surface. */
+    readonly interiorWires?: Iterable<Wire>;
+}
+
 /**
  * Possibly non-planar face bounded by `exterior`, pulled towards `surfacePoints` and pierced by
  * `interiorWires` (build123d `Face.make_surface`).
  */
-export function makeSurface(
-    exterior: Wire | Iterable<Edge>,
-    surfacePoints: readonly VectorLike[] = [],
-    interiorWires: Iterable<Wire> = [],
-): Face {
+export function makeSurface(exterior: Wire | Iterable<Edge>, options: SurfaceOptions = {}): Face {
     let boundary = Symbol.iterator in exterior ? [...exterior] : exterior.edges();
     let edges = boundary.map(edge => edge.wrapped);
-    let points = surfacePoints.map(point => Vector.from(point).toTuple());
-    let holes = [...interiorWires].map(wire => wire.wrapped);
+    let points = (options.surfacePoints ?? []).map(point => Vector.from(point).toTuple());
+    let holes = [...(options.interiorWires ?? [])].map(wire => wire.wrapped);
     return castFace("Face.makeSurface", () => construct.makeSurfaceFace(edges, points, holes));
 }

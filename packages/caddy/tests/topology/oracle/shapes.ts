@@ -48,6 +48,6 @@ export function polygon(): Wire {
             [10, 5, 0],
             [0, 5, 0],
         ],
-        false,
+        { close: false },
     );
 }

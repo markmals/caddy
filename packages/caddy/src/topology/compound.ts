@@ -41,6 +41,12 @@ const CENTER_PROPERTY: Partial<Record<occt.ShapeType, "linear" | "surface" | "vo
 /** Where a compound is built from: a native shape, or the shapes it groups. */
 export type CompoundSource = occt.Shape | Iterable<Shape>;
 
+/** Options of {@link Compound#unwrap}. */
+export interface UnwrapOptions {
+    /** Strip every nesting level down to the single shape inside; defaults to true. */
+    readonly fully?: boolean;
+}
+
 function compoundOf(source: CompoundSource): occt.Shape {
     if (Symbol.iterator in source) {
         return topology.makeCompound(Array.from(source as Iterable<Shape>, shape => shape.wrapped));
@@ -138,7 +144,8 @@ export class Compound extends Mixin3D implements Iterable<Shape> {
      * Strip compounds holding a single shape: the innermost shape with `fully`, otherwise the
      * innermost single-child compound.
      */
-    unwrap(fully = true): Shape {
+    unwrap(options: UnwrapOptions = {}): Shape {
+        let fully = options.fully ?? true;
         let children = [...this];
         let [single] = children;
         if (children.length !== 1 || single === undefined) {
@@ -146,7 +153,7 @@ export class Compound extends Mixin3D implements Iterable<Shape> {
         }
         inheritAttributes(single, this);
         if (single instanceof Compound) {
-            let unwrapped = single.unwrap(fully);
+            let unwrapped = single.unwrap(options);
             return inheritAttributes(fully ? unwrapped : this.withWrapped(unwrapped.wrapped), this);
         }
         return fully ? single : this;
