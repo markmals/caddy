@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 """Generate — or verify — the committed build123d oracle fixtures.
 
-    uv run python reference/build123d/scripts/generate_fixtures.py [--suite NAME] [--check]
+    mise //reference/build123d:fixtures [-- --suite NAME]
+    mise //reference/build123d:fixtures:check [-- --suite NAME]
 
 Every case module in `reference/build123d/cases/` is imported and executed; the
 results are written to `reference/build123d/fixtures/<suite>.json` together with
@@ -131,9 +132,14 @@ def _equivalent(committed: Path, expected: Path) -> bool:
     if expected.read_bytes() == committed.read_bytes():
         return True
     if committed.suffix == ".json":
-        return _same_values(json.loads(committed.read_text()), json.loads(expected.read_text()))
+        return _same_values(
+            json.loads(committed.read_text(encoding="utf-8")),
+            json.loads(expected.read_text(encoding="utf-8")),
+        )
     if committed.suffix == ".brep":
-        return _same_tokens(committed.read_text().split(), expected.read_text().split())
+        return _same_tokens(
+            committed.read_text(encoding="utf-8").split(), expected.read_text(encoding="utf-8").split()
+        )
     return False
 
 
@@ -208,7 +214,7 @@ def _run_check(suites: list[str], known: set[str], all_suites: bool) -> int:
         print("fixtures are out of date:", file=sys.stderr)
         for line in drift:
             print(f"  {line}", file=sys.stderr)
-        print("run `pnpm oracle:generate` and commit the result", file=sys.stderr)
+        print("run `mise //reference/build123d:fixtures` and commit the result", file=sys.stderr)
         return 1
 
     print(f"fixtures up to date: {', '.join(suites)}")

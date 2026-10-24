@@ -2,10 +2,10 @@ import { execFile } from "node:child_process";
 import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { afterAll, beforeAll, describe, expect, test } from "vite-plus/test";
 
+import { ORACLE_PROJECT_DIR } from "../../../../reference/build123d/oracle.ts";
 import { Line } from "../../src/curves/index.ts";
 import { ExportError } from "../../src/errors.ts";
 import { Color } from "../../src/geometry/color.ts";
@@ -17,7 +17,6 @@ import { parseObj } from "./obj.ts";
 
 let directory = "";
 
-const REPO_ROOT = fileURLToPath(new URL("../../../../", import.meta.url));
 let run = promisify(execFile);
 
 beforeAll(async () => {
@@ -118,40 +117,47 @@ describe("glTF", () => {
 });
 
 describe("interoperability", () => {
-    test("OCCT's own glTF reader opens both forms and finds the whole surface", async () => {
-        let json = join(directory, "widget.gltf");
-        let glb = join(directory, "widget.glb");
-        await exportCAD(part(), { name: json, type: CADFileType.Gltf });
-        await exportCAD(part(), { name: glb, type: CADFileType.Gltf, binary: true });
-        let script = [
-            "from OCP.BRepGProp import BRepGProp",
-            "from OCP.GProp import GProp_GProps",
-            "from OCP.Message import Message_ProgressRange",
-            "from OCP.RWGltf import RWGltf_CafReader",
-            "from OCP.TCollection import TCollection_AsciiString, TCollection_ExtendedString",
-            "from OCP.TDocStd import TDocStd_Document",
-            "from OCP.TopAbs import TopAbs_FACE",
-            "from OCP.TopExp import TopExp_Explorer",
-            "from OCP.XCAFApp import XCAFApp_Application",
-            "def summary(path):",
-            "    app = XCAFApp_Application.GetApplication_s()",
-            "    doc = TDocStd_Document(TCollection_ExtendedString('doc'))",
-            "    app.NewDocument(TCollection_ExtendedString('BinXCAF'), doc)",
-            "    reader = RWGltf_CafReader()",
-            "    reader.SetDocument(doc)",
-            "    assert reader.Perform(TCollection_AsciiString(path), Message_ProgressRange())",
-            "    shape = reader.SingleShape()",
-            "    props = GProp_GProps()",
-            "    BRepGProp.SurfaceProperties_s(shape, props)",
-            "    explorer = TopExp_Explorer(shape, TopAbs_FACE)",
-            "    faces = 0",
-            "    while explorer.More():",
-            "        faces += 1",
-            "        explorer.Next()",
-            "    return f'{faces} {round(props.Mass() * 1e6, 2)}'",
-            `print(summary(${JSON.stringify(json)}), '|', summary(${JSON.stringify(glb)}))`,
-        ].join("\n");
-        let { stdout } = await run("uv", ["run", "python", "-c", script], { cwd: REPO_ROOT });
-        expect(stdout.trimEnd().split("\n").at(-1)).toBe("6 148.0 | 6 148.0");
-    });
+    // Starts the build123d oracle, whose OCP import alone takes seconds; more under parallel load.
+    test(
+        "OCCT's own glTF reader opens both forms and finds the whole surface",
+        { timeout: 60_000 },
+        async () => {
+            let json = join(directory, "widget.gltf");
+            let glb = join(directory, "widget.glb");
+            await exportCAD(part(), { name: json, type: CADFileType.Gltf });
+            await exportCAD(part(), { name: glb, type: CADFileType.Gltf, binary: true });
+            let script = [
+                "from OCP.BRepGProp import BRepGProp",
+                "from OCP.GProp import GProp_GProps",
+                "from OCP.Message import Message_ProgressRange",
+                "from OCP.RWGltf import RWGltf_CafReader",
+                "from OCP.TCollection import TCollection_AsciiString, TCollection_ExtendedString",
+                "from OCP.TDocStd import TDocStd_Document",
+                "from OCP.TopAbs import TopAbs_FACE",
+                "from OCP.TopExp import TopExp_Explorer",
+                "from OCP.XCAFApp import XCAFApp_Application",
+                "def summary(path):",
+                "    app = XCAFApp_Application.GetApplication_s()",
+                "    doc = TDocStd_Document(TCollection_ExtendedString('doc'))",
+                "    app.NewDocument(TCollection_ExtendedString('BinXCAF'), doc)",
+                "    reader = RWGltf_CafReader()",
+                "    reader.SetDocument(doc)",
+                "    assert reader.Perform(TCollection_AsciiString(path), Message_ProgressRange())",
+                "    shape = reader.SingleShape()",
+                "    props = GProp_GProps()",
+                "    BRepGProp.SurfaceProperties_s(shape, props)",
+                "    explorer = TopExp_Explorer(shape, TopAbs_FACE)",
+                "    faces = 0",
+                "    while explorer.More():",
+                "        faces += 1",
+                "        explorer.Next()",
+                "    return f'{faces} {round(props.Mass() * 1e6, 2)}'",
+                `print(summary(${JSON.stringify(json)}), '|', summary(${JSON.stringify(glb)}))`,
+            ].join("\n");
+            let { stdout } = await run("uv", ["run", "python", "-c", script], {
+                cwd: ORACLE_PROJECT_DIR,
+            });
+            expect(stdout.trimEnd().split("\n").at(-1)).toBe("6 148.0 | 6 148.0");
+        },
+    );
 });

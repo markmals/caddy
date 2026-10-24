@@ -22,9 +22,9 @@ The reference is pinned by the root `pyproject.toml`/`uv.lock`: build123d 0.13.0
 ## Generating and checking fixtures
 
 ```sh
-pnpm oracle:generate              # regenerate every suite
-pnpm oracle:check                 # fail if the committed fixtures differ
-uv run python reference/build123d/scripts/generate_fixtures.py --suite geometry
+mise //reference/build123d:fixtures                       # regenerate every suite
+mise //reference/build123d:fixtures:check                 # fail if the committed fixtures differ
+mise //reference/build123d:fixtures -- --suite geometry   # one suite
 ```
 
 `--check` regenerates into a temporary directory and compares the result with the committed tree, printing a unified diff of the first drifted fixture. Numbers in JSON fixtures and BREP assets compare within 1e-9 relative / 1e-12 absolute: OCCT's parallel booleans and fillets (which build123d enables) reorder floating-point sums, so regenerated values legitimately differ in their last bits; every other difference is drift. It is the guard that stops a reference change from silently rewriting the criteria Caddy is tested against: if the oracle's output moves, that has to show up as a reviewed fixture diff, not as a test that quietly starts passing.
@@ -122,11 +122,11 @@ Divergence from build123d is documented or fixed. It is never silenced.
 - **No tolerance inflation.** Widening a tolerance past the table above to accommodate a failure hides a behavioural difference; fix Caddy or record the divergence.
 - **Intentional divergences are asserted, not avoided.** Where Caddy deliberately differs from build123d (idiomatic naming, TypeScript-specific semantics), the implementation asserts Caddy's documented behaviour explicitly and carries a comment saying why the oracle value differs. The reviewer then sees the decision in the diff.
 - **Reference bugs are pinned too.** If build123d 0.13.0 is wrong, the fixture still records what it does; the case comment states the upstream issue. Changing the fixture to our preferred answer would make the oracle useless as a port target.
-- **Fixtures are generated, never edited.** Hand-editing a fixture to make a test pass is caught by `pnpm oracle:check` in CI.
+- **Fixtures are generated, never edited.** Hand-editing a fixture to make a test pass is caught by `mise //reference/build123d:fixtures:check` in CI.
 
 ## Harness tests
 
-`vp test run reference/build123d` covers the harness itself, independently of Caddy:
+`mise //reference/build123d:test` covers the harness itself, independently of Caddy:
 
 - `plan.test.ts` — `planOracleSuite` reports missing implementations, extra implementations, stale reference versions and malformed documents.
 - `fixtures.test.ts` — accessors throw on missing keys and wrong types; comparison failures name case, key, values and tolerance; the absolute/relative tolerance rule behaves at both ends of the scale.
@@ -136,6 +136,6 @@ Divergence from build123d is documented or fixed. It is never silenced.
 ## Adding a suite
 
 1. Write `reference/build123d/cases/<suite>.py` with at least one `@case`.
-2. Run `pnpm oracle:generate` and review the new `fixtures/<suite>.json`.
+2. Run `mise //reference/build123d:fixtures -- --suite <suite>` and review the new `fixtures/<suite>.json`.
 3. Add `oracleSuite("<suite>", { ... })` in `packages/*/tests/**/*.test.ts` with one implementation per case — `contract.test.ts` fails until the suite is consumed.
-4. Run `vp test run` and commit the fixtures together with the tests.
+4. Run `mise run test` and commit the fixtures together with the tests.

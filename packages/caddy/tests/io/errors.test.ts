@@ -2,10 +2,10 @@ import { execFile } from "node:child_process";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { afterAll, beforeAll, describe, expect, test } from "vite-plus/test";
 
+import { ORACLE_PROJECT_DIR } from "../../../../reference/build123d/oracle.ts";
 import { ExportError, ImportError } from "../../src/errors.ts";
 import { Color } from "../../src/geometry/color.ts";
 import * as caddy from "../../src/index.ts";
@@ -13,7 +13,6 @@ import { CADFileType, exportCAD, importCAD, serialize } from "../../src/io/index
 import { Box } from "../../src/parts/index.ts";
 import { Part } from "../../src/topology/index.ts";
 
-const REPO_ROOT = fileURLToPath(new URL("../../../../", import.meta.url));
 let run = promisify(execFile);
 
 let directory = "";
@@ -98,7 +97,8 @@ describe("interoperability", () => {
         expect(reread.volume).toBeCloseTo(120, 6);
     });
 
-    test("a Caddy STEP file opens in build123d", async () => {
+    // Starts the build123d oracle, whose OCP import alone takes seconds; more under parallel load.
+    test("a Caddy STEP file opens in build123d", { timeout: 60_000 }, async () => {
         let name = join(directory, "for-build123d.step");
         await exportCAD(part(), { name, type: CADFileType.Step });
         let script = [
@@ -106,7 +106,9 @@ describe("interoperability", () => {
             `shape = import_step(${JSON.stringify(name)})`,
             "print(shape.label, round(shape.volume, 6), tuple(round(c, 3) for c in shape.color))",
         ].join("\n");
-        let { stdout } = await run("uv", ["run", "python", "-c", script], { cwd: REPO_ROOT });
+        let { stdout } = await run("uv", ["run", "python", "-c", script], {
+            cwd: ORACLE_PROJECT_DIR,
+        });
         expect(stdout.trim()).toBe("widget 120.0 (0.251, 0.502, 0.753, 1.0)");
     });
 });

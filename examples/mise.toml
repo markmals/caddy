@@ -1,0 +1,10 @@
+[tasks.all]
+description = "Run every example against the staged addon, writing exports to a temporary directory"
+depends = ["//packages/occt-native:build"]
+run = '''
+output=$(mktemp -d)
+for example in */index.ts; do
+    echo "== ${example%/index.ts}"
+    node "$example" "$output"
+done
+'''

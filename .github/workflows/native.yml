@@ -1,5 +1,6 @@
 # Builds OCCT, the Neon addon and the per-platform npm package on every supported platform,
-# then runs the native and Caddy test suites against the freshly built artifact.
+# then runs the native and Caddy test suites against the freshly built artifact. Tools and steps
+# come from the mise configs; MISE_ENV=ci makes every task test the release build it packages.
 name: native
 
 on:
@@ -7,6 +8,9 @@ on:
         branches: [main]
     pull_request:
     workflow_dispatch:
+
+env:
+    MISE_ENV: ci
 
 jobs:
     build:
@@ -23,19 +27,14 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
+            # Installs the tools of every config root (Node, pnpm, Vite+, Rust, CMake, Ninja,
+            # Python, uv).
             - uses: jdx/mise-action@v2
 
-            - uses: dtolnay/rust-toolchain@stable
-
-            # libfontconfig-dev: OCCT links fontconfig (and expat) for font enumeration on
-            # Linux once USE_FREETYPE is on.
-            - name: Install CMake, Ninja and fontconfig (Linux)
+            # OCCT links the system fontconfig (and expat) for font enumeration on Linux.
+            - name: Install fontconfig (Linux)
               if: runner.os == 'Linux'
-              run: sudo apt-get update && sudo apt-get install -y cmake ninja-build libfontconfig-dev
-
-            - name: Install Ninja (macOS)
-              if: runner.os == 'macOS'
-              run: brew install ninja
+              run: sudo apt-get update && sudo apt-get install -y libfontconfig-dev
 
             - name: MSVC developer environment
               if: runner.os == 'Windows'
@@ -47,25 +46,25 @@ jobs:
                   path: packages/occt-native/.occt/${{ matrix.target }}
                   key: occt-${{ matrix.target }}-${{ hashFiles('packages/occt-native/scripts/build-occt.ts', 'packages/occt-native/scripts/build-freetype.ts') }}
 
-            - run: pnpm install --frozen-lockfile
+            - run: mise run install
 
-            - run: uv sync --frozen
+            - name: Lint
+              if: matrix.target == 'linux-x64'
+              run: mise run check
 
-            - name: Build FreeType and OCCT 8.0.1
-              run: node packages/occt-native/scripts/build-occt.ts
+            - name: Check the oracle fixtures and compatibility docs
+              if: matrix.target == 'linux-x64'
+              run: "mise run //reference/build123d:fixtures:check ::: //reference/build123d:compat:check"
 
-            - name: Build the addon
-              run: node packages/occt-native/scripts/build-native.ts --release
-
+            # Generating needs libclang; Xcode provides it on macOS.
             - name: Check generated bindings are current
               if: runner.os == 'macOS'
-              run: node packages/occt-native/scripts/generate-bindings.ts --check
+              run: mise run //packages/occt-native:bindings:check
 
-            - name: Test
-              run: pnpm exec vp test run
+            - run: "mise run test ::: //packages/occt-native:smoke"
 
             - name: Assemble the platform package
-              run: node packages/occt-native/scripts/package-native.ts
+              run: mise run //packages/occt-native:package
 
             - uses: actions/upload-artifact@v4
               with:

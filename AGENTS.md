@@ -18,16 +18,22 @@ Caddy is a TypeScript-first CAD library for Node.js on native Open CASCADE (OCCT
 ## Commands
 
 ```sh
-pnpm install                                         # JS workspace
-uv sync                                              # Python oracle (build123d 0.13.0)
-node packages/occt-native/scripts/build-occt.ts      # build OCCT 8.0.1 (~10 min, once per platform)
-node packages/occt-native/scripts/generate-bindings.ts [--check]   # regenerate opencascade-sys (needs libclang)
-node packages/occt-native/scripts/build-native.ts [--release]      # build addon → packages/occt-native/native/<platform>-<arch>/
-vp test run [path]                                   # Vitest (native tests need the staged addon)
-vp check                                             # oxfmt + oxlint (type-aware) + types
-uv run python reference/build123d/scripts/generate_fixtures.py [--suite NAME] [--check]
-node reference/build123d/scripts/compatibility-status.ts [--check]  # recompute docs/compatibility.{json,md}
+mise run setup                                    # fresh checkout: pnpm install, the Python oracle, OCCT, the addon
+mise run check                                    # oxfmt + oxlint (type-aware) + types, rustfmt + clippy
+mise run fmt                                      # format TypeScript, Markdown and Rust in place
+mise run test                                     # every Vitest suite (builds the addon first)
+mise run ci                                       # everything CI verifies on one platform
+mise //packages/caddy:test                        # one project's suites; `mise :test` inside a project
+mise //packages/occt-native:build                 # OCCT (once, ~10 min) + addon → native/<platform>-<arch>/
+mise //packages/occt-native:build:release        # optimised addon; :build:darwin-x64 cross-builds Intel macOS
+mise //packages/occt-native:bindings             # regenerate opencascade-sys (needs libclang); :bindings:check
+mise //packages/occt-native:package              # assemble the platform npm package in npm/<platform>-<arch>/
+mise //reference/build123d:fixtures -- --suite NAME   # regenerate fixtures; :fixtures:check fails on drift
+mise //reference/build123d:compat                # recompute docs/compatibility.{json,md}; :compat:check
+mise tasks --all                                  # everything else
 ```
+
+Tasks and tools live in mise: the root `mise.toml` is the monorepo root (Node, pnpm, Vite+, Rust) and each config root (`packages/caddy`, `packages/occt-native` with CMake and Ninja, `reference/build123d` with Python and uv, `examples`) declares its own tools and tasks. `package.json` files hold no scripts, so build `dist/` with `mise :pack` before `npm pack`. Add new commands as mise tasks in the project they belong to; CI (`MISE_ENV=ci`) runs the same tasks, with `packages/occt-native/mise.ci.toml` making `build` a release build.
 
 ## Native workflow
 

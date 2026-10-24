@@ -1,10 +1,6 @@
 {
     "private": true,
     "type": "module",
-    "scripts": {
-        "oracle:check": "uv run python reference/build123d/scripts/generate_fixtures.py --check",
-        "oracle:generate": "uv run python reference/build123d/scripts/generate_fixtures.py"
-    },
     "devDependencies": {
         "@types/node": "^25.5.0",
         "eslint-plugin-perfectionist": "^5.8.0",

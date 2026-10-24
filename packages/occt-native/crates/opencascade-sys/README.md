@@ -35,7 +35,6 @@ What the crate still owes upstream is its design: the shim naming scheme, the `H
 ## Regenerating
 
 ```sh
-node packages/occt-native/scripts/build-occt.ts         # once: builds OCCT 8.0.1
-node packages/occt-native/scripts/generate-bindings.ts  # needs libclang (Xcode / libclang-dev)
-node packages/occt-native/scripts/generate-bindings.ts --check
+mise //packages/occt-native:bindings        # builds OCCT 8.0.1 first if needed; needs libclang (Xcode / libclang-dev)
+mise //packages/occt-native:bindings:check  # fail when src/ differs from what bindings.toml generates
 ```

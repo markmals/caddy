@@ -23,10 +23,6 @@
             }
         }
     },
-    "scripts": {
-        "prepack": "vp pack",
-        "test": "vp test run"
-    },
     "dependencies": {
         "@roonieone/occt-native": "workspace:*"
     },

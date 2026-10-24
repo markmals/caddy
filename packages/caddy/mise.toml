@@ -1,0 +1,9 @@
+[tasks.test]
+description = "Run the Caddy Vitest suites against the staged addon"
+depends = ["//packages/occt-native:build"]
+dir = "{{config_root}}/../.."
+run = "vp test run packages/caddy"
+
+[tasks.pack]
+description = "Build dist/; run before npm pack or npm publish"
+run = "vp pack"

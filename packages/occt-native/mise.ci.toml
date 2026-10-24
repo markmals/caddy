@@ -1,0 +1,6 @@
+# MISE_ENV=ci: CI tests, smoke-tests and packages one artifact, so every task that depends on
+# `build` gets the optimised addon.
+[tasks.build]
+description = "Build the optimised addon and stage it in native/<platform>-<arch>"
+depends = [":build:occt"]
+run = "node scripts/build-native.ts --release"

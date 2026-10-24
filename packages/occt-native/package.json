@@ -32,13 +32,6 @@
             }
         }
     },
-    "scripts": {
-        "build:native": "node scripts/build-native.ts",
-        "build:occt": "node scripts/build-occt.ts",
-        "generate:bindings": "node scripts/generate-bindings.ts",
-        "prepack": "vp pack && node scripts/third-party-notices.ts",
-        "test": "vp test run"
-    },
     "engines": {
         "node": ">=24"
     }

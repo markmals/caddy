@@ -1,0 +1,37 @@
+# The build123d 0.13.0 oracle. OCP 8.0.1.1.0 wheels exist for CPython 3.13 and 3.14; the fixtures
+# were generated on 3.13.
+[tools]
+python = "3.13"
+uv = "0.13.5"
+
+[env]
+# Use the Python pinned above, never a uv-managed download, for the venv and `uv run`.
+UV_PYTHON_PREFERENCE = "only-system"
+_.python.venv = { path = ".venv", create = true }
+
+[tasks.install]
+description = "Install build123d 0.13.0 and its dependencies into .venv"
+run = "uv sync"
+
+[tasks.fixtures]
+description = "Regenerate the JSON fixtures from build123d (append -- --suite NAME for one suite)"
+run = "uv run python scripts/generate_fixtures.py"
+
+[tasks."fixtures:check"]
+description = "Fail when a fixture differs from what build123d produces now"
+run = "uv run python scripts/generate_fixtures.py --check"
+
+[tasks.compat]
+description = "Recompute docs/compatibility.json statuses and render docs/compatibility.md"
+depends = ["//packages/occt-native:build"]
+run = "node scripts/compatibility-status.ts"
+
+[tasks."compat:check"]
+description = "Fail when docs/compatibility.* is stale"
+depends = ["//packages/occt-native:build"]
+run = "node scripts/compatibility-status.ts --check"
+
+[tasks.test]
+description = "Run the oracle harness self-tests"
+dir = "{{config_root}}/../.."
+run = "vp test run reference/build123d"

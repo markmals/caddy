@@ -1,0 +1,72 @@
+[tools]
+cmake = "4.4.4"
+ninja = "1.13.2"
+
+[tasks."build:occt"]
+description = "Build FreeType and OCCT 8.0.1 into .occt/<platform>-<arch>; no-op while the install matches its stamp"
+run = "node scripts/build-occt.ts"
+
+[tasks.build]
+description = "Build the addon (debug) and stage it with its libraries in native/<platform>-<arch>"
+depends = [":build:occt"]
+run = "node scripts/build-native.ts"
+
+[tasks."build:release"]
+description = "Build the optimised addon and stage it in native/<platform>-<arch>"
+depends = [":build:occt"]
+run = "node scripts/build-native.ts --release"
+
+[tasks."build:darwin-x64"]
+description = "Cross-build OCCT and the optimised addon for Intel macOS on Apple silicon"
+run = [
+    "rustup target add x86_64-apple-darwin",
+    "node scripts/build-occt.ts --arch x64",
+    "node scripts/build-native.ts --release --arch x64",
+]
+
+[tasks.bindings]
+description = "Regenerate crates/opencascade-sys from bindings.toml (needs libclang: Xcode on macOS, libclang-dev on Linux)"
+depends = [":build:occt"]
+run = "node scripts/generate-bindings.ts"
+
+[tasks."bindings:check"]
+description = "Fail when crates/opencascade-sys differs from what bindings.toml generates"
+depends = [":build:occt"]
+run = "node scripts/generate-bindings.ts --check"
+
+[tasks.lint]
+description = "rustfmt and clippy for the addon crates"
+depends = [":build:occt"]
+run = [
+    "cargo fmt -p occt-neon -p occt-bindgen -p opencascade-sys --check",
+    "cargo clippy -p occt-neon -p occt-bindgen -- -D warnings",
+]
+
+[tasks.fmt]
+description = "Format the addon crates"
+run = "cargo fmt -p occt-neon -p occt-bindgen -p opencascade-sys"
+
+[tasks.test]
+description = "Run the occt-native Vitest suites against the staged addon"
+depends = [":build"]
+dir = "{{config_root}}/../.."
+run = "vp test run packages/occt-native"
+
+[tasks.smoke]
+description = "Load the staged addon and exercise a boolean and STEP round trip"
+depends = [":build"]
+run = "node scripts/smoke.ts"
+
+[tasks.notices]
+description = "Regenerate THIRD_PARTY_NOTICES.md for the source package"
+run = "node scripts/third-party-notices.ts"
+
+[tasks.pack]
+description = "Build dist/ and THIRD_PARTY_NOTICES.md; run before npm pack or npm publish"
+depends = [":notices"]
+run = "vp pack"
+
+[tasks.package]
+description = "Assemble the platform npm package in npm/<platform>-<arch> from the release build"
+depends = [":build:release"]
+run = "node scripts/package-native.ts"
