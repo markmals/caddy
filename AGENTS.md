@@ -28,12 +28,13 @@ mise //packages/occt-native:build                 # OCCT (once, ~10 min) + addon
 mise //packages/occt-native:build:release        # optimised addon; :build:darwin-x64 cross-builds Intel macOS
 mise //packages/occt-native:bindings             # regenerate opencascade-sys (needs libclang); :bindings:check
 mise //packages/occt-native:package              # assemble the platform npm package in npm/<platform>-<arch>/
+mise run release:pack                             # pack a release into .release/; release:publish publishes it (docs/releasing.md)
 mise //reference/build123d:fixtures -- --suite NAME   # regenerate fixtures; :fixtures:check fails on drift
 mise //reference/build123d:compat                # recompute docs/compatibility.{json,md}; :compat:check
 mise tasks --all                                  # everything else
 ```
 
-Tasks and tools live in mise: the root `mise.toml` is the monorepo root (Node, pnpm, Vite+, Rust) and each config root (`packages/caddy`, `packages/occt-native` with CMake and Ninja, `reference/build123d` with Python and uv, `examples`) declares its own tools and tasks. `package.json` files hold no scripts, so build `dist/` with `mise :pack` before `npm pack`. Add new commands as mise tasks in the project they belong to; CI (`MISE_ENV=ci`) runs the same tasks, with `packages/occt-native/mise.ci.toml` making `build` a release build.
+Tasks and tools live in mise: the root `mise.toml` is the monorepo root (Node, pnpm, Vite+, Rust) and each config root (`packages/caddy`, `packages/occt-native` with CMake and Ninja, `reference/build123d` with Python and uv, `examples`) declares its own tools and tasks. `package.json` files hold no scripts; `mise :pack` builds a package's `dist/`. Pack releases with `mise run release:pack`, never plain `npm pack`: it packs through pnpm, which resolves `workspace:*` and applies `publishConfig.exports`. Add new commands as mise tasks in the project they belong to; CI (`MISE_ENV=ci`) runs the same tasks, with `packages/occt-native/mise.ci.toml` making `build` a release build.
 
 ## Native workflow
 

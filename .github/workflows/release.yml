@@ -1,0 +1,47 @@
+# Publishes a release when a v<version> tag is pushed. native.yml builds, tests and packages every
+# platform; this workflow then packs and publishes the platform packages, @roonieone/occt-native
+# and @roonieone/caddy through npm trusted publishing (OIDC), which also attaches provenance.
+# Every package must be linked to this workflow on npm first; see docs/releasing.md.
+name: release
+
+on:
+    push:
+        tags: ["v*"]
+
+permissions:
+    contents: read
+
+jobs:
+    build:
+        uses: ./.github/workflows/native.yml
+
+    publish:
+        needs: build
+        runs-on: ubuntu-24.04
+        permissions:
+            contents: read
+            id-token: write
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: jdx/mise-action@v2
+
+            - run: mise run install
+
+            - name: Check the tag names the package version
+              run: |
+                  version=$(node -p 'require("./packages/occt-native/package.json").version')
+                  if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+                      echo "::error::tag $GITHUB_REF_NAME does not match package version $version"
+                      exit 1
+                  fi
+
+            - uses: actions/download-artifact@v4
+              with:
+                  pattern: occt-native-*
+                  merge-multiple: true
+                  path: packages/occt-native/npm
+
+            - run: mise run release:pack
+
+            - run: mise run release:publish

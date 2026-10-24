@@ -1,6 +1,7 @@
 # Builds OCCT, the Neon addon and the per-platform npm package on every supported platform,
 # then runs the native and Caddy test suites against the freshly built artifact. Tools and steps
 # come from the mise configs; MISE_ENV=ci makes every task test the release build it packages.
+# release.yml calls it to build the platform packages it publishes.
 name: native
 
 on:
@@ -8,6 +9,7 @@ on:
         branches: [main]
     pull_request:
     workflow_dispatch:
+    workflow_call:
 
 env:
     MISE_ENV: ci

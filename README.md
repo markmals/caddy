@@ -24,6 +24,7 @@ Runnable examples live in [`examples/`](examples) (`node examples/step-export/in
 - [Native bindings](docs/native-bindings.md)
 - [Test oracle](docs/test-oracle.md)
 - [Licensing](docs/licensing.md)
+- [Releasing](docs/releasing.md)
 
 Contributors start with [AGENTS.md](AGENTS.md): layout, commands, and the native and testing workflows.
 

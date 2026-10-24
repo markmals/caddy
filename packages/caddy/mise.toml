@@ -5,5 +5,5 @@ dir = "{{config_root}}/../.."
 run = "vp test run packages/caddy"
 
 [tasks.pack]
-description = "Build dist/; run before npm pack or npm publish"
+description = "Build dist/ (release:pack runs it before packing)"
 run = "vp pack"

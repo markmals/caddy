@@ -62,7 +62,7 @@ description = "Regenerate THIRD_PARTY_NOTICES.md for the source package"
 run = "node scripts/third-party-notices.ts"
 
 [tasks.pack]
-description = "Build dist/ and THIRD_PARTY_NOTICES.md; run before npm pack or npm publish"
+description = "Build dist/ and THIRD_PARTY_NOTICES.md (release:pack runs it before packing)"
 depends = [":notices"]
 run = "vp pack"
 
