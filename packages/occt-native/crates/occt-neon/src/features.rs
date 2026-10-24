@@ -38,8 +38,14 @@ use crate::{
 fn feature_extrude<'cx>(cx: &mut Cx<'cx>, profile: &ShapeCell, direction: Vec<f64>) -> ShapeResult {
     attempt(|| {
         let profile = get(profile)?;
-        let mut maker =
-            BRepPrimAPI_MakePrism_new_shape_vec_bool2(&profile, &*vector(&direction)?, true, true)?;
+        // Copy=false as build123d: the prism shares the profile's edges, so they keep their
+        // pcurves on the side faces (BRepOffsetAPI_MakeFilling crashes on copied ones).
+        let mut maker = BRepPrimAPI_MakePrism_new_shape_vec_bool2(
+            &profile,
+            &*vector(&direction)?,
+            false,
+            true,
+        )?;
         finish!(maker, "BRepPrimAPI_MakePrism")
     })
     .or_raise(cx)
@@ -136,6 +142,7 @@ fn feature_sweep<'cx>(
     transition: f64,
     normal: Vec<f64>,
     auxiliary: Option<&ShapeCell>,
+    auxiliary_curvilinear: bool,
 ) -> ShapeResult {
     let sections = shapes_from_js(cx, sections)?;
     attempt(|| {
@@ -148,7 +155,7 @@ fn feature_sweep<'cx>(
             let auxiliary = get(auxiliary)?;
             maker.pin_mut().SetMode_wire_bool_typeofcontact(
                 TopoDS_Wire_shape(&auxiliary)?,
-                true,
+                auxiliary_curvilinear,
                 BRepFill_TypeOfContact::BRepFill_NoContact,
             )?;
         } else if !normal.is_empty() {

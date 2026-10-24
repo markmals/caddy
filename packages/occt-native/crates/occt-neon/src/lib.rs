@@ -17,12 +17,14 @@ mod kernel;
 mod marshal;
 mod measure;
 mod mesh;
+mod obb;
 mod offset;
 mod primitives;
 mod projection;
 mod query;
 mod shape;
 mod step;
+mod surfaces;
 mod topology;
 mod xde;
 

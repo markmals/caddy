@@ -11,7 +11,10 @@ use opencascade_sys::{
         Adaptor3d_Curve, Adaptor3d_Curve_Circle, Adaptor3d_Curve_DN, Adaptor3d_Curve_Ellipse,
         Adaptor3d_Curve_Value, Handle_Adaptor3d_Curve,
     },
-    b_rep::{BRep_Tool, BRep_Tool_Curve_edge_real2, BRep_Tool_Parameters, BRep_Tool_Surface_face},
+    b_rep::{
+        BRep_Tool, BRep_Tool_Curve_edge_real2, BRep_Tool_CurveOnPlane, BRep_Tool_Parameters,
+        BRep_Tool_Surface_face,
+    },
     b_rep_adaptor::{
         BRepAdaptor_CompCurve_as_Adaptor3d_Curve, BRepAdaptor_CompCurve_new_wire_bool,
         BRepAdaptor_Curve_as_Adaptor3d_Curve, BRepAdaptor_Curve_new_edge,
@@ -21,7 +24,7 @@ use opencascade_sys::{
         Handle_BRepAdaptor_Curve_get, Handle_BRepAdaptor_Curve_to_Adaptor3d_Curve,
         Handle_BRepAdaptor_Curve2d_get, Handle_BRepAdaptor_Surface_get,
     },
-    b_rep_builder_api::BRepBuilderAPI_MakeVertex_new_pnt,
+    b_rep_builder_api::{BRepBuilderAPI_MakeFace_new_pln, BRepBuilderAPI_MakeVertex_new_pnt},
     b_rep_class3d::BRepClass3d_SolidClassifier_new_shape,
     b_rep_extrema::{
         BRepExtrema_DistShapeShape_SupportOnShape2, BRepExtrema_DistShapeShape_new,
@@ -29,10 +32,11 @@ use opencascade_sys::{
     },
     b_rep_g_prop::BRepGProp_Face_new_face_bool,
     b_rep_int_curve_surface::BRepIntCurveSurface_Inter_new,
+    b_rep_l_prop::BRepLProp,
     b_rep_tools::{BRepTools, BRepTools_OuterWire, BRepTools_WireExplorer_new_wire},
     extrema::Extrema_ExtAlgo,
     gc_pnts::{GCPnts_AbscissaPoint, GCPnts_AbscissaPoint_new_curve_real2},
-    geom::Handle_Geom_Curve_is_null,
+    geom::{Handle_Geom_Curve_is_null, Handle_Geom_Surface},
     geom_abs::GeomAbs_CurveType,
     geom_api::{
         GeomAPI_ProjectPointOnCurve_new_pnt_hcurve,
@@ -44,10 +48,15 @@ use opencascade_sys::{
         Handle_GeomFill_Frenet_to_GeomFill_TrihedronLaw, Handle_GeomFill_TrihedronLaw_get_mut,
     },
     geom_lib::GeomLib_IsPlanarSurface_new_hsurface_real,
+    geom2d::{Handle_Geom2d_Curve, Handle_Geom2d_Curve_is_null},
+    geom2d_api::{
+        Geom2dAPI_InterCurveCurve_Point, Geom2dAPI_InterCurveCurve_new_hcurve_real,
+        Geom2dAPI_InterCurveCurve_new_hcurve2_real,
+    },
     gp::{
         gp_Ax3_Ax2, gp_Ax3_new, gp_Ax3_new_ax2, gp_Ax3_new_pnt_dir2, gp_Dir_new_vec,
-        gp_Lin_new_ax1, gp_Pnt_new, gp_Pnt2d_new, gp_Pnt2d_new_real2, gp_Trsf_new, gp_Vec_new,
-        gp_Vec2d_new, gp_XYZ_new_real3,
+        gp_Lin_new_ax1, gp_Pln_new_ax3, gp_Pnt_new, gp_Pnt2d_new, gp_Pnt2d_new_real2, gp_Trsf_new,
+        gp_Vec_new, gp_Vec2d_new, gp_XYZ_new_real3,
     },
     int_tools::IntTools_FClass2d_new_face_real,
     shape_analysis::{ShapeAnalysis_Curve, ShapeAnalysis_Edge_new},
@@ -57,6 +66,7 @@ use opencascade_sys::{
     },
     top_abs::{TopAbs_Orientation, TopAbs_ShapeEnum},
     top_exp::{TopExp, TopExp_Explorer_new_shape_shapeenum2},
+    top_loc::TopLoc_Location_new,
     top_tools::{
         TopTools_IndexedDataMapOfShapeListOfShape_find_from_index,
         TopTools_IndexedDataMapOfShapeListOfShape_find_index,
@@ -71,7 +81,7 @@ use opencascade_sys::{
 
 use crate::{
     builder::progress,
-    convert::{ax1, dir, dir_xyz, pnt, trsf_to_vec, vec_xyz, vector, xyz},
+    convert::{ax1, ax3, dir, dir_xyz, pnt, trsf_to_vec, vec_xyz, vector, xyz},
     error::{OcctError, OcctResult, OrThrow, attempt},
     shape::{ShapeCell, ShapeResult, boxed, get, owned, shapes_to_js},
 };
@@ -846,6 +856,89 @@ fn is_seam_edge<'cx>(cx: &mut Cx<'cx>, edge: &ShapeCell, face: &ShapeCell) -> Ne
     attempt(|| {
         let analyzer = ShapeAnalysis_Edge_new()?;
         Ok(analyzer.IsSeam_edge_face(TopoDS_Edge_shape(&edge)?, TopoDS_Face_shape(&face)?)?)
+    })
+    .or_raise(cx)
+}
+
+/// The `GeomAbs_Shape` continuity two edges meet with at the parameters `firstParameter` and
+/// `secondParameter` (BRepLProp::Continuity).
+#[neon::export(name = "curveContinuity")]
+fn curve_continuity<'cx>(
+    cx: &mut Cx<'cx>,
+    first: &ShapeCell,
+    second: &ShapeCell,
+    first_parameter: f64,
+    second_parameter: f64,
+    tolerance: f64,
+    angular_tolerance: f64,
+) -> NeonResult<f64> {
+    let (first, second) = (get(first).or_raise(cx)?, get(second).or_raise(cx)?);
+    attempt(|| {
+        let first = BRepAdaptor_Curve_new_edge(TopoDS_Edge_shape(&first)?)?;
+        let second = BRepAdaptor_Curve_new_edge(TopoDS_Edge_shape(&second)?)?;
+        let continuity = BRepLProp::Continuity_curve2_real4(
+            Handle_BRepAdaptor_Curve_get(&first)?,
+            Handle_BRepAdaptor_Curve_get(&second)?,
+            first_parameter,
+            second_parameter,
+            tolerance,
+            angular_tolerance,
+        )?;
+        Ok(f64::from(continuity.repr))
+    })
+    .or_raise(cx)
+}
+
+/// The 2D curve an edge projects to on `plane`, as a Geom2d handle (BRep_Tool::CurveOnPlane).
+fn curve_on_plane(
+    edge: &TopoDS_Shape,
+    surface: &Handle_Geom_Surface,
+) -> OcctResult<UniquePtr<Handle_Geom2d_Curve>> {
+    let (mut first, mut last) = (0.0, 0.0);
+    let curve = BRep_Tool_CurveOnPlane(
+        TopoDS_Edge_shape(edge)?,
+        surface,
+        &*TopLoc_Location_new()?,
+        &mut first,
+        &mut last,
+    )?;
+    if Handle_Geom2d_Curve_is_null(&curve) {
+        return Err(OcctError::invalid("the edge has no curve on the plane"));
+    }
+    Ok(curve)
+}
+
+/// The `(u, v)` pairs, in `plane`'s parameter space, where an edge crosses `other` - or itself
+/// when `other` is absent (Geom2dAPI_InterCurveCurve).
+#[neon::export(name = "curveCrossings")]
+fn curve_crossings<'cx>(
+    cx: &mut Cx<'cx>,
+    edge: &ShapeCell,
+    other: Option<&ShapeCell>,
+    plane: Vec<f64>,
+    tolerance: f64,
+) -> NeonResult<Vec<f64>> {
+    let edge = get(edge).or_raise(cx)?;
+    let other = other.map(|cell| get(cell)).transpose().or_raise(cx)?;
+    attempt(|| {
+        let face = BRepBuilderAPI_MakeFace_new_pln(&*gp_Pln_new_ax3(&*ax3(&plane)?)?)?;
+        let surface = BRep_Tool_Surface_face(face.Face()?)?;
+        let curve = curve_on_plane(&edge, &surface)?;
+        let intersector = match &other {
+            Some(other) => Geom2dAPI_InterCurveCurve_new_hcurve2_real(
+                &curve,
+                &*curve_on_plane(other, &surface)?,
+                tolerance,
+            )?,
+            None => Geom2dAPI_InterCurveCurve_new_hcurve_real(&curve, tolerance)?,
+        };
+        let mut crossings = Vec::new();
+        for index in 1..=intersector.NbPoints()? {
+            let point = Geom2dAPI_InterCurveCurve_Point(&intersector, index)?;
+            crossings.push(point.X()?);
+            crossings.push(point.Y()?);
+        }
+        Ok(crossings)
     })
     .or_raise(cx)
 }

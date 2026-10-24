@@ -6,6 +6,9 @@ use opencascade_sys::{
         BRepBuilderAPI_MakePolygon_new, BRepBuilderAPI_MakeWire_new, BRepBuilderAPI_WireError,
     },
     shape_analysis::ShapeAnalysis_FreeBounds_ConnectEdgesToWires,
+    shape_fix::{
+        Handle_ShapeFix_Wireframe_get_mut, ShapeFix_Wireframe_Shape, ShapeFix_Wireframe_new_shape,
+    },
     top_tools::{
         Handle_TopTools_HSequenceOfShape_get, Handle_TopTools_HSequenceOfShape_get_mut,
         TopTools_HSequenceOfShape_append, TopTools_HSequenceOfShape_length,
@@ -16,10 +19,10 @@ use opencascade_sys::{
 
 use crate::{
     builder::progress,
-    construct::{TOLERANCE, points},
+    construct::{TOLERANCE, as_wire, points},
     convert::xyz,
     error::{OcctError, OcctResult, OrThrow, attempt},
-    shape::{ShapeResult, boxed, owned, shape_list, shapes_from_js, shapes_to_js},
+    shape::{ShapeCell, ShapeResult, boxed, get, owned, shape_list, shapes_from_js, shapes_to_js},
 };
 
 fn wire_failure(error: BRepBuilderAPI_WireError) -> Option<OcctError> {
@@ -100,4 +103,46 @@ fn connect_edges_to_wires<'cx>(
     })
     .or_raise(cx)?;
     shapes_to_js(cx, wires)
+}
+
+/// The wire holding the edges of both wires, added wire by wire so that each edge is checked
+/// against the growing wire (build123d `Wire.stitch`).
+#[neon::export(name = "stitchWires")]
+fn stitch_wires<'cx>(cx: &mut Cx<'cx>, first: &ShapeCell, second: &ShapeCell) -> ShapeResult {
+    let first = get(first).or_raise(cx)?;
+    let second = get(second).or_raise(cx)?;
+    attempt(|| {
+        let mut maker = BRepBuilderAPI_MakeWire_new()?;
+        maker.pin_mut().Add_wire(as_wire(&first)?)?;
+        maker.pin_mut().Add_wire(as_wire(&second)?)?;
+        maker.pin_mut().Build(&*progress()?)?;
+        if !maker.IsDone()? {
+            if let Some(failure) = wire_failure(maker.Error()?) {
+                return Err(failure);
+            }
+        }
+        boxed(TopoDS_Wire_to_TopoDS_Shape(maker.pin_mut().Wire()?))
+    })
+    .or_raise(cx)
+}
+
+/// ShapeFix_Wireframe's small-edge and wire-gap fixes, which drop edges shorter than
+/// `precision` (build123d `Wire.fix_degenerate_edges`).
+#[neon::export(name = "fixWireframe")]
+fn fix_wireframe<'cx>(
+    cx: &mut Cx<'cx>,
+    shape: &ShapeCell,
+    precision: f64,
+    max_tolerance: f64,
+) -> ShapeResult {
+    let shape = get(shape).or_raise(cx)?;
+    attempt(|| {
+        let mut fixer = ShapeFix_Wireframe_new_shape(&shape)?;
+        Handle_ShapeFix_Wireframe_get_mut(fixer.pin_mut())?.SetPrecision(precision)?;
+        Handle_ShapeFix_Wireframe_get_mut(fixer.pin_mut())?.SetMaxTolerance(max_tolerance)?;
+        Handle_ShapeFix_Wireframe_get_mut(fixer.pin_mut())?.FixSmallEdges()?;
+        Handle_ShapeFix_Wireframe_get_mut(fixer.pin_mut())?.FixWireGaps()?;
+        boxed(ShapeFix_Wireframe_Shape(Handle_ShapeFix_Wireframe_get_mut(fixer.pin_mut())?)?)
+    })
+    .or_raise(cx)
 }

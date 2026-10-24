@@ -172,6 +172,8 @@ interface ConstructAddon {
         distance2: number,
     ): Shape;
     offsetWire2d(wire: Shape, distance: number, kind: JoinType, openResult: boolean): Shape;
+    stitchWires(first: Shape, second: Shape): Shape;
+    fixWireframe(shape: Shape, precision: number, maxTolerance: number): Shape;
     makePlaneFace(frame: Float64Array): Shape;
     sewFaces(faces: readonly Shape[]): Shape;
     makeSolidFromShell(shell: Shape): Shape;
@@ -515,4 +517,14 @@ export function sewFaces(faces: readonly Shape[]): Shape {
 /** The solid bounded by `shell`, with its faces oriented outwards. */
 export function makeSolidFromShell(shell: Shape): Shape {
     return native().makeSolidFromShell(shell);
+}
+
+/** A wire holding the edges of both wires; they must meet at a shared end. */
+export function stitchWires(first: Shape, second: Shape): Shape {
+    return native().stitchWires(first, second);
+}
+
+/** Drops edges shorter than `precision` from a wire and closes the gaps they leave. */
+export function fixWireframe(shape: Shape, precision: number, maxTolerance = 1e-6): Shape {
+    return native().fixWireframe(shape, precision, maxTolerance);
 }

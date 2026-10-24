@@ -27,6 +27,7 @@ interface FeatureAddon {
         transition: number,
         frame: Float64Array,
         auxiliary: Shape | null,
+        auxiliaryCurvilinear: boolean,
     ): Shape;
     featureFillet(solid: Shape, edges: readonly Shape[], radius: number): Shape;
     featureChamfer(
@@ -112,6 +113,8 @@ export function sweep(
         transition?: 0 | 1 | 2;
         normalFrame?: Frame;
         auxiliary?: Shape;
+        /** Map the profile onto the auxiliary spine by curvilinear abscissa; defaults to true. */
+        auxiliaryCurvilinear?: boolean;
     } = {},
 ): Shape {
     return native().featureSweep(
@@ -122,6 +125,7 @@ export function sweep(
         options.transition ?? 0,
         options.normalFrame ? frameArray(options.normalFrame) : new Float64Array(),
         options.auxiliary ?? null,
+        options.auxiliaryCurvilinear ?? true,
     );
 }
 

@@ -4,7 +4,7 @@
 import type { Axis, Frame, Shape, Vec3 } from "./types.ts";
 
 import { addon } from "./addon.ts";
-import { axisArray, vec3 } from "./types.ts";
+import { axisArray, frameArray, vec3 } from "./types.ts";
 
 /** OCCT GeomAbs_CurveType. */
 export const CurveType = {
@@ -39,6 +39,10 @@ export type SurfaceType = (typeof SurfaceType)[keyof typeof SurfaceType];
 /** OCCT TopAbs_State. */
 export const PointState = { In: 0, Out: 1, On: 2, Unknown: 3 } as const;
 export type PointState = (typeof PointState)[keyof typeof PointState];
+
+/** OCCT GeomAbs_Shape: how smoothly geometry continues. */
+export const Continuity = { C0: 0, G1: 1, C1: 2, G2: 3, C2: 4, C3: 5, CN: 6 } as const;
+export type Continuity = (typeof Continuity)[keyof typeof Continuity];
 
 export interface CurveInfo {
     readonly first: number;
@@ -133,6 +137,20 @@ interface QueryAddon {
     classifyUV(face: Shape, u: number, v: number, tolerance: number): number;
     edgeIsReversedInFace(face: Shape, edge: Shape): boolean;
     isSeamEdge(edge: Shape, face: Shape): boolean;
+    curveContinuity(
+        first: Shape,
+        second: Shape,
+        firstParameter: number,
+        secondParameter: number,
+        tolerance: number,
+        angularTolerance: number,
+    ): number;
+    curveCrossings(
+        edge: Shape,
+        other: Shape | null,
+        plane: Float64Array,
+        tolerance: number,
+    ): Float64Array;
 }
 
 function native(): QueryAddon {
@@ -395,4 +413,44 @@ export function edgeIsReversedInFace(face: Shape, edge: Shape): boolean {
 /** Whether the face meets itself along `edge`, as a cylinder does at its seam. */
 export function isSeamEdge(edge: Shape, face: Shape): boolean {
     return native().isSeamEdge(edge, face);
+}
+
+/**
+ * How smoothly two edges continue into each other where their curves reach `firstParameter` and
+ * `secondParameter` (BRepLProp::Continuity).
+ */
+export function curveContinuity(
+    first: Shape,
+    second: Shape,
+    firstParameter: number,
+    secondParameter: number,
+    tolerance: number,
+    angularTolerance = tolerance,
+): Continuity {
+    return native().curveContinuity(
+        first,
+        second,
+        firstParameter,
+        secondParameter,
+        tolerance,
+        angularTolerance,
+    ) as Continuity;
+}
+
+/**
+ * Where an edge's curve crosses `other`'s - or itself, when `other` is omitted - as `[u, v]`
+ * pairs in `plane`'s parameter space (Geom2dAPI_InterCurveCurve).
+ */
+export function curveCrossings(
+    edge: Shape,
+    other: Shape | undefined,
+    plane: Frame,
+    tolerance: number,
+): [u: number, v: number][] {
+    let flat = native().curveCrossings(edge, other ?? null, frameArray(plane), tolerance);
+    let crossings: [number, number][] = [];
+    for (let index = 0; index + 1 < flat.length; index += 2) {
+        crossings.push([flat[index] as number, flat[index + 1] as number]);
+    }
+    return crossings;
 }

@@ -22,6 +22,7 @@ interface ShapeAddon {
     shapeLocated(shape: Shape, matrix: Float64Array): Shape;
     shapeTransformed(shape: Shape, matrix: Float64Array, copy: boolean): Shape;
     shapeGTransformed(shape: Shape, matrix: Float64Array, copy: boolean): Shape;
+    shapeToSplines(shape: Shape, degree: number, tolerance: number, rational: boolean): Shape;
 }
 
 function native(): ShapeAddon {
@@ -103,4 +104,17 @@ export function transformed(shape: Shape, matrix: Matrix3x4, copyGeometry = fals
 /** Applies a general affine matrix (e.g. non-uniform scale); curved geometry becomes NURBS. */
 export function generalTransformed(shape: Shape, matrix: Matrix3x4, copyGeometry = false): Shape {
     return native().shapeGTransformed(shape, matrixArray(matrix), copyGeometry);
+}
+
+/**
+ * Every curve and surface of the shape approximated by B-splines of at most `degree`, within
+ * `tolerance` (ShapeCustom::BSplineRestriction). `rational` keeps weights on the result.
+ */
+export function toSplines(
+    shape: Shape,
+    degree: number,
+    tolerance: number,
+    rational: boolean,
+): Shape {
+    return native().shapeToSplines(shape, degree, tolerance, rational);
 }

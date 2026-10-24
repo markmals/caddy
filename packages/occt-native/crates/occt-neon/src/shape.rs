@@ -15,6 +15,8 @@ use opencascade_sys::{
         BRepBuilderAPI_Copy_new_shape_bool2, BRepBuilderAPI_GTransform_new_shape_gtrsf_bool,
         BRepBuilderAPI_Transform_new_shape_trsf_bool2,
     },
+    geom_abs::GeomAbs_Shape,
+    shape_custom::{ShapeCustom_BSplineRestriction, ShapeCustom_RestrictionParameters_new},
     top_abs::TopAbs_Orientation,
     top_loc::TopLoc_Location_new_trsf,
     top_tools::{
@@ -261,6 +263,34 @@ fn shape_gtransformed<'cx>(
         let mut transform =
             BRepBuilderAPI_GTransform_new_shape_gtrsf_bool(&shape, &*gtrsf_from(&matrix)?, copy)?;
         boxed(owned(transform.pin_mut().Shape()?))
+    });
+    result.or_raise(cx)
+}
+
+/// Every curve and surface of the shape approximated by B-splines (ShapeCustom::BSplineRestriction).
+#[neon::export(name = "shapeToSplines")]
+fn shape_to_splines<'cx>(
+    cx: &mut Cx<'cx>,
+    shape: &ShapeCell,
+    degree: f64,
+    tolerance: f64,
+    rational: bool,
+) -> ShapeResult {
+    let shape = get(shape).or_raise(cx)?;
+    let result = attempt(|| {
+        let parameters = ShapeCustom_RestrictionParameters_new()?;
+        boxed(ShapeCustom_BSplineRestriction(
+            &shape,
+            tolerance,
+            tolerance,
+            degree as i32,
+            1,
+            GeomAbs_Shape::GeomAbs_C0,
+            GeomAbs_Shape::GeomAbs_C0,
+            true,
+            !rational,
+            &parameters,
+        )?)
     });
     result.or_raise(cx)
 }
