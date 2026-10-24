@@ -2733,7 +2733,7 @@
         {
             "python": "export_gltf",
             "kind": "function",
-            "caddy": "export",
+            "caddy": "CADFileType.Gltf",
             "behavior": "The glTF (GL Transmission Format) specification primarily focuses on the efficient transmission and loading of 3D models as a compact, binary format that is directly renderable by graphics APIs like WebGL, OpenGL, and Vulkan.",
             "referenceTests": [
                 "tests/test_exporters3d.py::TestExportGltf::test_export_gltf",
@@ -2759,13 +2759,13 @@
                 "XCAFDoc_ShapeTool"
             ],
             "capability": "io",
-            "status": "tested",
-            "notes": "Reachable through `export(shape, { type: CADFileType.Gltf })`."
+            "status": "planned",
+            "notes": "Exported through export(shape, { type: CADFileType.Gltf })."
         },
         {
             "python": "export_obj",
             "kind": "function",
-            "caddy": "export",
+            "caddy": "CADFileType.Obj",
             "behavior": "Exports a shape to Wavefront OBJ format.",
             "referenceTests": [
                 "tests/test_exporters3d.py::TestExportObj::test_export_obj_atlas_gutter",
@@ -2774,8 +2774,8 @@
             ],
             "native": [],
             "capability": "io",
-            "status": "tested",
-            "notes": "Reachable through `export(shape, { type: CADFileType.Obj })`."
+            "status": "planned",
+            "notes": "Exported through export(shape, { type: CADFileType.Obj })."
         },
         {
             "python": "export_step",

@@ -67,6 +67,7 @@ function resolves(caddyName: string, sources: string): boolean {
             value !== undefined || new RegExp(`export (type|interface) ${owner}\\b`).test(sources)
         );
     }
+    if (separator === "." && typeof value === "object" && value !== null) return member in value;
     if (typeof value !== "function") return false;
     let target: unknown = separator === "#" ? value.prototype : value;
     if ((typeof target === "object" && target !== null) || typeof target === "function") {
