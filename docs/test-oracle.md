@@ -26,7 +26,7 @@ pnpm oracle:check                 # fail if the committed fixtures differ
 uv run python reference/build123d/scripts/generate_fixtures.py --suite geometry
 ```
 
-`--check` regenerates into a temporary directory and byte-compares the result with the committed tree, printing a unified diff of the first drifted fixture. It is the guard that stops a reference change from silently rewriting the criteria Caddy is tested against: if the oracle's output moves, that has to show up as a reviewed fixture diff, not as a test that quietly starts passing.
+`--check` regenerates into a temporary directory and compares the result with the committed tree, printing a unified diff of the first drifted fixture. Numbers in JSON fixtures and BREP assets compare within 1e-9 relative / 1e-12 absolute: OCCT's parallel booleans and fillets (which build123d enables) reorder floating-point sums, so regenerated values legitimately differ in their last bits; every other difference is drift. It is the guard that stops a reference change from silently rewriting the criteria Caddy is tested against: if the oracle's output moves, that has to show up as a reviewed fixture diff, not as a test that quietly starts passing.
 
 Generation never skips anything. All of these exit non-zero with a message naming the suite, the case and the offending key: a case module that fails to import, a case that raises, a duplicate case name, a suite with no cases, a value that is not JSON-serializable (including a raw build123d object), NaN/Infinity, an integer beyond JavaScript's safe range, and a case that does not return a dict. Generation also prunes: fixtures and BREP assets whose case disappeared are deleted, so the committed tree always equals the current reference output.
 

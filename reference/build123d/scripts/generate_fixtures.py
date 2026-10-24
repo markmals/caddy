@@ -19,6 +19,8 @@ from __future__ import annotations
 import argparse
 import difflib
 import importlib.util
+import json
+import math
 import sys
 import tempfile
 import traceback
@@ -111,11 +113,58 @@ def compare(generated_root: Path, suites: list[str]) -> list[str]:
             if not expected.exists():
                 drift.append(f"stale fixture file: {_rel(committed)}")
                 continue
-            if expected.read_bytes() == committed.read_bytes():
+            if _equivalent(committed, expected):
                 continue
             drift.append(f"fixture drift: {_rel(committed)}")
             drift.extend(_text_diff(committed, expected))
     return drift
+
+
+# OCCT's parallel booleans and fillets (build123d enables them) reorder floating-point sums, so
+# regenerated values can differ in the last bits (e.g. a centre of mass of -1.89e-15 vs -2.03e-15).
+# Drift below these bounds is noise, far inside every tolerance in tolerances.ts.
+NOISE_REL = 1e-9
+NOISE_ABS = 1e-12
+
+
+def _equivalent(committed: Path, expected: Path) -> bool:
+    if expected.read_bytes() == committed.read_bytes():
+        return True
+    if committed.suffix == ".json":
+        return _same_values(json.loads(committed.read_text()), json.loads(expected.read_text()))
+    if committed.suffix == ".brep":
+        return _same_tokens(committed.read_text().split(), expected.read_text().split())
+    return False
+
+
+def _close(a: float, b: float) -> bool:
+    return math.isclose(a, b, rel_tol=NOISE_REL, abs_tol=NOISE_ABS)
+
+
+def _same_values(a: object, b: object) -> bool:
+    if isinstance(a, bool) or isinstance(b, bool):
+        return a == b
+    if isinstance(a, (int, float)) and isinstance(b, (int, float)):
+        return _close(float(a), float(b))
+    if isinstance(a, dict) and isinstance(b, dict):
+        return a.keys() == b.keys() and all(_same_values(a[k], b[k]) for k in a)
+    if isinstance(a, list) and isinstance(b, list):
+        return len(a) == len(b) and all(_same_values(x, y) for x, y in zip(a, b))
+    return a == b
+
+
+def _same_tokens(a: list[str], b: list[str]) -> bool:
+    if len(a) != len(b):
+        return False
+    for x, y in zip(a, b):
+        if x == y:
+            continue
+        try:
+            if not _close(float(x), float(y)):
+                return False
+        except ValueError:
+            return False
+    return True
 
 
 def run(suite_filter: list[str] | None, check: bool) -> int:
