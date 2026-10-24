@@ -284,7 +284,7 @@
         {
             "python": "BoundBox",
             "kind": "class",
-            "caddy": "BoundBox",
+            "caddy": "BoundingBox",
             "behavior": "An axis-aligned bounding box for a shape.",
             "referenceTests": [
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_basic_bounding_box",
@@ -298,7 +298,7 @@
                 "TopoDS_Shape"
             ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -756,7 +756,7 @@
             ],
             "native": [],
             "capability": "operations",
-            "status": "planned",
+            "status": "implemented",
             "notes": ""
         },
         {
@@ -3902,7 +3902,7 @@
         {
             "python": "BoundBox.add",
             "kind": "method",
-            "caddy": "BoundBox#add",
+            "caddy": "BoundingBox#add",
             "behavior": "Returns a modified (expanded) bounding box.",
             "referenceTests": [
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_basic_bounding_box"
@@ -3911,13 +3911,13 @@
                 "Bnd_Box"
             ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
             "python": "BoundBox.center",
             "kind": "method",
-            "caddy": "BoundBox#center",
+            "caddy": "BoundingBox#center",
             "behavior": "Return center of the bounding box.",
             "referenceTests": [
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_center_of_boundbox",
@@ -3926,13 +3926,13 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
             "python": "BoundBox.contains",
             "kind": "method",
-            "caddy": "BoundBox#contains",
+            "caddy": "BoundingBox#contains",
             "behavior": "Return whether this bounding box contains *other*.",
             "referenceTests": [
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_spatial_predicates",
@@ -3941,13 +3941,13 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
             "python": "BoundBox.contains_properly",
             "kind": "method",
-            "caddy": "BoundBox#containsProperly",
+            "caddy": "BoundingBox#containsProperly",
             "behavior": "Return whether *other* is contained without touching this box's boundary.",
             "referenceTests": [
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_lower_dimensional_predicates",
@@ -3956,13 +3956,13 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
             "python": "BoundBox.covered_by",
             "kind": "method",
-            "caddy": "BoundBox#coveredBy",
+            "caddy": "BoundingBox#coveredBy",
             "behavior": "Return whether every point of this bounding box is in *other*.",
             "referenceTests": [
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_spatial_predicates",
@@ -3970,13 +3970,13 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
             "python": "BoundBox.covers",
             "kind": "method",
-            "caddy": "BoundBox#covers",
+            "caddy": "BoundingBox#covers",
             "behavior": "Return whether this bounding box includes every point of *other*.",
             "referenceTests": [
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_spatial_predicates",
@@ -3984,13 +3984,13 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
             "python": "BoundBox.diagonal",
             "kind": "property",
-            "caddy": "BoundBox#diagonal",
+            "caddy": "BoundingBox#diagonal",
             "behavior": "Body diagonal length (i.e. object maximum size).",
             "referenceTests": [
                 "tests/test_direct_api/test_oriented_bound_box.py::TestOrientedBoundBox::test_size_and_diagonal",
@@ -3999,13 +3999,13 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
             "python": "BoundBox.disjoint",
             "kind": "method",
-            "caddy": "BoundBox#disjoint",
+            "caddy": "BoundingBox#disjoint",
             "behavior": "Return whether these bounding boxes do not intersect.",
             "referenceTests": [
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_spatial_predicates",
@@ -4014,13 +4014,13 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
             "python": "BoundBox.find_outside_box_2d",
             "kind": "method",
-            "caddy": "BoundBox.findOutsideBox2D",
+            "caddy": "BoundingBox.findOutsideBox2D",
             "behavior": "Returns whichever of the two bounding boxes fully contains the other when projected onto the XY plane, or None when neither does.",
             "referenceTests": [
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_basic_bounding_box"
@@ -4049,7 +4049,7 @@
         {
             "python": "BoundBox.intersects",
             "kind": "method",
-            "caddy": "BoundBox#intersects",
+            "caddy": "BoundingBox#intersects",
             "behavior": "Return whether the distance between bounding boxes is within *tolerance*.",
             "referenceTests": [
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_spatial_predicates",
@@ -4057,13 +4057,13 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
             "python": "BoundBox.is_inside",
             "kind": "method",
-            "caddy": "BoundBox#isInside",
+            "caddy": "BoundingBox#isInside",
             "behavior": "Return whether this bounding box is inside *other*.",
             "referenceTests": [
                 "tests/test_direct_api/test_face.py::TestFace::test_is_inside",
@@ -4078,20 +4078,20 @@
         {
             "python": "BoundBox.measure",
             "kind": "property",
-            "caddy": "BoundBox#measure",
+            "caddy": "BoundingBox#measure",
             "behavior": "Return the overall Lebesgue measure of the bounding box.",
             "referenceTests": [
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_basic_bounding_box"
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
             "python": "BoundBox.overlaps",
             "kind": "method",
-            "caddy": "BoundBox#overlaps",
+            "caddy": "BoundingBox#overlaps",
             "behavior": "Return whether these boxes overlap without either one containing the other.",
             "referenceTests": [
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_spatial_predicates",
@@ -4100,24 +4100,24 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
             "python": "BoundBox.to_align_offset",
             "kind": "method",
-            "caddy": "BoundBox#toAlignOffset",
+            "caddy": "BoundingBox#toAlignOffset",
             "behavior": "Amount to move object to achieve the desired alignment.",
             "referenceTests": [],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
             "python": "BoundBox.touches",
             "kind": "method",
-            "caddy": "BoundBox#touches",
+            "caddy": "BoundingBox#touches",
             "behavior": "Return whether these bounding boxes meet without sharing positive volume.",
             "referenceTests": [
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_lower_dimensional_predicates",
@@ -4126,13 +4126,13 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
             "python": "BoundBox.within",
             "kind": "method",
-            "caddy": "BoundBox#within",
+            "caddy": "BoundingBox#within",
             "behavior": "Return whether this bounding box is contained in *other*.",
             "referenceTests": [
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_spatial_predicates",
@@ -4141,7 +4141,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4822,7 +4822,7 @@
         {
             "python": "Edge.make_constrained_arcs",
             "kind": "method",
-            "caddy": "Edge.makeConstrainedArcs",
+            "caddy": "makeConstrainedArcs",
             "behavior": "Builds the arc(s) satisfying the given tangency/point/radius constraints, keeping the short, long or both sagitta solutions.",
             "referenceTests": [
                 "tests/test_direct_api/test_constrained_arcs.py::test_make_constrained_arcs_3tan",
@@ -4858,13 +4858,13 @@
                 "gp_Vec2d"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
             "python": "Edge.make_constrained_lines",
             "kind": "method",
-            "caddy": "Edge.makeConstrainedLines",
+            "caddy": "makeConstrainedLines",
             "behavior": "Create planar line(s) on XY subject to tangency, point-incidence, or orientation constraints.",
             "referenceTests": [
                 "tests/test_direct_api/test_constrained_lines.py::test_make_constrained_lines_raises",
@@ -4890,7 +4890,7 @@
                 "gp_Pnt2d"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4941,7 +4941,7 @@
         {
             "python": "Edge.make_hyperbola",
             "kind": "method",
-            "caddy": "Edge.makeHyperbola",
+            "caddy": "makeHyperbola",
             "behavior": "Makes a hyperbola centered at the origin of plane.",
             "referenceTests": [
                 "tests/test_direct_api/test_geom_equal.py::TestEdgeGeomEqualHyperbola::test_different_axis",
@@ -4955,7 +4955,7 @@
                 "gp_Hypr"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4994,7 +4994,7 @@
         {
             "python": "Edge.make_parabola",
             "kind": "method",
-            "caddy": "Edge.makeParabola",
+            "caddy": "makeParabola",
             "behavior": "Makes an parabola centered at the origin of plane.",
             "referenceTests": [
                 "tests/test_direct_api/test_geom_equal.py::TestEdgeGeomEqualParabola::test_different_axis",
@@ -5007,7 +5007,7 @@
                 "gp_Parab"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {

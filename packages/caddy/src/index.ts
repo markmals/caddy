@@ -1,12 +1,14 @@
 export {
     BooleanOperationError,
     CaddyError,
+    DraftAngleError,
     ExportError,
     GeometryError,
     ImportError,
     InvalidShapeError,
     NativeKernelError,
 } from "./errors.ts";
+export type { DraftAngleErrorOptions } from "./errors.ts";
 export * from "./geometry/index.ts";
 export * from "./topology/index.ts";
 export * from "./curves/index.ts";
