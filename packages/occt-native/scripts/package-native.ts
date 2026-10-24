@@ -33,6 +33,11 @@ function platformManifest(version: string): Record<string, unknown> {
             `Prebuilt @roonieone/occt-native addon with the OCCT 8.0.1 and ` +
             `FreeType ${FREETYPE.version} libraries for ${target}`,
         license: "Apache-2.0 AND LGPL-2.1-only WITH OCCT-exception-1.0 AND FTL",
+        repository: {
+            type: "git",
+            url: "git+https://github.com/markmals/caddy.git",
+            directory: "packages/occt-native",
+        },
         os: [process.platform],
         cpu: [ARCH],
         ...(process.platform === "linux" ? { libc: ["glibc"] } : {}),

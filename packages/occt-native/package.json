@@ -3,6 +3,11 @@
     "version": "0.0.0",
     "description": "Node-API bindings to the Open CASCADE geometric kernel",
     "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/markmals/caddy.git",
+        "directory": "packages/occt-native"
+    },
     "files": [
         "dist",
         "crates/occt-neon/Cargo.toml",
