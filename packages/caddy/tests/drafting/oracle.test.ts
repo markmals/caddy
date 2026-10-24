@@ -83,8 +83,8 @@ function expectEdgesMatch(source: FixtureCase, key: string, edges: readonly Edge
         if (edge === undefined) throw new Error(`${key}[${index}] missing`);
         expect(edge.geomType, `${key}[${index}] geom type`).toBe(fixtureString(entry, "geom_type"));
         expectClose(entry, "length", edge.length, MASS_TOLERANCE);
-        expectVectorClose(entry, "start", edge.startPoint().toTuple(), LINEAR_TOLERANCE);
-        expectVectorClose(entry, "end", edge.endPoint().toTuple(), LINEAR_TOLERANCE);
+        expectVectorClose(entry, "start", edge.startPoint.toTuple(), LINEAR_TOLERANCE);
+        expectVectorClose(entry, "end", edge.endPoint.toTuple(), LINEAR_TOLERANCE);
     }
 }
 
@@ -103,7 +103,7 @@ async function expectProjection(
 
 async function expectSvg(expected: FixtureCase, exporter: ExportSVG): Promise<void> {
     exporter.addShape(await fixtureShape(expected));
-    expectSvgDocument(expected, exporter.text());
+    expectSvgDocument(expected, exporter.text);
 }
 
 async function expectDxf(
@@ -112,7 +112,7 @@ async function expectDxf(
     options: DXFAddShapeOptions = {},
 ): Promise<void> {
     exporter.addShape(await fixtureShape(expected), options);
-    expectDxfDocument(expected, exporter.text());
+    expectDxfDocument(expected, exporter.text);
 }
 
 /** A dimension line between two points, with the length it reports. */

@@ -20,15 +20,15 @@ export const curveCases: OracleCases = {
     "edge/line": expected => {
         let edge = Edge.makeLine([1, 2, 3], [7, 10, 3]);
         expectClose(expected, "length", edge.length, MASS_TOLERANCE);
-        expectPoint(expected, "start", edge.startPoint());
-        expectPoint(expected, "end", edge.endPoint());
+        expectPoint(expected, "start", edge.startPoint);
+        expectPoint(expected, "end", edge.endPoint);
         expectPoint(expected, "position_at", edge.positionAt(0.25));
         expectPoint(expected, "position_at_length", edge.positionAt(2.5, PositionMode.Length));
         expectPoints(expected, "positions", edge.positions([0, 0.5, 1]));
         expectPoint(expected, "tangent_at", edge.tangentAt(0.25));
         expectClose(expected, "param_at", edge.paramAt(0.25), LINEAR_TOLERANCE);
         expectClose(expected, "param_at_point", edge.paramAtPoint([4, 6, 3]), LINEAR_TOLERANCE);
-        expectPoint(expected, "center", edge.center());
+        expectPoint(expected, "center", edge.center);
         expect(edge.isClosed).toBe(fixtureBoolean(expected, "is_closed"));
         expect(edge.geomType).toBe(fixtureString(expected, "geom_type"));
     },
@@ -41,8 +41,8 @@ export const curveCases: OracleCases = {
         expectPoint(expected, "tangent_at", edge.tangentAt(0.25));
         expectClose(expected, "param_at", edge.paramAt(0.25), LINEAR_TOLERANCE);
         expectClose(expected, "param_at_point", edge.paramAtPoint([1, 7, 3]), LINEAR_TOLERANCE);
-        expectPoint(expected, "start", edge.startPoint());
-        expectPoint(expected, "end", edge.endPoint());
+        expectPoint(expected, "start", edge.startPoint);
+        expectPoint(expected, "end", edge.endPoint);
         expect(edge.isClosed).toBe(fixtureBoolean(expected, "is_closed"));
         expect(edge.geomType).toBe(fixtureString(expected, "geom_type"));
     },
@@ -51,8 +51,8 @@ export const curveCases: OracleCases = {
         expectClose(expected, "length", edge.length, MASS_TOLERANCE);
         expectClose(expected, "radius", edge.radius, LINEAR_TOLERANCE);
         expectPoint(expected, "arc_center", edge.arcCenter);
-        expectPoint(expected, "start", edge.startPoint());
-        expectPoint(expected, "end", edge.endPoint());
+        expectPoint(expected, "start", edge.startPoint);
+        expectPoint(expected, "end", edge.endPoint);
         expectPoint(expected, "position_at", edge.positionAt(0.25));
         expectPoint(expected, "tangent_at_point", edge.tangentAt(edge.positionAt(0.25)));
         expectClose(expected, "param_at", edge.paramAt(0.5), LINEAR_TOLERANCE);
@@ -62,7 +62,7 @@ export const curveCases: OracleCases = {
             edge.paramAtPoint(edge.positionAt(0.75)),
             LINEAR_TOLERANCE,
         );
-        expectPoint(expected, "center_geometry", edge.center());
+        expectPoint(expected, "center_geometry", edge.center);
     },
     "edge/derivative": expected => {
         let edge = Edge.makeCircle(5);
@@ -74,14 +74,14 @@ export const curveCases: OracleCases = {
         let wire = polygon();
         expectClose(expected, "length", wire.length, MASS_TOLERANCE);
         expect(wire.isClosed).toBe(fixtureBoolean(expected, "is_closed"));
-        expectPoint(expected, "start", wire.startPoint());
-        expectPoint(expected, "end", wire.endPoint());
+        expectPoint(expected, "start", wire.startPoint);
+        expectPoint(expected, "end", wire.endPoint);
         expectPoint(expected, "position_at", wire.positionAt(0.25));
         expectPoint(expected, "position_at_length", wire.positionAt(12, PositionMode.Length));
         expectPoint(expected, "tangent_at", wire.tangentAt(0.25));
         expectClose(expected, "param_at_point", wire.paramAtPoint([10, 2.5, 0]), LINEAR_TOLERANCE);
-        expectPoint(expected, "center", wire.center());
-        expect(wire.edges()).toHaveLength(fixtureNumber(expected, "edge_count"));
+        expectPoint(expected, "center", wire.center);
+        expect(wire.edges).toHaveLength(fixtureNumber(expected, "edge_count"));
     },
     "wire/circle": expected => {
         let wire = Wire.makeCircle(4, Plane.XY.withOrigin([0, 0, 2]));
@@ -90,7 +90,7 @@ export const curveCases: OracleCases = {
         expect(wire.isClosed).toBe(fixtureBoolean(expected, "is_closed"));
         expectPoint(expected, "position_at", wire.positionAt(0.25));
         expectPoint(expected, "tangent_at", wire.tangentAt(0.25));
-        expectPoint(expected, "center", wire.center());
+        expectPoint(expected, "center", wire.center);
     },
     "wire/param-at": expected => {
         let wire = polygon();

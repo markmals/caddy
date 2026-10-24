@@ -116,12 +116,12 @@ describe("IGES", () => {
         let name = join(directory, "part.iges");
         await exportCAD(part(), { name, type: CADFileType.Iges });
         let fromPath = await importCAD(name);
-        expect(fromPath.boundingBox().size.toTuple()).toEqual([4, 5, 6]);
+        expect(fromPath.boundingBox.size.toTuple()).toEqual([4, 5, 6]);
 
         let bytes = await serialize(part(), { type: CADFileType.Iges });
         let copy = join(directory, "copy.iges");
         await writeFile(copy, bytes);
         let fromBytes = await importCAD(bytes, { type: CADFileType.Iges });
-        expect(fromBytes.boundingBox().size.toTuple()).toEqual([4, 5, 6]);
+        expect(fromBytes.boundingBox.size.toTuple()).toEqual([4, 5, 6]);
     });
 });

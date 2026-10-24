@@ -195,7 +195,7 @@ export class Draft {
             return options.label;
         }
         if (options.labelAngle === true) {
-            let arc = path.edges().filterBy(GeomType.Circle)[0];
+            let arc = path.edges.filter(GeomType.Circle)[0];
             if (arc === undefined) {
                 throw new GeometryError(
                     "labelAngle requested but the path is not part of a circle",

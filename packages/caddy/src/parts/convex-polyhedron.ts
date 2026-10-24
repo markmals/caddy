@@ -22,9 +22,7 @@ export class ConvexPolyhedron extends BasePartObject {
 
     constructor(points: Iterable<VectorLike | Vertex>, options: PartPlacement = {}) {
         let corners = distinct(
-            [...points].map(point =>
-                point instanceof Vertex ? point.center() : Vector.from(point),
-            ),
+            [...points].map(point => (point instanceof Vertex ? point.center : Vector.from(point))),
         );
         let hull = convexHull(corners);
         super(() => hullSolid(corners, hull), { ...options, align: options.align ?? Align.None });

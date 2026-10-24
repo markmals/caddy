@@ -43,10 +43,7 @@ import { expectShapeMetrics } from "../shape-metrics.ts";
 function expectSketch(expected: FixtureCase, sketch: Shape): void {
     expectShapeMetrics(expected, sketch);
     expectClose(expected, "area", sketch.area, MASS_TOLERANCE);
-    let vertices = sketch
-        .vertices()
-        .map(vertex => vertex.center().toTuple())
-        .sort(compareCoordinates);
+    let vertices = sketch.vertices.map(vertex => vertex.center.toTuple()).sort(compareCoordinates);
     let recorded = fixtureValue(expected, "vertices");
     if (!Array.isArray(recorded)) throw new TypeError("expected recorded vertices");
     expectNumbersClose(
@@ -58,10 +55,7 @@ function expectSketch(expected: FixtureCase, sketch: Shape): void {
     expectNumbersClose(
         expected,
         "edge_lengths",
-        sketch
-            .edges()
-            .map(edge => edge.length)
-            .sort((left, right) => left - right),
+        sketch.edges.map(edge => edge.length).sort((left, right) => left - right),
         APPROXIMATION_TOLERANCE,
     );
 }
@@ -254,17 +248,17 @@ oracleSuite("sketch", {
         ),
 
     "fillet-2d/rectangle-corners": expected =>
-        expectSketch(expected, fillet2D(new Rectangle(8, 5).vertices(), 1)),
+        expectSketch(expected, fillet2D(new Rectangle(8, 5).vertices, 1)),
     "fillet-2d/two-corners": expected => {
         let base = new Rectangle(8, 5);
-        let corners = base.vertices().filter(vertex => vertex.x > 0);
+        let corners = base.vertices.filter(vertex => vertex.x > 0);
         expectSketch(expected, fillet2D(corners, 1.5));
     },
     "chamfer-2d/rectangle-corners": expected =>
-        expectSketch(expected, chamfer2D(new Rectangle(8, 5).vertices(), 1)),
+        expectSketch(expected, chamfer2D(new Rectangle(8, 5).vertices, 1)),
     "chamfer-2d/asymmetric": expected => {
         let base = new Rectangle(8, 5);
-        let corners = base.vertices().filter(vertex => vertex.x > 0);
+        let corners = base.vertices.filter(vertex => vertex.x > 0);
         expectSketch(expected, chamfer2D(corners, 1, { length2: 2 }));
     },
 

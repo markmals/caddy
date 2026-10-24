@@ -25,7 +25,7 @@ test("extrusion rejects a zero amount", () => {
 
 test("chamfer rejects conflicting secondary dimensions", () => {
     let box = new Box(8, 6, 4);
-    expect(() => chamfer(box.edges()[0]!, 1, { length2: 1, angle: 30 })).toThrow(GeometryError);
+    expect(() => chamfer(box.edges[0]!, 1, { length2: 1, angle: 30 })).toThrow(GeometryError);
 });
 
 test("solid offset rejects an unsupported tangent join", () => {
@@ -43,27 +43,27 @@ test("scale rejects a singular transform", () => {
 });
 
 test("hollow rejects an unsupported tangent join", () => {
-    let solid = new Box(1, 1, 1).solid();
+    let solid = new Box(1, 1, 1).solid;
     expect(() => solid.hollow(undefined, 0.1, { kind: Kind.Tangent })).toThrow(GeometryError);
 });
 
 test("hollow rejects a zero thickness", () => {
-    expect(() => new Box(1, 1, 1).solid().hollow(undefined, 0)).toThrow(GeometryError);
+    expect(() => new Box(1, 1, 1).solid.hollow(undefined, 0)).toThrow(GeometryError);
 });
 
 test("maxFillet rejects an empty edge selection", () => {
-    expect(() => new Box(4, 3, 2).solid().maxFillet([])).toThrow(InvalidShapeError);
+    expect(() => new Box(4, 3, 2).solid.maxFillet([])).toThrow(InvalidShapeError);
 });
 
 test("maxFillet gives up when the search window never narrows enough", () => {
-    let solid = new Box(10, 8, 2).solid();
-    expect(() => solid.maxFillet(solid.edges(), { tolerance: 1e-6, maxIterations: 1 })).toThrow(
+    let solid = new Box(10, 8, 2).solid;
+    expect(() => solid.maxFillet(solid.edges, { tolerance: 1e-6, maxIterations: 1 })).toThrow(
         GeometryError,
     );
 });
 
 test("the split method rejects inside/outside semantics", () => {
-    expect(() => new Box(8, 6, 4).solid().split(Plane.XY, Keep.Outside)).toThrow(GeometryError);
+    expect(() => new Box(8, 6, 4).solid.split(Plane.XY, Keep.Outside)).toThrow(GeometryError);
 });
 
 test("splitByPerimeter rejects an open perimeter", () => {
@@ -99,12 +99,12 @@ test("makeBrakeFormed rejects a width count that does not match the line", () =>
             [10, 1],
         ],
         1,
-    ).wire();
+    ).wire;
     expect(() => makeBrakeFormed(0.5, [1, 2], outline)).toThrow(GeometryError);
 });
 
 test("dprism rejects bounds that mix faces and wires", () => {
-    let solid = new Box(1, 1, 1).solid();
+    let solid = new Box(1, 1, 1).solid;
     let profile = Face.makeRect(0.5, 0.5);
-    expect(() => solid.dprism([profile, profile.outerWire()])).toThrow(InvalidShapeError);
+    expect(() => solid.dprism([profile, profile.outerWire])).toThrow(InvalidShapeError);
 });

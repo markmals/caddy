@@ -115,7 +115,7 @@ oracleSuite("selftest", {
     "metrics/vertex": expected => {
         let metrics = fixtureRecord(expected, "metrics");
         expect(fixtureString(metrics, "shape_type")).toBe("VERTEX");
-        // `Vertex.center()` takes no `CenterOf`, so the serializer falls back to it.
+        // build123d's `Vertex.center()` takes no `CenterOf`, so the serializer falls back to it.
         expectVectorClose(metrics, "center_of_mass", [1, 2, 3], LINEAR_TOLERANCE);
     },
 

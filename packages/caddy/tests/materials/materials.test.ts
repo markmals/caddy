@@ -71,28 +71,28 @@ describe("the catalog", () => {
 
 describe("a shape's material", () => {
     test("a sub-shape takes the nearest material along its topoPath", () => {
-        let compound = new Compound([new Box(10, 10, 10).solid()]);
+        let compound = new Compound([new Box(10, 10, 10).solid]);
         compound.material = "brass";
-        let solid = compound.solids()[0]!;
+        let solid = compound.solids[0]!;
         expect(canonicalName(solid.material!)).toBe("Brass_C360_HALF_HARD");
         expect(solid.material).toBe(compound.material);
 
-        let face = solid.faces()[0]!;
+        let face = solid.faces[0]!;
         expect(face.material).toBe(compound.material);
     });
 
     test("a material of its own wins over the one it would inherit", () => {
-        let compound = new Compound([new Box(10, 10, 10).solid()]);
+        let compound = new Compound([new Box(10, 10, 10).solid]);
         compound.material = "brass";
-        let solid = compound.solids()[0]!;
+        let solid = compound.solids[0]!;
         solid.material = "walnut";
         expect(canonicalName(solid.material!)).toBe("Hardwood_WALNUT");
         expect(canonicalName(compound.material!)).toBe("Brass_C360_HALF_HARD");
     });
 
     test("nothing is inherited when no ancestor has a material", () => {
-        let compound = new Compound([new Box(10, 10, 10).solid()]);
-        expect(compound.solids()[0]!.material).toBeUndefined();
+        let compound = new Compound([new Box(10, 10, 10).solid]);
+        expect(compound.solids[0]!.material).toBeUndefined();
     });
 
     test("a moved copy keeps the material, and only its own", () => {
@@ -100,7 +100,7 @@ describe("a shape's material", () => {
         box.material = materialFactory("brass")({ density: 1234 });
         let moved = box.moved(new Pos(5, 0, 0));
         expect(moved.material?.material.density).toBe(1234);
-        expect(moved.mass()).toBeCloseTo(box.mass(), 9);
+        expect(moved.mass).toBeCloseTo(box.mass, 9);
 
         let plain = new Box(1, 1, 1);
         expect(plain.located(new Pos(1, 0, 0)).material).toBeUndefined();

@@ -39,8 +39,8 @@ export function extrudeLinearWithRotation(
     if (direction.length === 0) {
         throw new GeometryError("Extrusion direction must be nonzero");
     }
-    let outer = section instanceof Face ? section.outerWire() : section;
-    let inner = section instanceof Face ? section.innerWires() : [...(options.innerWires ?? [])];
+    let outer = section instanceof Face ? section.outerWire : section;
+    let inner = section instanceof Face ? section.innerWires : [...(options.innerWires ?? [])];
 
     let spine = new Wire([Edge.makeLine(origin, origin.add(direction))]).wrapped;
     let pitch = (360 / angle) * direction.length;

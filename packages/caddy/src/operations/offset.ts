@@ -57,7 +57,7 @@ export function offset(shape: Shape, amount: number, options: OffsetOptions = {}
 /** build123d offsets each solid with only the openings that belong to it. */
 function openingsOf(solid: Solid, openings: readonly Face[]): Face[] {
     if (openings.length === 0) return [];
-    let own = solid.faces();
+    let own = solid.faces;
     return openings.filter(opening => own.some(face => face.isSame(opening)));
 }
 
@@ -81,7 +81,7 @@ export function thicken(
         ? (toThicken as readonly Face[])
         : toThicken instanceof Face
           ? [toThicken]
-          : [...(toThicken as Shape).faces()];
+          : [...(toThicken as Shape).faces];
     if (faces.length === 0) throw new InvalidShapeError("A face or sketch must be provided");
     let directions = options.both ? [1, -1] : [1];
     let solids = faces.flatMap(face => {
@@ -99,7 +99,7 @@ export function thicken(
 
 /** build123d `Solid.thicken`: the depth follows `up`, so a face pointing away is thickened back. */
 function thickenFace(face: Face, depth: number, up: Vector): Shape {
-    let normal = face.normalAt(face.center()).normalized();
+    let normal = face.normalAt(face.center).normalized();
     let adjusted = normal.dot(up.normalized()) < 0 ? -depth : depth;
     try {
         return Shape.cast(features.thicken(face.wrapped, adjusted));
@@ -120,7 +120,7 @@ export function draft(
     let solid = parent ?? selection[0]!.topoParent;
     if (
         solid === undefined ||
-        solid.solids().length !== 1 ||
+        solid.solids.length !== 1 ||
         selection.some(face => face.topoParent !== solid)
     ) {
         throw new InvalidShapeError("All drafted faces must belong to one solid parent");

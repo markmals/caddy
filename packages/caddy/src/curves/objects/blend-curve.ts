@@ -76,9 +76,9 @@ export class BlendCurve extends BaseEdgeObject {
 
 /** The pair of endpoints, one from each curve, that sit closest together. */
 function closestEndPoints(first: Edge, second: Edge): [Vector, Vector] {
-    let pairs = first
-        .vertices()
-        .flatMap(start => second.vertices().map(end => [start.center(), end.center()] as const));
+    let pairs = first.vertices.flatMap(start =>
+        second.vertices.map(end => [start.center, end.center] as const),
+    );
     let closest = pairs.reduce((best, pair) =>
         pair[0].sub(pair[1]).length < best[0].sub(best[1]).length ? pair : best,
     );

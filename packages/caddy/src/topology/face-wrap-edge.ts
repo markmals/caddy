@@ -126,7 +126,7 @@ class SurfaceWalk {
 
     constructor(surface: Face, location: Location, tolerance: number) {
         this.#surface = surface;
-        this.#center = surface.center(CenterOf.BoundingBox);
+        this.#center = surface.getCenter(CenterOf.BoundingBox);
         this.#xDirection = location.xAxis.direction;
         this.#location = location;
         this.#tolerance = tolerance;
@@ -162,9 +162,7 @@ class SurfaceWalk {
     /** Where the ray from `point` pierces the surface, with the normal there. */
     #hit(point: Vector, direction: Vector): AxisIntersection {
         let axis = new Axis(point, direction);
-        let faces = this.#surface
-            .facesIntersectedByAxis(axis)
-            .sortBy(face => face.distanceTo(point));
+        let faces = this.#surface.facesIntersectedByAxis(axis).toSortedByDistance(point);
         let nearest = faces[0];
         let hits = nearest === undefined ? [] : nearest.findIntersectionPoints(axis);
         let closest = hits.reduce<AxisIntersection | undefined>(

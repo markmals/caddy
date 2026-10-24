@@ -236,7 +236,7 @@ export class FontManager {
     }
 
     /** Every registered font by name, with the styles it has font files for. */
-    availableFonts(): FontInfo[] {
+    get availableFonts(): FontInfo[] {
         let fonts = native("Font enumeration", () => text.registeredFonts()).map(font => ({
             name: font.name,
             styles: REPORTED_STYLES.filter(style => font[styleKey(style)]),
@@ -303,7 +303,7 @@ export class FontManager {
 
 /** The styles of every registered font (build123d `available_fonts`). */
 export function availableFonts(): FontInfo[] {
-    return new FontManager().availableFonts();
+    return new FontManager().availableFonts;
 }
 
 /** Which flag of a registry entry reports `style`. */

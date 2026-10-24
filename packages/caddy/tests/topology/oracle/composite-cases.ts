@@ -18,17 +18,17 @@ export const compositeCases: OracleCases = {
         let unit = () => new Solid(primitives.makeBox(1, 1, 1));
         let disjointSum = new Part([unit()]).union(unit().moved(new Pos(5, 0, 0)));
         let joinedSum = new Part([unit()]).union(unit().moved(new Pos(0.5, 0, 0)));
-        let splitSketch = new Sketch(new Rectangle(10, 2).faces()).subtract(
+        let splitSketch = new Sketch(new Rectangle(10, 2).faces).subtract(
             new Rectangle(1, 5).moved(new Pos(4.5, 0, 0)),
         );
         expectName(expected, "split_part_class", splitPart.constructor.name);
-        expectCount(expected, "split_part_solids", splitPart.solids().length);
+        expectCount(expected, "split_part_solids", splitPart.solids.length);
         expectName(expected, "disjoint_sum_class", disjointSum.constructor.name);
-        expectCount(expected, "disjoint_sum_solids", disjointSum.solids().length);
+        expectCount(expected, "disjoint_sum_solids", disjointSum.solids.length);
         expectName(expected, "joined_sum_class", joinedSum.constructor.name);
-        expectCount(expected, "joined_sum_solids", joinedSum.solids().length);
+        expectCount(expected, "joined_sum_solids", joinedSum.solids.length);
         expectName(expected, "split_sketch_class", splitSketch.constructor.name);
-        expectCount(expected, "split_sketch_faces", splitSketch.faces().length);
+        expectCount(expected, "split_sketch_faces", splitSketch.faces.length);
     },
     "wire/common-plane": expected => {
         let flat = [

@@ -118,7 +118,7 @@ export class Compound extends Mixin3D implements Iterable<Shape> {
     /** Total volume of the solids and shells directly inside this compound and its child compounds. */
     get volume(): number {
         let types = new Set<occt.ShapeType>([ShapeType.Solid, ShapeType.Shell]);
-        return this.compounds()
+        return this.compounds
             .flatMap(compound => topology.childShapes(compound.wrapped))
             .filter(child => types.has(shapes.shapeType(child)))
             .reduce((total, child) => total + castShape(child).volume, 0);
@@ -137,15 +137,20 @@ export class Compound extends Mixin3D implements Iterable<Shape> {
     }
 
     /**
-     * Centre of mass (default) or bounding box centre. The centre of mass integrates over edges,
-     * faces or volumes according to the children's common type, as build123d does.
+     * Centre of mass, integrated over edges, faces or volumes according to the children's common
+     * type, as build123d does.
      */
-    override center(centerOf: CenterOf = CenterOf.Mass): Vector {
+    override get center(): Vector {
+        return this.getCenter(CenterOf.Mass);
+    }
+
+    /** Centre of mass or bounding box centre; `Geometry` is not defined for compounds. */
+    override getCenter(centerOf: CenterOf): Vector {
         if (centerOf === CenterOf.Geometry) {
             throw new InvalidShapeError("Center of GEOMETRY is not supported for this object");
         }
         if (centerOf === CenterOf.BoundingBox) {
-            return this.boundingBox().center();
+            return this.boundingBox.center;
         }
         let kind = CENTER_PROPERTY[this.#unwrappedShapeType()];
         if (kind === undefined) {
@@ -172,17 +177,17 @@ export class Compound extends Mixin3D implements Iterable<Shape> {
     }
 
     /** The compounds directly inside this one, followed by this compound itself. */
-    override compounds(): ShapeList<Compound> {
+    override get compounds(): ShapeList<Compound> {
         let children = [...this].filter(child => child instanceof Compound);
         return new ShapeList([...children, this]);
     }
 
     /**
      * The direct children of exactly `type` in this compound and its child compounds (build123d
-     * `get_type`); unlike `solids()` and friends it does not look inside other shapes.
+     * `get_type`); unlike `solids` and friends it does not look inside other shapes.
      */
     getType<T extends Shape>(type: abstract new (...args: never[]) => T): T[] {
-        return this.compounds().flatMap(compound =>
+        return this.compounds.flatMap(compound =>
             [...compound].filter((child): child is T => child.constructor === type),
         );
     }
@@ -198,7 +203,7 @@ export class Compound extends Mixin3D implements Iterable<Shape> {
         if (options.includeParent !== true) {
             children.shift();
         }
-        let boxes = children.map(child => child.boundingBox());
+        let boxes = children.map(child => child.boundingBox);
         for (let first = 0; first < children.length; first += 1) {
             for (let second = first + 1; second < children.length; second += 1) {
                 if (!(boxes[first] as BoundingBox).intersects(boxes[second] as BoundingBox)) {
@@ -210,7 +215,7 @@ export class Compound extends Mixin3D implements Iterable<Shape> {
                 let volume =
                     common === undefined
                         ? 0
-                        : common.solids().reduce((total, solid) => total + solid.volume, 0);
+                        : common.solids.reduce((total, solid) => total + solid.volume, 0);
                 if (volume > tolerance) {
                     return { intersect: true, shapes: [one, other], volume };
                 }
@@ -257,7 +262,7 @@ export class Compound extends Mixin3D implements Iterable<Shape> {
         if (brought.length === 0) {
             return this;
         }
-        let mine = [...this.getTopLevelShapes()];
+        let mine = [...this.topLevelShapes];
         let summands = [...mine, ...brought];
         let [first, ...rest] = summands;
         if (first === undefined || rest.length === 0) {
@@ -330,7 +335,7 @@ export class Compound extends Mixin3D implements Iterable<Shape> {
 function additionOperandsOf(operands: readonly ShapeOperand[]): Shape[] {
     return operands
         .flatMap(operand => (operand instanceof Shape ? [operand] : [...operand]))
-        .flatMap(shape => [...shape.getTopLevelShapes()]);
+        .flatMap(shape => [...shape.topLevelShapes]);
 }
 
 /** A compound and everything inside it, outermost first (build123d's pre-order assembly walk). */

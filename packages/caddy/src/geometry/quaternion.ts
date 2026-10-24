@@ -149,7 +149,7 @@ export class Quaternion {
 
     /** Recover a rotation from a matrix (`gp_Quaternion::SetMatrix`). */
     static fromMatrix(matrix: Matrix3): Quaternion {
-        let trace = matrix.trace();
+        let trace = matrix.trace;
         if (trace > 0) {
             // A positive trace means w is the largest component and the safest to divide by.
             let raw = new Quaternion(
@@ -187,12 +187,12 @@ export class Quaternion {
         return raw.scaled(0.5 / Math.sqrt(raw.z));
     }
 
-    squareNorm(): number {
+    get squareNorm(): number {
         return this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w;
     }
 
-    norm(): number {
-        return Math.sqrt(this.squareNorm());
+    get norm(): number {
+        return Math.sqrt(this.squareNorm);
     }
 
     scaled(factor: number): Quaternion {
@@ -200,7 +200,7 @@ export class Quaternion {
     }
 
     normalized(): Quaternion {
-        let magnitude = this.norm();
+        let magnitude = this.norm;
         if (magnitude < RESOLUTION) {
             throw new GeometryError("Cannot normalize a quaternion of zero norm");
         }
@@ -209,7 +209,7 @@ export class Quaternion {
 
     /** Rotation matrix for this quaternion (`gp_Quaternion::GetMatrix`). */
     toMatrix(): Matrix3 {
-        let s = 2 / this.squareNorm();
+        let s = 2 / this.squareNorm;
         let x2 = this.x * s;
         let y2 = this.y * s;
         let z2 = this.z * s;

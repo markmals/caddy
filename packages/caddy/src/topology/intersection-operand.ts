@@ -10,10 +10,10 @@ import { castShape } from "./registry.ts";
 
 /** Bound infinite geometry beyond every corner of the shape being intersected. */
 export function intersectionOperand(shape: Shape, geometry: Axis | Plane): Shape {
-    let box = shape.boundingBox();
+    let box = shape.boundingBox;
     let reach =
         box.diagonal +
-        box.center().sub(geometry instanceof Axis ? geometry.position : geometry.origin).length +
+        box.center.sub(geometry instanceof Axis ? geometry.position : geometry.origin).length +
         1;
     if (geometry instanceof Axis) {
         let start = geometry.position.sub(geometry.direction.multiply(reach));

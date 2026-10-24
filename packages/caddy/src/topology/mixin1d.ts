@@ -160,7 +160,7 @@ export abstract class Mixin1D extends Shape {
      */
     get radius(): number {
         if (this.shapeType === "Wire") {
-            return this.edges().first.radius;
+            return this.edges.first.radius;
         }
         let conic = query.curveConic(this.wrapped);
         if (conic?.kind !== "circle") {
@@ -173,7 +173,7 @@ export abstract class Mixin1D extends Shape {
      * The normal of the plane this line lies in (build123d `Mixin1D.normal`): the axis direction
      * of a circle or an ellipse, otherwise the normal of the plane OCCT fits to the curve.
      */
-    normal(): Vector {
+    get normal(): Vector {
         let conic = query.curveConic(this.wrapped);
         if (conic !== undefined) {
             return fromVec3(conic.axis);
@@ -191,11 +191,16 @@ export abstract class Mixin1D extends Shape {
     /** Normalized position (0 at the start, 1 at the end) of a point lying on the shape. */
     abstract paramAtPoint(point: VectorLike): number;
 
+    /** The midpoint along the curve; build123d's default centre for lines. */
+    get center(): Vector {
+        return this.positionAt(0.5);
+    }
+
     /**
-     * Centre by `centerOf`: the midpoint along the curve (`Geometry`, the default), the centre
-     * of mass, or the bounding box centre.
+     * Centre by `centerOf`: the midpoint along the curve (`Geometry`), the centre of mass, or
+     * the bounding box centre.
      */
-    center(centerOf: CenterOf = CenterOf.Geometry): Vector {
+    getCenter(centerOf: CenterOf): Vector {
         if (centerOf === CenterOf.Geometry) {
             return this.positionAt(0.5);
         }
@@ -205,7 +210,7 @@ export abstract class Mixin1D extends Shape {
             );
             return fromVec3(properties.centerOfMass);
         }
-        return this.boundingBox().center();
+        return this.boundingBox.center;
     }
 
     /**
@@ -312,7 +317,7 @@ export abstract class Mixin1D extends Shape {
         let step = this.isClosed ? 1 / count : count > 1 ? 1 / (count - 1) : 0;
         let samples = Array.from({ length: count }, (_, index) => this.#curvature(index * step));
         let steepest = Math.max(TOLERANCE, ...samples.map(sample => Math.abs(sample.curvature)));
-        let bounds = this.boundingBox();
+        let bounds = this.boundingBox;
         let extent = Math.max(...bounds.max.sub(bounds.min).toTuple());
         let scale = (options.maxToothSize ?? extent / 10) / steepest;
         return new ShapeList(
@@ -360,19 +365,19 @@ export abstract class Mixin1D extends Shape {
 
     /** For a point: the closest edge (for a wire) and the curve position of the point on it. */
     #curvePositionOfPoint(point: Vector): CurvePosition {
-        let closest = this.shapeType === "Wire" ? closestEdge(this.edges(), point) : this;
+        let closest = this.shapeType === "Wire" ? closestEdge(this.edges, point) : this;
         return closest.curvePosition(closest.paramAtPoint(point));
     }
 
     /** The start of the shape, honouring its orientation. */
-    startPoint(): Vector {
+    get startPoint(): Vector {
         let info = query.curveInfo(this.wrapped);
         let parameter = this.isForward ? info.first : info.last;
         return fromVec3(query.curveValue(this.wrapped, parameter));
     }
 
     /** The end of the shape, honouring its orientation. */
-    endPoint(): Vector {
+    get endPoint(): Vector {
         let info = query.curveInfo(this.wrapped);
         let parameter = this.isForward ? info.last : info.first;
         return fromVec3(query.curveValue(this.wrapped, parameter));
@@ -485,7 +490,7 @@ export function unionCurves(self: Shape, operands: readonly ShapeOperand[]): Sha
         throw new InvalidShapeError("Only shapes with the same dimension can be added");
     }
     let pieces = summands.map(castShape);
-    let edges = [...self.edges(), ...pieces.flatMap(piece => [...piece.edges()])];
+    let edges = [...self.edges, ...pieces.flatMap(piece => [...piece.edges])];
     let joined: Shape | undefined;
     try {
         joined = castShape(construct.makeWire(edges.map(edge => edge.wrapped)));
@@ -497,12 +502,12 @@ export function unionCurves(self: Shape, operands: readonly ShapeOperand[]): Sha
     let assembled =
         joined === undefined
             ? self.fuse(pieces)
-            : madeBy(joined, joinRecord(edges, joined.edges(), [self.wrapped], summands));
+            : madeBy(joined, joinRecord(edges, joined.edges, [self.wrapped], summands));
     let sum = assembled.clean();
-    if (sum.edges().length !== 1) {
+    if (sum.edges.length !== 1) {
         return sum;
     }
-    let only = sum.edge();
+    let only = sum.edge;
     let record = recordOf(sum);
     return record === undefined ? only : madeBy(only, record);
 }

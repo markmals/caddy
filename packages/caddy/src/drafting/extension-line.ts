@@ -104,7 +104,7 @@ function buildExtensionLine(
         line.moved(new Pos(line.tangentAt(0).multiply(draft.extensionGap))),
     );
     let drawnLines = extensionLines.flatMap(line => [
-        ...sweep(line.perpendicularLine(draft.lineWidth, 0), line).faces(),
+        ...sweep(line.perpendicularLine(draft.lineWidth, 0), line).faces,
     ]);
 
     let dimensionLine = new DimensionLine(dimensionPath, draft, {
@@ -115,7 +115,7 @@ function buildExtensionLine(
         labelAngle: options.labelAngle,
     });
     return {
-        faces: [...drawnLines, ...dimensionLine.faces()],
+        faces: [...drawnLines, ...dimensionLine.faces],
         measurement: dimensionLine.measurement,
     };
 }

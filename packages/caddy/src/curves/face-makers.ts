@@ -34,7 +34,7 @@ export interface SurfaceOptions {
  * `interiorWires` (build123d `Face.make_surface`).
  */
 export function makeSurface(exterior: Wire | Iterable<Edge>, options: SurfaceOptions = {}): Face {
-    let boundary = Symbol.iterator in exterior ? [...exterior] : exterior.edges();
+    let boundary = Symbol.iterator in exterior ? [...exterior] : exterior.edges;
     let edges = boundary.map(edge => edge.wrapped);
     let points = (options.surfacePoints ?? []).map(point => Vector.from(point).toTuple());
     let holes = [...(options.interiorWires ?? [])].map(wire => wire.wrapped);

@@ -29,7 +29,7 @@ export function rectangleWire(width: number, height: number, offsetX = 0): Wire 
 
 /** The lateral surface of a cylinder of radius 10, seam at +X. */
 export function cylinderWall(): Face {
-    let wall = Solid.makeCylinder(10, 20).faces().filterBy(GeomType.Cylinder)[0];
+    let wall = Solid.makeCylinder(10, 20).faces.filter(GeomType.Cylinder)[0];
     if (wall === undefined) throw new Error("the cylinder has no lateral face");
     return wall;
 }
@@ -42,7 +42,7 @@ export function cylinderLocation(): Location {
 }
 
 export function coneWall(): Face {
-    let wall = Solid.makeCone(10, 5, 20).faces().filterBy(GeomType.Cone)[0];
+    let wall = Solid.makeCone(10, 5, 20).faces.filter(GeomType.Cone)[0];
     if (wall === undefined) throw new Error("the cone has no lateral face");
     return wall;
 }
@@ -56,5 +56,5 @@ export function coneLocation(): Location {
 }
 
 export function trapezoidFace(): Face {
-    return new Trapezoid(0.5, 1, 90 - 8).face();
+    return new Trapezoid(0.5, 1, 90 - 8).face;
 }

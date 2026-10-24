@@ -15,8 +15,8 @@ export const jointCases: OracleCases = {
     "joint/base": expected => {
         // A centred `Box` sits at a non-identity location, so the joint's placement relative to
         // its parent is not the location it was given — which is what `Joint` has to get right.
-        let base = new Box(10, 10, 2).solid();
-        let arm = new Box(2, 2, 6).solid();
+        let base = new Box(10, 10, 2).solid;
+        let arm = new Box(2, 2, 6).solid;
         let socket = new RigidJoint("socket", base, { jointLocation: new Pos(0, 0, 1) });
         let stem = new RigidJoint("stem", arm, { jointLocation: new Pos(0, 0, -3) });
 

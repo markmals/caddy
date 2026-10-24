@@ -32,7 +32,7 @@ export function projectToViewport(
     options: ViewportOptions = {},
 ): [visible: ShapeList<Edge>, hidden: ShapeList<Edge>] {
     let origin = Vector.from(viewportOrigin);
-    let lookAt = options.lookAt === undefined ? shape.center() : Vector.from(options.lookAt);
+    let lookAt = options.lookAt === undefined ? shape.center : Vector.from(options.lookAt);
     let camera: occt.hlr.Camera = {
         origin: origin.toTuple(),
         direction: origin.sub(lookAt).normalized().toTuple(),

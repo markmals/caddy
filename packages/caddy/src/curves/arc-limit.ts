@@ -59,7 +59,7 @@ export function rayLimitPoint(
     if (limit instanceof Axis) {
         return axisContact(from, direction, limit);
     }
-    let reach = limit.boundingBox().add(from).diagonal;
+    let reach = limit.boundingBox.add(from).diagonal;
     let trimmed = trimEdgeToOther(makeLine(from, from.add(direction.multiply(reach))), limit);
     return trimmed?.positionAt(1);
 }

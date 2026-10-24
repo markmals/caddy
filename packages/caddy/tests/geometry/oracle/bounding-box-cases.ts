@@ -14,7 +14,7 @@ export const boundingBoxCases: OracleCases = {
         expectVectorClose(expected, "min", box.min.toTuple(), EXACT_TOLERANCE);
         expectVectorClose(expected, "max", box.max.toTuple(), EXACT_TOLERANCE);
         expectVectorClose(expected, "size", box.size.toTuple(), EXACT_TOLERANCE);
-        expectVectorClose(expected, "center", box.center().toTuple(), EXACT_TOLERANCE);
+        expectVectorClose(expected, "center", box.center.toTuple(), EXACT_TOLERANCE);
         expectClose(expected, "diagonal", box.diagonal, EXACT_TOLERANCE);
         expectClose(expected, "measure", box.measure, EXACT_TOLERANCE);
         expectClose(expected, "flat_measure", flat.measure, EXACT_TOLERANCE);

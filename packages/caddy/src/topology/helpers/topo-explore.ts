@@ -28,8 +28,8 @@ export interface ConnectedEdgesOptions {
 
 /** The vertex two edges share, or `undefined` when they do not meet. */
 export function topoExploreCommonVertex(first: Edge, second: Edge): Vertex | undefined {
-    let theirs = second.vertices();
-    return first.vertices().find(mine => theirs.some(other => other.isSame(mine)));
+    let theirs = second.vertices;
+    return first.vertices.find(mine => theirs.some(other => other.isSame(mine)));
 }
 
 /**
@@ -51,7 +51,7 @@ export function topoExploreConnectedEdges(
         throw new InvalidShapeError("Cannot explore the connections of an empty edge");
     }
     let required = CONTINUITY_RANK[options.continuity ?? ContinuityLevel.C0];
-    let candidates = parent.edges();
+    let candidates = parent.edges;
     let parentEdge = findSameShape(edge, candidates);
     if (parentEdge === undefined) {
         return new ShapeList<Edge>();

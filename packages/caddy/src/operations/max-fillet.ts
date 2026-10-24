@@ -42,7 +42,7 @@ export function maxFillet(
         if (middle - low <= tolerance) return middle;
         return search(middle, high, iteration + 1);
     };
-    return search(0, 2 * solid.boundingBox().diagonal, 0);
+    return search(0, 2 * solid.boundingBox.diagonal, 0);
 }
 
 /** A radius works when OCCT builds a fillet at all and the result survives BRepCheck. */

@@ -19,7 +19,7 @@ export function makeHoles(face: Face, interiorWires: Iterable<Wire>): Face {
 
 /** `face` with every hole filled in (build123d `Face.without_holes`). */
 export function withoutHoles(face: Face): Face {
-    let holes = face.innerWires();
+    let holes = face.innerWires;
     if (holes.length === 0) {
         return face;
     }

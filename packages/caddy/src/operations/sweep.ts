@@ -70,14 +70,14 @@ export function sweep(
             let solids = profilesToSweep.map(group => {
                 let outer = features.sweep(
                     spine.wrapped,
-                    group.map(face => face.outerWire().wrapped),
+                    group.map(face => face.outerWire.wrapped),
                     sweepOptions,
                 );
-                if (group.length !== 1 || group[0]!.innerWires().length === 0)
+                if (group.length !== 1 || group[0]!.innerWires.length === 0)
                     return Shape.cast(outer);
-                let holes = group[0]!
-                    .innerWires()
-                    .map(wire => features.sweep(spine.wrapped, [wire.wrapped], sweepOptions));
+                let holes = group[0]!.innerWires.map(wire =>
+                    features.sweep(spine.wrapped, [wire.wrapped], sweepOptions),
+                );
                 return Shape.cast(booleans.cut([outer], holes));
             });
             let part = new Part(solids);
@@ -92,7 +92,7 @@ export function sweep(
                     [profile instanceof Edge ? new Wire([profile]).wrapped : profile.wrapped],
                     { ...sweepOptions, solid: false },
                 ),
-            ).faces(),
+            ).faces,
         ]);
         return new Sketch(options.clean === false ? swept : swept.map(face => face.clean()));
     } catch (cause) {

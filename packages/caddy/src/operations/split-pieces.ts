@@ -22,7 +22,7 @@ export type TrimmingTool = Plane | Face | Shell;
  * a bounded shape identically and needs no unbounded-surface binding.
  */
 export function cuttingFace(shape: Shape, plane: Plane): Shape {
-    let box = shape.boundingBox({ optimal: false });
+    let box = shape.getBoundingBox({ optimal: false });
     let reach = Math.max(...box.min.toTuple().map(Math.abs), ...box.max.toTuple().map(Math.abs));
     let half = reach + box.diagonal;
     let corners = [
@@ -41,11 +41,11 @@ export function partitioned(
     bisectBy: TrimmingTool,
 ): { tops: Shape[]; bottoms: Shape[]; all: Shape[] } {
     let cut = Shape.cast(booleans.split([shape.wrapped], [tool.wrapped]));
-    let all = [...cut.getTopLevelShapes()];
-    let surface = bisectBy instanceof Plane ? bisectBy : (bisectBy.faces()[0] ?? bisectBy);
+    let all = [...cut.topLevelShapes];
+    let surface = bisectBy instanceof Plane ? bisectBy : (bisectBy.faces[0] ?? bisectBy);
     let normal = surface instanceof Plane ? surface.zDir : (surface as Face).normalAt();
-    let origin = surface instanceof Plane ? surface.origin : surface.center();
-    let tops = all.filter(piece => piece.center().sub(origin).dot(normal) >= 0);
+    let origin = surface instanceof Plane ? surface.origin : surface.center;
+    let tops = all.filter(piece => piece.center.sub(origin).dot(normal) >= 0);
     let bottoms = all.filter(piece => !tops.includes(piece));
     return { tops, bottoms, all };
 }

@@ -23,9 +23,9 @@ export function expectEdge(expected: FixtureCase, key: string, edge: Edge): void
     expect(edge.geomType, `${key} geom type`).toBe(fixtureString(record, "geom_type"));
     expectClose(record, "length", edge.length, MASS_TOLERANCE);
     expect(edge.isClosed, `${key} closed`).toBe(fixtureBoolean(record, "is_closed"));
-    expectVectorClose(record, "start", edge.startPoint().toTuple(), LINEAR_TOLERANCE);
-    expectVectorClose(record, "end", edge.endPoint().toTuple(), LINEAR_TOLERANCE);
-    let box = edge.boundingBox();
+    expectVectorClose(record, "start", edge.startPoint.toTuple(), LINEAR_TOLERANCE);
+    expectVectorClose(record, "end", edge.endPoint.toTuple(), LINEAR_TOLERANCE);
+    let box = edge.boundingBox;
     expectVectorClose(record, "min", box.min.toTuple(), LINEAR_TOLERANCE);
     expectVectorClose(record, "max", box.max.toTuple(), LINEAR_TOLERANCE);
     expectMatrixClose(

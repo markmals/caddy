@@ -70,7 +70,7 @@ function expectSurface(expected: FixtureCase, surface: Face): void {
         APPROXIMATION_TOLERANCE,
     );
     expectVectorClose(expected, "normal_at", surface.normalAt().toTuple(), APPROXIMATION_TOLERANCE);
-    expectVectorClose(expected, "center", surface.center().toTuple(), APPROXIMATION_TOLERANCE);
+    expectVectorClose(expected, "center", surface.center.toTuple(), APPROXIMATION_TOLERANCE);
     expectAnchors(expected, surface);
 }
 

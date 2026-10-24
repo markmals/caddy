@@ -60,7 +60,7 @@ function expectMeshCounts(expected: FixtureCase, mesher: Mesher): void {
 
 function expectProperties(expected: FixtureCase, mesher: Mesher): void {
     let records = fixtureList(expected, "properties");
-    let properties = mesher.meshProperties();
+    let properties = mesher.meshProperties;
     expect(properties.length, "mesh count").toBe(records.length);
     for (let [index, record] of records.entries()) {
         let property = properties[index];
@@ -74,7 +74,7 @@ function expectProperties(expected: FixtureCase, mesher: Mesher): void {
 
 function expectMetaData(expected: FixtureCase, mesher: Mesher): void {
     let records = fixtureList(expected, "meta_data");
-    let entries = mesher.metaData();
+    let entries = mesher.metaData;
     expect(entries.length, "metadata count").toBe(records.length);
     for (let [index, record] of records.entries()) {
         let entry = entries[index];

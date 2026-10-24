@@ -54,7 +54,7 @@ export class DoubleTangentArc extends BaseEdgeObject {
 
 /** Centres of the circles through `start` tangent to both `direction` and `other`. */
 function tangentCenters(start: Vector, direction: Vector, other: TangentTarget): Vector[] {
-    let plane = makeLine(start, start.add(direction)).commonPlane(...other.edges());
+    let plane = makeLine(start, start.add(direction)).commonPlane(...other.edges);
     if (plane === undefined) {
         throw new GeometryError("DoubleTangentArc only works on a single plane");
     }
@@ -66,7 +66,7 @@ function tangentCenters(start: Vector, direction: Vector, other: TangentTarget):
     // build123d picks.
     let turnAxis = new Axis(new Vector(0, 0, 0), plane.negate().zDir);
     // Guard against circles so large they are effectively straight lines.
-    let maxRadius = 10 * other.boundingBox().add(start).diagonal;
+    let maxRadius = 10 * other.boundingBox.add(start).diagonal;
 
     let centers: Vector[] = [];
     for (let angle of [-90, 90]) {
@@ -135,7 +135,7 @@ function isTangentTo(
 
 /** Tangent of whichever edge of `curve` passes through `point`. */
 function tangentAtPoint(curve: TangentTarget, point: Vector): Vector {
-    let edges = [...curve.edges()];
+    let edges = [...curve.edges];
     let nearest = edges.reduce((best, edge) =>
         edge.distanceTo(point) < best.distanceTo(point) ? edge : best,
     );

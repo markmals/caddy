@@ -49,7 +49,7 @@ function expectSurface(expected: FixtureCase, face: Face): void {
 function expectRounded(expected: FixtureCase, sketch: Shape): void {
     expectShapeMetrics(expected, "shape", sketch);
     expectClose(expected, "area", sketch.area, MASS_TOLERANCE);
-    let face = sketch.faces()[0];
+    let face = sketch.faces[0];
     if (face === undefined) throw new Error("the rounded sketch holds no face");
     expectVectorClose(expected, "normal", face.normalAt().toTuple(), LINEAR_TOLERANCE);
     expectVertices(expected, sketch);
@@ -57,10 +57,7 @@ function expectRounded(expected: FixtureCase, sketch: Shape): void {
 }
 
 function sortedLengths(shape: Shape): number[] {
-    return shape
-        .edges()
-        .map(edge => edge.length)
-        .sort((first, second) => first - second);
+    return shape.edges.map(edge => edge.length).sort((first, second) => first - second);
 }
 
 /**
@@ -69,9 +66,8 @@ function sortedLengths(shape: Shape): number[] {
  */
 function expectVertices(expected: FixtureCase, shape: Shape): void {
     let quantized = (coordinate: number): number => Math.round(coordinate * 1e9);
-    let vertices = shape
-        .vertices()
-        .map(vertex => vertex.center())
+    let vertices = shape.vertices
+        .map(vertex => vertex.center)
         .sort(
             (first, second) =>
                 quantized(first.x) - quantized(second.x) ||
@@ -161,7 +157,7 @@ oracleSuite("wrap", {
     },
 
     "compound/extrude-shell": expected => {
-        let shell = Solid.makeBox(2, 3, 1).shells()[0];
+        let shell = Solid.makeBox(2, 3, 1).shells[0];
         if (shell === undefined) throw new Error("the box has no shell");
         let extruded = Compound.extrude(shell, [0, 0, 4]);
         expectShapeMetrics(expected, "shape", extruded);
@@ -169,21 +165,18 @@ oracleSuite("wrap", {
         expectMeasures(
             expected,
             "solid_volumes",
-            extruded
-                .solids()
-                .map(solid => solid.volume)
-                .sort((first, second) => first - second),
+            extruded.solids.map(solid => solid.volume).sort((first, second) => first - second),
         );
     },
 
     "full-round/trapezoid": expected => {
         let trapezoid = trapezoidFace();
-        expectRounded(expected, fullRound(trapezoid.edges().sortBy(Axis.Y).last));
+        expectRounded(expected, fullRound(trapezoid.edges.toSorted(Axis.Y).last));
     },
 
     "full-round/trapezoid-inverted": expected => {
         let trapezoid = trapezoidFace();
-        expectRounded(expected, fullRound(trapezoid.edges().sortBy(Axis.Y).last, { invert: true }));
+        expectRounded(expected, fullRound(trapezoid.edges.toSorted(Axis.Y).last, { invert: true }));
     },
 
     "full-round/trapezoid-coarse": expected => {
@@ -197,7 +190,7 @@ oracleSuite("wrap", {
         );
         expectRounded(
             expected,
-            fullRound(trapezoid.edges().sortBy(Axis.Y).last, { voronoiPointCount: 40 }),
+            fullRound(trapezoid.edges.toSorted(Axis.Y).last, { voronoiPointCount: 40 }),
         );
     },
 
@@ -217,7 +210,7 @@ oracleSuite("wrap", {
                 [3, 6],
             ]),
         );
-        expectRounded(expected, fullRound(triangle.edges().sortBy(Axis.X).first));
+        expectRounded(expected, fullRound(triangle.edges.toSorted(Axis.X).first));
     },
 
     "full-round/flipped-face": expected => {
@@ -234,7 +227,7 @@ function expectSamples(expected: FixtureCase, edge: Edge): void {
     );
 }
 
-/** build123d's `(face.edges() << Axis.X)[0]`: the edge furthest along -X. */
+/** build123d's `(face.edges() << Axis.X)[0]`: the edge furthest along -X in `face.edges`. */
 function leftmostEdge(face: Face): Edge {
-    return face.edges().groupBy(Axis.X).first.first;
+    return face.edges.groupBy(Axis.X).first.first;
 }

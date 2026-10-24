@@ -24,7 +24,7 @@ const AXIS_ALIGNED = {
 /** Compare against the `oriented_bounds()` serializer. */
 function expectOrientedBox(expected: FixtureCase, key: string, actual: OrientedBoundBox): void {
     let record = fixtureRecord(expected, key);
-    expectVectorClose(record, "center", actual.center().toTuple(), LINEAR_TOLERANCE);
+    expectVectorClose(record, "center", actual.center.toTuple(), LINEAR_TOLERANCE);
     expectVectorClose(record, "size", actual.size.toTuple(), LINEAR_TOLERANCE);
     expectVectorClose(record, "x_direction", actual.xDirection.toTuple(), ANGULAR_TOLERANCE);
     expectVectorClose(record, "y_direction", actual.yDirection.toTuple(), ANGULAR_TOLERANCE);

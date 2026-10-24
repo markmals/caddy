@@ -61,7 +61,7 @@ export function expectCenters(expected: FixtureCase, key: string, shapes: Iterab
     expectPoints(
         expected,
         key,
-        Array.from(shapes, shape => shape.center()),
+        Array.from(shapes, shape => shape.center),
     );
 }
 
@@ -109,12 +109,12 @@ export function sortedPoints(points: readonly Vector[]): Vector[] {
 export function expectCounts(expected: FixtureCase, key: string, shape: Shape): void {
     let counts = fixtureRecord(expected, key);
     let actual = {
-        vertices: shape.vertices().length,
-        edges: shape.edges().length,
-        wires: shape.wires().length,
-        faces: shape.faces().length,
-        shells: shape.shells().length,
-        solids: shape.solids().length,
+        vertices: shape.vertices.length,
+        edges: shape.edges.length,
+        wires: shape.wires.length,
+        faces: shape.faces.length,
+        shells: shape.shells.length,
+        solids: shape.solids.length,
     };
     for (let [name, value] of Object.entries(actual)) {
         expect(value, `${expected.name}.${key}.${name}`).toBe(fixtureNumber(counts, name));
@@ -160,15 +160,15 @@ export function expectShapeMetrics(expected: FixtureCase, key: string, shape: Sh
     expect(shape.isValid, `${expected.name}.${key}.is_valid`).toBe(
         fixtureBoolean(metrics, "is_valid"),
     );
-    expectMetricBounds(metrics, "bounding_box", shape.boundingBox());
-    expectMetricBounds(metrics, "bounding_box_coarse", shape.boundingBox({ optimal: false }));
+    expectMetricBounds(metrics, "bounding_box", shape.boundingBox);
+    expectMetricBounds(metrics, "bounding_box_coarse", shape.getBoundingBox({ optimal: false }));
     expectClose(metrics, "volume", shape.volume, MASS_TOLERANCE);
     expectClose(metrics, "area", shape.area, MASS_TOLERANCE);
     if (fixtureValue(metrics, "center_of_mass") !== null) {
         expectVectorClose(
             metrics,
             "center_of_mass",
-            shape.center(CenterOf.Mass).toTuple(),
+            shape.getCenter(CenterOf.Mass).toTuple(),
             LINEAR_TOLERANCE,
         );
     }
@@ -176,11 +176,11 @@ export function expectShapeMetrics(expected: FixtureCase, key: string, shape: Sh
     expect(
         fixtureValue(metrics, "face_geom_types"),
         `${expected.name}.${key}.face_geom_types`,
-    ).toEqual(geomTypeHistogram(shape.faces()));
+    ).toEqual(geomTypeHistogram(shape.faces));
     expect(
         fixtureValue(metrics, "edge_geom_types"),
         `${expected.name}.${key}.edge_geom_types`,
-    ).toEqual(geomTypeHistogram(shape.edges()));
+    ).toEqual(geomTypeHistogram(shape.edges));
 }
 
 /** The `_placed` serializer: shape metrics plus the shape's location. */

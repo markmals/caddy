@@ -81,9 +81,9 @@ export const shapeCases: OracleCases = {
     },
     "shape/topo-owner-and-parent": expected => {
         let box = Solid.makeBox(1, 1, 1);
-        let face = box.faces().sortBy(Axis.X).at(-1)!;
-        let edge = face.edges().sortBy(Axis.Y)[0]!;
-        let vertex = edge.vertices()[0]!;
+        let face = box.faces.toSorted(Axis.X).at(-1)!;
+        let edge = face.edges.toSorted(Axis.Y)[0]!;
+        let vertex = edge.vertices[0]!;
         expectProvenance(expected, "box", box, undefined, undefined);
         expectProvenance(expected, "face", face, box, box);
         expectProvenance(expected, "edge", edge, face, box);
@@ -101,8 +101,7 @@ export const shapeCases: OracleCases = {
         expectMatrixClose(
             expected,
             "box",
-            moved
-                .vertices()
+            moved.vertices
                 .map(vertex => vertex.toArray())
                 .sort(
                     (left, right) => left[0] - right[0] || left[1] - right[1] || left[2] - right[2],

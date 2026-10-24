@@ -81,18 +81,14 @@ export class OrientedBoundBox {
     readonly xDirection: Vector;
     readonly yDirection: Vector;
     readonly zDirection: Vector;
-    private readonly middle: Vector;
+    readonly center: Vector;
 
     constructor(bounds: OrientedBounds) {
-        this.middle = Vector.from(bounds.center);
+        this.center = Vector.from(bounds.center);
         this.xDirection = Vector.from(bounds.xDirection);
         this.yDirection = Vector.from(bounds.yDirection);
         this.zDirection = Vector.from(bounds.zDirection);
         this.size = Vector.from(bounds.halfSizes).multiply(2);
-    }
-
-    center(): Vector {
-        return this.middle;
     }
 
     /** Body diagonal length, the largest distance between two points of the box. */
@@ -103,7 +99,7 @@ export class OrientedBoundBox {
     /** The box's own coordinate system, centred in the box. */
     get plane(): Plane {
         return new Plane({
-            origin: this.middle,
+            origin: this.center,
             xDir: this.xDirection,
             zDir: this.zDirection,
         });
@@ -130,7 +126,7 @@ export class OrientedBoundBox {
 
     /** Is `point` strictly outside the box (`Bnd_OBB::IsOut`)? */
     isOutside(point: VectorLike): boolean {
-        let relative = Vector.from(point).sub(this.middle);
+        let relative = Vector.from(point).sub(this.center);
         let half = this.size.divide(2);
         return (
             Math.abs(this.xDirection.dot(relative)) > half.x ||
@@ -141,7 +137,7 @@ export class OrientedBoundBox {
 
     toString(): string {
         return (
-            `OrientedBoundBox: (center=${this.middle.toTuple().join(", ")}, ` +
+            `OrientedBoundBox: (center=${this.center.toTuple().join(", ")}, ` +
             `size=${this.size.toTuple().join(", ")})`
         );
     }

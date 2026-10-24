@@ -54,14 +54,14 @@ function arrowHeadSketch(size: number, headType: HeadType): Sketch {
     if (headType === HeadType.Filleted) {
         let curved = arrowHeadSketch(size, HeadType.Curved);
         // Every vertex except the tip at the origin, which stays sharp.
-        let corners = curved.vertices().filterByPosition(Axis.X, -2 * size, -size / 5);
+        let corners = curved.vertices.filterByPosition(Axis.X, -2 * size, -size / 5);
         return fillet2D(corners, size / 20);
     }
     // One side of the head, mirrored across the X axis to close the outline.
     let side = new TangentArc([0, 0], [-size, size / 3], [-size, size / 6]);
     let tail = new Line(side.positionAt(1), [(-7 * size) / 8, 0]);
     let half = new Curve([side, tail]);
-    return makeFace([...half.edges(), ...mirror(half, Plane.XZ).edges()]);
+    return makeFace([...half.edges, ...mirror(half, Plane.XZ).edges]);
 }
 
 export interface ArrowOptions {

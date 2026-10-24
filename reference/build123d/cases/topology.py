@@ -729,6 +729,20 @@ def shapelist_set_ops() -> dict:
     }
 
 
+@case("shapelist/slice")
+def shapelist_slice() -> dict:
+    """Slicing and reversing a sorted list keep it a ShapeList."""
+    faces = _box().faces().sort_by(Axis.Z)
+    middle = faces[1:3]
+    backwards = faces[::-1]
+    return {
+        "slice_class": type(middle).__name__,
+        "slice_centers": [vec(face.center()) for face in middle],
+        "reversed_class": type(backwards).__name__,
+        "reversed_centers": [vec(face.center()) for face in backwards],
+    }
+
+
 @case("shapelist/expand-center")
 def shapelist_expand_center() -> dict:
     solid = _box()

@@ -20,7 +20,5 @@ let hexagon = new RegularPolygon(5, 6).transform(new Pos(-12, -10));
 let sketch = outline.subtract(opening).subtract(slot).subtract(hexagon);
 let plate = extrude(sketch, 8);
 
-console.log(`sketch: ${sketch.faces().length} face, area ${sketch.area.toFixed(3)}`);
-console.log(
-    `plate:  volume ${plate.volume.toFixed(3)} (= area x 8), ${plate.faces().length} faces`,
-);
+console.log(`sketch: ${sketch.faces.length} face, area ${sketch.area.toFixed(3)}`);
+console.log(`plate:  volume ${plate.volume.toFixed(3)} (= area x 8), ${plate.faces.length} faces`);

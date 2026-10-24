@@ -25,11 +25,11 @@ Node.js 24 or newer. The native kernel comes from [`@roonieone/occt-native`](../
 | `a + b`, `a - b`, `a & b` | `a.union(b)`, `a.subtract(b)`, `a.intersect(b)` |
 | `Pos(20, 0, 0) * shape` | `shape.transform(new Pos(20, 0, 0))` |
 | `Box(1, 2, 3, align=(Align.MIN,) * 3)` | `new Box(1, 2, 3, { align: [Align.Min, Align.Min, Align.Min] })` |
-| `edges().filter_by(Axis.Z).sort_by(Axis.X)` | `edges().filterBy(Axis.Z).sortBy(Axis.X)` |
+| `edges().filter_by(Axis.Z).sort_by(Axis.X)` | `edges.filter(Axis.Z).toSorted(Axis.X)` |
 | `export_step(part, "a.step")` | `await caddy.export(part, { name: "a.step", type: CADFileType.Step })` |
 | `import_step("a.step")` | `await importCAD("a.step")` |
 
-- Names are camelCase; optional parameters are options objects; enum members are PascalCase (`GeomType.Line`).
+- Names are camelCase; noun-named queries are accessors (`shape.edges`, `shape.center`); optional parameters are options objects; enum members are PascalCase (`GeomType.Line`).
 - Shapes are immutable: every operation returns a new shape.
 - File import and export are asynchronous and run off the main thread.
 - `export` is a reserved word, so it cannot be imported by name. Use the namespace (`caddy.export`), rename it (`import { export as exportShape }`), or use its alias `exportCAD`.

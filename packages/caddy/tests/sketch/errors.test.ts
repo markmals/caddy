@@ -58,7 +58,7 @@ describe("sketch objects reject invalid input", () => {
     });
 
     it("rejects a chamfer given both a second length and an angle", () => {
-        let corners = new Rectangle(8, 5).vertices();
+        let corners = new Rectangle(8, 5).vertices;
         expect(() => chamfer2D(corners, 1, { length2: 2, angle: 30 })).toThrow(
             /Only one of length2 or angle/,
         );
@@ -66,9 +66,9 @@ describe("sketch objects reject invalid input", () => {
 
     it("rejects a chamfer reference without a second dimension", () => {
         let base = new Rectangle(8, 5);
-        let reference = base.edges()[0];
+        let reference = base.edges[0];
         if (reference === undefined) throw new Error("expected a rectangle edge");
-        expect(() => chamfer2D(base.vertices(), 1, { reference })).toThrow(
+        expect(() => chamfer2D(base.vertices, 1, { reference })).toThrow(
             /reference can only be used/,
         );
     });

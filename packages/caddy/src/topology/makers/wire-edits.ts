@@ -38,12 +38,12 @@ export function closeWire(wire: Wire): Wire {
     if (wire.isClosed) {
         return wire;
     }
-    return Wire.combine([wire, makeLine(wire.endPoint(), wire.startPoint())]).first;
+    return Wire.combine([wire, makeLine(wire.endPoint, wire.startPoint)]).first;
 }
 
 /** The wire's edges along its direction, each oriented to start where the previous one ends. */
 export function orderEdges(wire: Wire): ShapeList<Edge> {
-    let sorted = wire.edges().sortBy(wire);
+    let sorted = wire.edges.toSorted(wire);
     let ordered = new ShapeList<Edge>([sorted.first]);
     for (let edge of sorted.slice(1)) {
         let previous = ordered[ordered.length - 1]!;
@@ -110,7 +110,7 @@ export function trim(wire: Wire, start: number | VectorLike, end: number | Vecto
         number,
         number,
     ];
-    let ordered = wire.edges().sortBy(wire);
+    let ordered = wire.edges.toSorted(wire);
     let onlyEdge = ordered.length === 1 ? ordered.first : undefined;
     if (onlyEdge !== undefined) {
         return new Wire([onlyEdge.trim(from, to)]);

@@ -76,7 +76,7 @@ export class SlotCenterToCenter extends BaseSketchObject {
         let face =
             centerSeparation > 0
                 ? slotFace(straightCenterLine(centerSeparation), height)
-                : new Circle(height / 2).face();
+                : new Circle(height / 2).face;
         super(placedFaces(face, { align: null, ...options }));
     }
 }
@@ -92,7 +92,7 @@ export class SlotOverall extends BaseSketchObject {
         let face =
             width > height
                 ? slotFace(straightCenterLine(width - height), height)
-                : new Circle(width / 2).face();
+                : new Circle(width / 2).face;
         super(placedFaces(face, { align: CENTERED, ...options }));
     }
 }

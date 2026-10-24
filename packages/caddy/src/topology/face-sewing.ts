@@ -14,7 +14,7 @@ export function sewFaces(faces: Iterable<Face>): ShapeList<Face>[] {
     let sewn = Shape.cast(
         native("Face.sewFaces", () => features.sew([...faces].map(face => face.wrapped))),
     );
-    return [...sewn.getTopLevelShapes()].map(sheet => {
+    return [...sewn.topLevelShapes].map(sheet => {
         if (sheet.shapeType === "Face") {
             return new ShapeList([sheet as Face]);
         }
@@ -23,6 +23,6 @@ export function sewFaces(faces: Iterable<Face>): ShapeList<Face>[] {
                 `SewedShape returned a ${sheet.shapeType} which was unexpected`,
             );
         }
-        return sheet.faces();
+        return sheet.faces;
     });
 }

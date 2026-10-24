@@ -105,7 +105,7 @@ oracleSuite("joints", {
         expectPlacement(expected, "moved", moved);
         expectLocation(expected, "moved_joint", hinge.connectedTo!.location);
         expectLocation(expected, "hinge_joint", hinge.location);
-        expect(hinge.symbol.edges().length).toBe(fixtureNumber(expected, "symbol_edges"));
+        expect(hinge.symbol.edges.length).toBe(fixtureNumber(expected, "symbol_edges"));
     },
 
     "revolute/measured-from-reference": expected => {
@@ -183,7 +183,7 @@ oracleSuite("joints", {
         expectLocation(expected, "slider_joint", slider.location);
         expectClose(expected, "position", slider.position!, LINEAR_TOLERANCE);
         expectClose(expected, "angle", slider.angle!, LINEAR_TOLERANCE);
-        expect(slider.symbol.edges().length).toBe(fixtureNumber(expected, "symbol_edges"));
+        expect(slider.symbol.edges.length).toBe(fixtureNumber(expected, "symbol_edges"));
     },
 
     "linear/revolute": expected => {
@@ -235,7 +235,7 @@ oracleSuite("joints", {
         expectLocation(expected, "screw_joint", screw.location);
         expectClose(expected, "position", screw.position!, LINEAR_TOLERANCE);
         expectClose(expected, "angle", screw.angle!, LINEAR_TOLERANCE);
-        expect(screw.symbol.edges().length).toBe(fixtureNumber(expected, "symbol_edges"));
+        expect(screw.symbol.edges.length).toBe(fixtureNumber(expected, "symbol_edges"));
     },
 
     "cylindrical/default-position-and-angle": expected => {

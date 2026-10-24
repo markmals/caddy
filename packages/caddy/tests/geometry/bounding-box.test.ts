@@ -6,7 +6,7 @@ describe("BoundingBox", () => {
     it("derives size, centre and diagonal from its corners", () => {
         let box = new BoundingBox([-1, -2, -3], [4, 5, 6]);
         expect(box.size.toTuple()).toEqual([5, 7, 9]);
-        expect(box.center().toTuple()).toEqual([1.5, 1.5, 1.5]);
+        expect(box.center.toTuple()).toEqual([1.5, 1.5, 1.5]);
         expect(box.diagonal).toBeCloseTo(Math.sqrt(25 + 49 + 81), 12);
     });
 

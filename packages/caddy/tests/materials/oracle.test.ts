@@ -120,7 +120,7 @@ oracleSuite("materials", {
         expectClose(expected, "volume", box.volume, MASS_TOLERANCE);
         expect(material.material.density).toBe(fixtureNumber(expected, "density"));
         expect(canonicalName(material)).toBe(fixtureString(expected, "name"));
-        expectMasses(expected, "masses", options => box.mass(options));
+        expectMasses(expected, "masses", options => box.computeMass(options));
     },
 
     "mass/sphere-walnut": expected => {
@@ -130,7 +130,7 @@ oracleSuite("materials", {
         expectClose(expected, "volume", sphere.volume, MASS_TOLERANCE);
         expect(material.material.density).toBe(fixtureNumber(expected, "density"));
         expect(canonicalName(material)).toBe(fixtureString(expected, "name"));
-        expectMasses(expected, "masses", options => sphere.mass(options));
+        expectMasses(expected, "masses", options => sphere.computeMass(options));
     },
 
     "mass/by-name": expected => {
@@ -138,37 +138,37 @@ oracleSuite("materials", {
         byName.material = "brass";
         let byFactory = new Box(10, 20, 30);
         byFactory.material = materialFactory("brass")();
-        expectClose(expected, "byName", byName.mass(), MASS_TOLERANCE);
-        expectClose(expected, "byFactory", byFactory.mass(), MASS_TOLERANCE);
+        expectClose(expected, "byName", byName.mass, MASS_TOLERANCE);
+        expectClose(expected, "byFactory", byFactory.mass, MASS_TOLERANCE);
         expect(canonicalName(byName.material!)).toBe(fixtureString(expected, "name"));
     },
 
     "mass/shell": expected => {
-        let closed = new Box(10, 20, 30).shell();
+        let closed = new Box(10, 20, 30).shell;
         closed.material = "brass";
-        let open = new Shell(new Box(10, 20, 30).faces()[0]!);
+        let open = new Shell(new Box(10, 20, 30).faces[0]!);
         open.material = "brass";
         expectClose(expected, "closedVolume", closed.volume, MASS_TOLERANCE);
-        expectClose(expected, "closedMass", closed.mass(), MASS_TOLERANCE);
+        expectClose(expected, "closedMass", closed.mass, MASS_TOLERANCE);
         expectClose(expected, "openVolume", open.volume, MASS_TOLERANCE);
-        expectClose(expected, "openMass", open.mass(), MASS_TOLERANCE);
+        expectClose(expected, "openMass", open.mass, MASS_TOLERANCE);
     },
 
     "mass/zero-volume": expected => {
         let box = brassBox();
         let vertex = new Vertex(1, 2, 3);
         vertex.material = "brass";
-        let edge = box.edges()[0]!;
-        let wire = box.faces()[0]!.outerWire();
-        let face = box.faces()[0]!;
-        expectClose(expected, "vertex", vertex.mass(), MASS_TOLERANCE);
-        expectClose(expected, "edge", edge.mass(), MASS_TOLERANCE);
-        expectClose(expected, "wire", wire.mass(), MASS_TOLERANCE);
-        expectClose(expected, "face", face.mass(), MASS_TOLERANCE);
+        let edge = box.edges[0]!;
+        let wire = box.faces[0]!.outerWire;
+        let face = box.faces[0]!;
+        expectClose(expected, "vertex", vertex.mass, MASS_TOLERANCE);
+        expectClose(expected, "edge", edge.mass, MASS_TOLERANCE);
+        expectClose(expected, "wire", wire.mass, MASS_TOLERANCE);
+        expectClose(expected, "face", face.mass, MASS_TOLERANCE);
         expectClose(
             expected,
             "faceWithoutMaterial",
-            new Box(1, 1, 1).faces()[0]!.mass(),
+            new Box(1, 1, 1).faces[0]!.mass,
             MASS_TOLERANCE,
         );
         expectClose(expected, "emptyCompound", new Compound([]).computeMass(), MASS_TOLERANCE);
@@ -182,7 +182,7 @@ oracleSuite("materials", {
         weightless.material = materialFactory("brass")({ density: 0 });
         expect(material.material.density).toBe(fixtureNumber(expected, "density"));
         expect(canonicalName(material)).toBe(fixtureString(expected, "name"));
-        expectClose(expected, "mass", box.mass(), MASS_TOLERANCE);
+        expectClose(expected, "mass", box.mass, MASS_TOLERANCE);
         expectClose(expected, "zeroDensityMass", weightless.computeMass(), MASS_TOLERANCE);
     },
 
@@ -190,27 +190,27 @@ oracleSuite("materials", {
         let plain = brassBox();
         let finished = new Box(10, 20, 30);
         finished.material = materialFactory("brass")({ finish: finishes.brushed() });
-        expectClose(expected, "plain", plain.mass(), MASS_TOLERANCE);
-        expectClose(expected, "finished", finished.mass(), MASS_TOLERANCE);
+        expectClose(expected, "plain", plain.mass, MASS_TOLERANCE);
+        expectClose(expected, "finished", finished.mass, MASS_TOLERANCE);
     },
 
     "mass/compound": expected => {
-        let compound = new Compound([new Box(10, 10, 10).solid(), new Box(10, 10, 10).solid()]);
+        let compound = new Compound([new Box(10, 10, 10).solid, new Box(10, 10, 10).solid]);
         compound.material = "brass";
         expectClose(expected, "volume", compound.volume, MASS_TOLERANCE);
-        expectClose(expected, "mass", compound.mass(), MASS_TOLERANCE);
+        expectClose(expected, "mass", compound.mass, MASS_TOLERANCE);
     },
 
     "mass/inherited": expected => {
-        let assembly = new Compound([new Box(10, 10, 10).solid()]);
+        let assembly = new Compound([new Box(10, 10, 10).solid]);
         assembly.material = "brass";
-        let inherited = assembly.solids()[0]!;
-        expectClose(expected, "inherited", inherited.mass(), MASS_TOLERANCE);
+        let inherited = assembly.solids[0]!;
+        expectClose(expected, "inherited", inherited.mass, MASS_TOLERANCE);
         expect(canonicalName(inherited.material!)).toBe(fixtureString(expected, "inheritedName"));
 
-        let own = assembly.solids()[0]!;
+        let own = assembly.solids[0]!;
         own.material = "walnut";
-        expectClose(expected, "ownWins", own.mass(), MASS_TOLERANCE);
+        expectClose(expected, "ownWins", own.mass, MASS_TOLERANCE);
         expect(canonicalName(own.material!)).toBe(fixtureString(expected, "ownName"));
     },
 

@@ -62,7 +62,7 @@ describe("Face.makeSurfacePatch", () => {
         let patch = Face.makeSurfacePatch({ edgeConstraints: patchEdges() });
         expect(patch.isValid).toBe(true);
         expect(patch.isPlanar).toBeUndefined();
-        expect(patch.edges()).toHaveLength(3);
+        expect(patch.edges).toHaveLength(3);
     });
 
     test("reports an unfillable boundary", () => {

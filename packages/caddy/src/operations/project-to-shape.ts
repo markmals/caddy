@@ -30,13 +30,11 @@ export function projectWireToShape(
     let { direction, center } = castRays(options);
     let projected = run(wire, target, direction, center);
     let orientation = shapes.orientation(wire.wrapped);
-    let aligned = projected
-        .wires()
-        .map(candidate =>
-            shapes.orientation(candidate.wrapped) === orientation
-                ? candidate
-                : (Shape.cast(shapes.reversed(candidate.wrapped)) as Wire),
-        );
+    let aligned = projected.wires.map(candidate =>
+        shapes.orientation(candidate.wrapped) === orientation
+            ? candidate
+            : (Shape.cast(shapes.reversed(candidate.wrapped)) as Wire),
+    );
     return new ShapeList(sorted(wire, aligned, direction, center).map(found => found.clean()));
 }
 
@@ -48,7 +46,7 @@ export function projectEdgeToShape(
 ): ShapeList<Edge> {
     let wire = Shape.cast(construct.makeWire([edge.wrapped])) as Wire;
     let projected = projectWireToShape(wire, target, options);
-    return new ShapeList(projected.flatMap(found => [...found.edges()]));
+    return new ShapeList(projected.flatMap(found => [...found.edges]));
 }
 
 /**
@@ -65,7 +63,7 @@ export function projectLineOntoFace(
     let projected = Shape.cast(
         nativeProjection(() => features.project(line.wrapped, face.wrapped, unit.toTuple())),
     );
-    let pieces = [...projected.getTopLevelShapes()] as (Edge | Wire)[];
+    let pieces = [...projected.topLevelShapes] as (Edge | Wire)[];
     if (options.closest === false) return new ShapeList<Edge | Wire>(pieces);
     let nearest = pieces[0];
     if (nearest === undefined) throw new GeometryError("Nothing projected onto the face");
@@ -123,10 +121,10 @@ function sorted(
     center: Vector | undefined,
 ): Wire[] {
     if (projected.length <= 1) return [...projected];
-    let origin = direction === undefined ? center! : wire.center();
+    let origin = direction === undefined ? center! : wire.center;
     let measured: { wire: Wire; distance: number }[] = [];
     for (let candidate of projected) {
-        let offset = candidate.center().sub(origin);
+        let offset = candidate.center.sub(origin);
         if (direction !== undefined && offset.length > 0 && offset.dot(direction) < 0) continue;
         measured.push({ wire: candidate, distance: offset.length });
     }

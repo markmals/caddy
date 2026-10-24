@@ -23,9 +23,9 @@ export const shapeCases: OracleCases = {
         let fromVector = Shape.asShape(new Vector(1, 2, 3));
         let fromLocation = Shape.asShape(new Pos(4, 5, 6));
         expectName(expected, "vector_type", fromVector.shapeType);
-        expectPoint(expected, "vector_point", fromVector.center());
+        expectPoint(expected, "vector_point", fromVector.center);
         expectName(expected, "location_type", fromLocation.shapeType);
-        expectPoint(expected, "location_point", fromLocation.center());
+        expectPoint(expected, "location_point", fromLocation.center);
     },
 
     "as-shape/axis-and-plane": expected => {
@@ -58,17 +58,17 @@ export const shapeCases: OracleCases = {
 
     "compute-volume/every-dimension": expected => {
         let box = new Box(2, 3, 4);
-        let top = box.faces().sortBy(Axis.Z).at(-1)!;
-        expectClose(expected, "vertex", box.vertices()[0]!.computeVolume(), MASS_TOLERANCE);
+        let top = box.faces.toSorted(Axis.Z).at(-1)!;
+        expectClose(expected, "vertex", box.vertices[0]!.computeVolume(), MASS_TOLERANCE);
         expectClose(
             expected,
             "edge",
-            box.edges().sortBy(Axis.Z)[0]!.computeVolume(),
+            box.edges.toSorted(Axis.Z)[0]!.computeVolume(),
             MASS_TOLERANCE,
         );
-        expectClose(expected, "wire", top.outerWire().computeVolume(), MASS_TOLERANCE);
+        expectClose(expected, "wire", top.outerWire.computeVolume(), MASS_TOLERANCE);
         expectClose(expected, "face", top.computeVolume(), MASS_TOLERANCE);
-        expectClose(expected, "shell", makeBox(2, 3, 4).shell().computeVolume(), MASS_TOLERANCE);
+        expectClose(expected, "shell", makeBox(2, 3, 4).shell.computeVolume(), MASS_TOLERANCE);
         expectClose(expected, "solid", box.computeVolume(), MASS_TOLERANCE);
         expectClose(
             expected,
@@ -84,27 +84,24 @@ export const shapeCases: OracleCases = {
             new Pos(10, 0, 0),
         );
         expectLocationClose(expected, "solid", solid.globalLocation);
-        expectLocationClose(expected, "nested_child", nested.solids()[0]!.globalLocation);
+        expectLocationClose(expected, "nested_child", nested.solids[0]!.globalLocation);
     },
 
     "to-splines/cylinder": expected => {
         let splined = new Cylinder(1, 2).toSplines();
         expect(
-            splined
-                .faces()
-                .map(face => face.geomType)
-                .sort(),
+            splined.faces.map(face => face.geomType).sort(),
             `${expected.name}.surface_types`,
         ).toEqual(fixtureValue(expected, "surface_types"));
         expectClose(expected, "volume", splined.volume, APPROXIMATION_TOLERANCE);
         expectClose(expected, "area", splined.area, APPROXIMATION_TOLERANCE);
-        expectCount(expected, "face_count", splined.faces().length);
+        expectCount(expected, "face_count", splined.faces.length);
     },
 
     "to-splines/degree-and-tolerance": expected => {
         let splined = new Cylinder(1, 2).toSplines({ degree: 5, tolerance: 1e-2 });
         expectClose(expected, "volume", splined.volume, APPROXIMATION_TOLERANCE);
-        expectCount(expected, "face_count", splined.faces().length);
+        expectCount(expected, "face_count", splined.faces.length);
     },
 
     "do-children-intersect/disjoint": expected => {
@@ -149,7 +146,7 @@ export const shapeCases: OracleCases = {
         let box = new Box(1, 1, 1);
         expect(() => topoDistanceTo([]), `${expected.name}.empty_reference`).toThrow();
         expect(
-            () => topoDistanceTo([box.faces()[0]!, box.edges()[0]!]),
+            () => topoDistanceTo([box.faces[0]!, box.edges[0]!]),
             `${expected.name}.mixed_types`,
         ).toThrow();
         expect(() => topoDistanceTo(box), `${expected.name}.unsupported_type`).toThrow();

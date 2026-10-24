@@ -47,7 +47,7 @@ class TagStream {
             .real(code + 20, 0);
     }
 
-    text(): string {
+    get text(): string {
         return `${this.tags.join("\n")}\n`;
     }
 }
@@ -125,5 +125,5 @@ export function writeDxf(drawing: DxfDrawing): string {
     for (let { layer, entity } of drawing.entities) writeEntity(tags, layer, entity);
     tags.add(0, "ENDSEC");
 
-    return tags.add(0, "EOF").text();
+    return tags.add(0, "EOF").text;
 }

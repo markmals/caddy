@@ -40,14 +40,7 @@ export const transformCases: OracleCases = {
     "transform/scale-nonuniform": expected => {
         let scaled = cylinder().scale([2, 1, 0.5]);
         expectPlaced(expected, scaled);
-        expectNames(
-            expected,
-            "face_geom_types",
-            scaled
-                .faces()
-                .map(face => face.geomType)
-                .sort(),
-        );
+        expectNames(expected, "face_geom_types", scaled.faces.map(face => face.geomType).sort());
     },
     "transform/mirror": expected => {
         expectPlaced(expected, box().mirror(Plane.YZ));
@@ -69,13 +62,6 @@ export const transformCases: OracleCases = {
             [0, 0, 1, 0],
         ]);
         expectPlaced(expected, sheared);
-        expectNames(
-            expected,
-            "face_geom_types",
-            sheared
-                .faces()
-                .map(face => face.geomType)
-                .sort(),
-        );
+        expectNames(expected, "face_geom_types", sheared.faces.map(face => face.geomType).sort());
     },
 };

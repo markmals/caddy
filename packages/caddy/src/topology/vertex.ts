@@ -98,7 +98,12 @@ export class Vertex extends Shape {
     }
 
     /** The centre of a vertex is its point. */
-    center(): Vector {
+    get center(): Vector {
+        return this.#point();
+    }
+
+    /** A vertex has one centre, whichever kind is asked for. */
+    getCenter(): Vector {
         return this.#point();
     }
 
@@ -124,11 +129,11 @@ export class Vertex extends Shape {
         return new Vertex(transform.apply(this.#point())) as this;
     }
 
-    override vertex(): Vertex {
+    override get vertex(): Vertex {
         return this;
     }
 
-    override vertices(options: SubShapeOptions = {}): ShapeList<Vertex> {
+    override getVertices(options: SubShapeOptions = {}): ShapeList<Vertex> {
         return this.selected(new ShapeList<Vertex>([this]), options.select);
     }
 

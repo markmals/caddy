@@ -116,8 +116,8 @@ export class Vector {
         return new Vector(this.x / magnitude, this.y / magnitude, this.z / magnitude);
     }
 
-    /** The centre of a point is the point; provided so every geometry type answers `center()`. */
-    center(): Vector {
+    /** The centre of a point is the point; provided so every geometry type answers `center`. */
+    get center(): Vector {
         return this;
     }
 

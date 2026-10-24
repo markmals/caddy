@@ -28,12 +28,12 @@ export class Curve extends Compound {
 
     /** Point at `position` along the curve's edges joined into one wire (`@`). */
     positionAt(position: number, mode: PositionMode = PositionMode.Parameter): Vector {
-        return new Wire(this.edges()).positionAt(position, mode);
+        return new Wire(this.edges).positionAt(position, mode);
     }
 
     /** Tangent at `position` along the curve's edges joined into one wire (`%`). */
     tangentAt(position = 0.5, mode: PositionMode = PositionMode.Parameter): Vector {
-        return new Wire(this.edges()).tangentAt(position, mode);
+        return new Wire(this.edges).tangentAt(position, mode);
     }
 
     /** Frame at `position` along the curve's edges joined into one wire (`^`). */
@@ -42,15 +42,15 @@ export class Curve extends Compound {
         mode: PositionMode = PositionMode.Parameter,
         options: LocationAtOptions = {},
     ): Location {
-        return new Wire(this.edges()).locationAt(position, mode, options);
+        return new Wire(this.edges).locationAt(position, mode, options);
     }
 
     /**
      * The wires the curve's edges connect into (build123d `Curve.wires`, which combines the edges
      * the selector keeps).
      */
-    override wires(options: SubShapeOptions = {}): ShapeList<Wire> {
-        let edges = Array.from(this.edges(options), edge => edge.wrapped);
+    override getWires(options: SubShapeOptions = {}): ShapeList<Wire> {
+        let edges = Array.from(this.getEdges(options), edge => edge.wrapped);
         let wires = native("Wire assembly", () => construct.connectEdgesToWires(edges));
         return new ShapeList(wires.map(wrapped => new Wire(wrapped)));
     }

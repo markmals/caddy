@@ -94,17 +94,17 @@ describe("draft", () => {
     });
 
     test("needs every face to come from the same solid", () => {
-        let first = new Box(1, 1, 1).solid();
-        let second = new Box(1, 1, 1).solid();
-        expect(() => draft([first.faces()[0]!, second.faces()[0]!], Plane.XY, 5)).toThrow(
+        let first = new Box(1, 1, 1).solid;
+        let second = new Box(1, 1, 1).solid;
+        expect(() => draft([first.faces[0]!, second.faces[0]!], Plane.XY, 5)).toThrow(
             InvalidShapeError,
         );
     });
 
     test("reports the face it could not draft", () => {
-        let box = new Box(10, 10, 10).solid();
-        let bottom = box.faces().sortBy(Axis.Z)[0]!;
-        let neutral = new Plane({ origin: bottom.center(), zDir: bottom.normalAt() });
+        let box = new Box(10, 10, 10).solid;
+        let bottom = box.faces.toSorted(Axis.Z)[0]!;
+        let neutral = new Plane({ origin: bottom.center, zDir: bottom.normalAt() });
         let failure = (): void => void draft([bottom], neutral, 5);
         expect(failure).toThrow(DraftAngleError);
         try {

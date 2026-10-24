@@ -47,32 +47,32 @@ export function project(
         throw new GeometryError("Only points, edges, wires and faces can be projected");
     }
     let localPoints = points.map(point => {
-        let position = point instanceof Vertex ? point.center() : Vector.from(point);
+        let position = point instanceof Vertex ? point.center : Vector.from(point);
         let distance = workplane.origin.sub(position).dot(workplane.zDir);
         return workplane.toLocalCoords(position.add(workplane.zDir.multiply(distance)));
     });
     if (lines.length === 0 && faces.length === 0) return localPoints;
 
-    let shapeBounds = new Compound([...lines, ...faces]).boundingBox({ optimal: false });
+    let shapeBounds = new Compound([...lines, ...faces]).getBoundingBox({ optimal: false });
     let screenSize = 3 * shapeBounds.diagonal;
     if (screenSize === 0) throw new GeometryError("Cannot project a zero-size shape");
     let screen = makeFaceRect(screenSize, screenSize, workplane);
     let projected: Shape[] = [];
     for (let shape of [...faces, ...lines]) {
-        let separation = workplane.origin.sub(shape.center()).dot(workplane.zDir);
+        let separation = workplane.origin.sub(shape.center).dot(workplane.zDir);
         let direction = workplane.zDir.multiply(separation >= 0 ? 1 : -1);
         try {
             if (shape instanceof Face) {
-                let reach = 4 * (shape.boundingBox().diagonal + Math.abs(separation) + 1);
+                let reach = 4 * (shape.boundingBox.diagonal + Math.abs(separation) + 1);
                 let swept = features.extrude(shape.wrapped, direction.multiply(reach).toTuple());
                 let intersection = Shape.cast(booleans.common([swept], [screen.wrapped]));
-                projected.push(...intersection.faces().map(face => toLocal(face, workplane)));
+                projected.push(...intersection.faces.map(face => toLocal(face, workplane)));
             } else {
                 let profile = shape instanceof Edge ? new Wire([shape]) : shape;
                 let image = Shape.cast(
                     features.project(profile.wrapped, screen.wrapped, direction.toTuple()),
                 );
-                projected.push(...image.wires().map(wire => toLocal(wire, workplane)));
+                projected.push(...image.wires.map(wire => toLocal(wire, workplane)));
             }
         } catch (cause) {
             throw new NativeKernelError("Projection failed", { cause });

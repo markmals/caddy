@@ -162,7 +162,7 @@ function closedIfNeeded(wire: Wire, closed: boolean, edges: readonly Edge[]): Wi
     let first = edges[0];
     let last = edges.at(-1);
     if (first === undefined || last === undefined) return wire;
-    let gap = makeLine(last.endPoint(), first.startPoint());
+    let gap = makeLine(last.endPoint, first.startPoint);
     return new Wire([...edges, gap]);
 }
 

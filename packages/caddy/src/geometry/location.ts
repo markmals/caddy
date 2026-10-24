@@ -151,7 +151,7 @@ export class Location {
     }
 
     /** The position; provided so locations sort alongside other geometry. */
-    center(): Vector {
+    get center(): Vector {
         return this.position;
     }
 

@@ -37,10 +37,7 @@ function expectText(expected: FixtureCase, shape: Shape): void {
     expectNumbersClose(
         expected,
         "edge_lengths",
-        shape
-            .edges()
-            .map(edge => edge.length)
-            .sort((left, right) => left - right),
+        shape.edges.map(edge => edge.length).sort((left, right) => left - right),
         APPROXIMATION_TOLERANCE,
     );
 }

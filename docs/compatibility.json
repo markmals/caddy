@@ -27,7 +27,7 @@
     "conventions": {
         "classes": "Caddy keeps the build123d class names (Box, Vector, Plane, ShapeList, ...).",
         "members": "Methods and properties become camelCase; `#` marks an instance member and `.` a static member (e.g. `Shape#fillet`, `Solid.makeBox`).",
-        "operators": "Python operators become named methods: `+`->union, `-`->subtract, `&`->intersect, `Location*Shape`->`Location#transform`/`Shape#moved`, `@`->positionAt, `%`->tangentAt, `^`->locationAt, ShapeList `>>`/`<<`->`groupBy(...).last`/`.first`, `|`->filterBy.",
+        "operators": "Python operators become named methods: `+`->union, `-`->subtract, `&`->intersect, `Location*Shape`->`Location#transform`/`Shape#moved`, `@`->positionAt, `%`->tangentAt, `^`->locationAt, ShapeList `>>`/`<<`->`groupBy(...).last`/`.first`, `|`->filter.",
         "enums": "Enums become TypeScript const objects whose members are PascalCase (`Align.Center`, `GeomType.Line`, `SortBy.Area`).",
         "free-functions": "build123d `operations_*` free functions map to a Caddy shape method where natural (`Shape#fillet`, `Face#extrude`) and keep an exported function form for list/multi-object use (`fillet`, `loft`, `sweep`, `extrude`).",
         "io": "`import_step`/`import_brep`/... become `importStep`/`importBrep` (plus the format-sniffing `importCAD`); every `export_*` becomes `export(shape, { name, type: CADFileType.Step })`.",
@@ -8247,7 +8247,7 @@
         {
             "python": "Shape.get_top_level_shapes",
             "kind": "method",
-            "caddy": "Shape#getTopLevelShapes",
+            "caddy": "Shape#topLevelShapes",
             "behavior": "Retrieve the first level of child shapes from the shape.",
             "referenceTests": [
                 "tests/test_direct_api/test_compound.py::TestCompound::test_get_top_level_shapes",
@@ -9177,12 +9177,12 @@
             "native": [],
             "capability": "selectors",
             "status": "validated",
-            "notes": "build123d's `<<` groups by the key then keeps the smallest group; `sortBy(...).first` is the single-element analogue."
+            "notes": "build123d's `<<` groups by the key then keeps the smallest group; `toSorted(...)[0]` is the single-element analogue."
         },
         {
             "python": "ShapeList.__or__",
             "kind": "method",
-            "caddy": "ShapeList#filterBy",
+            "caddy": "ShapeList#filter",
             "behavior": "Filter by axis or geomtype operator |.",
             "referenceTests": [
                 "tests/test_direct_api/test_shape_list.py::TestShapeList::test_group_by",
@@ -9206,7 +9206,7 @@
             "native": [],
             "capability": "selectors",
             "status": "validated",
-            "notes": "build123d's `>>` groups by the key then keeps the largest group; `sortBy(...).last` is the single-element analogue."
+            "notes": "build123d's `>>` groups by the key then keeps the largest group; `toSorted(...).last` is the single-element analogue."
         },
         {
             "python": "ShapeList.__sub__",
@@ -9350,7 +9350,7 @@
         {
             "python": "ShapeList.filter_by",
             "kind": "method",
-            "caddy": "ShapeList#filterBy",
+            "caddy": "ShapeList#filter",
             "behavior": "Either: - filter objects of type planar Face or linear Edge by their normal or tangent (respectively) and sort the results by the given axis, or - filter the objects by the provided type.",
             "referenceTests": [
                 "tests/test_direct_api/test_shape_list.py::TestShapeList::test_filter_by_plane",
@@ -9374,7 +9374,7 @@
             ],
             "capability": "selectors",
             "status": "validated",
-            "notes": ""
+            "notes": "Spelled `filter`, matching `Array#filter`: a function argument is an `(value, index, array)` predicate with no `reverse` option (negate it instead); an Axis, Plane or GeomType takes `{ reverse, tolerance }`."
         },
         {
             "python": "ShapeList.filter_by_position",
@@ -9502,7 +9502,7 @@
         {
             "python": "ShapeList.sort_by",
             "kind": "method",
-            "caddy": "ShapeList#sortBy",
+            "caddy": "ShapeList#toSorted",
             "behavior": "Sort objects by provided criteria.",
             "referenceTests": [
                 "tests/test_direct_api/test_shape_list.py::TestShapeList::test_sort_by_property",
@@ -9515,12 +9515,12 @@
             ],
             "capability": "selectors",
             "status": "validated",
-            "notes": ""
+            "notes": "Spelled `toSorted`, matching `Array#toSorted`, with an in-place `sort` twin; a function argument is an `(a, b) => number` comparator rather than build123d's key function."
         },
         {
             "python": "ShapeList.sort_by_distance",
             "kind": "method",
-            "caddy": "ShapeList#sortByDistance",
+            "caddy": "ShapeList#toSortedByDistance",
             "behavior": "Sort by minimal distance between objects and other.",
             "referenceTests": [
                 "tests/test_direct_api/test_shape_list.py::TestShapeList::test_distance",

@@ -21,7 +21,7 @@ export function pack<T extends Shape>(
     options: PackOptions = {},
 ): T[] {
     let shapes = [...objects];
-    let boxes = shapes.map(shape => shape.boundingBox());
+    let boxes = shapes.map(shape => shape.boundingBox);
     let sizes: Size[] = boxes.map(box => [box.size.x + padding, box.size.y + padding]);
     let placements = packRectangles(sizes);
 

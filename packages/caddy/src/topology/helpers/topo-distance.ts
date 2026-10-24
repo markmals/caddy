@@ -20,7 +20,7 @@ const CONNECTOR: Partial<Readonly<Record<ShapeTypeName, occt.ShapeType>>> = {
 
 /**
  * A key function yielding the topological distance from each shape to `other`, for
- * `ShapeList#sortBy` and `ShapeList#groupBy` (build123d `topo_distance_to`).
+ * `ShapeList#groupBy` (build123d `topo_distance_to`).
  *
  * Distance is measured over the whole topology of the shared parent the reference shapes were
  * selected from, not just within the list being sorted. Shapes adjoin when they share a lower
@@ -84,17 +84,17 @@ function sharedParent(sources: readonly Shape[]): Shape {
 function peersOf(parent: Shape, peerType: ShapeTypeName): Shape[] {
     switch (peerType) {
         case "Vertex":
-            return [...parent.vertices()];
+            return [...parent.vertices];
         case "Edge":
-            return [...parent.edges()];
+            return [...parent.edges];
         case "Wire":
-            return [...parent.wires()];
+            return [...parent.wires];
         case "Face":
-            return [...parent.faces()];
+            return [...parent.faces];
         case "Shell":
-            return [...parent.shells()];
+            return [...parent.shells];
         default:
-            return [...parent.solids()];
+            return [...parent.solids];
     }
 }
 

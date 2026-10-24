@@ -85,7 +85,7 @@ export const memberCases: OracleCases = {
         let plate = Face.makeRect(20, 12);
         let hole = Wire.makeCircle(3, new Plane({ origin: [5, 2, 0] }));
         expectShapeMetrics(expected, "holed", plate.makeHoles([hole]));
-        expect(plate.makeHoles([hole]).innerWires()).toHaveLength(
+        expect(plate.makeHoles([hole]).innerWires).toHaveLength(
             fixtureNumber(expected, "holed_inner_wire_count"),
         );
         let drilled = drilledWall();
@@ -93,7 +93,7 @@ export const memberCases: OracleCases = {
         expectShapeMetrics(
             expected,
             "reholed",
-            drilled.withoutHoles().makeHoles(drilled.innerWires()),
+            drilled.withoutHoles().makeHoles(drilled.innerWires),
         );
     },
     "members/without-holes": expected => {
@@ -119,9 +119,8 @@ export const memberCases: OracleCases = {
         expectAxes(
             expected,
             "holed",
-            Face.makeRect(1, 2)
-                .subtract(Face.makeRect(0.4, 0.4).translate([0, 0.25, 0]))
-                .faces().first,
+            Face.makeRect(1, 2).subtract(Face.makeRect(0.4, 0.4).translate([0, 0.25, 0])).faces
+                .first,
         );
         expectAxes(
             expected,
@@ -139,8 +138,8 @@ export const memberCases: OracleCases = {
     "members/axis-of-rotation": expected => {
         expectAxisOfRotation(expected, "cylinder", cylinderWall());
         expectAxisOfRotation(expected, "cone", coneWall());
-        expectAxisOfRotation(expected, "sphere", Solid.makeSphere(2).faces().first);
-        expectAxisOfRotation(expected, "torus", Solid.makeTorus(5, 1).faces().first);
+        expectAxisOfRotation(expected, "sphere", Solid.makeSphere(2).faces.first);
+        expectAxisOfRotation(expected, "torus", Solid.makeTorus(5, 1).faces.first);
         expectAxisOfRotation(
             expected,
             "revolution",
@@ -172,16 +171,16 @@ export const memberCases: OracleCases = {
                 [0, 1, 0],
             ]),
         );
-        expect(box.faces().sortBy(Axis.Z).last.geometry).toBe(fixtureValue(expected, "square"));
-        expect(box.faces().sortBy(Axis.Y).last.geometry).toBe(fixtureValue(expected, "rectangle"));
+        expect(box.faces.toSorted(Axis.Z).last.geometry).toBe(fixtureValue(expected, "square"));
+        expect(box.faces.toSorted(Axis.Y).last.geometry).toBe(fixtureValue(expected, "rectangle"));
         expect(triangle.geometry).toBe(fixtureValue(expected, "polygon"));
         expect(plateWithHole().geometry ?? null).toBe(fixtureValue(expected, "plate_with_hole"));
         expect(cylinderWall().geometry ?? null).toBe(fixtureValue(expected, "cylinder"));
     },
     "members/location-at": expected => {
         let box = Solid.makeBox(1, 2, 3);
-        let bottom = box.faces().sortBy(Axis.Z).first;
-        let front = box.faces().sortBy(Axis.X).first;
+        let bottom = box.faces.toSorted(Axis.Z).first;
+        let front = box.faces.toSorted(Axis.X).first;
         let wall = cylinderWall();
         let rect = Face.makeRect(34, 10);
         expectLocation(expected, "bottom", bottom.locationAt(0.5, 0.5));
@@ -193,7 +192,7 @@ export const memberCases: OracleCases = {
         expectLocation(expected, "rect_flipped", rect.reverseNormal().locationAt());
     },
     "members/shell-location-at": expected => {
-        let shell = new Shell(Solid.makeBox(1, 2, 3).faces());
+        let shell = new Shell(Solid.makeBox(1, 2, 3).faces);
         expectLocation(expected, "side", shell.locationAt([1.2, 1, 1.5]));
         expectLocation(expected, "top_x_dir", shell.locationAt([0.5, 1, 3.1], { xDir: [0, 1, 0] }));
     },
@@ -206,7 +205,7 @@ export const memberCases: OracleCases = {
         let plate = plateWithHole();
         expectShapeMetrics(expected, "wall", cylinderWall().uvFace);
         expectShapeMetrics(expected, "plate", plate.uvFace);
-        expect(plate.uvFace.innerWires()).toHaveLength(
+        expect(plate.uvFace.innerWires).toHaveLength(
             fixtureNumber(expected, "plate_inner_wire_count"),
         );
     },

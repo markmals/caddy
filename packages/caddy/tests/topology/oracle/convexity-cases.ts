@@ -26,7 +26,7 @@ function convexities(shapes: Iterable<Shape>): string[] {
 
 export const convexityCases: OracleCases = {
     "convexity/box-edges": expected => {
-        let edges = box().edges().sortBy(Axis.Z);
+        let edges = box().edges.toSorted(Axis.Z);
         expectNames(expected, "kinds", convexities(edges));
         expectFlagList(
             expected,
@@ -35,41 +35,33 @@ export const convexityCases: OracleCases = {
         );
     },
     "convexity/pocket-edges": expected => {
-        let edges = [...pocket().edges()];
+        let edges = [...pocket().edges];
         let concave = edges
             .filter(edge => edge.convexity === "CONCAVE")
-            .sort((first, second) => first.center().x - second.center().x);
+            .sort((first, second) => first.center.x - second.center.x);
         expectCount(expected, "convex", edges.filter(edge => edge.convexity === "CONVEX").length);
         expectCount(expected, "concave", concave.length);
         expectPoints(
             expected,
             "concave_centers",
-            concave.map(edge => edge.center()),
+            concave.map(edge => edge.center),
         );
     },
     "convexity/cylinder-edges": expected => {
         let solid = cylinder();
-        expectNames(expected, "kinds", convexities(solid.edges()).sort());
-        expectCount(
-            expected,
-            "seam_count",
-            solid.faces().filterBy(GeomType.Cylinder)[0]!.seams.length,
-        );
+        expectNames(expected, "kinds", convexities(solid.edges).sort());
+        expectCount(expected, "seam_count", solid.faces.filter(GeomType.Cylinder)[0]!.seams.length);
     },
     "convexity/faces": expected => {
-        let side = cylinder().faces().filterBy(GeomType.Cylinder)[0]!;
+        let side = cylinder().faces.filter(GeomType.Cylinder)[0]!;
         let drilled = box().subtract(
             new Solid(primitives.makeCylinder(1, 4)).moved(new Pos(5, 3, 0)),
         );
-        expectName(expected, "box_face", box().faces()[0]!.convexity);
+        expectName(expected, "box_face", box().faces[0]!.convexity);
         expectName(expected, "cylinder_side", side.convexity);
-        expectName(expected, "sphere", sphere().faces()[0]!.convexity);
-        expectName(
-            expected,
-            "hole_side",
-            drilled.faces().filterBy(GeomType.Cylinder)[0]!.convexity,
-        );
-        expectName(expected, "pocket_bottom", pocket().faces().sortBy(Axis.Z)[0]!.convexity);
+        expectName(expected, "sphere", sphere().faces[0]!.convexity);
+        expectName(expected, "hole_side", drilled.faces.filter(GeomType.Cylinder)[0]!.convexity);
+        expectName(expected, "pocket_bottom", pocket().faces.toSorted(Axis.Z)[0]!.convexity);
         expectFlagList(expected, "cylinder_circular", [
             side.isCircularConvex,
             side.isCircularConcave,
@@ -79,19 +71,19 @@ export const convexityCases: OracleCases = {
         expectNames(
             expected,
             "face_corners",
-            convexities(box().faces().sortBy(Axis.Z)[0]!.vertices()).sort(),
+            convexities(box().faces.toSorted(Axis.Z)[0]!.vertices).sort(),
         );
-        expectNames(expected, "solid_corners", convexities(box().vertices()).sort());
-        expectNames(expected, "pocket_corners", convexities(pocket().vertices()).sort());
+        expectNames(expected, "solid_corners", convexities(box().vertices).sort());
+        expectNames(expected, "pocket_corners", convexities(pocket().vertices).sort());
     },
     "face/seams": expected => {
-        let seams = cylinder().faces().filterBy(GeomType.Cylinder)[0]!.seams;
+        let seams = cylinder().faces.filter(GeomType.Cylinder)[0]!.seams;
         expectCount(expected, "cylinder", seams.length);
         expectMeasures(
             expected,
             "cylinder_lengths",
             seams.map(seam => seam.length),
         );
-        expectCount(expected, "box", box().faces()[0]!.seams.length);
+        expectCount(expected, "box", box().faces[0]!.seams.length);
     },
 };

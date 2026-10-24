@@ -34,7 +34,7 @@ export class RigidJoint<Parent extends Shape = Shape> extends Joint<Parent> {
     /** The joint's coordinate system drawn in global space, as a labelled triad. */
     get symbol(): Compound {
         return Compound.makeTriad(
-            this.parent.boundingBox({ optimal: false }).diagonal / 12,
+            this.parent.getBoundingBox({ optimal: false }).diagonal / 12,
         ).located(this.location);
     }
 

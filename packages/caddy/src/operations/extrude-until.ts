@@ -18,20 +18,20 @@ export function extrudeUntil(
 ): Shape {
     let unit = Vector.from(direction).normalized();
     if (until === Until.Previous || until === Until.First) unit = unit.negate();
-    let profileBounds = profile.boundingBox();
-    let targetBounds = target.boundingBox();
+    let profileBounds = profile.boundingBox;
+    let targetBounds = target.boundingBox;
     let reach =
         4 *
         (profileBounds.diagonal +
             targetBounds.diagonal +
-            profileBounds.center().sub(targetBounds.center()).length +
+            profileBounds.center.sub(targetBounds.center).length +
             1);
     try {
         let prism = features.extrude(profile.wrapped, unit.multiply(reach).toTuple());
-        let contacted = target.faces().flatMap(face => {
+        let contacted = target.faces.flatMap(face => {
             let contact = booleans.common([prism], [face.wrapped]);
             if (topology.subShapes(contact, ShapeType.Face).length === 0) return [];
-            let distance = face.center().sub(profile.center()).dot(unit);
+            let distance = face.center.sub(profile.center).dot(unit);
             return distance > 1e-7 ? [{ face, distance }] : [];
         });
         if (contacted.length === 0)
@@ -41,9 +41,9 @@ export function extrudeUntil(
         let limitingFace = (far ? contacted[contacted.length - 1] : contacted[0])!;
         let pieces = Shape.cast(
             booleans.split([prism], [limitingFace.face.wrapped]),
-        ).getTopLevelShapes();
+        ).topLevelShapes;
         let near = pieces.filter(
-            piece => piece.center().sub(profile.center()).dot(unit) < limitingFace.distance,
+            piece => piece.center.sub(profile.center).dot(unit) < limitingFace.distance,
         );
         if (near.length !== 1) {
             throw new InvalidShapeError("Target face did not bound one extrusion solid");

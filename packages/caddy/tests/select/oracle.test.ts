@@ -38,12 +38,12 @@ function standingCylinder(radius: number, height: number): Cylinder {
 function expectCounts(expected: FixtureCase, key: string, shape: Shape, select: Select): void {
     let record = fixtureRecord(expected, key);
     let counted: Record<string, number> = {
-        vertices: shape.vertices({ select }).length,
-        edges: shape.edges({ select }).length,
-        wires: shape.wires({ select }).length,
-        faces: shape.faces({ select }).length,
-        shells: shape.shells({ select }).length,
-        solids: shape.solids({ select }).length,
+        vertices: shape.getVertices({ select }).length,
+        edges: shape.getEdges({ select }).length,
+        wires: shape.getWires({ select }).length,
+        faces: shape.getFaces({ select }).length,
+        shells: shape.getShells({ select }).length,
+        solids: shape.getSolids({ select }).length,
     };
     for (let [kind, count] of Object.entries(counted)) {
         expect(count, `${expected.name}.${key}.${kind}`).toBe(fixtureNumber(record, kind));
@@ -70,11 +70,11 @@ oracleSuite("select", {
     },
     "fuse/last-faces-sit-on-top": expected => {
         let part = new Box(10, 10, 10).union(standingCylinder(2, 5));
-        let last = part.faces({ select: SelectMode.Last });
+        let last = part.getFaces({ select: SelectMode.Last });
         expect(last.length, `${expected.name}.count`).toBe(fixtureNumber(expected, "count"));
         expectNames(expected, "geom_types", last.map(face => face.geomType).toSorted());
         expect(
-            last.every(face => face.center().z > 5),
+            last.every(face => face.center.z > 5),
             `${expected.name}.above_the_box`,
         ).toBe(fixtureValue(expected, "above_the_box"));
         expectNumbersClose(
@@ -90,7 +90,9 @@ oracleSuite("select", {
         expectPoints(
             expected,
             "new_vertices",
-            sortedPoints(cross.vertices({ select: SelectMode.New }).map(vertex => vertex.center())),
+            sortedPoints(
+                cross.getVertices({ select: SelectMode.New }).map(vertex => vertex.center),
+            ),
         );
     },
     "fuse/disjoint-pieces": expected => {
@@ -99,24 +101,25 @@ oracleSuite("select", {
         expectPoints(
             expected,
             "last_solid_centers",
-            sortedPoints(pieces.solids({ select: SelectMode.Last }).map(solid => solid.center())),
+            sortedPoints(pieces.getSolids({ select: SelectMode.Last }).map(solid => solid.center)),
         );
     },
     "fuse/self-was-there-before": expected => {
         let two = new Rectangle(2, 2).union(new Rectangle(2, 2).moved(new Pos(5, 0, 0)));
         let plus = two.union(new Rectangle(1, 4).moved(new Pos(5, 0, 0)));
-        expect(plus.faces().length, `${expected.name}.face_count`).toBe(
+        expect(plus.faces.length, `${expected.name}.face_count`).toBe(
             fixtureNumber(expected, "face_count"),
         );
-        expect(plus.faces({ select: SelectMode.Last }).length, `${expected.name}.last_faces`).toBe(
-            fixtureNumber(expected, "last_faces"),
-        );
+        expect(
+            plus.getFaces({ select: SelectMode.Last }).length,
+            `${expected.name}.last_faces`,
+        ).toBe(fixtureNumber(expected, "last_faces"));
     },
     "fuse/chained-operations": expected => {
         let three = new Box(10, 10, 10)
             .union(standingCylinder(1, 5))
             .union(new Sphere(1).moved(new Pos(5, 0, 0)));
-        let last = three.faces({ select: SelectMode.Last });
+        let last = three.getFaces({ select: SelectMode.Last });
         expect(last.length, `${expected.name}.count`).toBe(fixtureNumber(expected, "count"));
         expectNames(
             expected,
@@ -130,13 +133,13 @@ oracleSuite("select", {
         expectNames(
             expected,
             "last_face_types",
-            holed.faces({ select: SelectMode.Last }).map(face => face.geomType),
+            holed.getFaces({ select: SelectMode.Last }).map(face => face.geomType),
         );
         expectNumbersClose(
             expected,
             "new_edge_lengths",
             holed
-                .edges({ select: SelectMode.New })
+                .getEdges({ select: SelectMode.New })
                 .map(edge => edge.length)
                 .toSorted((a, b) => a - b),
             MASS_TOLERANCE,
@@ -149,7 +152,7 @@ oracleSuite("select", {
             expected,
             "last_face_areas",
             half
-                .faces({ select: SelectMode.Last })
+                .getFaces({ select: SelectMode.Last })
                 .map(face => face.area)
                 .toSorted((a, b) => a - b),
             MASS_TOLERANCE,
@@ -172,7 +175,7 @@ oracleSuite("select", {
             expected,
             "last_face_types",
             part
-                .faces({ select: SelectMode.Last })
+                .getFaces({ select: SelectMode.Last })
                 .map(face => face.geomType)
                 .toSorted(),
         );
@@ -183,45 +186,45 @@ oracleSuite("select", {
         expectCounts(expected, "plain", box, SelectMode.All);
         expectCounts(expected, "fused", fused, SelectMode.All);
         expect(
-            fused.faces().length === fused.faces({ select: SelectMode.All }).length,
+            fused.faces.length === fused.getFaces({ select: SelectMode.All }).length,
             `${expected.name}.default_matches_all`,
         ).toBe(fixtureValue(expected, "default_matches_all"));
     },
     "select/sub-shapes-of-a-selected-face": expected => {
         let part = new Box(10, 10, 10).union(standingCylinder(2, 5));
-        let top = part.faces().sortBy(Axis.Z).last;
-        expect(top.edges().length, `${expected.name}.face_edge_count`).toBe(
+        let top = part.faces.toSorted(Axis.Z).last;
+        expect(top.edges.length, `${expected.name}.face_edge_count`).toBe(
             fixtureNumber(expected, "face_edge_count"),
         );
         expect(
-            () => top.edges({ select: SelectMode.Last }),
+            () => top.getEdges({ select: SelectMode.Last }),
             `${expected.name}.face_has_no_record`,
         ).toThrow();
     },
     "errors/no-record": expected => {
         let rectangle = new Rectangle(8, 2);
         expect(
-            rectangle.vertices({ select: SelectMode.All }).length,
+            rectangle.getVertices({ select: SelectMode.All }).length,
             `${expected.name}.all_vertices`,
         ).toBe(fixtureNumber(expected, "all_vertices"));
         expect(
-            () => rectangle.vertices({ select: SelectMode.Last }),
+            () => rectangle.getVertices({ select: SelectMode.Last }),
             `${expected.name}.last_raises`,
         ).toThrow();
         expect(
-            () => rectangle.vertices({ select: SelectMode.New }),
+            () => rectangle.getVertices({ select: SelectMode.New }),
             `${expected.name}.new_raises`,
         ).toThrow();
     },
     "fillet/box-vertical-edges": expected => {
         let box = new Box(10, 10, 10);
-        let rounded = box.fillet(1, box.edges().filterBy(Axis.Z));
+        let rounded = box.fillet(1, box.edges.filter(Axis.Z));
         expectEverySelect(expected, rounded);
         expectNames(
             expected,
             "last_face_types",
             rounded
-                .faces({ select: SelectMode.Last })
+                .getFaces({ select: SelectMode.Last })
                 .map(face => face.geomType)
                 .toSorted(),
         );
@@ -229,7 +232,7 @@ oracleSuite("select", {
             expected,
             "new_edge_lengths",
             rounded
-                .edges({ select: SelectMode.New })
+                .getEdges({ select: SelectMode.New })
                 .map(edge => edge.length)
                 .toSorted((a, b) => a - b),
             MASS_TOLERANCE,
@@ -237,45 +240,45 @@ oracleSuite("select", {
     },
     "chamfer/box-vertical-edges": expected => {
         let box = new Box(10, 10, 10);
-        let beveled = box.chamfer(1, box.edges().filterBy(Axis.Z));
+        let beveled = box.chamfer(1, box.edges.filter(Axis.Z));
         expectEverySelect(expected, beveled);
         expectNumbersClose(
             expected,
             "last_face_areas",
             beveled
-                .faces({ select: SelectMode.Last })
+                .getFaces({ select: SelectMode.Last })
                 .map(face => face.area)
                 .toSorted((a, b) => a - b),
             MASS_TOLERANCE,
         );
     },
     "fillet-2d/face-corners": expected => {
-        let face = new Rectangle(6, 4).face();
-        expectEverySelect(expected, face.fillet2D(1, face.vertices()));
+        let face = new Rectangle(6, 4).face;
+        expectEverySelect(expected, face.fillet2D(1, face.vertices));
     },
     "chamfer-2d/face-corners": expected => {
-        let face = new Rectangle(6, 4).face();
-        let chamfered = face.chamfer2D(1, 1, face.vertices());
+        let face = new Rectangle(6, 4).face;
+        let chamfered = face.chamfer2D(1, 1, face.vertices);
         expectEverySelect(expected, chamfered);
         expectNumbersClose(
             expected,
             "last_edge_lengths",
             chamfered
-                .edges({ select: SelectMode.Last })
+                .getEdges({ select: SelectMode.Last })
                 .map(edge => edge.length)
                 .toSorted((a, b) => a - b),
             MASS_TOLERANCE,
         );
     },
     "fillet-2d/closed-wire-corners": expected => {
-        let wire = new Rectangle(6, 4).wire();
-        let rounded = wire.fillet2D(1, wire.vertices());
+        let wire = new Rectangle(6, 4).wire;
+        let rounded = wire.fillet2D(1, wire.vertices);
         expectEverySelect(expected, rounded);
         expectNames(
             expected,
             "last_edge_types",
             rounded
-                .edges({ select: SelectMode.Last })
+                .getEdges({ select: SelectMode.Last })
                 .map(edge => edge.geomType)
                 .toSorted(),
         );
@@ -286,21 +289,21 @@ oracleSuite("select", {
             Edge.makeLine([4, 0], [4, 3]),
             Edge.makeLine([4, 3], [0, 3]),
         ]);
-        let corners = wire.vertices().sortBy(Axis.X).slice(-2);
+        let corners = wire.vertices.toSorted(Axis.X).slice(-2);
         let rounded = wire.fillet2D(1, corners);
         expectEverySelect(expected, rounded);
         expectNames(
             expected,
             "last_edge_types",
             rounded
-                .edges({ select: SelectMode.Last })
+                .getEdges({ select: SelectMode.Last })
                 .map(edge => edge.geomType)
                 .toSorted(),
         );
     },
     "chamfer-2d/closed-wire-corners": expected => {
-        let wire = new Rectangle(6, 4).wire();
-        expectEverySelect(expected, wire.chamfer2D(1, 1, wire.vertices()));
+        let wire = new Rectangle(6, 4).wire;
+        expectEverySelect(expected, wire.chamfer2D(1, 1, wire.vertices));
     },
     "join/connected-lines": expected => {
         let bent = new Line([0, 0], [1, 0]).union(new Line([1, 0], [1, 1]));
@@ -308,12 +311,16 @@ oracleSuite("select", {
         expectPoints(
             expected,
             "last_edge_midpoints",
-            sortedPoints(bent.edges({ select: SelectMode.Last }).map(edge => edge.positionAt(0.5))),
+            sortedPoints(
+                bent.getEdges({ select: SelectMode.Last }).map(edge => edge.positionAt(0.5)),
+            ),
         );
         expectPoints(
             expected,
             "last_vertices",
-            sortedPoints(bent.vertices({ select: SelectMode.Last }).map(vertex => vertex.center())),
+            sortedPoints(
+                bent.getVertices({ select: SelectMode.Last }).map(vertex => vertex.center),
+            ),
         );
     },
     "join/collinear-lines": expected => {
@@ -323,7 +330,7 @@ oracleSuite("select", {
             expected,
             "last_vertices",
             sortedPoints(
-                straight.vertices({ select: SelectMode.Last }).map(vertex => vertex.center()),
+                straight.getVertices({ select: SelectMode.Last }).map(vertex => vertex.center),
             ),
         );
     },
@@ -342,7 +349,7 @@ oracleSuite("select", {
             expected,
             "last_edge_midpoints",
             sortedPoints(
-                disjoint.edges({ select: SelectMode.Last }).map(edge => edge.positionAt(0.5)),
+                disjoint.getEdges({ select: SelectMode.Last }).map(edge => edge.positionAt(0.5)),
             ),
         );
     },

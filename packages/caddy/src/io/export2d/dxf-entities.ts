@@ -67,8 +67,8 @@ function flatten(point: readonly [number, number, number]): Point2 {
 function lineEntity(edge: Edge): LineEntity {
     return {
         kind: "line",
-        start: flatten(edge.startPoint().toTuple()),
-        end: flatten(edge.endPoint().toTuple()),
+        start: flatten(edge.startPoint.toTuple()),
+        end: flatten(edge.endPoint.toTuple()),
     };
 }
 

@@ -37,7 +37,7 @@ describe("fullRound rejects geometry it cannot round", () => {
                 Edge.makeLine([1, 0], [-1, 0]),
             ]),
         );
-        expect(() => fullRound(lens.edges().first)).toThrow(
+        expect(() => fullRound(lens.edges.first)).toThrow(
             "Invalid geometry - 3 or more edges required",
         );
     });
@@ -50,6 +50,6 @@ describe("fullRound rejects geometry it cannot round", () => {
                 [2, 4],
             ]),
         );
-        expect(fullRound(triangle.edges().sortBy(Axis.X).first).area).toBeLessThan(triangle.area);
+        expect(fullRound(triangle.edges.toSorted(Axis.X).first).area).toBeLessThan(triangle.area);
     });
 });

@@ -20,7 +20,7 @@ import { makeLine } from "../edge-makers.ts";
  * build123d reads out of its 2D curve intersector.
  */
 function crossings(start: Vector, direction: Vector, other: Shape): Vector[] {
-    let bounds = other.boundingBox().add(start);
+    let bounds = other.boundingBox.add(start);
     let reach = bounds.diagonal;
     if (reach === 0) {
         throw new GeometryError("No intersections found");
@@ -29,12 +29,10 @@ function crossings(start: Vector, direction: Vector, other: Shape): Vector[] {
     let crossed = native("IntersectingLine", () =>
         booleans.section(
             [ray.wrapped],
-            other.edges().map(edge => edge.wrapped),
+            other.edges.map(edge => edge.wrapped),
         ),
     );
-    return ShapeClass.cast(crossed)
-        .vertices()
-        .map(vertex => vertex.center());
+    return ShapeClass.cast(crossed).vertices.map(vertex => vertex.center);
 }
 
 export class IntersectingLine extends BaseEdgeObject {

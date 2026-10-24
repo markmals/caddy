@@ -49,7 +49,7 @@ export const vectorCases: OracleCases = {
         expectVectorClose(expected, "divide", a.divide(4).toTuple(), EXACT_TOLERANCE);
         expectVectorClose(expected, "negate", a.negate().toTuple(), EXACT_TOLERANCE);
         expectVectorClose(expected, "reverse", a.reverse().toTuple(), EXACT_TOLERANCE);
-        expectVectorClose(expected, "center", a.center().toTuple(), EXACT_TOLERANCE);
+        expectVectorClose(expected, "center", a.center.toTuple(), EXACT_TOLERANCE);
     },
 
     "vector/products": expected => {

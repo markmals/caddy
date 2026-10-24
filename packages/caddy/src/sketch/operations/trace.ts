@@ -21,7 +21,7 @@ export type TraceSource = Curve | Edge | Wire;
  */
 export function trace(lines: TraceSource | Iterable<TraceSource>, lineWidth: number): Sketch {
     let sources = isTraceSource(lines) ? [lines] : [...lines];
-    let edges = sources.flatMap(source => [...source.edges()]);
+    let edges = sources.flatMap(source => [...source.edges]);
     if (edges.length === 0) {
         throw new GeometryError("No objects to trace");
     }
@@ -30,7 +30,7 @@ export function trace(lines: TraceSource | Iterable<TraceSource>, lineWidth: num
     let faces = combineWires(edges).flatMap(path => {
         let pen = new Wire([perpendicularLine(path, lineWidth)]);
         let swept = sweep(pen, path, { transition: Transition.Right });
-        return [...swept.faces()];
+        return [...swept.faces];
     });
 
     let fused = faces.reduce<Face | Sketch>(

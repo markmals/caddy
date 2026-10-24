@@ -89,7 +89,7 @@ export class Mesher {
         return this.#objects.map(object => object.triangles.length);
     }
 
-    meshProperties(): MeshProperty[] {
+    get meshProperties(): MeshProperty[] {
         return this.#objects.map(object => ({
             name: object.name,
             partNumber: object.partNumber,
@@ -115,7 +115,7 @@ export class Mesher {
         });
     }
 
-    metaData(): MetaDataEntry[] {
+    get metaData(): MetaDataEntry[] {
         return [...this.#metaData];
     }
 
@@ -262,7 +262,7 @@ function shapeOf(object: MeshObject): Shape {
         throw new ImportError("a 3MF mesh has no usable triangles");
     }
     let sewed = Shape.cast(construct.sewFaces(faces));
-    let shells = sewed instanceof Shell ? [sewed] : sewed.shells();
+    let shells = sewed instanceof Shell ? [sewed] : sewed.shells;
     let [first] = shells;
     if (first === undefined) {
         throw new ImportError("a 3MF mesh did not sew into a shell");
@@ -308,7 +308,7 @@ function subtract(
 }
 
 function boxVolume(shape: Shape): number {
-    let size = shape.boundingBox().size;
+    let size = shape.boundingBox.size;
     return size.x * size.y * size.z;
 }
 

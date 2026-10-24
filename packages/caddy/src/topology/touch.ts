@@ -34,8 +34,8 @@ function isOnAny(vertex: Vertex, candidates: Iterable<Shape>, tolerance: number)
 }
 
 function samePosition(vertex: Vertex, others: Iterable<Shape>): boolean {
-    let point = vertex.center();
-    return [...others].some(other => point.equals(other.center()));
+    let point = vertex.center;
+    return [...others].some(other => point.equals(other.center));
 }
 
 /** Points where two shapes meet within `tolerance`, each one at a single location. */
@@ -86,10 +86,10 @@ export function touch2D(
 /** Where two edges cross without either shape having a corner there. */
 function isCrossing(contact: Vertex, self: Shape, other: Shape, tolerance: number): boolean {
     return (
-        isOnAny(contact, self.edges(), tolerance) &&
-        isOnAny(contact, other.edges(), tolerance) &&
-        !samePosition(contact, self.vertices()) &&
-        !samePosition(contact, other.vertices())
+        isOnAny(contact, self.edges, tolerance) &&
+        isOnAny(contact, other.edges, tolerance) &&
+        !samePosition(contact, self.vertices) &&
+        !samePosition(contact, other.vertices)
     );
 }
 
@@ -121,9 +121,7 @@ export function touch3D(
             return new ShapeList<Shape>(curveContacts(self, other, tolerance));
         case "Vertex":
             return new ShapeList<Shape>(
-                [...self.faces()].some(face => isOn(other as Vertex, face, tolerance))
-                    ? [other]
-                    : [],
+                [...self.faces].some(face => isOn(other as Vertex, face, tolerance)) ? [other] : [],
             );
         default:
             return other.touch(self, { tolerance });
@@ -140,12 +138,12 @@ function maximalContacts(
     let intersectFaces =
         other.shapeType === "Solid"
             ? (foundSolids ?? self.intersectWith(other, { tolerance }) ?? []).flatMap(solid => [
-                  ...solid.faces(),
+                  ...solid.faces,
               ])
             : [];
     let found: Shape[] = [];
-    for (let mine of self.faces()) {
-        for (let theirs of other.faces()) {
+    for (let mine of self.faces) {
+        for (let theirs of other.faces) {
             if (!overlapping(mine, theirs, tolerance)) continue;
             for (let contact of mine.touch(theirs, { tolerance })) {
                 if (
@@ -167,15 +165,15 @@ function maximalContacts(
 
 function overlapping(first: Shape, second: Shape, tolerance: number): boolean {
     return first
-        .boundingBox({ optimal: false })
-        .intersects(second.boundingBox({ optimal: false }), tolerance);
+        .getBoundingBox({ optimal: false })
+        .intersects(second.getBoundingBox({ optimal: false }), tolerance);
 }
 
 /** Endpoints and tangencies where a curve meets a solid's boundary. */
 function curveContacts(self: Shape, other: Shape, tolerance: number): Shape[] {
-    let faces = [...self.faces()];
+    let faces = [...self.faces];
     let found: Shape[] = [];
-    for (let vertex of other.vertices()) {
+    for (let vertex of other.vertices) {
         if (faces.some(face => isOn(vertex, face, tolerance))) found.push(vertex);
     }
     for (let face of faces) {

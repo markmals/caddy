@@ -69,7 +69,7 @@ export class Wire extends Mixin1D {
     }
 
     /** The edges in connection order (BRepTools_WireExplorer). */
-    override edges(options: SubShapeOptions = {}): ShapeList<Edge> {
+    override getEdges(options: SubShapeOptions = {}): ShapeList<Edge> {
         let edges = query.wireEdges(this.wrapped).map(wrapped => new Edge(wrapped));
         for (let edge of edges) {
             edge.topoPath = [...this.topoPath, this];
@@ -86,7 +86,7 @@ export class Wire extends Mixin1D {
                   ? position
                   : this.length - position;
 
-        let edges = this.edges();
+        let edges = this.edges;
         let lengths = edges.map(edge => edge.length);
         let cumulative: number[] = [];
         let total = 0;
@@ -269,7 +269,7 @@ function wireOf(source: WireSource, sequenced: boolean): occt.Shape {
         return joinEdges([source], false);
     }
     if (source instanceof Shape) {
-        return joinEdges(source.edges(), sequenced);
+        return joinEdges(source.edges, sequenced);
     }
     if (isIterable(source)) {
         return joinEdges([...source], sequenced);

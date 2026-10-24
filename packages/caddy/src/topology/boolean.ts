@@ -38,7 +38,7 @@ function operandShapes(operands: readonly ShapeOperand[]): Shape[] {
 
 /** Every top-level shape of the operands (build123d's summand/subtrahend lists). */
 function topLevelOperands(operands: readonly ShapeOperand[]): Shape[] {
-    return operandShapes(operands).flatMap(shape => [...shape.getTopLevelShapes()]);
+    return operandShapes(operands).flatMap(shape => [...shape.topLevelShapes]);
 }
 
 function nativeCompound(members: readonly occt.Shape[]): occt.Shape {
@@ -195,7 +195,7 @@ export function booleanPieces(
     if (shapes.shapeType(result.wrapped) !== ShapeType.Compound) {
         return [result];
     }
-    let pieces = [...result.getTopLevelShapes()];
+    let pieces = [...result.topLevelShapes];
     let record = recordOf(result);
     if (record !== undefined) {
         for (let piece of pieces) {
@@ -291,9 +291,9 @@ export function expandShapes(found: Iterable<Shape>): Shape[] {
         if (type === ShapeType.Compound) {
             expanded.push(...expandShapes(topology.childShapes(shape.wrapped).map(castShape)));
         } else if (type === ShapeType.Shell) {
-            expanded.push(...shape.faces());
+            expanded.push(...shape.faces);
         } else if (type === ShapeType.Wire) {
-            expanded.push(...shape.edges());
+            expanded.push(...shape.edges);
         } else {
             expanded.push(shape);
         }
@@ -306,7 +306,7 @@ export function uniqueShapes<T extends Shape>(found: Iterable<T>): T[] {
     let buckets = new Map<number, T[]>();
     let unique: T[] = [];
     for (let shape of found) {
-        let hash = shape.hashCode();
+        let hash = shape.hashCode;
         let bucket = buckets.get(hash) ?? [];
         if (bucket.some(seen => seen.isSame(shape))) {
             continue;

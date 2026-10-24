@@ -22,7 +22,7 @@ export class RectangleRounded extends BaseSketchObject {
             throw new GeometryError("width and height must be > 2*radius");
         }
         let base = makeFaceRect(width, height);
-        let rounded = filletFace2D(base, radius, base.vertices());
+        let rounded = filletFace2D(base, radius, base.vertices);
         super(placedFaces(rounded, { align: CENTERED, ...options }));
     }
 }

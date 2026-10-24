@@ -67,16 +67,16 @@ function expectExtents(expected: FixtureCase, key: string, face: Face): void {
 
 /** The `ends` serializer: where each edge of a line starts and ends, in wire order. */
 function expectEnds(expected: FixtureCase, line: Edge | Wire): void {
-    let edges = line.edges();
+    let edges = line.edges;
     expectPoints(
         expected,
         "starts",
-        edges.map(edge => edge.startPoint()),
+        edges.map(edge => edge.startPoint),
     );
     expectPoints(
         expected,
         "ends",
-        edges.map(edge => edge.endPoint()),
+        edges.map(edge => edge.endPoint),
     );
 }
 
@@ -89,14 +89,14 @@ function expectClosed(expected: FixtureCase, key: string, actual: Edge | Wire): 
     expect(actual.isClosed, `${expected.name}.${key}.is_closed`).toBe(
         fixtureBoolean(record, "is_closed"),
     );
-    expect(actual.edges().length, `${expected.name}.${key}.edge_count`).toBe(
+    expect(actual.edges.length, `${expected.name}.${key}.edge_count`).toBe(
         fixtureNumber(record, "edge_count"),
     );
     expectClose(record, "length", actual.length, MASS_TOLERANCE);
     expectNames(
         record,
         "edge_geom_types",
-        actual.edges().map(edge => edge.geomType),
+        actual.edges.map(edge => edge.geomType),
     );
     expectEnds(record, actual);
 }
@@ -115,25 +115,22 @@ function expectTrimmed(expected: FixtureCase, key: string, actual: Edge | undefi
 /** The `outline` serializer: the edge and vertex order of a sketch outline. */
 function expectOutline(expected: FixtureCase, key: string, sketch: Shape): void {
     let record = fixtureRecord(expected, key);
-    let wire = sketch.wire();
+    let wire = sketch.wire;
     expectNames(
         record,
         "edge_geom_types",
-        wire.edges().map(edge => edge.geomType),
+        wire.edges.map(edge => edge.geomType),
     );
     expectEnds(record, wire);
     expectPoints(
         record,
         "wire_vertices",
-        wire.vertices().map(vertex => vertex.center()),
+        wire.vertices.map(vertex => vertex.center),
     );
     expectPoints(
         record,
         "face_vertices",
-        sketch
-            .face()
-            .vertices()
-            .map(vertex => vertex.center()),
+        sketch.face.vertices.map(vertex => vertex.center),
     );
 }
 
@@ -150,26 +147,26 @@ function expectRaises(expected: FixtureCase, key: string, attempt: () => unknown
 
 oracleSuite("gaps", {
     "face/radius": expected => {
-        let torusWall = new Torus(10, 2).faces().filterBy(GeomType.Torus).first;
+        let torusWall = new Torus(10, 2).faces.filter(GeomType.Torus).first;
         expectOptionalMeasure(
             expected,
             "cylinder",
-            new Cylinder(1.5, 2).faces().filterBy(GeomType.Cylinder).first.radius,
+            new Cylinder(1.5, 2).faces.filter(GeomType.Cylinder).first.radius,
         );
         expectOptionalMeasure(
             expected,
             "sphere",
-            new Sphere(3).faces().filterBy(GeomType.Sphere).first.radius,
+            new Sphere(3).faces.filter(GeomType.Sphere).first.radius,
         );
         expectOptionalMeasure(expected, "torus", torusWall.radius);
         expectNumbersClose(expected, "torus_radii", torusWall.radii ?? [], LINEAR_TOLERANCE);
-        expectOptionalMeasure(expected, "plane", new Box(1, 1, 1).faces().first.radius);
+        expectOptionalMeasure(expected, "plane", new Box(1, 1, 1).faces.first.radius);
     },
 
     "face/radius-of-a-trimmed-surface": expected => {
         let grown = offset(new Box(10, 10, 10), 1);
-        let cylinders = grown.faces().filterBy(GeomType.Cylinder);
-        let spheres = grown.faces().filterBy(GeomType.Sphere);
+        let cylinders = grown.faces.filter(GeomType.Cylinder);
+        let spheres = grown.faces.filter(GeomType.Sphere);
         expect(cylinders.length, `${expected.name}.cylinder_count`).toBe(
             fixtureNumber(expected, "cylinder_count"),
         );
@@ -191,8 +188,8 @@ oracleSuite("gaps", {
     "face/length-and-width": expected => {
         let box = new Box(3, 5, 7);
         expectExtents(expected, "rect_xz", Face.makeRect(8, 10, Plane.XZ));
-        expectExtents(expected, "box_top", box.faces().sortBy(Axis.Z).last);
-        expectExtents(expected, "box_side", box.faces().sortBy(Axis.Y).first);
+        expectExtents(expected, "box_top", box.faces.toSorted(Axis.Z).last);
+        expectExtents(expected, "box_side", box.faces.toSorted(Axis.Y).first);
         expectExtents(
             expected,
             "triangle",
@@ -200,12 +197,12 @@ oracleSuite("gaps", {
                 [0, 0],
                 [4, 0],
                 [4, 3],
-            ]).face(),
+            ]).face,
         );
         expectExtents(
             expected,
             "cylinder_wall",
-            new Cylinder(2, 5).faces().filterBy(GeomType.Cylinder).first,
+            new Cylinder(2, 5).faces.filter(GeomType.Cylinder).first,
         );
     },
 
@@ -214,13 +211,13 @@ oracleSuite("gaps", {
             polyline().close(),
         );
         let normals: Record<string, () => Vector> = {
-            circle_xy: () => Edge.makeCircle(2).normal(),
-            circle_xz: () => Edge.makeCircle(2, { plane: Plane.XZ }).normal(),
-            ellipse_yz: () => Edge.makeEllipse(3, 1, { plane: Plane.YZ }).normal(),
-            arc: () => Edge.makeCircle(2, { startAngle: 0, endAngle: 120 }).normal(),
-            polyline: () => polyline().normal(),
-            closed_polyline: () => polyline().close().normal(),
-            tilted_polyline: () => tilted.normal(),
+            circle_xy: () => Edge.makeCircle(2).normal,
+            circle_xz: () => Edge.makeCircle(2, { plane: Plane.XZ }).normal,
+            ellipse_yz: () => Edge.makeEllipse(3, 1, { plane: Plane.YZ }).normal,
+            arc: () => Edge.makeCircle(2, { startAngle: 0, endAngle: 120 }).normal,
+            polyline: () => polyline().normal,
+            closed_polyline: () => polyline().close().normal,
+            tilted_polyline: () => tilted.normal,
         };
         for (let [key, normal] of Object.entries(normals)) {
             expectVectorClose(expected, key, normal().toTuple(), ANGULAR_TOLERANCE);
@@ -236,8 +233,8 @@ oracleSuite("gaps", {
     },
 
     "line/normal-errors": expected => {
-        expectRaises(expected, "line_raises", () => Edge.makeLine([0, 0, 0], [1, 1, 1]).normal());
-        expectRaises(expected, "helix_raises", () => Edge.makeHelix(1, 4, 1).normal());
+        expectRaises(expected, "line_raises", () => Edge.makeLine([0, 0, 0], [1, 1, 1]).normal);
+        expectRaises(expected, "helix_raises", () => Edge.makeHelix(1, 4, 1).normal);
     },
 
     "line/radius": expected => {
@@ -290,10 +287,7 @@ oracleSuite("gaps", {
         expectVectorClose(
             expected,
             "by_shape_center",
-            source
-                .transform(new Box(1, 2, 3))
-                .center()
-                .toTuple(),
+            source.transform(new Box(1, 2, 3)).center.toTuple(),
             LINEAR_TOLERANCE,
         );
     },

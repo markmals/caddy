@@ -29,11 +29,11 @@ export const primitiveCases: OracleCases = {
         expectShapeMetrics(expected, Solid.makeWedge(10, 8, 6, 2, 1, 8, 5, { plane: Plane.XZ })),
     "from-bounding-box/rotated-cone": expected => {
         let cone = Solid.makeCone(5, 2, 8, { plane: Plane.XZ });
-        expectShapeMetrics(expected, Solid.fromBoundingBox(cone.boundingBox()));
+        expectShapeMetrics(expected, Solid.fromBoundingBox(cone.boundingBox));
     },
     "from-bounding-box/oriented": expected => {
         let wedge = Solid.makeWedge(10, 8, 6, 2, 1, 8, 5).rotate(Axis.Z, 35);
-        expectShapeMetrics(expected, Solid.fromBoundingBox(wedge.orientedBoundingBox()));
+        expectShapeMetrics(expected, Solid.fromBoundingBox(wedge.orientedBoundingBox));
     },
     "loft/wires": expected => {
         let sections = [Wire.makeRect(10, 6), Wire.makeCircle(3, new Plane({ origin: [0, 0, 8] }))];

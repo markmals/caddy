@@ -85,10 +85,10 @@ export function trimEdgeToOther(
     if (intersection === undefined) {
         return undefined;
     }
-    let crossings = intersection.vertices();
+    let crossings = intersection.vertices;
     if (crossings.length === 0) {
         return undefined;
     }
-    let pieces = crossings.map(vertex => trimEdge(edge, 0, edge.paramAtPoint(vertex.center())));
+    let pieces = crossings.map(vertex => trimEdge(edge, 0, edge.paramAtPoint(vertex.center)));
     return pieces.reduce((shortest, piece) => (piece.length < shortest.length ? piece : shortest));
 }

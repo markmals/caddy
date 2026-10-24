@@ -12,8 +12,8 @@ import { ShapeList } from "../shape-list.ts";
  * boolean drew where the shapes met. Each one records `combined` as the shape it came from.
  */
 export function newEdges(objects: Iterable<Shape>, combined: Shape): ShapeList<Edge> {
-    let theirs = [...objects].flatMap(object => object.edges().map(edge => edge.wrapped));
-    let mine = combined.edges().map(edge => edge.wrapped);
+    let theirs = [...objects].flatMap(object => object.edges.map(edge => edge.wrapped));
+    let mine = combined.edges.map(edge => edge.wrapped);
     let difference = native("New edges", () => booleans.cut(mine, theirs, { parallel: true }));
     let found = topology.subShapes(difference, ShapeType.Edge).map(wrapped => {
         let edge = castShape(wrapped) as Edge;

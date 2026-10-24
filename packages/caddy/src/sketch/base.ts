@@ -29,8 +29,8 @@ export function alignPair(align: Align2DLike): Align2DLike {
  * only touches the X and Y axes.
  */
 export function placedFaces(shape: Shape, placement: SketchPlacement = {}): Face[] {
-    let offset = shape.boundingBox().toAlignOffset(alignPair(placement.align ?? null));
+    let offset = shape.boundingBox.toAlignOffset(alignPair(placement.align ?? null));
     let placed = shape.moved(new Pos(offset));
     let rotation = placement.rotation ?? 0;
-    return (rotation === 0 ? placed : placed.moved(new Rotation(0, 0, rotation))).faces();
+    return (rotation === 0 ? placed : placed.moved(new Rotation(0, 0, rotation))).faces;
 }

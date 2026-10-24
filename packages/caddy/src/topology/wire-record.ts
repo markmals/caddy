@@ -40,13 +40,13 @@ export function recordRebuiltEdge(record: ShapeHistory, source: Edge, placed: Ed
     if (!shapes.isSame(source.wrapped, placed.wrapped)) {
         record.addModified(source.wrapped, placed.wrapped);
     }
-    let placedVertices = placed.vertices();
-    for (let old of source.vertices()) {
-        let point = old.center();
+    let placedVertices = placed.vertices;
+    for (let old of source.vertices) {
+        let point = old.center;
         let match = placedVertices.find(
             vertex =>
                 shapes.isSame(vertex.wrapped, old.wrapped) ||
-                vertex.center().sub(point).length < TOLERANCE,
+                vertex.center.sub(point).length < TOLERANCE,
         );
         if (match !== undefined && !shapes.isSame(match.wrapped, old.wrapped)) {
             record.addModified(old.wrapped, match.wrapped);

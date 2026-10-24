@@ -2606,6 +2606,54 @@
       "equal_subset": false,
       "intersection": 2
     },
+    "shapelist/slice": {
+      "reversed_centers": [
+        [
+          5.0,
+          2.9999999999999996,
+          4.0
+        ],
+        [
+          5.0,
+          6.0,
+          2.0
+        ],
+        [
+          5.0,
+          0.0,
+          2.0
+        ],
+        [
+          10.0,
+          3.0,
+          2.0
+        ],
+        [
+          0.0,
+          3.0,
+          2.0
+        ],
+        [
+          5.0,
+          2.9999999999999996,
+          0.0
+        ]
+      ],
+      "reversed_class": "ShapeList",
+      "slice_centers": [
+        [
+          0.0,
+          3.0,
+          2.0
+        ],
+        [
+          10.0,
+          3.0,
+          2.0
+        ]
+      ],
+      "slice_class": "ShapeList"
+    },
     "shapelist/sort-by-axis": {
       "by_x_reversed": [
         [

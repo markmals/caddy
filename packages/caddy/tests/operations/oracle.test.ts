@@ -39,7 +39,7 @@ import { expectShapeMetrics } from "../shape-metrics.ts";
 
 /** build123d's dprism cases cut a unit box that sits on the XY plane. */
 function dprismBox(): Solid {
-    return new Box(1, 1, 1, { align: [Align.Center, Align.Center, Align.Min] }).solid();
+    return new Box(1, 1, 1, { align: [Align.Center, Align.Center, Align.Min] }).solid;
 }
 
 function brakeOutline(): Wire {
@@ -50,7 +50,7 @@ function brakeOutline(): Wire {
             [10, 1],
         ],
         1,
-    ).wire();
+    ).wire;
 }
 
 oracleSuite("operations", {
@@ -60,21 +60,21 @@ oracleSuite("operations", {
     "extrude/taper": expected =>
         expectShapeMetrics(expected, extrude(new Rectangle(10, 6), 5, { taper: 10 })),
     "extrude/until-next": expected => {
-        let profile = new Rectangle(4, 3).transform(new Pos(0, 0, -10)).faces()[0]!;
+        let profile = new Rectangle(4, 3).transform(new Pos(0, 0, -10)).faces[0]!;
         expectShapeMetrics(
             expected,
             extrude(profile, undefined, { until: Until.Next, target: new Box(10, 8, 10) }),
         );
     },
     "extrude/until-last": expected => {
-        let profile = new Rectangle(4, 3).transform(new Pos(0, 0, -10)).faces()[0]!;
+        let profile = new Rectangle(4, 3).transform(new Pos(0, 0, -10)).faces[0]!;
         expectShapeMetrics(
             expected,
             extrude(profile, undefined, { until: Until.Last, target: new Box(10, 8, 10) }),
         );
     },
     "extrude/until-previous": expected => {
-        let profile = new Rectangle(4, 3).transform(new Pos(0, 0, 10)).faces()[0]!;
+        let profile = new Rectangle(4, 3).transform(new Pos(0, 0, 10)).faces[0]!;
         expectShapeMetrics(
             expected,
             extrude(profile, undefined, { until: Until.Previous, target: new Box(10, 8, 10) }),
@@ -92,14 +92,14 @@ oracleSuite("operations", {
         expectShapeMetrics(expected, revolve(profile, { revolutionArc: 180 }));
     },
     "loft/ruled": expected => {
-        let lower = new Rectangle(10, 8).faces()[0]!;
-        let upper = new Rectangle(6, 4).transform(new Pos(0, 0, 8)).faces()[0]!;
+        let lower = new Rectangle(10, 8).faces[0]!;
+        let upper = new Rectangle(6, 4).transform(new Pos(0, 0, 8)).faces[0]!;
         expectShapeMetrics(expected, loft([lower, upper], { ruled: true }));
     },
     "loft/smooth": expected => {
-        let bottom = new Rectangle(9, 9).faces()[0]!;
-        let middle = new Rectangle(7, 7).transform(new Pos(0, 0, 4)).faces()[0]!;
-        let top = new Rectangle(4, 4).transform(new Pos(0, 0, 8)).faces()[0]!;
+        let bottom = new Rectangle(9, 9).faces[0]!;
+        let middle = new Rectangle(7, 7).transform(new Pos(0, 0, 4)).faces[0]!;
+        let top = new Rectangle(4, 4).transform(new Pos(0, 0, 8)).faces[0]!;
         expectShapeMetrics(expected, loft([bottom, middle, top]));
     },
     "sweep/face": expected => {
@@ -111,20 +111,20 @@ oracleSuite("operations", {
             ],
             { close: false },
         );
-        expectShapeMetrics(expected, sweep(new Rectangle(4, 3).faces()[0]!, path));
+        expectShapeMetrics(expected, sweep(new Rectangle(4, 3).faces[0]!, path));
     },
     "fillet/solid": expected => {
         let solid = new Box(10, 8, 6);
-        expectShapeMetrics(expected, fillet(solid.edges().filterBy(Axis.Z), 1));
+        expectShapeMetrics(expected, fillet(solid.edges.filter(Axis.Z), 1));
     },
     "chamfer/solid": expected => {
         let solid = new Box(10, 8, 6);
-        expectShapeMetrics(expected, chamfer(solid.edges().filterBy(Axis.Z), 1));
+        expectShapeMetrics(expected, chamfer(solid.edges.filter(Axis.Z), 1));
     },
     "offset/solid": expected => expectShapeMetrics(expected, offset(new Box(8, 6, 4), 1)),
     "offset/opening": expected => {
         let solid = new Box(8, 6, 4);
-        let top = solid.faces().sortBy(Axis.Z).last!;
+        let top = solid.faces.toSorted(Axis.Z).last!;
         expectShapeMetrics(expected, offset(solid, -0.8, { openings: [top] }));
     },
     "mirror/plane": expected =>
@@ -146,30 +146,30 @@ oracleSuite("operations", {
     "section/plane": expected =>
         expectShapeMetrics(expected, section(new Box(8, 6, 4), { sectionBy: Plane.XY })),
     "thicken/face": expected =>
-        expectShapeMetrics(expected, thicken(new Rectangle(8, 6).faces()[0]!, 1)),
+        expectShapeMetrics(expected, thicken(new Rectangle(8, 6).faces[0]!, 1)),
     "draft/solid": expected => {
         let solid = new Box(10, 8, 6, { align: [Align.Center, Align.Center, Align.Min] });
-        let side = solid.faces().sortBy(Axis.X).last!;
+        let side = solid.faces.toSorted(Axis.X).last!;
         expectShapeMetrics(expected, draft(side, Plane.XY, 5));
     },
     "extrude/face-method": expected =>
-        expectShapeMetrics(expected, new Rectangle(8, 5).faces()[0]!.extrude(6)),
+        expectShapeMetrics(expected, new Rectangle(8, 5).faces[0]!.extrude(6)),
     "extrude/sketch-method": expected =>
         expectShapeMetrics(expected, new Rectangle(8, 5).extrude(6)),
     "extrude/solid-method": expected =>
-        expectShapeMetrics(expected, Solid.extrude(new Rectangle(8, 5).faces()[0]!, [0, 0, 6])),
+        expectShapeMetrics(expected, Solid.extrude(new Rectangle(8, 5).faces[0]!, [0, 0, 6])),
     "fillet/method": expected => {
         let solid = new Box(10, 8, 6);
-        expectShapeMetrics(expected, solid.fillet(1, solid.edges().filterBy(Axis.Z)));
+        expectShapeMetrics(expected, solid.fillet(1, solid.edges.filter(Axis.Z)));
     },
     "chamfer/method": expected => {
         let solid = new Box(10, 8, 6);
-        expectShapeMetrics(expected, solid.chamfer(1, solid.edges().filterBy(Axis.Z)));
+        expectShapeMetrics(expected, solid.chamfer(1, solid.edges.filter(Axis.Z)));
     },
     "offset/method": expected =>
-        expectShapeMetrics(expected, new Box(8, 6, 4).solids()[0]!.offset3D(1)),
+        expectShapeMetrics(expected, new Box(8, 6, 4).solids[0]!.offset3D(1)),
     "project/face-plane": expected => {
-        let face = new Rectangle(4, 3).transform(new Pos(0, 0, 5)).faces()[0]!;
+        let face = new Rectangle(4, 3).transform(new Pos(0, 0, 5)).faces[0]!;
         let projected = project(face, Plane.XY);
         if (Array.isArray(projected)) throw new Error("expected projected sketch");
         expectShapeMetrics(expected, projected);
@@ -183,8 +183,8 @@ oracleSuite("operations", {
     },
     "sweep/multisection": expected => {
         let path = makeLine([0, 0, 0], [0, 0, 10]);
-        let lower = new Rectangle(6, 4).faces()[0]!;
-        let upper = new Rectangle(3, 2).transform(new Pos(0, 0, 10)).faces()[0]!;
+        let lower = new Rectangle(6, 4).faces[0]!;
+        let upper = new Rectangle(3, 2).transform(new Pos(0, 0, 10)).faces[0]!;
         expectShapeMetrics(expected, sweep([lower, upper], path, { multisection: true }));
     },
     "sweep/transition-right": expected => {
@@ -198,30 +198,30 @@ oracleSuite("operations", {
         );
         expectShapeMetrics(
             expected,
-            sweep(new Rectangle(2, 2).faces()[0]!, path, { transition: Transition.Right }),
+            sweep(new Rectangle(2, 2).faces[0]!, path, { transition: Transition.Right }),
         );
     },
     "extrude/until-target-face": expected => {
-        let profile = new Rectangle(3, 3).transform(new Pos(0, 0, -10)).faces()[0]!;
+        let profile = new Rectangle(3, 3).transform(new Pos(0, 0, -10)).faces[0]!;
         expectShapeMetrics(
             expected,
             extrude(profile, undefined, { until: Until.Next, target: new Box(12, 12, 6) }),
         );
     },
     "offset/face": expected =>
-        expectShapeMetrics(expected, offset(new Rectangle(8, 6).faces()[0]!, 0.75)),
+        expectShapeMetrics(expected, offset(new Rectangle(8, 6).faces[0]!, 0.75)),
     "offset/method-face-normal": expected =>
-        expectShapeMetrics(expected, new Rectangle(8, 6).faces()[0]!.offset(2.5)),
+        expectShapeMetrics(expected, new Rectangle(8, 6).faces[0]!.offset(2.5)),
     "hollow/watertight": expected =>
-        expectShapeMetrics(expected, new Box(1, 1, 1).solid().hollow(undefined, -0.1)),
+        expectShapeMetrics(expected, new Box(1, 1, 1).solid.hollow(undefined, -0.1)),
     "hollow/openings": expected => {
-        let box = new Box(1, 1, 1).solid();
-        let lids = box.faces().filterBy(Axis.Z);
+        let box = new Box(1, 1, 1).solid;
+        let lids = box.faces.filter(Axis.Z);
         expectShapeMetrics(expected, box.hollow(lids, 0.1, { kind: Kind.Intersection }));
     },
     "maxfillet/box": expected => {
-        let solid = new Box(10, 8, 2).solid();
-        expectClose(expected, "radius", solid.maxFillet(solid.edges()), LINEAR_TOLERANCE);
+        let solid = new Box(10, 8, 2).solid;
+        expectClose(expected, "radius", solid.maxFillet(solid.edges), LINEAR_TOLERANCE);
     },
     "dprism/thru-all": expected =>
         expectShapeMetrics(
@@ -242,20 +242,20 @@ oracleSuite("operations", {
     "dprism/wire-bounds": expected =>
         expectShapeMetrics(
             expected,
-            dprismBox().dprism(Face.makeRect(0.5, 0.5).outerWire(), { additive: false }),
+            dprismBox().dprism(Face.makeRect(0.5, 0.5).outerWire, { additive: false }),
         ),
     "split/method-top": expected => {
-        let pieces = new Box(8, 6, 4).solid().split(Plane.XY, Keep.Top);
+        let pieces = new Box(8, 6, 4).solid.split(Plane.XY, Keep.Top);
         expectShapeMetrics(expected, pieces[0]!);
     },
     "split/method-both": expected => {
-        let [top, bottom] = new Box(8, 6, 4).solid().split(Plane.XY, Keep.Both);
+        let [top, bottom] = new Box(8, 6, 4).solid.split(Plane.XY, Keep.Both);
         expectShapeMetrics(fixtureRecord(expected, "top"), top[0]!);
         expectShapeMetrics(fixtureRecord(expected, "bottom"), bottom[0]!);
     },
     "split/by-perimeter-inside": expected => {
-        let sphere = new Sphere(10).solid();
-        let surface = sphere.faces()[0]!;
+        let sphere = new Sphere(10).solid;
+        let surface = sphere.faces[0]!;
         let perimeter = Wire.makeCircle(3, new Plane({ origin: [0, 0, 10] }));
         let projected = perimeter.projectToShape(sphere, { direction: [0, 0, -1] })[0]!;
         let inside = surface.splitByPerimeter(projected as Wire, Keep.Inside);
@@ -266,17 +266,14 @@ oracleSuite("operations", {
     },
     "project/wire-to-shape": expected => {
         let target = new Cylinder(5, 10, { align: [Align.Center, Align.Center, Align.Min] });
-        let square = new Rectangle(4, 4)
-            .faces()[0]!
-            .outerWire()
-            .moved(new Pos(0, 0, 12));
-        let projected = square.projectToShape(target.solid(), { direction: [0, 0, -1] });
+        let square = new Rectangle(4, 4).faces[0]!.outerWire.moved(new Pos(0, 0, 12));
+        let projected = square.projectToShape(target.solid, { direction: [0, 0, -1] });
         expectShapeMetrics(expected, projected[0]!);
     },
     "project/edge-to-shape": expected => {
         let target = new Cylinder(5, 10, { align: [Align.Center, Align.Center, Align.Min] });
         let line = makeLine([-4, 0, 12], [4, 0, 12]);
-        let projected = line.projectToShape(target.solid(), { direction: [0, 0, -1] });
+        let projected = line.projectToShape(target.solid, { direction: [0, 0, -1] });
         expectShapeMetrics(expected, projected[0]!);
     },
     "project/line-onto-face": expected => {
@@ -299,11 +296,9 @@ oracleSuite("operations", {
     "brakeformed/station-widths": expected =>
         expectShapeMetrics(expected, makeBrakeFormed(0.5, [1, 2, 3, 4], brakeOutline())),
     "project/faces-along-path": expected => {
-        let target = new Cylinder(10, 20).solid();
+        let target = new Cylinder(10, 20).solid;
         let path = Wire.makeCircle(10);
-        let squares = [0, 3, 6].map(
-            x => new Rectangle(2, 2).transform(new Pos(x, 0, 0)).faces()[0]!,
-        );
+        let squares = [0, 3, 6].map(x => new Rectangle(2, 2).transform(new Pos(x, 0, 0)).faces[0]!);
         let projected = target.projectFaces(squares, path);
         expect(projected.length, "projected face count").toBe(3);
         for (let index of [0, 1, 2]) {
@@ -311,8 +306,8 @@ oracleSuite("operations", {
         }
     },
     "project/face-to-shape": expected => {
-        let target = new Cylinder(10, 20).solid();
-        let patch = new Rectangle(6, 4).transform(new Pos(0, 0, 14)).faces()[0]!;
+        let target = new Cylinder(10, 20).solid;
+        let patch = new Rectangle(6, 4).transform(new Pos(0, 0, 14)).faces[0]!;
         let projected = patch.projectToShape(target, [0, 0, -1]);
         expect(projected.length, "projected face count").toBe(2);
         for (let index of [0, 1]) {

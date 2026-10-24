@@ -59,6 +59,6 @@ oracleSuite("parts", {
         ),
     "convexpolyhedron/boxes": expected => {
         let hull = new Box(30, 20, 20).union(new Box(20, 30, 20)).union(new Box(20, 20, 30));
-        expectShapeMetrics(expected, new ConvexPolyhedron(hull.vertices()));
+        expectShapeMetrics(expected, new ConvexPolyhedron(hull.vertices));
     },
 });

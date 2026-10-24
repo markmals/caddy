@@ -31,7 +31,7 @@ export function commonPlane(lines: readonly Mixin1D[], tolerance: number): Plane
 
 /** One of the infinitely many planes through lines that all share a single axis. */
 function coaxialPlane(lines: readonly Mixin1D[]): Plane | undefined {
-    let edges = lines.flatMap(line => [...line.edges()]);
+    let edges = lines.flatMap(line => [...line.edges]);
     if (edges.length === 0 || !edges.every(edge => edge.geomType === GeomType.Line)) {
         return undefined;
     }

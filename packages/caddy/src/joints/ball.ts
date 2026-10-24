@@ -52,7 +52,7 @@ export class BallJoint<Parent extends Shape = Shape> extends Joint<Parent> {
 
     /** The gimbal drawn in global space: three labelled circles about the joint. */
     get symbol(): Compound {
-        let radius = this.parent.boundingBox({ optimal: false }).diagonal / 30;
+        let radius = this.parent.getBoundingBox({ optimal: false }).diagonal / 30;
         return gimbalSymbol(radius, this.angleReference).moved(this.location);
     }
 

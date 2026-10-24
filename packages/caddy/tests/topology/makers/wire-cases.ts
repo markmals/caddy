@@ -42,7 +42,7 @@ export const wireCases: OracleCases = {
         expectFlags(expected, {
             same_geometry: wire.geomEqual(Wire.makeRect(10, 6)),
             different_geometry: wire.geomEqual(Wire.makeRect(10, 6.5)),
-            reversed_build: wire.geomEqual(new Wire([...wire.edges()].reverse())),
+            reversed_build: wire.geomEqual(new Wire([...wire.edges].reverse())),
         });
     },
     "wire/stitch": expected => {
@@ -83,22 +83,22 @@ export const wireCases: OracleCases = {
     "wire/fix-degenerate-edges": expected => {
         let wire = degenerateWire();
         let fixed = wire.fixDegenerateEdges(0.001);
-        expectCount(expected, "before", wire.edges().length);
-        expectCount(expected, "after", fixed.edges().length);
+        expectCount(expected, "before", wire.edges.length);
+        expectCount(expected, "after", fixed.edges.length);
         expectShapeMetrics(expected, fixed);
     },
     "wire/order-chamfer-edges": expected => {
-        let edges = Wire.makeRect(10, 6).edges();
+        let edges = Wire.makeRect(10, 6).edges;
         let pair = [edges[0]!, edges[1]!] as const;
         expectPoints(
             expected,
             "unchanged",
-            Wire.orderChamferEdges(undefined, pair).map(edge => edge.center()),
+            Wire.orderChamferEdges(undefined, pair).map(edge => edge.center),
         );
         expectPoints(
             expected,
             "swapped",
-            Wire.orderChamferEdges(pair[1], pair).map(edge => edge.center()),
+            Wire.orderChamferEdges(pair[1], pair).map(edge => edge.center),
         );
     },
 };

@@ -18,18 +18,18 @@ export function faceGeometry(face: Face): FaceGeometry | undefined {
     if (face.isPlanar === undefined) {
         return undefined;
     }
-    let edges = face.edges();
+    let edges = face.edges;
     if (!edges.every(edge => edge.geomType === GeomType.Line)) {
         return undefined;
     }
-    if (edges.length !== 4 || !face.vertices().every(vertex => isSquareCorner(edges, vertex))) {
+    if (edges.length !== 4 || !face.vertices.every(vertex => isSquareCorner(edges, vertex))) {
         return "POLYGON";
     }
     return edges.groupBy(SortBy.Length).length === 1 ? "SQUARE" : "RECTANGLE";
 }
 
 function isSquareCorner(edges: readonly Edge[], vertex: Vertex): boolean {
-    let corner = edges.filter(edge => edge.vertices().some(candidate => candidate.isSame(vertex)));
+    let corner = edges.filter(edge => edge.vertices.some(candidate => candidate.isSame(vertex)));
     if (corner.length !== 2) {
         return false;
     }

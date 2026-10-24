@@ -119,7 +119,7 @@ function splitPlane(first: Vector, second: Vector, onTarget: Vector): Plane {
 
 /** The part of a neighbour that stays, with room left for the arc. */
 function trimToArc(neighbour: Edge, plane: Plane): Edge {
-    let kept = neighbour.split(plane).flatMap(piece => [...piece.edges()]);
+    let kept = neighbour.split(plane).flatMap(piece => [...piece.edges]);
     let [trimmed] = kept;
     if (kept.length !== 1 || trimmed === undefined) {
         throw new GeometryError("Invalid geometry to create the end arc");
@@ -133,13 +133,13 @@ function trimToArc(neighbour: Edge, plane: Plane): Edge {
  */
 function rebuiltFace(group: EdgeGroup, rounded: readonly Edge[]): Face {
     let untouched = untouchedEdges(group);
-    let wires = Wire.combine([...rounded, ...untouched]).sortBy(SortBy.Length, { reverse: true });
+    let wires = Wire.combine([...rounded, ...untouched]).toSorted(SortBy.Length, { reverse: true });
     let [perimeter, ...holes] = wires;
     if (perimeter === undefined) {
         throw new GeometryError("Invalid geometry - the rounded edges bound no face");
     }
     let face = new Face(perimeter, holes);
-    let original = group.parent.faces()[0];
+    let original = group.parent.faces[0];
     if (original !== undefined && !original.normalAt().equals(face.normalAt())) {
         return face.reverseNormal();
     }
@@ -152,11 +152,9 @@ function rebuiltFace(group: EdgeGroup, rounded: readonly Edge[]): Face {
  * longer identify the parent's own edges, so the neighbours are recognised by their shared vertex.
  */
 function untouchedEdges(group: EdgeGroup): readonly Edge[] {
-    return group.parent
-        .edges()
-        .filter(
-            candidate =>
-                !candidate.isSame(group.target) &&
-                topoExploreCommonVertex(group.target, candidate) === undefined,
-        );
+    return group.parent.edges.filter(
+        candidate =>
+            !candidate.isSame(group.target) &&
+            topoExploreCommonVertex(group.target, candidate) === undefined,
+    );
 }

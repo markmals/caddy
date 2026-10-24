@@ -62,7 +62,7 @@ function expectShape(
     expectColor(record, shape, where, options.colorTolerance ?? CHANNEL_TOLERANCE);
     expectClose(record, "area", shape.area, Math.max(tolerance, MASS_TOLERANCE));
     expectClose(record, "volume", shape.volume, Math.max(tolerance, MASS_TOLERANCE));
-    let box = shape.boundingBox();
+    let box = shape.boundingBox;
     expectVectorClose(record, "min", box.min.toTuple(), tolerance);
     expectVectorClose(record, "max", box.max.toTuple(), tolerance);
     expectCounts(fixtureRecord(record, "counts"), shape, where);
@@ -82,9 +82,9 @@ function expectColor(record: FixtureCase, shape: Shape, where: string, tolerance
 
 function expectCounts(expected: FixtureCase, shape: Shape, where: string): void {
     let actual = {
-        faces: shape.faces().length,
-        wires: shape.wires().length,
-        edges: shape.edges().length,
+        faces: shape.faces.length,
+        wires: shape.wires.length,
+        edges: shape.edges.length,
     };
     for (let [name, count] of Object.entries(actual)) {
         expect(count, `${where} ${name} count`).toBe(fixtureNumber(expected, name));
@@ -93,7 +93,7 @@ function expectCounts(expected: FixtureCase, shape: Shape, where: string): void 
 
 function expectEdges(record: FixtureCase, shape: Shape, where: string, tolerance: number): void {
     let records = fixtureList(record, "edges");
-    let edges = shape.edges();
+    let edges = shape.edges;
     expect(edges.length, `${where} edge count`).toBe(records.length);
     for (let [index, expected] of records.entries()) {
         let edge = edges.at(index);
@@ -103,8 +103,8 @@ function expectEdges(record: FixtureCase, shape: Shape, where: string, tolerance
             fixtureString(expected, "geom_type"),
         );
         expectClose(expected, "length", edge.length, Math.max(tolerance, MASS_TOLERANCE));
-        expectVectorClose(expected, "start", edge.startPoint().toTuple(), tolerance);
-        expectVectorClose(expected, "end", edge.endPoint().toTuple(), tolerance);
+        expectVectorClose(expected, "start", edge.startPoint.toTuple(), tolerance);
+        expectVectorClose(expected, "end", edge.endPoint.toTuple(), tolerance);
     }
 }
 

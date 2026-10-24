@@ -42,7 +42,7 @@ export function makeBrakeFormed(
     let plane = new Face(offsetLine instanceof Wire ? offsetLine : new Wire([offsetLine])).isPlanar;
     if (plane === undefined) throw new GeometryError("line not suitable - probably straight");
 
-    let corners = outline.vertices();
+    let corners = outline.vertices;
     let widths =
         typeof stationWidths === "number" ? corners.map(() => stationWidths) : [...stationWidths];
     if (widths.length !== corners.length) {
@@ -54,7 +54,7 @@ export function makeBrakeFormed(
     let profiles = stationEdges(outline, offsetLine, thickness).map((edge, index) =>
         stationFace(edge, plane.zDir, widths[index]!),
     );
-    let path = outline.edges().sortBy(outline);
+    let path = outline.edges.toSorted(outline);
     let sections = profiles
         .slice(0, -1)
         .map((profile, index) =>
@@ -69,7 +69,7 @@ export function makeBrakeFormed(
 
 function lineOf(line: Edge | Wire | Shape): Edge | Wire {
     if (line instanceof Edge || line instanceof Wire) return line;
-    let wires = line.wires();
+    let wires = line.wires;
     let only = wires[0];
     if (only === undefined || wires.length !== 1) {
         throw new InvalidShapeError("line must be either a curve, edge or wire");
@@ -82,20 +82,20 @@ function lineOf(line: Edge | Wire | Shape): Edge | Wire {
  * vertex of the offset line exactly `thickness` away.
  */
 function stationEdges(line: Edge | Wire, offsetLine: Edge | Wire, thickness: number): Edge[] {
-    let offsetVertices = offsetLine.vertices();
+    let offsetVertices = offsetLine.vertices;
     let edges = new ShapeList<Edge>();
-    for (let corner of line.vertices()) {
-        let position = corner.center();
+    for (let corner of line.vertices) {
+        let position = corner.center;
         let partner = offsetVertices
-            .sortByDistance(position)
+            .toSortedByDistance(position)
             .slice(1)
-            .find(other => Math.abs(other.center().sub(position).length - thickness) < 1e-2);
+            .find(other => Math.abs(other.center.sub(position).length - thickness) < 1e-2);
         if (partner === undefined) {
             throw new GeometryError("line not suitable - no matching offset vertex");
         }
-        edges.push(makeLine(position, partner.center()));
+        edges.push(makeLine(position, partner.center));
     }
-    return [...edges.sortBy(line)];
+    return edges.toSorted(line);
 }
 
 function stationFace(edge: Edge, normal: Vector, width: number): Face {

@@ -146,7 +146,7 @@ export function makeSurfacePatch(options: SurfacePatchOptions = {}): Face {
     let constraints = [...(options.edgeFaceConstraints ?? [])].map(constraint => {
         // OCCT reads the edge's curve on the support face and dereferences a missing one, so a
         // constraint whose edge is not part of its support would crash the process.
-        if (!constraint.support.edges().some(edge => edge.isSame(constraint.edge))) {
+        if (!constraint.support.edges.some(edge => edge.isSame(constraint.edge))) {
             throw new GeometryError("A patch constraint edge must be an edge of its support face");
         }
         return {
@@ -184,7 +184,7 @@ export function uvFace(face: Face): Face {
                 ) as Edge[],
         );
     return new Face(
-        flatten(face.outerWire()),
-        face.innerWires().map(wire => flatten(wire)),
+        flatten(face.outerWire),
+        face.innerWires.map(wire => flatten(wire)),
     );
 }

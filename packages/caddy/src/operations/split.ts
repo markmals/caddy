@@ -65,7 +65,7 @@ export function section(shape: Shape, options: SectionOptions = {}): Sketch {
         try {
             let tool = cuttingFace(shape, raised);
             let intersection = Shape.cast(booleans.common([shape.wrapped], [tool.wrapped]));
-            sections.push(...intersection.faces());
+            sections.push(...intersection.faces);
         } catch (cause) {
             throw new NativeKernelError("Section failed", { cause });
         }

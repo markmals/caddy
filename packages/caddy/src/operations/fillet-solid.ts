@@ -23,7 +23,7 @@ function parentOf(edges: Edge[], target?: Shape): Shape {
     let parent = target ?? edges[0]?.topoParent;
     if (parent === undefined)
         throw new InvalidShapeError("The selected edges have no solid parent");
-    if (parent.solids().length === 0) {
+    if (parent.solids.length === 0) {
         throw new InvalidShapeError("Fillets and chamfers require a solid");
     }
     return parent;

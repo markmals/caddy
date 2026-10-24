@@ -59,15 +59,15 @@ function splitSides(target: Shape, cuts: readonly Edge[]): { left: Shape[]; righ
  * edge spanning the seam would otherwise leave the split open.
  */
 function perimeterEdges(target: Shape, perimeter: Edge | Wire): Edge[] {
-    let seams = target.faces().flatMap(face => [...face.seams]);
+    let seams = target.faces.flatMap(face => [...face.seams]);
     let cuts: Edge[] = [];
-    for (let edge of perimeter.edges()) {
+    for (let edge of perimeter.edges) {
         let crossings: Vertex[] = [];
         for (let seam of seams) {
             let meeting = edge.intersect(seam);
             if (meeting === undefined) continue;
-            for (let vertex of meeting.vertices()) {
-                let onEnd = edge.vertices().some(end => vertex.distanceTo(end) <= TOLERANCE);
+            for (let vertex of meeting.vertices) {
+                let onEnd = edge.vertices.some(end => vertex.distanceTo(end) <= TOLERANCE);
                 let known = crossings.some(other => vertex.distanceTo(other) <= TOLERANCE);
                 if (!onEnd && !known) crossings.push(vertex);
             }
@@ -83,9 +83,9 @@ function splitAtVertices(edge: Edge, vertices: readonly Vertex[]): Edge[] {
         segments = segments.flatMap(segment => {
             let interior =
                 segment.distanceTo(vertex) <= TOLERANCE &&
-                segment.vertices().every(end => vertex.distanceTo(end) > TOLERANCE);
+                segment.vertices.every(end => vertex.distanceTo(end) > TOLERANCE);
             if (!interior) return [segment];
-            return [...Shape.cast(booleans.split([segment.wrapped], [vertex.wrapped])).edges()];
+            return [...Shape.cast(booleans.split([segment.wrapped], [vertex.wrapped])).edges];
         });
     }
     return segments;
@@ -97,7 +97,7 @@ function sewSide(pieces: readonly Shape[]): PerimeterSide {
     if (pieces.length === 1) return pieces[0] as Face | Shell;
     let sewn = Shape.cast(features.sew(pieces.map(piece => piece.wrapped)));
     if (sewn.shapeType === "Shell") return sewn as Shell;
-    return new ShapeList(pieces.flatMap(piece => [...piece.faces()]));
+    return new ShapeList(pieces.flatMap(piece => [...piece.faces]));
 }
 
 /** The inside piece is the one whose boundary length is nearest the perimeter's own. */
@@ -110,7 +110,7 @@ function closerToPerimeter(
         side === undefined
             ? 0
             : [...sideShapes(side)]
-                  .flatMap(shape => [...shape.edges()])
+                  .flatMap(shape => [...shape.edges])
                   .reduce((total, edge) => total + edge.length, 0);
     return (
         Math.abs(perimeter.length - boundary(left)) < Math.abs(perimeter.length - boundary(right))

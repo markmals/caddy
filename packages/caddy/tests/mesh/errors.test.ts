@@ -8,7 +8,7 @@ describe("meshing", () => {
         let mesh = await empty.tessellate(1e-3);
         expect(mesh.vertices).toEqual([]);
         expect(mesh.triangles).toEqual([]);
-        expect((await empty.mesh(1e-3)).faces().length).toBe(0);
+        expect((await empty.mesh(1e-3)).faces.length).toBe(0);
     });
 
     test("meshing returns a copy and leaves the original alone", async () => {

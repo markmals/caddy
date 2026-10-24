@@ -1,6 +1,6 @@
 /**
- * Predicates and sort keys behind `ShapeList#filterBy`, `#sortBy` and `#groupBy`, ported from
- * build123d's `ShapeList.filter_by`/`sort_by`/`group_by`.
+ * Predicates and sort keys behind `ShapeList#filter`, `#sort`/`#toSorted` and `#groupBy`, ported
+ * from build123d's `ShapeList.filter_by`/`sort_by`/`group_by`.
  */
 
 import { query } from "@roonieone/occt-native";
@@ -21,8 +21,8 @@ const AXIS_ORIGIN: readonly [number, number, number] = [0, 0, 0];
 
 const GEOM_TYPES = new Set<string>(Object.values(GeomType));
 
-/** What `ShapeList#filterBy` accepts besides a geometry type. */
-export type ShapeFilter<T extends Shape> = ((shape: T) => boolean) | Axis | Plane;
+/** What `ShapeList#filter` accepts besides a predicate. */
+export type ShapeFilter = Axis | Plane | GeomType;
 
 /** An edge or wire, along which shapes can be sorted by their closest position. */
 export interface CurveLike {
@@ -31,13 +31,7 @@ export interface CurveLike {
 }
 
 /** The predicate a filter stands for; `tolerance` is in degrees for axes and planes. */
-export function filterPredicate<T extends Shape>(
-    filter: ShapeFilter<T> | GeomType,
-    tolerance: number,
-): (shape: T) => boolean {
-    if (typeof filter === "function") {
-        return filter;
-    }
+export function filterPredicate(filter: ShapeFilter, tolerance: number): (shape: Shape) => boolean {
     if (filter instanceof Axis) {
         return shape => {
             let direction = shapeAxisDirection(shape);
@@ -51,7 +45,7 @@ export function filterPredicate<T extends Shape>(
         return shape => parallelToPlane(shape, filter, tolerance);
     }
     if (!GEOM_TYPES.has(filter)) {
-        throw new InvalidShapeError(`Unsupported filterBy criterion: ${String(filter)}`);
+        throw new InvalidShapeError(`Unsupported filter criterion: ${String(filter)}`);
     }
     return shape => shape.geomType === filter;
 }
@@ -88,7 +82,7 @@ function parallelToPlane(shape: Shape, plane: Plane, tolerance: number): boolean
             );
         }
         case "Wire":
-            return shape.edges().every(edge => parallelToPlane(edge, plane, tolerance));
+            return shape.edges.every(edge => parallelToPlane(edge, plane, tolerance));
         case "Edge":
             return query.edgeIsPlanar(shape.wrapped, toVec3(plane.zDir), tolerance);
         default:
@@ -99,7 +93,7 @@ function parallelToPlane(shape: Shape, plane: Plane, tolerance: number): boolean
 /** Position of a shape's centre along `axis` (build123d sorts by the local Z of the axis). */
 export function axisPositionKey(axis: Axis): (shape: Shape) => number {
     let toAxis = axis.location.inverse().transform;
-    return shape => toAxis.apply(shape.center()).z;
+    return shape => toAxis.apply(shape.center).z;
 }
 
 /**
@@ -117,7 +111,7 @@ export function measureKey(sortBy: SortBy): (shape: Shape) => number | undefined
         case SortBy.Volume:
             return shape => shape.volume;
         case SortBy.Distance:
-            return shape => shape.center().length;
+            return shape => shape.center.length;
         default:
             throw new InvalidShapeError(`Unsupported sort criterion: ${String(sortBy)}`);
     }
@@ -134,7 +128,7 @@ function measuredProperty(shape: Shape, property: "length" | "radius"): number |
 /** Normalized position along `curve` of the point closest to a shape's centre. */
 export function curvePositionKey(curve: CurveLike): (shape: Shape) => number {
     return shape => {
-        let [onCurve] = curve.closestPoints(shape.center());
+        let [onCurve] = curve.closestPoints(shape.center);
         return curve.paramAtPoint(onCurve);
     };
 }

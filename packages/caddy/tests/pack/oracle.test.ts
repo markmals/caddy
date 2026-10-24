@@ -29,7 +29,7 @@ function expectBounds(expected: FixtureCase, key: string, shapes: readonly Shape
     let packed = fixtureRecord(expected, key);
     for (let [index, shape] of shapes.entries()) {
         let record = fixtureRecord(packed, String(index));
-        let box = shape.boundingBox();
+        let box = shape.boundingBox;
         expectVectorClose(record, "min", box.min.toTuple(), LINEAR_TOLERANCE);
         expectVectorClose(record, "max", box.max.toTuple(), LINEAR_TOLERANCE);
     }
@@ -37,7 +37,7 @@ function expectBounds(expected: FixtureCase, key: string, shapes: readonly Shape
 
 function expectOverall(expected: FixtureCase, combined: Shape): void {
     let record = fixtureRecord(expected, "overall");
-    let box = combined.boundingBox();
+    let box = combined.boundingBox;
     expectVectorClose(record, "min", box.min.toTuple(), LINEAR_TOLERANCE);
     expectVectorClose(record, "max", box.max.toTuple(), LINEAR_TOLERANCE);
 }

@@ -56,7 +56,7 @@ export function extrude(
     if (amount === undefined && options.taper !== undefined && options.taper !== 0) {
         throw new GeometryError("Taper is not supported when extruding until a target");
     }
-    let faces = toExtrude instanceof Face ? [toExtrude] : toExtrude.faces();
+    let faces = toExtrude instanceof Face ? [toExtrude] : toExtrude.faces;
     if (faces.length === 0) throw new GeometryError("A face or sketch must be provided");
     let solids: Shape[] = [];
     for (let face of faces) {
@@ -104,7 +104,7 @@ export function revolve(
         profiles instanceof Face
             ? [profiles]
             : profiles instanceof Sketch
-              ? profiles.faces()
+              ? profiles.faces
               : profiles;
     if (faces.length === 0) throw new GeometryError("Revolve requires at least one face");
     let sign = revolutionArc >= 0 ? 1 : -1;
@@ -133,8 +133,8 @@ function outerSections(sections: readonly (Face | Sketch | Vertex)[]): (Vertex |
     for (let section of sections) {
         if (section instanceof Vertex) result.push(section);
         else
-            for (let face of section instanceof Face ? [section] : section.faces())
-                result.push(face.outerWire());
+            for (let face of section instanceof Face ? [section] : section.faces)
+                result.push(face.outerWire);
     }
     return result;
 }
@@ -162,8 +162,12 @@ export function loft(
                 ruled,
             ),
         );
-        let faces = sections.flatMap(section =>
-            section instanceof Vertex ? [] : section instanceof Face ? [section] : section.faces(),
+        let faces = sections.flatMap<Face>(section =>
+            section instanceof Vertex
+                ? []
+                : section instanceof Face
+                  ? [section]
+                  : [...section.faces],
         );
         let holes = loftHoleSections(faces);
         if (holes.length !== 0) {

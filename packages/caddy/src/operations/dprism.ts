@@ -58,5 +58,5 @@ function profileFaces(bounds: Face | Wire | Iterable<Face | Wire>): Face[] {
     if (wires.length !== selection.length) {
         throw new InvalidShapeError("Prism bounds must all be faces or all be wires");
     }
-    return [...new Face(wires[0]!, wires.slice(1)).faces()];
+    return [...new Face(wires[0]!, wires.slice(1)).faces];
 }

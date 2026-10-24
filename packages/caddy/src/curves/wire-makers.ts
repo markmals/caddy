@@ -22,7 +22,7 @@ export function makeWire(edges: Iterable<Edge>): Wire {
 
 /** Chains loose edges into as many connected wires as they form. */
 export function combineWires(parts: Iterable<Edge | Wire>, tolerance = 1e-9): Wire[] {
-    let edges = [...parts].flatMap(part => part.edges().map(edge => edge.wrapped));
+    let edges = [...parts].flatMap(part => part.edges.map(edge => edge.wrapped));
     let wires = native("Wire.combine", () => construct.connectEdgesToWires(edges, tolerance));
     return wires.map(wire => Shape.cast(wire) as Wire);
 }
@@ -43,7 +43,7 @@ export function makeWireEllipse(
     if (startAngle === endAngle || options.closed === false) {
         return makeWire([arc]);
     }
-    return makeWire([arc, makeLine(arc.endPoint(), arc.startPoint())]);
+    return makeWire([arc, makeLine(arc.endPoint, arc.startPoint)]);
 }
 
 /** Options of {@link makeWirePolygon} and {@link Wire.makePolygon}. */

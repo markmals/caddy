@@ -58,8 +58,8 @@ export function filletFace2D(face: Face, radius: number, vertices: Iterable<Vert
  * normal it had; `record` is extended with what the rebuild did to its sub-shapes.
  */
 function inConnectionOrder(face: Face, record: ShapeHistory): Face {
-    let wires = [face.outerWire(), ...face.innerWires()].map(wire =>
-        castWire("Fillet 2D", () => construct.makeWire(wire.edges().map(edge => edge.wrapped))),
+    let wires = [face.outerWire, ...face.innerWires].map(wire =>
+        castWire("Fillet 2D", () => construct.makeWire(wire.edges.map(edge => edge.wrapped))),
     );
     let [outer, ...inner] = wires;
     if (outer === undefined) return face;
@@ -72,7 +72,7 @@ function inConnectionOrder(face: Face, record: ShapeHistory): Face {
     if (rebuilt.normalAt().dot(face.normalAt()) < 0) {
         rebuilt = rebuilt.reverseNormal();
     }
-    record.merge(joinRecord([...face.edges()], [...rebuilt.edges()], [], []));
+    record.merge(joinRecord([...face.edges], [...rebuilt.edges], [], []));
     record.addModified(face.wrapped, rebuilt.wrapped);
     return rebuilt;
 }
@@ -140,7 +140,7 @@ export function filletWire2D(wire: Wire, radius: number, vertices: Iterable<Vert
     if (!query.isClosed(wire.wrapped)) {
         let record = ShapeHistory.empty([wire.wrapped]);
         let rounded = corners.reduce((filleted, vertex) => {
-            let corner = filletWireCorner(filleted, vertex.center(), radius);
+            let corner = filletWireCorner(filleted, vertex.center, radius);
             if (corner.record !== undefined) record.merge(corner.record);
             return corner.wire;
         }, wire);

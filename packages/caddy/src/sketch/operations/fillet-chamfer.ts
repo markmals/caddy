@@ -28,10 +28,8 @@ function reshapeFaces(
     corners: readonly Vertex[],
     change: (face: Face, inFace: Vertex[]) => Face,
 ): Sketch {
-    let faces = parent.faces().map(face => {
-        let inFace = face
-            .vertices()
-            .filter(vertex => corners.some(corner => corner.isSame(vertex)));
+    let faces = parent.faces.map(face => {
+        let inFace = face.vertices.filter(vertex => corners.some(corner => corner.isSame(vertex)));
         return inFace.length === 0 ? face : change(face, [...inFace]);
     });
     return new Sketch(faces);

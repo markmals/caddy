@@ -68,7 +68,7 @@ describe("Matrix3", () => {
 
     it("keeps rotations orthonormal with unit determinant", () => {
         let rotation = Matrix3.rotation(new Vector(1, 2, 2), 37 * DEG2RAD);
-        expect(rotation.determinant()).toBeCloseTo(1, 12);
+        expect(rotation.determinant).toBeCloseTo(1, 12);
         expect(rotation.multiply(rotation.transposed()).equals(Matrix3.IDENTITY, 1e-12)).toBe(true);
     });
 
@@ -103,7 +103,7 @@ describe("Quaternion", () => {
     });
 
     it("reports a unit norm for rotations", () => {
-        expect(Quaternion.fromAxisAngle(new Vector(0, 0, 1), 1.23).norm()).toBeCloseTo(1, 15);
+        expect(Quaternion.fromAxisAngle(new Vector(0, 0, 1), 1.23).norm).toBeCloseTo(1, 15);
     });
 
     it("refuses to normalize a zero quaternion", () => {

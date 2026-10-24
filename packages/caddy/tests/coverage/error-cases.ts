@@ -27,14 +27,13 @@ interface DraftFailure {
 }
 
 function failingDraft(selection: Selection, neutral: Neutral, angle: number): DraftFailure {
-    let box = new Box(10, 10, 10).solid();
-    let bottom = box.faces().sortBy(Axis.Z)[0]!;
-    let faces =
-        selection === "sides" ? [...box.faces().filterBy(Axis.Z, { reverse: true })] : [bottom];
+    let box = new Box(10, 10, 10).solid;
+    let bottom = box.faces.toSorted(Axis.Z)[0]!;
+    let faces = selection === "sides" ? box.faces.filter(Axis.Z, { reverse: true }) : [bottom];
     // build123d's `Plane(face)` is the face's centre of mass plus its normal there.
     let neutralPlane =
         neutral === "bottom"
-            ? new Plane({ origin: bottom.center(), zDir: bottom.normalAt() })
+            ? new Plane({ origin: bottom.center, zDir: bottom.normalAt() })
             : Plane.XZ;
     try {
         draft(faces, neutralPlane, angle);
@@ -67,7 +66,7 @@ function expectDraftFailure(
     ).toBe(fixtureNumber(record, "failed_index"));
     let faceRecord = fixtureRecord(record, "face");
     expectClose(faceRecord, "area", face.area, MASS_TOLERANCE);
-    expectVectorClose(faceRecord, "center", face.center().toTuple(), LINEAR_TOLERANCE);
+    expectVectorClose(faceRecord, "center", face.center.toTuple(), LINEAR_TOLERANCE);
 
     let problematic = error.problematicShape;
     expect(problematic, `${key} problematic shape`).toBeDefined();
@@ -79,11 +78,11 @@ function expectDraftFailure(
     expect(problematic.shapeType.toUpperCase(), `${key} problematic type`).toBe(
         fixtureString(shapeRecord, "shape_type"),
     );
-    expect(problematic.faces().length, `${key} problematic face count`).toBe(
+    expect(problematic.faces.length, `${key} problematic face count`).toBe(
         fixtureNumber(shapeRecord, "face_count"),
     );
     expectClose(shapeRecord, "area", problematic.area, MASS_TOLERANCE);
-    expectVectorClose(shapeRecord, "center", problematic.center().toTuple(), LINEAR_TOLERANCE);
+    expectVectorClose(shapeRecord, "center", problematic.center.toTuple(), LINEAR_TOLERANCE);
     expect(problematic.isSame(face), `${key} problematic is the failed face`).toBe(
         fixtureBoolean(shapeRecord, "is_failed_face"),
     );

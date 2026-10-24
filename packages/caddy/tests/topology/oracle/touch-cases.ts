@@ -13,7 +13,7 @@ import { expectCount, expectMeasures, expectNames, expectPoints, sortedPoints } 
 function expectSummary(expected: FixtureCase, contacts: readonly Shape[]): void {
     expectNames(expected, "classes", contacts.map(contact => contact.constructor.name).sort());
     expectCount(expected, "count", contacts.length);
-    expectPoints(expected, "centers", sortedPoints(contacts.map(contact => contact.center())));
+    expectPoints(expected, "centers", sortedPoints(contacts.map(contact => contact.center)));
 }
 
 export const touchCases: OracleCases = {

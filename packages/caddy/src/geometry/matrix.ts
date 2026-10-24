@@ -104,7 +104,7 @@ export class Matrix {
      * inverting; the two agree to the last few bits, not bit for bit.
      */
     inverse(): Matrix {
-        let determinant = this.linear.determinant();
+        let determinant = this.linear.determinant;
         if (Math.abs(determinant) <= RESOLUTION) {
             throw new GeometryError("Cannot invert a singular matrix");
         }

@@ -20,7 +20,7 @@ export const GeomType = {
 
 export type GeomType = (typeof GeomType)[keyof typeof GeomType];
 
-/** Measures that `ShapeList#sortBy` and `ShapeList#groupBy` order by (build123d `SortBy`). */
+/** Measures that `ShapeList#toSorted` and `ShapeList#groupBy` order by (build123d `SortBy`). */
 export const SortBy = {
     Length: "LENGTH",
     Radius: "RADIUS",

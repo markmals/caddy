@@ -183,7 +183,7 @@ describe("curve objects reject invalid input", () => {
             ],
             { close: false },
         );
-        expect(() => wire.fillet2D(0.5, wire.vertices())).toThrow(/must join exactly two edges/);
+        expect(() => wire.fillet2D(0.5, wire.vertices)).toThrow(/must join exactly two edges/);
     });
 
     it("reports a fillet vertex that is not on the wire", () => {
@@ -202,7 +202,7 @@ describe("curve objects reject invalid input", () => {
             ],
             { close: false },
         );
-        expect(() => wire.fillet2D(0.5, elsewhere.vertices())).toThrow(
+        expect(() => wire.fillet2D(0.5, elsewhere.vertices)).toThrow(
             /Could not find fillet vertex/,
         );
     });
@@ -216,8 +216,8 @@ describe("curve objects reject invalid input", () => {
             ],
             { close: false },
         );
-        let corner = wire.vertices().sortByDistance([4, 0, 0]).first;
-        expect(wire.fillet2D(0.5, [corner]).edges().length, "edge count").toBe(3);
+        let corner = wire.vertices.toSortedByDistance([4, 0, 0]).first;
+        expect(wire.fillet2D(0.5, [corner]).edges.length, "edge count").toBe(3);
     });
 });
 

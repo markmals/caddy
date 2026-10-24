@@ -80,7 +80,7 @@ export const locationCases: OracleCases = {
             source.zAxis.direction.toTuple(),
             ANGULAR_TOLERANCE,
         );
-        expectVectorClose(expected, "center", source.center().toTuple(), LINEAR_TOLERANCE);
+        expectVectorClose(expected, "center", source.center.toTuple(), LINEAR_TOLERANCE);
     },
 
     "location/setters": expected => {

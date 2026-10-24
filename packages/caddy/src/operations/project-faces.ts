@@ -31,14 +31,14 @@ export function projectFaceToShape(
     );
     let pieces: Shape[] =
         target.shapeType === "Face"
-            ? [...intersection(swept, target).faces()]
-            : target.shells().flatMap(shell => [...intersection(swept, shell).shells()]);
+            ? [...intersection(swept, target).faces]
+            : target.shells.flatMap(shell => [...intersection(swept, shell).shells]);
     let along = unit.normalized();
     return new ShapeList<Shape>(
         pieces
-            .map(piece => ({ piece, reach: piece.center().sub(face.center()).dot(along) }))
+            .map(piece => ({ piece, reach: piece.center.sub(face.center).dot(along) }))
             .sort((first, second) => first.reach - second.reach)
-            .map(entry => (entry.piece.faces().length === 1 ? entry.piece.face() : entry.piece)),
+            .map(entry => (entry.piece.faces.length === 1 ? entry.piece.face : entry.piece)),
     );
 }
 
@@ -52,16 +52,16 @@ export function projectFaces(
     path: Edge | Wire,
     start = 0,
 ): ShapeList<Shape> {
-    let profiles = faces instanceof Shape ? [...faces.faces()] : [...faces];
+    let profiles = faces instanceof Shape ? [...faces.faces] : [...faces];
     let first = profiles[0];
     if (first === undefined) throw new GeometryError("No face to project");
     let pathLength = path.length;
-    let center = target.center();
-    let originX = first.boundingBox().min.x;
+    let center = target.center;
+    let originX = first.boundingBox.min.x;
 
     return new ShapeList<Shape>(
         profiles.map(profile => {
-            let box = profile.boundingBox();
+            let box = profile.boundingBox;
             let faceX = (box.min.x + box.max.x) / 2;
             let station = start + (faceX - originX) / pathLength;
             let [surfacePoint, surfaceNormal] = surfaceHit(

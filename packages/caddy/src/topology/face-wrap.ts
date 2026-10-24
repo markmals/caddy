@@ -80,11 +80,11 @@ export function wrapFacesOnSurface(
     if (firstFace === undefined) {
         throw new GeometryError("No faces to wrap");
     }
-    let firstMinimumX = firstFace.boundingBox().min.x;
+    let firstMinimumX = firstFace.boundingBox.min.x;
 
     return new ShapeList(
         planarFaces.map(face => {
-            let box = face.boundingBox();
+            let box = face.boundingBox;
             let offset = (box.min.x + box.max.x) / 2 - firstMinimumX;
             let along = start + offset / pathLength;
             let position = path.positionAt(along);
@@ -106,10 +106,10 @@ function wrapFace(
     surfaceLocation: Location,
     options: WrapOptions,
 ): Face {
-    let perimeter = wrapWire(surface, planarFace.outerWire(), surfaceLocation, options);
-    let holes = planarFace
-        .innerWires()
-        .map(hole => wrapWire(surface, hole, surfaceLocation, options));
+    let perimeter = wrapWire(surface, planarFace.outerWire, surfaceLocation, options);
+    let holes = planarFace.innerWires.map(hole =>
+        wrapWire(surface, hole, surfaceLocation, options),
+    );
     let wrapped = makeSurface(perimeter, {
         surfacePoints: [surfaceLocation.position],
         interiorWires: holes,

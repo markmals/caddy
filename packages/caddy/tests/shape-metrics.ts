@@ -26,17 +26,17 @@ export function expectShapeMetrics(expected: FixtureCase, shape: Shape): void {
     let metrics = fixtureRecord(expected, "shape");
     expect(shape.shapeType.toUpperCase(), "shape type").toBe(fixtureString(metrics, "shape_type"));
     expect(shape.isValid, "validity").toBe(fixtureBoolean(metrics, "is_valid"));
-    expectBounds(fixtureRecord(metrics, "bounding_box"), shape.boundingBox());
+    expectBounds(fixtureRecord(metrics, "bounding_box"), shape.boundingBox);
     expectBounds(
         fixtureRecord(metrics, "bounding_box_coarse"),
-        shape.boundingBox({ optimal: false }),
+        shape.getBoundingBox({ optimal: false }),
     );
     expectClose(metrics, "volume", shape.volume, MASS_TOLERANCE);
     expectClose(metrics, "area", shape.area, MASS_TOLERANCE);
     expectCenterOfMass(metrics, shape);
     expectCounts(fixtureRecord(metrics, "counts"), shape);
-    expectGeomTypes(metrics, "face_geom_types", shape.faces());
-    expectGeomTypes(metrics, "edge_geom_types", shape.edges());
+    expectGeomTypes(metrics, "face_geom_types", shape.faces);
+    expectGeomTypes(metrics, "edge_geom_types", shape.edges);
 }
 
 function expectBounds(expected: FixtureCase, actual: BoundingBox): void {
@@ -47,18 +47,18 @@ function expectBounds(expected: FixtureCase, actual: BoundingBox): void {
 /** The oracle records `null` for shapes whose centre of mass build123d refuses to compute. */
 function expectCenterOfMass(metrics: FixtureCase, shape: Shape): void {
     if (fixtureValue(metrics, "center_of_mass") === null) return;
-    let center = shape.center(CenterOf.Mass).toTuple();
+    let center = shape.getCenter(CenterOf.Mass).toTuple();
     expectVectorClose(metrics, "center_of_mass", center, MASS_TOLERANCE);
 }
 
 function expectCounts(expected: FixtureCase, shape: Shape): void {
     let actual = {
-        solids: shape.solids().length,
-        shells: shape.shells().length,
-        faces: shape.faces().length,
-        wires: shape.wires().length,
-        edges: shape.edges().length,
-        vertices: shape.vertices().length,
+        solids: shape.solids.length,
+        shells: shape.shells.length,
+        faces: shape.faces.length,
+        wires: shape.wires.length,
+        edges: shape.edges.length,
+        vertices: shape.vertices.length,
     };
     for (let [name, count] of Object.entries(actual)) {
         expect(count, `${name} count`).toBe(fixtureNumber(expected, name));

@@ -37,8 +37,13 @@ export abstract class Mixin3D extends Shape {
         return 3;
     }
 
-    /** Centre of mass (default) or of the bounding box; `Geometry` is not defined for solids. */
-    center(centerOf: CenterOf = CenterOf.Mass): Vector {
+    /** Centre of mass; build123d's default for solids and compounds. */
+    get center(): Vector {
+        return this.getCenter(CenterOf.Mass);
+    }
+
+    /** Centre of mass or of the bounding box; `Geometry` is not defined for solids. */
+    getCenter(centerOf: CenterOf): Vector {
         if (centerOf === CenterOf.Geometry) {
             throw new InvalidShapeError("Center of GEOMETRY is not supported for this object");
         }
@@ -48,7 +53,7 @@ export abstract class Mixin3D extends Shape {
             );
             return fromVec3(properties.centerOfMass);
         }
-        return this.boundingBox().center();
+        return this.boundingBox.center;
     }
 
     /** Round the selected edges of this solid (build123d `Mixin3D.fillet`). */
@@ -88,7 +93,7 @@ export abstract class Mixin3D extends Shape {
         }
         if (kind === Kind.Tangent)
             throw new GeometryError("Tangent offset joins are not supported for solids");
-        let solids = this.solids();
+        let solids = this.solids;
         if (solids.length !== 1) throw new InvalidShapeError("Offset requires one solid");
         return offsetSolid(solids[0]!, thickness, [...(openings ?? [])], kind, tolerance) as Solid;
     }
@@ -154,7 +159,7 @@ export abstract class Mixin3D extends Shape {
                 }
                 break;
             case "Vertex":
-                results = this.isInside(other.center(), tolerance) ? [other] : [];
+                results = this.isInside(other.center, tolerance) ? [other] : [];
                 break;
             default:
                 results = other.intersectWith(this, options) ?? [];

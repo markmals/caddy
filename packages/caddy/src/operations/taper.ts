@@ -25,7 +25,7 @@ export function extrudeTaper(
     options: TaperOptions = {},
 ): Shape {
     let normal = face.normalAt().normalized();
-    let hasHoles = face.innerWires().length > 0;
+    let hasHoles = face.innerWires.length > 0;
     if (
         direction.normalized().sub(normal).length <= 1e-7 &&
         normal.z > 0 &&
@@ -40,7 +40,7 @@ export function extrudeTaper(
     if (!Number.isFinite(offsetAmount))
         throw new GeometryError("Taper angle must produce a finite offset");
     let translation = new Pos(direction).transform.toRows().flat();
-    let outlines = [face.outerWire(), ...face.innerWires()];
+    let outlines = [face.outerWire, ...face.innerWires];
     let lofts = outlines.map((wire, index) => {
         let amount = index > 0 && (options.flipInner ?? true) ? -offsetAmount : offsetAmount;
         let offset = offset2D(wire, amount, { kind: Kind.Intersection });

@@ -142,11 +142,11 @@ export class Edge extends Mixin1D {
             query.curveLengthBetween(this.wrapped, first, parameter) /
             query.curveInfo(this.wrapped).length;
 
-        let vertices = this.vertices();
+        let vertices = this.vertices;
         let nearest = vertices.reduce((best, vertex) =>
-            vertex.center().sub(target).length < best.center().sub(target).length ? vertex : best,
+            vertex.center.sub(target).length < best.center.sub(target).length ? vertex : best,
         );
-        if (nearest.center().sub(target).length <= TOLERANCE) {
+        if (nearest.center.sub(target).length <= TOLERANCE) {
             return normalized(query.vertexParameterOnEdge(nearest.wrapped, this.wrapped));
         }
 
@@ -213,7 +213,7 @@ export class Edge extends Mixin1D {
      */
     trimInfinite(halfLength: number): Edge {
         if (!this.isInfinite) return this;
-        let origin = this.center();
+        let origin = this.center;
         let direction = this.positionAt(1).sub(this.positionAt(0)).normalized();
         return makeLine(
             origin.sub(direction.multiply(halfLength)),
@@ -409,7 +409,7 @@ export class Edge extends Mixin1D {
 
     /** A line along `axis`, reaching past both ends of this edge (build123d's axis conversion). */
     #spanningLine(axis: Axis): Edge {
-        let reach = this.boundingBox().add(new Vertex(axis.position).boundingBox()).diagonal;
+        let reach = this.boundingBox.add(new Vertex(axis.position).boundingBox).diagonal;
         return makeLine(
             axis.position.add(axis.direction.multiply(-reach)),
             axis.position.add(axis.direction.multiply(reach)),
@@ -428,7 +428,7 @@ export class Edge extends Mixin1D {
         }
         let samples = this.#tangentAngleSamples();
         let curve = makeSpline(samples);
-        let bounds = curve.boundingBox();
+        let bounds = curve.boundingBox;
         let lowest = 360 * Math.floor(bounds.min.y / 360);
         let highest = 360 * Math.ceil(bounds.max.y / 360);
         let crossings: Vector[] = [];

@@ -27,7 +27,7 @@ export const booleanCases: OracleCases = {
         let fused = box().union(box().moved(new Pos(30, 0, 0)));
         expect(fused.constructor.name).toBe(fixtureString(expected, "class_name"));
         expectShapeMetrics(expected, "shape", fused);
-        expect(fused.getTopLevelShapes()).toHaveLength(fixtureNumber(expected, "top_level_count"));
+        expect(fused.topLevelShapes).toHaveLength(fixtureNumber(expected, "top_level_count"));
     },
     "boolean/fuse-many": expected => {
         let fused = box().fuse([box().moved(new Pos(5, 0, 0)), box().moved(new Pos(0, 4, 0))]);
@@ -42,10 +42,7 @@ export const booleanCases: OracleCases = {
         expectMeasures(
             expected,
             "piece_volumes",
-            split
-                .solids()
-                .map(piece => piece.volume)
-                .sort((first, second) => first - second),
+            split.solids.map(piece => piece.volume).sort((first, second) => first - second),
         );
     },
     "boolean/cut-no-tools": expected => {
@@ -62,7 +59,7 @@ export const booleanCases: OracleCases = {
         expect(result.constructor.name).toBe(fixtureString(expected, "class_name"));
         expect(result.shapeType).toBe(fixtureString(expected, "shape_type"));
         expectClose(expected, "volume", result.volume, MASS_TOLERANCE);
-        expect(result.solids()).toHaveLength(fixtureNumber(expected, "solid_count"));
+        expect(result.solids).toHaveLength(fixtureNumber(expected, "solid_count"));
     },
     "boolean/fuse-no-args": expected => {
         let solid = box();
@@ -83,7 +80,7 @@ export const booleanCases: OracleCases = {
         expect(fixtureString(expected, "class_name")).toBe("Solid");
         expect(fixtureBoolean(expected, "is_null")).toBe(true);
         expect(result.constructor.name).toBe("Compound");
-        expect(result.getTopLevelShapes()).toHaveLength(0);
+        expect(result.topLevelShapes).toHaveLength(0);
     },
     "boolean/fuse-faces": expected => {
         let left = Face.makeRect(10, 6);
@@ -92,7 +89,7 @@ export const booleanCases: OracleCases = {
         expect(fused.constructor.name).toBe(fixtureString(expected, "class_name"));
         expect(fused.shapeType).toBe(fixtureString(expected, "shape_type"));
         expectClose(expected, "area", fused.area, MASS_TOLERANCE);
-        expect(fused.edges()).toHaveLength(fixtureNumber(expected, "edge_count"));
+        expect(fused.edges).toHaveLength(fixtureNumber(expected, "edge_count"));
     },
     "boolean/fuse-disjoint-faces": expected => {
         let left = Face.makeRect(10, 6);
@@ -101,7 +98,7 @@ export const booleanCases: OracleCases = {
         expect(fused.constructor.name).toBe(fixtureString(expected, "class_name"));
         expect(fused.shapeType).toBe(fixtureString(expected, "shape_type"));
         expectClose(expected, "area", fused.area, MASS_TOLERANCE);
-        expect(fused.faces()).toHaveLength(fixtureNumber(expected, "face_count"));
+        expect(fused.faces).toHaveLength(fixtureNumber(expected, "face_count"));
     },
     "boolean/intersect-solids": expected => {
         let common = box().intersect(box().moved(new Pos(5, 0, 0)));
@@ -121,20 +118,20 @@ export const booleanCases: OracleCases = {
         expect(fixtureNumber(expected, "count")).toBe(1);
         expectNames(expected, "class_names", [common.constructor.name]);
         expectClose(expected, "volume", common.volume, MASS_TOLERANCE);
-        expectPoint(expected, "center", common.center());
+        expectPoint(expected, "center", common.center);
     },
     "boolean/intersect-compound": expected => {
         let group = new Compound([box(), box().moved(new Pos(30, 0, 0))]);
         let common = group.intersect(box().moved(new Pos(5, 0, 0)));
         expect(common.constructor.name).toBe(fixtureString(expected, "class_name"));
         expectClose(expected, "volume", common.volume, MASS_TOLERANCE);
-        expect(common.solids()).toHaveLength(fixtureNumber(expected, "solid_count"));
+        expect(common.solids).toHaveLength(fixtureNumber(expected, "solid_count"));
     },
     "boolean/clean": expected => {
         let fused = box().union(box().moved(new Pos(10, 0, 0)));
-        expect(fused.faces()).toHaveLength(fixtureNumber(expected, "face_count"));
-        expect(fused.edges()).toHaveLength(fixtureNumber(expected, "edge_count"));
+        expect(fused.faces).toHaveLength(fixtureNumber(expected, "face_count"));
+        expect(fused.edges).toHaveLength(fixtureNumber(expected, "edge_count"));
         expectClose(expected, "volume", fused.volume, MASS_TOLERANCE);
-        expect(fused.clean().faces()).toHaveLength(fixtureNumber(expected, "cleaned_face_count"));
+        expect(fused.clean().faces).toHaveLength(fixtureNumber(expected, "cleaned_face_count"));
     },
 };

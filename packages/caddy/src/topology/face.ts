@@ -148,18 +148,26 @@ export class Face extends Mixin2D {
     /** The edges this face meets itself along, as a cylinder does at its seam. */
     get seams(): ShapeList<Edge> {
         return new ShapeList(
-            this.edges().filter(edge =>
+            this.edges.filter(edge =>
                 native("Seam check", () => query.isSeamEdge(edge.wrapped, this.wrapped)),
             ),
         );
     }
 
     /**
-     * Centre by `centerOf`: for `Geometry` (default), the centre of mass of a planar face or the
-     * point at the middle of a curved face's parameter range; or the centre of mass; or the
-     * bounding box centre.
+     * Centre of geometry: the centre of mass of a planar face, or the point at the middle of a
+     * curved face's parameter range.
      */
-    center(centerOf: CenterOf = CenterOf.Geometry): Vector {
+    get center(): Vector {
+        return this.getCenter(CenterOf.Geometry);
+    }
+
+    /**
+     * Centre by `centerOf`: for `Geometry`, the centre of mass of a planar face or the point at
+     * the middle of a curved face's parameter range; or the centre of mass; or the bounding box
+     * centre.
+     */
+    getCenter(centerOf: CenterOf): Vector {
         if (centerOf === CenterOf.Mass || (centerOf === CenterOf.Geometry && this.isPlanar)) {
             let properties = native("Center of mass", () =>
                 measure.massProperties(this.wrapped, "surface"),
@@ -167,7 +175,7 @@ export class Face extends Mixin2D {
             return fromVec3(properties.centerOfMass);
         }
         if (centerOf === CenterOf.BoundingBox) {
-            return this.boundingBox().center();
+            return this.boundingBox.center;
         }
         let bounds = query.uvBounds(this.wrapped);
         let u = 0.5 * (bounds.uMin + bounds.uMax);
@@ -212,27 +220,27 @@ export class Face extends Mixin2D {
     }
 
     /** The boundary wire (BRepTools::OuterWire). */
-    outerWire(): Wire {
+    get outerWire(): Wire {
         let outer = new Wire(native("Outer wire", () => query.outerWire(this.wrapped)));
         outer.topoPath = [...this.topoPath, this];
         return outer;
     }
 
     /** The wires bounding the face's holes. */
-    innerWires(): ShapeList<Wire> {
-        let outer = this.outerWire();
-        return new ShapeList(this.wires().filter(wire => !wire.isSame(outer)));
+    get innerWires(): ShapeList<Wire> {
+        let outer = this.outerWire;
+        return new ShapeList(this.wires.filter(wire => !wire.isSame(outer)));
     }
 
     /**
      * The outer wire; build123d warns when the face has holes, and so does this
      * (build123d `Face.wire`).
      */
-    override wire(): Wire {
-        if (this.innerWires().length > 0) {
+    override get wire(): Wire {
+        if (this.innerWires.length > 0) {
             process.emitWarning("Found holes, returning outer_wire");
         }
-        return this.outerWire();
+        return this.outerWire;
     }
 
     /** Whether `point` lies on the face within `tolerance`, boundary included. */
@@ -472,7 +480,7 @@ export class Face extends Mixin2D {
         if (plane === undefined) {
             return undefined;
         }
-        let local = this.vertices().map(vertex => plane.toLocalCoords(vertex.center())[axis]);
+        let local = this.vertices.map(vertex => plane.toLocalCoords(vertex.center)[axis]);
         return Math.max(...local) - Math.min(...local);
     }
 

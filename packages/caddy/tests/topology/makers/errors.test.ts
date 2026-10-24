@@ -70,7 +70,7 @@ describe("Solid.extrudeUntil", () => {
 
 describe("Wire edits", () => {
     test("orderChamferEdges rejects a reference outside the pair", () => {
-        let edges = Wire.makeRect(10, 6).edges();
+        let edges = Wire.makeRect(10, 6).edges;
         expect(() => Wire.orderChamferEdges(edges[2]!, [edges[0]!, edges[1]!])).toThrow(
             /reference edge not in edges/,
         );

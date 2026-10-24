@@ -83,7 +83,7 @@ oracleSuite("io", {
 
         expect(imported.constructor.name).toBe(fixtureString(expected, "class_name"));
         expectClose(expected, "area", imported.area, MASS_TOLERANCE);
-        let bounds = imported.boundingBox();
+        let bounds = imported.boundingBox;
         let expectedBounds = fixtureRecord(expected, "bounding_box");
         expectVectorClose(expectedBounds, "min", bounds.min.toTuple(), LINEAR_TOLERANCE);
         expectVectorClose(expectedBounds, "max", bounds.max.toTuple(), LINEAR_TOLERANCE);

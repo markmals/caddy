@@ -121,23 +121,23 @@ export function makeText(txt: string, fontSize: number, options: MakeTextOptions
     let flat = new Compound(rendered);
     // build123d spreads a single Align over the two axes of the text plane, leaving Z alone —
     // which matters because a rendered glyph is a hair thick.
-    flat = flat.translate(flat.boundingBox().toAlignOffset(alignPair(options.align ?? null)));
+    flat = flat.translate(flat.boundingBox.toAlignOffset(alignPair(options.align ?? null)));
 
     let path = options.textPath;
     if (path !== undefined) {
-        let placed = flat
-            .getTopLevelShapes()
-            .map(glyph => positionGlyph(glyph, path, options.positionOnPath ?? 0));
+        let placed = flat.topLevelShapes.map(glyph =>
+            positionGlyph(glyph, path, options.positionOnPath ?? 0),
+        );
         flat = new Compound(placed);
     }
 
     let singleLineWidth = options.singleLineWidth ?? 0;
     if (font.singleStroke && singleLineWidth > 0) {
         // offset2D takes a radius, while the width is the overall stroke height.
-        let outlines = flat.edges().map(edge => outlineFace(edge.offset2D(singleLineWidth / 2)));
+        let outlines = flat.edges.map(edge => outlineFace(edge.offset2D(singleLineWidth / 2)));
         let fused = new Compound([]).union(...outlines);
         flat = fused instanceof Compound ? fused : new Compound([fused]);
-        if (flat.getTopLevelShapes().some(face => !face.isValid)) {
+        if (flat.topLevelShapes.some(face => !face.isValid)) {
             throw new InvalidShapeError(
                 `single_line_width (${singleLineWidth}) is too large for the text and produces ` +
                     "invalid faces. Try a smaller width",
@@ -152,7 +152,7 @@ export function makeText(txt: string, fontSize: number, options: MakeTextOptions
  * far along the path it sits, so the string keeps its spacing as it bends.
  */
 function positionGlyph(glyph: Shape, path: Edge | Wire, position: number): Shape {
-    let bounds = glyph.boundingBox();
+    let bounds = glyph.boundingBox;
     let bottomCenter = new Vector((bounds.min.x + bounds.max.x) / 2, 0, 0);
     let along = position + bottomCenter.x / path.length;
     let angle = new Vector(1, 0, 0).getSignedAngle(path.tangentAt(along));
@@ -162,7 +162,7 @@ function positionGlyph(glyph: Shape, path: Edge | Wire, position: number): Shape
 
 /** The face an outlined stroke bounds, normal up (build123d's `_make_face` inside `make_text`). */
 function outlineFace(outline: Edge | Wire): Face {
-    let [wire] = WireClass.combine(outline.edges());
+    let [wire] = WireClass.combine(outline.edges);
     if (wire === undefined) {
         throw new InvalidShapeError("An outlined stroke produced no closed wire");
     }

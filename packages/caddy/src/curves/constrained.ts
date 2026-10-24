@@ -78,7 +78,7 @@ function resolveTarget(target: TangencyTarget): ResolvedTarget {
         if (target.shapeType === "Edge") {
             return curveTarget(target as Edge, TangencyOption.Unqualified);
         }
-        let position = target.center();
+        let position = target.center;
         return { kind: "point", point: [position.x, position.y] };
     }
     let position = Vector.from(target);

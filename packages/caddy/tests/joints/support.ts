@@ -49,7 +49,7 @@ export function expectPlacement(expected: FixtureCase, key: string, actual: Shap
     let record = fixtureRecord(expected, key);
     expectLocation(record, "location", actual.location);
     let bounds = fixtureRecord(record, "bounding_box");
-    let box = actual.boundingBox();
+    let box = actual.boundingBox;
     expectVectorClose(bounds, "min", box.min.toTuple(), LINEAR_TOLERANCE);
     expectVectorClose(bounds, "max", box.max.toTuple(), LINEAR_TOLERANCE);
 }

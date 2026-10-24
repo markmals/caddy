@@ -91,7 +91,7 @@ export class ExportDXF {
         }
         let shapes = isShape(shape) ? [shape] : [...shape];
         for (let single of shapes) {
-            for (let edge of single.edges()) {
+            for (let edge of single.edges) {
                 this.entities.push({ layer, entity: edgeEntity(edge) });
             }
         }
@@ -99,7 +99,7 @@ export class ExportDXF {
     }
 
     /** The DXF document. */
-    text(): string {
+    get text(): string {
         return writeDxf({
             unitCode: UNIT_CODES[this.unit],
             lineTypes: [...this.lineTypes.values()],
@@ -109,7 +109,7 @@ export class ExportDXF {
     }
 
     async write(fileName: string): Promise<void> {
-        await writeFile(fileName, this.text(), "utf8");
+        await writeFile(fileName, this.text, "utf8");
     }
 
     /** Defines `lineType` in the document's line type table, returning its DXF name. */

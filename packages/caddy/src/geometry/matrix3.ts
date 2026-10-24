@@ -163,7 +163,7 @@ export class Matrix3 {
         );
     }
 
-    determinant(): number {
+    get determinant(): number {
         return (
             this.m11 * (this.m22 * this.m33 - this.m32 * this.m23) -
             this.m12 * (this.m21 * this.m33 - this.m31 * this.m23) +
@@ -171,7 +171,7 @@ export class Matrix3 {
         );
     }
 
-    trace(): number {
+    get trace(): number {
         return this.m11 + this.m22 + this.m33;
     }
 

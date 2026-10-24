@@ -74,9 +74,9 @@ oracleSuite("mesh", {
         let meshed = await part.mesh(1e-3, { angularTolerance: ANGULAR_TOLERANCE });
         expectClose(expected, "volume", meshed.volume, MASS_TOLERANCE);
         expectClose(expected, "area", meshed.area, MASS_TOLERANCE);
-        expect(meshed.faces().length).toBe(fixtureNumber(expected, "faces"));
+        expect(meshed.faces.length).toBe(fixtureNumber(expected, "faces"));
         let bounds = fixtureRecord(expected, "bounding_box");
-        let box = meshed.boundingBox();
+        let box = meshed.boundingBox;
         expectVectorClose(bounds, "min", box.min.toTuple(), LINEAR_TOLERANCE);
         expectVectorClose(bounds, "max", box.max.toTuple(), LINEAR_TOLERANCE);
     },

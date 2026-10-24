@@ -46,7 +46,7 @@ function unwrapped(shape: Shape): Shape {
  * (build123d does the same).
  */
 function offsetSpine(line: Wire): Wire {
-    let edges = line.edges();
+    let edges = line.edges;
     if (edges.length !== 1) return line;
     let only = edges[0]!;
     return makeWire([trimEdge(only, 0, 0.5), trimEdge(only, 0.5, 1)]);
@@ -55,15 +55,13 @@ function offsetSpine(line: Wire): Wire {
 /** The two halves an offset of an open line splits into once its end caps are removed. */
 function offsetSides(line: Wire, offsetWire: Wire): Wire[] {
     let endpoints = [line.positionAt(0), line.positionAt(1)];
-    let sides = offsetWire
-        .edges()
-        .filter(
-            edge =>
-                !(
-                    edge.geomType === GeomType.Circle &&
-                    endpoints.some(point => edge.arcCenter.sub(point).length < TOLERANCE)
-                ),
-        );
+    let sides = offsetWire.edges.filter(
+        edge =>
+            !(
+                edge.geomType === GeomType.Circle &&
+                endpoints.some(point => edge.arcCenter.sub(point).length < TOLERANCE)
+            ),
+    );
     return combineWires(sides);
 }
 
@@ -75,7 +73,7 @@ function closeOffset(line: Wire, offsetWire: Wire, distance: number): Wire {
     let aligned = lineStart.sub(offsetStart).length - Math.abs(distance) <= TOLERANCE;
     let first = makeLine(lineStart, aligned ? offsetStart : offsetEnd);
     let second = makeLine(lineEnd, aligned ? offsetEnd : offsetStart);
-    return makeWire([...line.edges(), ...offsetWire.edges(), first, second]);
+    return makeWire([...line.edges, ...offsetWire.edges, first, second]);
 }
 
 /**
@@ -116,6 +114,6 @@ export function offset2D(
         }
     }
 
-    let offsetEdges = offsetWire.edges();
+    let offsetEdges = offsetWire.edges;
     return offsetEdges.length === 1 ? offsetEdges[0]! : offsetWire;
 }

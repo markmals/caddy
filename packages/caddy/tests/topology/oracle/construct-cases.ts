@@ -13,24 +13,24 @@ export const constructCases: OracleCases = {
         let face = new Face(Plane.XZ);
         expectName(expected, "geom_type", face.geomType);
         expectPoint(expected, "normal", face.normalAt());
-        expectFlags(expected, { infinite: face.boundingBox().diagonal > 1e6 });
+        expectFlags(expected, { infinite: face.boundingBox.diagonal > 1e6 });
     },
     "construct/shell-from-faces": expected => {
         let solid = box();
-        let shell = new Shell(solid.faces());
-        let single = new Shell(solid.faces()[0]!);
+        let shell = new Shell(solid.faces);
+        let single = new Shell(solid.faces[0]!);
         expectName(expected, "class", shell.constructor.name);
         expectClose(expected, "area", shell.area, MASS_TOLERANCE);
-        expectCount(expected, "face_count", shell.faces().length);
+        expectCount(expected, "face_count", shell.faces.length);
         expectFlags(expected, { is_manifold: shell.isManifold });
         expectName(expected, "single_face_class", single.constructor.name);
         expectClose(expected, "single_face_area", single.area, MASS_TOLERANCE);
     },
     "construct/solid-from-shell": expected => {
-        let solid = new Solid(new Shell(box().faces()));
+        let solid = new Solid(new Shell(box().faces));
         expectName(expected, "class", solid.constructor.name);
         expectClose(expected, "volume", solid.volume, MASS_TOLERANCE);
-        expectPoint(expected, "center", solid.center());
+        expectPoint(expected, "center", solid.center);
         expectFlags(expected, { is_valid: solid.isValid });
     },
     "edge/reversed": expected => {

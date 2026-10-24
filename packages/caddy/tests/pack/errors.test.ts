@@ -10,7 +10,7 @@ describe("pack", () => {
 
     test("one object is placed at the origin, padding and all", () => {
         let [packed] = pack([new Box(4, 6, 2)], 1);
-        let box = packed!.boundingBox();
+        let box = packed!.boundingBox;
         expect(box.min.toTuple()).toEqual([0, 0, -1]);
         expect(box.max.toTuple()).toEqual([4, 6, 1]);
     });
@@ -18,7 +18,7 @@ describe("pack", () => {
     test("alignZ lifts every object onto Plane.XY", () => {
         let packed = pack([new Box(2, 2, 2), new Box(3, 1, 4)], 0.5, { alignZ: true });
         for (let shape of packed) {
-            expect(shape.boundingBox().min.z).toBeCloseTo(0, 10);
+            expect(shape.boundingBox.min.z).toBeCloseTo(0, 10);
         }
     });
 });

@@ -12,10 +12,10 @@ let shapes = {
 };
 
 for (let [name, shape] of Object.entries(shapes)) {
-    let { min, max } = shape.boundingBox();
+    let { min, max } = shape.boundingBox;
     console.log(
         `${name.padEnd(10)} ${shape.constructor.name.padEnd(8)} volume ${shape.volume.toFixed(3).padStart(10)}` +
-            `  area ${shape.area.toFixed(3).padStart(9)}  faces ${shape.faces().length}` +
+            `  area ${shape.area.toFixed(3).padStart(9)}  faces ${shape.faces.length}` +
             `  bounds ${min.toString()} .. ${max.toString()}`,
     );
 }

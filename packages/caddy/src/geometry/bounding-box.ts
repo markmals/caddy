@@ -84,7 +84,7 @@ export class BoundingBox {
         return this.size.length;
     }
 
-    center(): Vector {
+    get center(): Vector {
         return this.min.add(this.max).divide(2);
     }
 

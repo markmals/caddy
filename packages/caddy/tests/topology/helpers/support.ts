@@ -26,7 +26,7 @@ export function sortedTriples(rows: Iterable<readonly number[]>): number[][] {
 
 /** Shape centres, sorted, as the Python `centers` helper writes them. */
 export function sortedCenters(shapes: Iterable<Shape>): number[][] {
-    return sortedTriples([...shapes].map(shape => shape.center().toTuple()));
+    return sortedTriples([...shapes].map(shape => shape.center.toTuple()));
 }
 
 function compareRows(first: readonly number[], second: readonly number[]): number {

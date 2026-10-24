@@ -105,8 +105,8 @@ export function sweepSolid(
     path: Edge | Wire,
     options: SolidSweepOptions = {},
 ): Solid | Shell {
-    let outer = section instanceof Face ? section.outerWire() : section;
-    let inner = section instanceof Face ? section.innerWires() : [...(options.innerWires ?? [])];
+    let outer = section instanceof Face ? section.outerWire : section;
+    let inner = section instanceof Face ? section.innerWires : [...(options.innerWires ?? [])];
     let spine = new Wire(path).wrapped;
     let settings = sweepSettings(path, options);
     let swept = (wire: Wire): Solid =>
@@ -129,7 +129,7 @@ export function sweepMulti(
     options: SweepModeOptions = {},
 ): Solid {
     let sections = [...profiles].map(profile =>
-        profile instanceof Face ? profile.outerWire().wrapped : profile.wrapped,
+        profile instanceof Face ? profile.outerWire.wrapped : profile.wrapped,
     );
     let spine = new Wire(path).wrapped;
     let settings = sweepSettings(path, options);
@@ -145,8 +145,8 @@ export function sweepShell(
     path: Shape,
     options: { readonly transition?: Transition } = {},
 ): Shell {
-    let section = new Wire(profile.edges());
-    let spine = new Wire(new Wire(path.edges()).orderEdges());
+    let section = new Wire(profile.edges);
+    let spine = new Wire(new Wire(path.edges).orderEdges());
     let shell = castShell("Shell.sweep", () =>
         features.sweep(spine.wrapped, [section.wrapped], {
             solid: false,

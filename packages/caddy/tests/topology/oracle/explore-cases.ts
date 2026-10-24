@@ -25,35 +25,35 @@ export const exploreCases: OracleCases = {
     "explore/box": expected => {
         let solid = box();
         expectCounts(expected, "counts", solid);
-        expectCenters(expected, "vertices", solid.vertices());
-        expectCenters(expected, "edge_centers", solid.edges());
+        expectCenters(expected, "vertices", solid.vertices);
+        expectCenters(expected, "edge_centers", solid.edges);
         expectMeasures(
             expected,
             "edge_lengths",
-            solid.edges().map(edge => edge.length),
+            solid.edges.map(edge => edge.length),
         );
-        expectCenters(expected, "face_centers", solid.faces());
+        expectCenters(expected, "face_centers", solid.faces);
         expectMeasures(
             expected,
             "face_areas",
-            solid.faces().map(face => face.area),
+            solid.faces.map(face => face.area),
         );
     },
     "explore/cylinder": expected => {
         let solid = cylinder();
         expectCounts(expected, "counts", solid);
-        expectCenters(expected, "vertices", solid.vertices());
-        expectCenters(expected, "edge_centers", solid.edges());
+        expectCenters(expected, "vertices", solid.vertices);
+        expectCenters(expected, "edge_centers", solid.edges);
         expectNames(
             expected,
             "edge_geom_types",
-            solid.edges().map(edge => edge.geomType),
+            solid.edges.map(edge => edge.geomType),
         );
-        expectCenters(expected, "face_centers", solid.faces());
+        expectCenters(expected, "face_centers", solid.faces);
         expectNames(
             expected,
             "face_geom_types",
-            solid.faces().map(face => face.geomType),
+            solid.faces.map(face => face.geomType),
         );
     },
     "explore/sphere": expected => {
@@ -65,24 +65,24 @@ export const exploreCases: OracleCases = {
         expectMeasures(
             expected,
             "edge_lengths",
-            solid.edges().map(edge => edge.length),
+            solid.edges.map(edge => edge.length),
         );
-        expectCenters(expected, "face_centers", solid.faces());
+        expectCenters(expected, "face_centers", solid.faces);
     },
     "explore/boolean": expected => {
         let solid = notchedBox();
         expect(solid.constructor.name).toBe(fixtureString(expected, "class_name"));
         expectCounts(expected, "counts", solid);
-        expectCenters(expected, "face_centers", solid.faces());
+        expectCenters(expected, "face_centers", solid.faces);
         expectNames(
             expected,
             "face_geom_types",
-            solid.faces().map(face => face.geomType),
+            solid.faces.map(face => face.geomType),
         );
         expectMeasures(
             expected,
             "edge_lengths",
-            solid.edges().map(edge => edge.length),
+            solid.edges.map(edge => edge.length),
         );
     },
     "explore/compound": expected => {
@@ -97,22 +97,22 @@ export const exploreCases: OracleCases = {
         expectNames(
             expected,
             "top_level_classes",
-            group.getTopLevelShapes().map(shape => shape.constructor.name),
+            group.topLevelShapes.map(shape => shape.constructor.name),
         );
         expect(group.getType(Solid)).toHaveLength(fixtureNumber(expected, "solid_count"));
         expectClose(expected, "volume", group.volume, MASS_TOLERANCE);
-        expectPoint(expected, "center", group.center());
+        expectPoint(expected, "center", group.center);
     },
     "explore/nested-compound": expected => {
         let nested = new Compound([new Compound([cylinder()]), box()]);
         expect(nested.length).toBe(fixtureNumber(expected, "length"));
-        expect(nested.compounds()).toHaveLength(fixtureNumber(expected, "compound_count"));
+        expect(nested.compounds).toHaveLength(fixtureNumber(expected, "compound_count"));
         expectNames(
             expected,
             "top_level_classes",
-            nested.getTopLevelShapes().map(shape => shape.constructor.name),
+            nested.topLevelShapes.map(shape => shape.constructor.name),
         );
-        expectCenters(expected, "top_level_centers", nested.getTopLevelShapes());
+        expectCenters(expected, "top_level_centers", nested.topLevelShapes);
         expect(new Compound([box()]).unwrap().constructor.name).toBe(
             fixtureString(expected, "unwrapped_class"),
         );
@@ -126,27 +126,27 @@ export const exploreCases: OracleCases = {
         expectPoints(
             expected,
             "starts",
-            wire.edges().map(edge => edge.positionAt(0)),
+            wire.edges.map(edge => edge.positionAt(0)),
         );
         expectPoints(
             expected,
             "ends",
-            wire.edges().map(edge => edge.positionAt(1)),
+            wire.edges.map(edge => edge.positionAt(1)),
         );
         expectMeasures(
             expected,
             "lengths",
-            wire.edges().map(edge => edge.length),
+            wire.edges.map(edge => edge.length),
         );
-        expectCenters(expected, "vertices", wire.vertices());
+        expectCenters(expected, "vertices", wire.vertices);
     },
     "explore/singular": expected => {
         let solid = box();
-        let face = solid.faces().first;
-        expectPoint(expected, "face_wire_center", face.wire().center());
-        expect(solid.shell().faces()).toHaveLength(fixtureNumber(expected, "shell_face_count"));
-        expectClose(expected, "solid_volume", solid.solid().volume, MASS_TOLERANCE);
-        expectPoint(expected, "vertex_point", face.edges().first.vertices().first.center());
+        let face = solid.faces.first;
+        expectPoint(expected, "face_wire_center", face.wire.center);
+        expect(solid.shell.faces).toHaveLength(fixtureNumber(expected, "shell_face_count"));
+        expectClose(expected, "solid_volume", solid.solid.volume, MASS_TOLERANCE);
+        expectPoint(expected, "vertex_point", face.edges.first.vertices.first.center);
     },
     "explore/faces-intersected-by-axis": expected => {
         let solid = box();

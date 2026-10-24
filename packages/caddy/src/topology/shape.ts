@@ -87,7 +87,7 @@ export interface TouchOptions {
     readonly tolerance?: number;
 }
 
-/** Options for {@link Shape#boundingBox}. */
+/** Options for {@link Shape#getBoundingBox}. */
 export interface BoundingBoxOptions {
     /**
      * Accepted for parity with build123d, which takes it but never applies it; ignored the same
@@ -98,7 +98,7 @@ export interface BoundingBoxOptions {
     readonly optimal?: boolean;
 }
 
-/** Units {@link Shape#computeMass} and {@link Shape#mass} report a mass in. */
+/** Units {@link Shape#computeMass} reports a mass in. */
 export interface MassOptions {
     /** Unit the mass comes back in; defaults to grams. */
     readonly massUnit?: MassUnit;
@@ -106,7 +106,7 @@ export interface MassOptions {
     readonly lengthUnit?: Unit;
 }
 
-/** Options of the sub-shape accessors ({@link Shape#faces}, {@link Shape#edges}, ...). */
+/** Options of the sub-shape accessors ({@link Shape#getFaces}, {@link Shape#getEdges}, ...). */
 export interface SubShapeOptions {
     /**
      * Report only the sub-shapes the operation that made this shape brought in or created
@@ -262,8 +262,8 @@ export abstract class Shape {
             let mass = centerOf === CenterOf.Mass ? shape.volume : 1;
             let center =
                 centerOf === CenterOf.Mass
-                    ? shape.center(CenterOf.Mass)
-                    : shape.boundingBox().center();
+                    ? shape.getCenter(CenterOf.Mass)
+                    : shape.boundingBox.center;
             weighted = weighted.add(center.multiply(mass));
             total += mass;
         }
@@ -274,7 +274,10 @@ export abstract class Shape {
     abstract get dimension(): number | undefined;
 
     /** Centre of the shape; the default kind of centre depends on the class. */
-    abstract center(centerOf?: CenterOf): Vector;
+    abstract get center(): Vector;
+
+    /** Centre of the shape by kind; which kinds a class supports depends on the class. */
+    abstract getCenter(centerOf: CenterOf): Vector;
 
     /** Volume enclosed by the shape; zero for vertices, curves and faces. */
     abstract get volume(): number;
@@ -408,11 +411,16 @@ export abstract class Shape {
         return Math.sqrt(centralMoment / mass + displacement.dot(displacement));
     }
 
+    /** Axis-aligned bounds, computed tightly; an empty shape yields an all-zero box. */
+    get boundingBox(): BoundingBox {
+        return this.getBoundingBox();
+    }
+
     /**
      * Axis-aligned bounds. build123d accepts a `tolerance` but never applies it, so it is accepted
      * here for parity and ignored the same way. An empty shape yields an all-zero box.
      */
-    boundingBox(options: BoundingBoxOptions = {}): BoundingBox {
+    getBoundingBox(options: BoundingBoxOptions = {}): BoundingBox {
         let optimal = options.optimal ?? true;
         let bounds = native("Bounding box", () => measure.boundingBox(this.wrapped, optimal));
         if (bounds === undefined) {
@@ -426,7 +434,7 @@ export abstract class Shape {
      *
      * The axes OCCT picks are arbitrary and need not be stable between similar shapes.
      */
-    orientedBoundingBox(): OrientedBoundBox {
+    get orientedBoundingBox(): OrientedBoundBox {
         let bounds = native("Oriented bounding box", () => obb.orientedBoundingBox(this.wrapped));
         if (bounds === undefined) {
             throw new InvalidShapeError("An empty shape has no oriented bounding box");
@@ -457,12 +465,23 @@ export abstract class Shape {
         return new ShapeList(record.narrow([...found], select));
     }
 
-    vertices(options: SubShapeOptions = {}): ShapeList<Vertex> {
+    /** Vertices of the shape. */
+    get vertices(): ShapeList<Vertex> {
+        return this.getVertices();
+    }
+
+    /** Vertices of the shape, narrowed by `select` to what made this shape. */
+    getVertices(options: SubShapeOptions = {}): ShapeList<Vertex> {
         return this.selected(this.subShapes<Vertex>(ShapeType.Vertex), options.select);
     }
 
     /** Edges of the shape, without degenerate ones such as a sphere's pole seams. */
-    edges(options: SubShapeOptions = {}): ShapeList<Edge> {
+    get edges(): ShapeList<Edge> {
+        return this.getEdges();
+    }
+
+    /** Edges of the shape, narrowed by `select` to what made this shape. */
+    getEdges(options: SubShapeOptions = {}): ShapeList<Edge> {
         let found = new ShapeList(
             this.subShapes<Edge>(ShapeType.Edge).filter(
                 edge => !topology.isDegeneratedEdge(edge.wrapped),
@@ -471,11 +490,23 @@ export abstract class Shape {
         return this.selected(found, options.select);
     }
 
-    wires(options: SubShapeOptions = {}): ShapeList<Wire> {
+    /** Wires of the shape. */
+    get wires(): ShapeList<Wire> {
+        return this.getWires();
+    }
+
+    /** Wires of the shape, narrowed by `select` to what made this shape. */
+    getWires(options: SubShapeOptions = {}): ShapeList<Wire> {
         return this.selected(this.subShapes<Wire>(ShapeType.Wire), options.select);
     }
 
-    faces(options: SubShapeOptions = {}): ShapeList<Face> {
+    /** Faces of the shape. */
+    get faces(): ShapeList<Face> {
+        return this.getFaces();
+    }
+
+    /** Faces of the shape, narrowed by `select` to what made this shape. */
+    getFaces(options: SubShapeOptions = {}): ShapeList<Face> {
         return this.selected(this.subShapes<Face>(ShapeType.Face), options.select);
     }
 
@@ -494,50 +525,62 @@ export abstract class Shape {
         );
     }
 
-    shells(options: SubShapeOptions = {}): ShapeList<Shell> {
+    /** Shells of the shape. */
+    get shells(): ShapeList<Shell> {
+        return this.getShells();
+    }
+
+    /** Shells of the shape, narrowed by `select` to what made this shape. */
+    getShells(options: SubShapeOptions = {}): ShapeList<Shell> {
         return this.selected(this.subShapes<Shell>(ShapeType.Shell), options.select);
     }
 
-    solids(options: SubShapeOptions = {}): ShapeList<Solid> {
+    /** Solids of the shape. */
+    get solids(): ShapeList<Solid> {
+        return this.getSolids();
+    }
+
+    /** Solids of the shape, narrowed by `select` to what made this shape. */
+    getSolids(options: SubShapeOptions = {}): ShapeList<Solid> {
         return this.selected(this.subShapes<Solid>(ShapeType.Solid), options.select);
     }
 
     /** Compounds within the shape; only compounds have any. */
-    compounds(): ShapeList<Compound> {
+    get compounds(): ShapeList<Compound> {
         return new ShapeList<Compound>();
     }
 
     /** The single vertex of the shape; throws unless there is exactly one. */
-    vertex(): Vertex {
-        return exactlyOne(this.vertices(), "vertex");
+    get vertex(): Vertex {
+        return exactlyOne(this.vertices, "vertex");
     }
 
-    edge(): Edge {
-        return exactlyOne(this.edges(), "edge");
+    get edge(): Edge {
+        return exactlyOne(this.edges, "edge");
     }
 
-    wire(): Wire {
-        return exactlyOne(this.wires(), "wire");
+    get wire(): Wire {
+        return exactlyOne(this.wires, "wire");
     }
 
-    face(): Face {
-        return exactlyOne(this.faces(), "face");
+    get face(): Face {
+        return exactlyOne(this.faces, "face");
     }
 
-    shell(): Shell {
-        return exactlyOne(this.shells(), "shell");
+    get shell(): Shell {
+        return exactlyOne(this.shells, "shell");
     }
 
-    solid(): Solid {
-        return exactlyOne(this.solids(), "solid");
+    get solid(): Solid {
+        return exactlyOne(this.solids, "solid");
     }
 
-    compound(): Compound {
-        return exactlyOne(this.compounds(), "compound");
+    get compound(): Compound {
+        return exactlyOne(this.compounds, "compound");
     }
 
     /** The non-compound shapes at the top of this one, looking through nested compounds. */
-    getTopLevelShapes(): ShapeList<Shape> {
+    get topLevelShapes(): ShapeList<Shape> {
         return new ShapeList(topLevelNativeShapes(this.wrapped).map(castShape));
     }
 
@@ -568,7 +611,7 @@ export abstract class Shape {
     }
 
     /** Hash consistent with {@link isSame}. */
-    hashCode(): number {
+    get hashCode(): number {
         return shapes.hash(this.wrapped);
     }
 
@@ -832,9 +875,9 @@ export abstract class Shape {
         return volume * ((material.material.density * perKilogram) / perMeter ** 3);
     }
 
-    /** What the shape weighs; build123d's per-class spelling of {@link computeMass}. */
-    mass(options: MassOptions = {}): number {
-        return this.computeMass(options);
+    /** What the shape weighs in grams; build123d's per-class spelling of {@link computeMass}. */
+    get mass(): number {
+        return this.computeMass();
     }
 
     // ---- Booleans ----

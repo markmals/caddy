@@ -3,7 +3,7 @@ import { Face } from "../topology/face.ts";
 import { Wire } from "../topology/wire.ts";
 
 export function loftHoleSections(faces: readonly Face[]): Wire[][] {
-    let sections = faces.map(face => face.innerWires());
+    let sections = faces.map(face => face.innerWires);
     let first = sections[0];
     if (first === undefined) return [];
     if (sections.some(wires => wires.length !== first.length)) {
@@ -23,12 +23,12 @@ export function loftHoleSections(faces: readonly Face[]): Wire[][] {
                 best = [...chosen];
                 return;
             }
-            let previous = grouped[index]!.at(-1)!.center();
+            let previous = grouped[index]!.at(-1)!.center;
             for (let candidate = 0; candidate < wires.length; candidate++) {
                 if (used.has(candidate)) continue;
                 chosen[index] = candidate;
                 used.add(candidate);
-                assign(index + 1, cost + previous.sub(wires[candidate]!.center()).length);
+                assign(index + 1, cost + previous.sub(wires[candidate]!.center).length);
                 used.delete(candidate);
             }
         }

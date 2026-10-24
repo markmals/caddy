@@ -1,7 +1,7 @@
 import type { VectorLike } from "../geometry/vector.ts";
 import type { Compound } from "./compound.ts";
 import type { Edge } from "./edge.ts";
-import type { GeomType, SortBy } from "./enums.ts";
+import type { SortBy } from "./enums.ts";
 import type { Face } from "./face.ts";
 import type { GroupKey } from "./group-by.ts";
 import type { CurveLike, ShapeFilter } from "./selectors.ts";
@@ -25,7 +25,7 @@ import {
     roundedKey,
 } from "./selectors.ts";
 
-/** Options of {@link ShapeList#filterBy}. */
+/** Options of {@link ShapeList#filter} when it is given a criterion instead of a predicate. */
 export interface FilterOptions {
     /** Keep the shapes that do not match instead. */
     readonly reverse?: boolean;
@@ -33,10 +33,16 @@ export interface FilterOptions {
     readonly tolerance?: number;
 }
 
-/** What {@link ShapeList#sortBy} and {@link ShapeList#groupBy} order by. */
+/** What {@link ShapeList#groupBy} groups by. */
 export type SortCriterion<T extends Shape> = ((shape: T) => GroupKey) | Axis | SortBy | CurveLike;
 
-/** Options of {@link ShapeList#sortBy} and {@link ShapeList#sortByDistance}. */
+/**
+ * What {@link ShapeList#sort} and {@link ShapeList#toSorted} order by: an `Array#sort`
+ * comparator, or one of the CAD criteria.
+ */
+export type SortOrder<T extends Shape> = ((a: T, b: T) => number) | Axis | SortBy | CurveLike;
+
+/** Options of {@link ShapeList#sort}, {@link ShapeList#toSorted} and friends. */
 export interface SortOptions {
     /** Sort from the largest key down. */
     readonly reverse?: boolean;
@@ -59,10 +65,20 @@ function isShape(value: unknown): value is Shape {
  * plane or geometry type, sort and group by position or measure, and gather sub-shapes.
  *
  * Python operators are named methods: `+` {@link concat}, `&` {@link intersection},
- * `-` {@link difference}, `|` {@link filterBy}, `<<`/`>>` `groupBy(...).first`/`.last`.
+ * `-` {@link difference}, `|` {@link filter}, `<<`/`>>` `groupBy(...).first`/`.last`.
  * Set-like operations treat shapes as equal when they are the same OCCT shape (`isSame`).
  */
 export class ShapeList<T extends Shape = Shape> extends Array<T> {
+    /**
+     * Array methods that may produce non-shapes (`map`, `flatMap`, ...) return plain arrays, as
+     * their signatures promise. Methods that only select or reorder shapes ({@link filter},
+     * {@link slice}, {@link toSorted}, {@link toReversed}, {@link concat}) return shape lists, as
+     * build123d's slicing does.
+     */
+    static override get [Symbol.species](): ArrayConstructor {
+        return Array;
+    }
+
     /** A list of `items`; a number gives an empty list of that length, as `Array` does. */
     constructor(items: Iterable<T> | number = []) {
         if (typeof items === "number") {
@@ -104,6 +120,16 @@ export class ShapeList<T extends Shape = Shape> extends Array<T> {
         return result;
     }
 
+    /** The shapes from `start` up to (not including) `end`, as a new list (`list[start:end]`). */
+    override slice(start?: number, end?: number): ShapeList<T> {
+        return new ShapeList(super.slice(start, end));
+    }
+
+    /** The shapes in reverse order, as a new list (`list[::-1]`). */
+    override toReversed(): ShapeList<T> {
+        return new ShapeList(super.toReversed());
+    }
+
     /** The shapes of this list that `other` also holds (`&`), without duplicates. */
     intersection(other: Iterable<Shape>): ShapeList<T> {
         let others = [...other];
@@ -133,79 +159,97 @@ export class ShapeList<T extends Shape = Shape> extends Array<T> {
     }
 
     /** The average of the shapes' centres; the origin for an empty list. */
-    center(): Vector {
+    get center(): Vector {
         if (this.length === 0) {
             return new Vector();
         }
-        let total = this.reduce((sum, shape) => sum.add(shape.center()), new Vector());
+        let total = this.reduce((sum, shape) => sum.add(shape.center), new Vector());
         return total.divide(this.length);
     }
 
-    vertices(): ShapeList<Vertex> {
-        return new ShapeList(this.flatMap(shape => [...shape.vertices()]));
+    get vertices(): ShapeList<Vertex> {
+        return new ShapeList(this.flatMap(shape => [...shape.vertices]));
     }
 
-    edges(): ShapeList<Edge> {
-        return new ShapeList(this.flatMap(shape => [...shape.edges()]));
+    get edges(): ShapeList<Edge> {
+        return new ShapeList(this.flatMap(shape => [...shape.edges]));
     }
 
-    wires(): ShapeList<Wire> {
-        return new ShapeList(this.flatMap(shape => [...shape.wires()]));
+    get wires(): ShapeList<Wire> {
+        return new ShapeList(this.flatMap(shape => [...shape.wires]));
     }
 
-    faces(): ShapeList<Face> {
-        return new ShapeList(this.flatMap(shape => [...shape.faces()]));
+    get faces(): ShapeList<Face> {
+        return new ShapeList(this.flatMap(shape => [...shape.faces]));
     }
 
-    shells(): ShapeList<Shell> {
-        return new ShapeList(this.flatMap(shape => [...shape.shells()]));
+    get shells(): ShapeList<Shell> {
+        return new ShapeList(this.flatMap(shape => [...shape.shells]));
     }
 
-    solids(): ShapeList<Solid> {
-        return new ShapeList(this.flatMap(shape => [...shape.solids()]));
+    get solids(): ShapeList<Solid> {
+        return new ShapeList(this.flatMap(shape => [...shape.solids]));
     }
 
-    compounds(): ShapeList<Compound> {
-        return new ShapeList(this.flatMap(shape => [...shape.compounds()]));
+    get compounds(): ShapeList<Compound> {
+        return new ShapeList(this.flatMap(shape => [...shape.compounds]));
     }
 
-    vertex(): Vertex {
-        return exactlyOne(this.vertices(), "vertex");
+    get vertex(): Vertex {
+        return exactlyOne(this.vertices, "vertex");
     }
 
-    edge(): Edge {
-        return exactlyOne(this.edges(), "edge");
+    get edge(): Edge {
+        return exactlyOne(this.edges, "edge");
     }
 
-    wire(): Wire {
-        return exactlyOne(this.wires(), "wire");
+    get wire(): Wire {
+        return exactlyOne(this.wires, "wire");
     }
 
-    face(): Face {
-        return exactlyOne(this.faces(), "face");
+    get face(): Face {
+        return exactlyOne(this.faces, "face");
     }
 
-    shell(): Shell {
-        return exactlyOne(this.shells(), "shell");
+    get shell(): Shell {
+        return exactlyOne(this.shells, "shell");
     }
 
-    solid(): Solid {
-        return exactlyOne(this.solids(), "solid");
+    get solid(): Solid {
+        return exactlyOne(this.solids, "solid");
     }
 
-    compound(): Compound {
-        return exactlyOne(this.compounds(), "compound");
+    get compound(): Compound {
+        return exactlyOne(this.compounds, "compound");
     }
 
+    /** Keep the shapes `predicate` accepts, narrowing them to `S` (`Array#filter`). */
+    override filter<S extends T>(
+        predicate: (value: T, index: number, array: T[]) => value is S,
+        thisArg?: unknown,
+    ): ShapeList<S>;
+    /** Keep the shapes `predicate` accepts (`Array#filter`). */
+    override filter(
+        predicate: (value: T, index: number, array: T[]) => unknown,
+        thisArg?: unknown,
+    ): ShapeList<T>;
     /**
-     * Keep the shapes matching `filter` (build123d `filter_by`, `|`): a predicate; a geometry
-     * type; an axis, matching planar faces whose normal and lines whose direction are parallel
-     * to it; or a plane, matching planar faces, edges and wires lying parallel to it.
+     * Keep the shapes matching `criterion` (build123d `filter_by`, `|`): a geometry type; an
+     * axis, matching planar faces whose normal and lines whose direction are parallel to it; or
+     * a plane, matching planar faces, edges and wires lying parallel to it.
      */
-    filterBy(filter: ShapeFilter<T> | GeomType, options: FilterOptions = {}): ShapeList<T> {
-        let predicate = filterPredicate(filter, options.tolerance ?? 1e-5);
+    override filter(criterion: ShapeFilter, options?: FilterOptions): ShapeList<T>;
+    override filter(
+        criterion: ((value: T, index: number, array: T[]) => unknown) | ShapeFilter,
+        second?: unknown,
+    ): ShapeList<T> {
+        if (typeof criterion === "function") {
+            return new ShapeList(super.filter(criterion, second));
+        }
+        let options = (second ?? {}) as FilterOptions;
+        let predicate = filterPredicate(criterion, options.tolerance ?? 1e-5);
         let reverse = options.reverse ?? false;
-        return new ShapeList(this.filter(shape => predicate(shape) !== reverse));
+        return new ShapeList(super.filter(shape => predicate(shape) !== reverse));
     }
 
     /**
@@ -221,36 +265,41 @@ export class ShapeList<T extends Shape = Shape> extends Array<T> {
         let plane = Plane.fromAxis(axis);
         let [includeMinimum, includeMaximum] = inclusive;
         let within = this.filter(shape => {
-            let position = plane.toLocalCoords(shape.center()).z;
+            let position = plane.toLocalCoords(shape.center).z;
             let aboveMinimum = includeMinimum ? minimum <= position : minimum < position;
             let belowMaximum = includeMaximum ? position <= maximum : position < maximum;
             return aboveMinimum && belowMaximum;
         });
-        return new ShapeList(within).sortBy(axis);
+        return within.toSorted(axis);
     }
 
     /**
-     * Sort by position along an axis (default Z), by a measure, by position along a curve, or by
-     * a key function (build123d `sort_by`). Sorting by radius, area or volume drops shapes
-     * without that measure.
+     * A new list sorted by position along an axis (Z by default, as build123d sorts), by a
+     * measure, by position along a curve, or by an `Array#sort` comparator. Sorting by radius,
+     * area or volume drops the shapes without that measure.
      */
-    sortBy(criterion: SortCriterion<T> = Axis.Z, options: SortOptions = {}): ShapeList<T> {
-        let reverse = options.reverse ?? false;
-        let key = this.#sortKey(criterion);
-        let keyed = this.flatMap(shape => {
-            let value = key(shape);
-            return value === undefined ? [] : [{ shape, value }];
-        });
-        keyed.sort((a, b) => {
-            let order = a.value < b.value ? -1 : a.value > b.value ? 1 : 0;
-            return reverse ? -order : order;
-        });
-        return new ShapeList(keyed.map(entry => entry.shape));
+    override toSorted(order: SortOrder<T> = Axis.Z, options: SortOptions = {}): ShapeList<T> {
+        return new ShapeList(this.#ordered(order, options.reverse ?? false));
     }
 
-    /** Sort by the minimal distance to `other` (build123d `sort_by_distance`). */
-    sortByDistance(other: Shape | VectorLike, options: SortOptions = {}): ShapeList<T> {
-        return this.sortBy(shape => shape.distanceTo(other), options);
+    /**
+     * Sort this list in place and return it (`Array#sort`), by the same orders
+     * {@link toSorted} takes. Sorting by a measure drops the shapes without it here too.
+     */
+    override sort(order: SortOrder<T> = Axis.Z, options: SortOptions = {}): this {
+        let sorted = this.#ordered(order, options.reverse ?? false);
+        this.length = 0;
+        for (let shape of sorted) {
+            this.push(shape);
+        }
+        return this;
+    }
+
+    /** A new list sorted by the minimal distance to `other` (build123d `sort_by_distance`). */
+    toSortedByDistance(other: Shape | VectorLike, options: SortOptions = {}): ShapeList<T> {
+        return new ShapeList(
+            this.#orderedByKey(shape => shape.distanceTo(other), options.reverse ?? false),
+        );
     }
 
     /**
@@ -262,6 +311,28 @@ export class ShapeList<T extends Shape = Shape> extends Array<T> {
         let key = this.#sortKey(criterion);
         let keyOf = (shape: T): GroupKey => roundedKey(key(shape), tolDigits);
         return new GroupBy(keyOf, this, { reverse: options.reverse ?? false });
+    }
+
+    /** The shapes in the order `order` asks for; a comparator sorts, a criterion keys. */
+    #ordered(order: SortOrder<T>, reverse: boolean): T[] {
+        if (typeof order === "function") {
+            let sorted = [...this].sort(order);
+            return reverse ? sorted.reverse() : sorted;
+        }
+        return this.#orderedByKey(this.#sortKey(order), reverse);
+    }
+
+    /** The shapes ordered by `key`, dropping the ones it has no key for. */
+    #orderedByKey(key: (shape: T) => GroupKey | undefined, reverse: boolean): T[] {
+        let keyed = [...this].flatMap(shape => {
+            let value = key(shape);
+            return value === undefined ? [] : [{ shape, value }];
+        });
+        keyed.sort((a, b) => {
+            let order = a.value < b.value ? -1 : a.value > b.value ? 1 : 0;
+            return reverse ? -order : order;
+        });
+        return keyed.map(entry => entry.shape);
     }
 
     #sortKey(criterion: SortCriterion<T>): (shape: T) => GroupKey | undefined {

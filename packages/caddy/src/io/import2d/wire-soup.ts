@@ -59,7 +59,7 @@ export function facesFromWires(wires: readonly Wire[]): Face[] {
  */
 function boundaryOf(wire: Wire): Wire {
     try {
-        return new Face(wire).outerWire();
+        return new Face(wire).outerWire;
     } catch (cause) {
         throw new UnfillableWires("a filled shape has a wire that cannot bound a face", { cause });
     }
@@ -81,7 +81,7 @@ function innermost(
 
 /** Wires from one SVG shape never cross, so a single boundary point settles containment. */
 function contains(outer: Face, inner: Face): boolean {
-    return outer.isInside(inner.outerWire().startPoint());
+    return outer.isInside(inner.outerWire.startPoint);
 }
 
 /** Every face of an imported SVG faces the viewer, whichever way its wire happened to run. */

@@ -27,7 +27,7 @@ function selectionOf(objects: Edge | Vertex | Iterable<Edge | Vertex>): (Edge | 
 function parentWire(vertices: readonly Vertex[]): Wire | undefined {
     let parent = vertices[0]?.topoParent;
     if (parent instanceof Wire) return parent;
-    return parent?.dimension === 1 ? parent.wires()[0] : undefined;
+    return parent?.dimension === 1 ? parent.wires[0] : undefined;
 }
 
 export function fillet(edges: Edge | Iterable<Edge>, radius: number, target?: Shape): Part;
@@ -42,7 +42,7 @@ export function fillet(
         let wire = parentWire(selection);
         if (wire === undefined) return fillet2D(selection, radius);
         let rounded = filletWire2D(wire, radius, selection);
-        return makeComposite(rounded.edges(), 1) as Curve;
+        return makeComposite(rounded.edges, 1) as Curve;
     }
     return filletSolid(selection as Edge[], radius, target);
 }
@@ -91,7 +91,7 @@ export function chamfer(
                 ? (options.length2 ?? length)
                 : length * Math.tan(options.angle * DEG2RAD);
         let beveled = chamferWire2D(wire, length, second, selection, reference);
-        return makeComposite(beveled.edges(), 1) as Curve;
+        return makeComposite(beveled.edges, 1) as Curve;
     }
     if (options.reference instanceof Edge) {
         throw new GeometryError("A solid chamfer's reference must be a face");

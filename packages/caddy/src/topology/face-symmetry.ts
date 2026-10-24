@@ -27,7 +27,7 @@ export function axesOfSymmetry(face: Face): Axis[] {
     if (face.isPlanar === undefined) {
         throw new GeometryError("axes_of_symmetry only supports for planar faces");
     }
-    let center = face.center();
+    let center = face.center;
     let normal = face.normalAt();
     let symmetryDirections: Vector[] = [];
     for (let direction of candidateDirections(face, center)) {
@@ -43,16 +43,16 @@ export function axesOfSymmetry(face: Face): Axis[] {
 }
 
 function candidateDirections(face: Face, center: Vector): Vector[] {
-    let holes = face.innerWires();
+    let holes = face.innerWires;
     if (holes.length > 0) {
         let holeFaces = holes.map(wire => new Face(wire));
         let holesCenter = combinedCenter(holeFaces);
         if (holesCenter.sub(center).length > TOLERANCE) {
             return [holesCenter.sub(center).normalized()];
         }
-        return holeFaces.map(hole => hole.center().sub(center).normalized());
+        return holeFaces.map(hole => hole.center.sub(center).normalized());
     }
-    let outerEdges = face.outerWire().edges();
+    let outerEdges = face.outerWire.edges;
     let sampled = [...outerEdges];
     if (outerEdges.some(edge => edge.geomType !== GeomType.Line)) {
         let bounds = obb.orientedBoundingBox(face.wrapped);
@@ -76,7 +76,7 @@ function combinedCenter(faces: readonly Face[]): Vector {
         throw new GeometryError("No area to combine");
     }
     return faces
-        .reduce((sum, face) => sum.add(face.center().multiply(face.area)), new Vector())
+        .reduce((sum, face) => sum.add(face.center.multiply(face.area)), new Vector())
         .multiply(1 / totalArea);
 }
 
@@ -97,8 +97,8 @@ function isSymmetryDirection(
         return false;
     }
     let axis = new Axis(center, direction);
-    let bottomFaces = new ShapeList(bottom.faces()).sortBy(axis);
-    let topFaces = new ShapeList(top.faces().map(part => part.mirror(splitPlane))).sortBy(axis);
+    let bottomFaces = new ShapeList(bottom.faces).toSorted(axis);
+    let topFaces = new ShapeList(top.faces.map(part => part.mirror(splitPlane))).toSorted(axis);
     if (topFaces.length !== bottomFaces.length) {
         return false;
     }
@@ -109,7 +109,7 @@ function isSymmetryDirection(
         if (overlap === undefined) {
             return false;
         }
-        overlapArea += overlap.faces().reduce((sum: number, part: Shape) => sum + part.area, 0);
+        overlapArea += overlap.faces.reduce((sum: number, part: Shape) => sum + part.area, 0);
     }
     return Math.abs(overlapArea - bottomArea) < TOLERANCE;
 }

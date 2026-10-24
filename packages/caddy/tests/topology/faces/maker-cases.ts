@@ -67,11 +67,11 @@ export const makerCases: OracleCases = {
         expect(fixtureString(expected, "class_name")).toBe("Face");
         expect(fixtureString(expected, "shape_type")).toBe("SHELL");
         expect(swept.shapeType).toBe("Face");
-        expect(swept.faces()).toHaveLength(fixtureNumber(expected, "face_count"));
+        expect(swept.faces).toHaveLength(fixtureNumber(expected, "face_count"));
         expectClose(expected, "area", swept.area, MASS_TOLERANCE);
         let bounds = fixtureRecord(expected, "bounding_box");
-        expectVectorClose(bounds, "min", swept.boundingBox().min.toTuple(), LINEAR_TOLERANCE);
-        expectVectorClose(bounds, "max", swept.boundingBox().max.toTuple(), LINEAR_TOLERANCE);
+        expectVectorClose(bounds, "min", swept.boundingBox.min.toTuple(), LINEAR_TOLERANCE);
+        expectVectorClose(bounds, "max", swept.boundingBox.max.toTuple(), LINEAR_TOLERANCE);
     },
     "makers/sew-faces": expected => {
         let patches = [0, 1].flatMap(x =>

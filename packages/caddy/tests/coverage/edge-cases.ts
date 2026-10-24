@@ -43,7 +43,7 @@ function trimTargets(): Record<string, Shape | Axis | Plane> {
         arc: Edge.makeCircle(1, { startAngle: 45, endAngle: 90 }),
         wire: Wire.makePolygon(corners).rotate(Axis.Z, -45),
         face,
-        solid: extrude(face, 1, { both: true }).solid(),
+        solid: extrude(face, 1, { both: true }).solid,
         axis: new Axis([0, 0, 0], [1, 1, 0]),
         plane: new Plane({ origin: [0, 0, 0], xDir: [1, 1, 0], zDir: [-1, 1, 0] }),
         missing: Edge.makeLine([5, 5], [6, 6]),
@@ -62,7 +62,7 @@ function expectTrimmed(expected: FixtureCase, key: string, edge: Edge): void {
         if (piece === undefined) continue;
         let result = fixtureRecord(record, name);
         expectClose(result, "length", piece.length, MASS_TOLERANCE);
-        expectVectorClose(result, "end", piece.endPoint().toTuple(), LINEAR_TOLERANCE);
+        expectVectorClose(result, "end", piece.endPoint.toTuple(), LINEAR_TOLERANCE);
     }
 }
 

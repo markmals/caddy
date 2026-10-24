@@ -20,6 +20,6 @@ let assembly = drilled.union(new Box(10, 10, 10).transform(new Pos(0, 0, 20)));
 for (let [name, shape] of Object.entries({ rounded, drilled, assembly })) {
     console.log(
         `${name.padEnd(8)} ${shape.constructor.name.padEnd(5)} volume ${shape.volume.toFixed(3)}` +
-            `  solids ${shape.solids().length}  faces ${shape.faces().length}  valid ${shape.isValid}`,
+            `  solids ${shape.solids.length}  faces ${shape.faces.length}  valid ${shape.isValid}`,
     );
 }

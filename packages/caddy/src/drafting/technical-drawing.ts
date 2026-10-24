@@ -124,7 +124,7 @@ function technicalDrawing(options: TechnicalDrawingOptions): Compound {
         trace(frameWire, lineWidth),
         trace(gridTicks(frameWire, textSize), lineWidth),
         gridLabels,
-        trace(block.curve.edges(), lineWidth),
+        trace(block.curve.edges, lineWidth),
         labels,
     ]);
 }
@@ -164,20 +164,20 @@ function gridTicks(frameWire: Wire, textSize: number): Edge[] {
 
 /** The lines of the title block, and the three lines its columns of text hang from. */
 function titleBlock(frameWire: Wire, width: number): { curve: Shape; columns: [Edge, Edge, Edge] } {
-    let origin = frameWire.edges().sortBy(Axis.Y)[0]!.positionAt(0.5);
-    let corner = frameWire.edges().sortBy(Axis.X).last!.positionAt(0.75);
+    let origin = frameWire.edges.toSorted(Axis.Y)[0]!.positionAt(0.5);
+    let corner = frameWire.edges.toSorted(Axis.X).last!.positionAt(0.75);
     let outline = makeWirePolygon([origin, [origin.x, corner.y], corner], { close: false });
 
     // Two lines across the block, a third and two thirds of the way up its left side.
-    let side = outline.edges().sortBy(Axis.X)[0]!;
-    let curve: Shape = new Curve(outline.edges());
+    let side = outline.edges.toSorted(Axis.X)[0]!;
+    let curve: Shape = new Curve(outline.edges);
     for (let fraction of [1 / 3, 2 / 3]) {
         let from = side.positionAt(fraction);
         curve = curve.union(makeLine(from, [corner.x, from.y]));
     }
 
     // Two lines down the block, a third and two thirds of the way along its top.
-    let top = curve.edges().sortBy(Axis.Y).last!;
+    let top = curve.edges.toSorted(Axis.Y).last!;
     let firstColumn = top.positionAt(1 / 3);
     let secondColumn = top.positionAt(2 / 3);
     curve = curve.union(makeLine(firstColumn, [firstColumn.x, origin.y]));

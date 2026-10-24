@@ -139,7 +139,7 @@ export class ExportSVG {
     }
 
     /** The SVG document. */
-    text(): string {
+    get text(): string {
         let bounds = this.bounds;
         if (bounds === undefined) throw new ExportError("No shapes to export");
         let strokeMargin = this.fitToStroke
@@ -172,15 +172,15 @@ export class ExportSVG {
     }
 
     async write(fileName: string): Promise<void> {
-        await writeFile(fileName, this.text(), "utf8");
+        await writeFile(fileName, this.text, "utf8");
     }
 
     private addSingleShape(shape: Shape, layer: Layer, reverseWires: boolean): void {
-        let box = shape.boundingBox();
+        let box = shape.boundingBox;
         this.bounds = this.bounds === undefined ? box : this.bounds.add(box);
         let color = shape.color;
 
-        for (let face of shape.faces()) {
+        for (let face of shape.faces) {
             let drawn = this.faceElement(face, reverseWires);
             if (color !== undefined && layer.inheritFill) setColor(drawn, "fill", color);
             layer.elements.push(drawn);
@@ -199,22 +199,22 @@ export class ExportSVG {
 
     /** A face with holes becomes one path, so the fill rule can cut the holes out. */
     private faceElement(face: Face, reverseWires: boolean): Element {
-        let inner = face.innerWires();
-        if (inner.length === 0) return this.wireElement(face.outerWire(), reverseWires);
-        let segments = this.wireSegments(face.outerWire(), reverseWires);
+        let inner = face.innerWires;
+        if (inner.length === 0) return this.wireElement(face.outerWire, reverseWires);
+        let segments = this.wireSegments(face.outerWire, reverseWires);
         for (let wire of inner) segments.push(...this.wireSegments(wire, reverseWires));
         return new Element("path", { d: pathData(segments) });
     }
 
     private wireElement(wire: Wire, reverse: boolean): Element {
-        let edges = wire.edges();
+        let edges = wire.edges;
         let [only] = edges;
         if (edges.length === 1 && only !== undefined) return this.edgeElement(only);
         return new Element("path", { d: pathData(this.wireSegments(wire, reverse)) });
     }
 
     private wireSegments(wire: Wire, reverse: boolean): PathSegment[] {
-        let edges = [...wire.edges()];
+        let edges = [...wire.edges];
         if (reverse) edges.reverse();
         return edges.flatMap(edge => edgeSegments(edge, reverse, this.precision));
     }

@@ -40,7 +40,7 @@ function netExterior(): Wire {
 export const faceCases: OracleCases = {
     "face/is-coplanar": expected => {
         let square = Face.makeRect(1, 1, Plane.XZ);
-        let sphere = Solid.makeSphere(1).faces()[0]!;
+        let sphere = Solid.makeSphere(1).faces[0]!;
         expectFlags(expected, {
             square_in_xz: square.isCoplanar(Plane.XZ),
             reversed_in_xz: square.reverseNormal().isCoplanar(Plane.XZ),
@@ -68,13 +68,13 @@ export const faceCases: OracleCases = {
         );
     },
     "face/radii": expected => {
-        let torus = new Torus(5, 1).face();
+        let torus = new Torus(5, 1).face;
         expect(torus.radii, "torus").toBeDefined();
         expectNumbersClose(expected, "torus", torus.radii ?? [], LINEAR_TOLERANCE);
         // Every other surface answers `None` upstream, which is `undefined` here.
         let others = {
-            sphere: new Sphere(1).face(),
-            cylinder: Solid.makeCylinder(2, 4).faces().sortBy(Axis.Z)[1]!,
+            sphere: new Sphere(1).face,
+            cylinder: Solid.makeCylinder(2, 4).faces.toSorted(Axis.Z)[1]!,
             planar: Face.makeRect(1, 1),
         };
         for (let [key, face] of Object.entries(others)) {
@@ -100,21 +100,16 @@ export const faceCases: OracleCases = {
         expect(patch.constructor.name, "class").toBe(fixtureString(expected, "class_name"));
         expect(patch.isValid, "validity").toBe(fixtureBoolean(expected, "is_valid"));
         expect(patch.geomType, "geom type").toBe(fixtureString(expected, "geom_type"));
-        expect(patch.faces().length, "face count").toBe(fixtureNumber(expected, "face_count"));
-        expect(patch.edges().length, "edge count").toBe(fixtureNumber(expected, "edge_count"));
-        expect(patch.vertices().length, "vertex count").toBe(
-            fixtureNumber(expected, "vertex_count"),
-        );
-        let box = patch.boundingBox();
+        expect(patch.faces.length, "face count").toBe(fixtureNumber(expected, "face_count"));
+        expect(patch.edges.length, "edge count").toBe(fixtureNumber(expected, "edge_count"));
+        expect(patch.vertices.length, "vertex count").toBe(fixtureNumber(expected, "vertex_count"));
+        let box = patch.boundingBox;
         expectVectorClose(expected, "min", box.min.toTuple(), APPROXIMATION_TOLERANCE);
         expectVectorClose(expected, "max", box.max.toTuple(), APPROXIMATION_TOLERANCE);
         expectNumbersClose(
             expected,
             "boundary_lengths",
-            patch
-                .edges()
-                .map(edge => edge.length)
-                .sort((left, right) => left - right),
+            patch.edges.map(edge => edge.length).sort((left, right) => left - right),
             MASS_TOLERANCE,
         );
     },

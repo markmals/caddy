@@ -23,11 +23,11 @@ interface WireCorner {
 
 /** The corner of `wire` at `point`, which must join exactly two of its edges. */
 function cornerAt(wire: Wire, point: Vector): WireCorner {
-    let allEdges = [...wire.edges()];
+    let allEdges = [...wire.edges];
     let touching = allEdges
         .map((edge, index) => ({ edge, index }))
         .filter(({ edge }) =>
-            edge.vertices().some(vertex => vertex.center().sub(point).length <= TOLERANCE),
+            edge.vertices.some(vertex => vertex.center.sub(point).length <= TOLERANCE),
         );
     if (touching.length === 0) {
         throw new GeometryError(`Could not find fillet vertex on wire: ${point.toString()}`);
@@ -110,11 +110,11 @@ export function filletWireCorner(wire: Wire, point: Vector, radius: number): Rou
             `Fillet algorithm failed for ${point.toString()} with radius ${radius}`,
         );
     }
-    let arc = arcs.sortByDistance(point).first;
+    let arc = arcs.toSortedByDistance(point).first;
 
     let trimmed = corner.edges.map(edge => {
-        let contact = arc.vertices().sortByDistance(edge).first;
-        return trimmedToContact(edge, point, contact.center());
+        let contact = arc.vertices.toSortedByDistance(edge).first;
+        return trimmedToContact(edge, point, contact.center);
     });
 
     return spliceCorner(corner, trimmed, arc);
@@ -155,7 +155,7 @@ function spliceCorner(
     let spliced = edges.filter((edge): edge is Edge => edge !== undefined);
     let wire = new Wire(spliced);
     let record = ShapeHistory.empty();
-    let placed = matchByMidpoint(spliced, wire.edges());
+    let placed = matchByMidpoint(spliced, wire.edges);
     sources.forEach((source, index) => {
         let copy = placed[index];
         if (source !== undefined && copy !== undefined) {

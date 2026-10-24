@@ -27,5 +27,5 @@ export function projectWorkplane(
 }
 
 function pointOf(value: VectorLike | Vertex): Vector {
-    return value instanceof Vertex ? value.center() : Vector.from(value);
+    return value instanceof Vertex ? value.center : Vector.from(value);
 }

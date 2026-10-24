@@ -76,7 +76,7 @@ function buildDimensionLine(
         fontStyle: draft.fontStyle,
         align: Align.Center,
     });
-    let labelLength = labelShape.boundingBox().size.x;
+    let labelLength = labelShape.boundingBox.size.x;
 
     let { shafts, shaftLength } = dimensionShafts(pathObj, draft, labelLength, arrowCount);
     let arrowShapes = shafts.map((shaft, index) => {
@@ -105,7 +105,7 @@ function buildDimensionLine(
                 : overlap + faceArea(candidate.intersect(options.sketch));
         return {
             candidate,
-            score: (candidate.area - 10 * covered) / candidate.boundingBox().diagonal,
+            score: (candidate.area - 10 * covered) / candidate.boundingBox.diagonal,
         };
     });
 
@@ -113,7 +113,7 @@ function buildDimensionLine(
     let best = placements.reduce((winner, placement) =>
         placement.score >= winner.score ? placement : winner,
     );
-    return { faces: [...best.candidate.faces()], measurement: pathLength };
+    return { faces: [...best.candidate.faces], measurement: pathLength };
 }
 
 /**
@@ -156,5 +156,5 @@ function dimensionShafts(
 function faceArea(intersection: Shape | undefined): number {
     return intersection === undefined
         ? 0
-        : intersection.faces().reduce((total, face) => total + face.area, 0);
+        : intersection.faces.reduce((total, face) => total + face.area, 0);
 }

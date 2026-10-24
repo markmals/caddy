@@ -23,8 +23,8 @@ import { expectRows, makeBox, sortedCenters } from "./support.ts";
 
 export const exploreCases: OracleCases = {
     "edges-to-wires/box-face": expected => {
-        let face = new Box(2, 3, 4).faces().sortBy(Axis.Z).at(-1)!;
-        let wires = edgesToWires(face.edges());
+        let face = new Box(2, 3, 4).faces.toSorted(Axis.Z).at(-1)!;
+        let wires = edgesToWires(face.edges);
         expectCount(expected, "count", wires.length);
         expectMeasures(
             expected,
@@ -51,7 +51,7 @@ export const exploreCases: OracleCases = {
             wires.map(wire => wire.length).sort((a, b) => a - b),
         );
         expect(
-            wires.map(wire => wire.edges().length).sort((a, b) => a - b),
+            wires.map(wire => wire.edges.length).sort((a, b) => a - b),
             `${expected.name}.edge_counts`,
         ).toEqual(fixtureValue(expected, "edge_counts"));
     },
@@ -66,11 +66,11 @@ export const exploreCases: OracleCases = {
     },
 
     "topo-explore/common-vertex": expected => {
-        let face = new Box(2, 2, 2).faces().sortBy(Axis.Z).at(-1)!;
-        let edges = face.edges().sortBy(Axis.X);
+        let face = new Box(2, 2, 2).faces.toSorted(Axis.Z).at(-1)!;
+        let edges = face.edges.toSorted(Axis.X);
         let adjacent = topoExploreCommonVertex(edges[0]!, edges[1]!);
         expect(adjacent, `${expected.name}.adjacent`).toBeDefined();
-        expectPoint(expected, "adjacent", adjacent!.center());
+        expectPoint(expected, "adjacent", adjacent!.center);
         expect(
             topoExploreCommonVertex(edges[0]!, edges.at(-1)!) !== undefined,
             `${expected.name}.opposite_found`,
@@ -79,7 +79,7 @@ export const exploreCases: OracleCases = {
 
     "topo-explore/connected-edges": expected => {
         let box = makeBox(1, 2, 3);
-        let edge = box.edges().sortBy(Axis.Z)[0]!;
+        let edge = box.edges.toSorted(Axis.Z)[0]!;
         let atC0 = topoExploreConnectedEdges(edge, { parent: box });
         expectCount(expected, "c0_count", atC0.length);
         expectRows(expected, "c0_centers", sortedCenters(atC0));
@@ -95,7 +95,7 @@ export const exploreCases: OracleCases = {
             Edge.makeLine([0, 0, 0], [5, 0, 0]),
             Edge.makeTangentArc([5, 0, 0], [1, 0, 0], [8, 3, 0]),
         ]);
-        let line = wire.edges().sortBy(Axis.X)[0]!;
+        let line = wire.edges.toSorted(Axis.X)[0]!;
         let atC1 = topoExploreConnectedEdges(line, {
             parent: wire,
             continuity: ContinuityLevel.C1,
@@ -113,10 +113,7 @@ export const exploreCases: OracleCases = {
 
     "topo-explore/connected-edges-moved": expected => {
         let box = makeBox(1, 2, 3);
-        let moved = box
-            .edges()
-            .sortBy(Axis.Z)[0]!
-            .moved(new Pos(10, 0, 0));
+        let moved = box.edges.toSorted(Axis.Z)[0]!.moved(new Pos(10, 0, 0));
         let connected = topoExploreConnectedEdges(moved, { parent: box });
         expectCount(expected, "count", connected.length);
         expectRows(expected, "centers", sortedCenters(connected));
@@ -124,60 +121,48 @@ export const exploreCases: OracleCases = {
 
     "topo-distance/box-faces": expected => {
         let box = new Box(2, 2, 2);
-        let top = box.faces().sortBy(Axis.Z).at(-1)!;
+        let top = box.faces.toSorted(Axis.Z).at(-1)!;
         let key = topoDistanceTo(top);
         expectMeasures(
             expected,
             "distances",
-            box
-                .faces()
-                .map(face => key(face))
-                .sort((a, b) => a - b),
+            box.faces.map(face => key(face)).sort((a, b) => a - b),
         );
         expect(
-            [...box.faces().groupBy(topoDistanceTo(top))].map(group => group.length),
+            [...box.faces.groupBy(topoDistanceTo(top))].map(group => group.length),
             `${expected.name}.grouped`,
         ).toEqual(fixtureValue(expected, "grouped"));
     },
 
     "topo-distance/box-vertices": expected => {
         let box = new Box(2, 2, 2);
-        let corner = box.vertices().sortBy(Axis.X).sortBy(Axis.Y).sortBy(Axis.Z)[0]!;
+        let corner = box.vertices.toSorted(Axis.X).toSorted(Axis.Y).toSorted(Axis.Z)[0]!;
         let key = topoDistanceTo(corner);
         expectMeasures(
             expected,
             "distances",
-            box
-                .vertices()
-                .map(vertex => key(vertex))
-                .sort((a, b) => a - b),
+            box.vertices.map(vertex => key(vertex)).sort((a, b) => a - b),
         );
     },
 
     "topo-distance/box-edges": expected => {
         let box = new Box(2, 2, 2);
-        let key = topoDistanceTo(box.edges().sortBy(Axis.Z)[0]!);
+        let key = topoDistanceTo(box.edges.toSorted(Axis.Z)[0]!);
         expectMeasures(
             expected,
             "distances",
-            box
-                .edges()
-                .map(edge => key(edge))
-                .sort((a, b) => a - b),
+            box.edges.map(edge => key(edge)).sort((a, b) => a - b),
         );
     },
 
     "topo-distance/two-references": expected => {
         let box = new Box(2, 2, 2);
-        let faces = box.faces();
-        let key = topoDistanceTo([faces.sortBy(Axis.Z).at(-1)!, faces.sortBy(Axis.Z)[0]!]);
+        let faces = box.faces;
+        let key = topoDistanceTo([faces.toSorted(Axis.Z).at(-1)!, faces.toSorted(Axis.Z)[0]!]);
         expectMeasures(
             expected,
             "distances",
-            box
-                .faces()
-                .map(face => key(face))
-                .sort((a, b) => a - b),
+            box.faces.map(face => key(face)).sort((a, b) => a - b),
         );
     },
 

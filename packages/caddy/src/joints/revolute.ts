@@ -49,7 +49,7 @@ export class RevoluteJoint<Parent extends Shape = Shape> extends Joint<Parent> {
 
     /** The axis of rotation drawn in global space: an axis line, a circle and the reference. */
     get symbol(): Compound {
-        let radius = this.parent.boundingBox({ optimal: false }).diagonal / 30;
+        let radius = this.parent.getBoundingBox({ optimal: false }).diagonal / 30;
         return axisSymbol({ from: 0, to: radius * 10, radius, angleMarker: true }).moved(
             this.location,
         );

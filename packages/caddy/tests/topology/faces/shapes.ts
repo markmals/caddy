@@ -40,7 +40,7 @@ export function patchEdges(): [Edge, Edge, Edge] {
 
 /** A square plate with a square hole. */
 export function frame(): Face {
-    return Face.makeRect(1, 1).subtract(Face.makeRect(0.5, 0.5)).faces().first;
+    return Face.makeRect(1, 1).subtract(Face.makeRect(0.5, 0.5)).faces.first;
 }
 
 export function plateWithHole(): Face {
@@ -55,7 +55,7 @@ export function plateWithHole(): Face {
 }
 
 export function cylinderWall(): Face {
-    return Solid.makeCylinder(3, 8).faces().filterBy(GeomType.Plane, { reverse: true }).first;
+    return Solid.makeCylinder(3, 8).faces.filter(GeomType.Plane, { reverse: true }).first;
 }
 
 /** The wall of a cylinder with a smaller cylinder drilled across it, so it has two holes. */
@@ -65,15 +65,14 @@ export function drilledWall(): Face {
             plane: new Plane({ origin: [0, -1.5, 1.5], zDir: [0, 1, 0] }),
         }),
     );
-    return drilled.faces().sortBy(SortBy.Area).last;
+    return drilled.faces.toSorted(SortBy.Area).last;
 }
 
 export function coneWall(): Face {
-    return Solid.makeCone(0, 3, 5).faces().filterBy(GeomType.Cone).first;
+    return Solid.makeCone(0, 3, 5).faces.filter(GeomType.Cone).first;
 }
 
 export function notchedDisc(): Face {
-    return new Face(Wire.makeCircle(2))
-        .subtract(Face.makeRect(0.5, 0.5).translate([0.1, 0, 0]))
-        .faces().first;
+    return new Face(Wire.makeCircle(2)).subtract(Face.makeRect(0.5, 0.5).translate([0.1, 0, 0]))
+        .faces.first;
 }

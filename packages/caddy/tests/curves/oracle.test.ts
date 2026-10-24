@@ -487,7 +487,7 @@ oracleSuite("curves", {
             [6, 4],
             [0, 4],
         ]);
-        let corners = wire.vertices().filter(vertex => Math.abs(vertex.x - 6) < 1e-9);
+        let corners = wire.vertices.filter(vertex => Math.abs(vertex.x - 6) < 1e-9);
         expectCurve(expected, wire.fillet2D(1, corners));
     },
     "wire/chamfer-2d": expected => {
@@ -497,7 +497,7 @@ oracleSuite("curves", {
             [6, 4],
             [0, 4],
         ]);
-        let corners = wire.vertices().filter(vertex => Math.abs(vertex.x - 6) < 1e-9);
+        let corners = wire.vertices.filter(vertex => Math.abs(vertex.x - 6) < 1e-9);
         expectCurve(expected, wire.chamfer2D(0.8, 0.8, corners));
     },
 
@@ -567,7 +567,7 @@ oracleSuite("curves", {
         let lineThree = new Line([10, 10], lineTwo.positionAt(1));
         expectCurveGroup(
             expected,
-            new ConstrainedArcs([arc, lineTwo], { centerOn: lineThree }).edges(),
+            new ConstrainedArcs([arc, lineTwo], { centerOn: lineThree }).edges,
         );
     },
     "constrained-arcs/2tan-center-on-points": expected =>
@@ -592,7 +592,7 @@ oracleSuite("curves", {
         let arc = new CenterArc([0, 0], 4, 0, 90);
         expectCurveGroup(
             expected,
-            new ConstrainedArcs([lineOne, lineTwo, arc], { sagitta: Sagitta.Both }).edges(),
+            new ConstrainedArcs([lineOne, lineTwo, arc], { sagitta: Sagitta.Both }).edges,
         );
     },
     "constrained-arcs/tan-cen": expected =>
@@ -615,7 +615,7 @@ oracleSuite("curves", {
             expected,
             new ConstrainedArcs([Edge.makeCircle(1, { plane: Plane.XY }), Axis.Y], {
                 radius: 1,
-            }).edges(),
+            }).edges,
         ),
 
     "constrained-lines/two-circles": expected => {
@@ -655,7 +655,7 @@ oracleSuite("curves", {
             expected,
             new ConstrainedLines(Edge.makeCircle(1, { plane: Plane.XY }), Axis.Y, {
                 direction: [1, 1],
-            }).edges(),
+            }).edges,
         ),
 
     "edge/make-parabola": expected =>
@@ -778,7 +778,7 @@ oracleSuite("curves", {
 
     "wire/fillet-2d-open": expected => {
         let wire = new Wire([Edge.makeLine([0, 0], [4, 0]), Edge.makeLine([4, 0], [4, 3])]);
-        let corner = wire.vertices().sortByDistance([4, 0, 0]).first;
+        let corner = wire.vertices.toSortedByDistance([4, 0, 0]).first;
         expectCurve(expected, wire.fillet2D(1, [corner]));
     },
     "wire/fillet-2d-open-two-corners": expected => {
@@ -788,19 +788,19 @@ oracleSuite("curves", {
             Edge.makeLine([5, 4], [1, 4]),
         ]);
         let corners = [
-            wire.vertices().sortByDistance([5, 0, 0]).first,
-            wire.vertices().sortByDistance([5, 4, 0]).first,
+            wire.vertices.toSortedByDistance([5, 0, 0]).first,
+            wire.vertices.toSortedByDistance([5, 4, 0]).first,
         ];
         expectCurve(expected, wire.fillet2D(0.8, corners));
     },
     "wire/fillet-2d-open-tangent-corner": expected => {
         let wire = new Wire([Edge.makeLine([0, 0], [1, 0]), Edge.makeLine([1, 0], [2, 0])]);
-        let corner = wire.vertices().sortByDistance([1, 0, 0]).first;
+        let corner = wire.vertices.toSortedByDistance([1, 0, 0]).first;
         expectCurve(expected, wire.fillet2D(0.1, [corner]));
     },
     "wire/fillet-2d-open-arc-corner": expected => {
         let wire = new Wire([new CenterArc([0, 0], 3, 0, 90), Edge.makeLine([0, 3], [-4, 3])]);
-        let corner = wire.vertices().sortByDistance([0, 3, 0]).first;
+        let corner = wire.vertices.toSortedByDistance([0, 3, 0]).first;
         expectCurve(expected, wire.fillet2D(0.75, [corner]));
     },
 });

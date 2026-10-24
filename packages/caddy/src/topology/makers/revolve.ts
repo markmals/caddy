@@ -39,7 +39,7 @@ export function revolveSolid(
 
 /** Turn a 1D profile `angle` degrees about `axis`. */
 export function revolveShell(profile: Shape, angle: number, axis: Axis): Shell {
-    let section = new Wire(profile.edges());
+    let section = new Wire(profile.edges);
     return castShell("Shell.revolve", () =>
         features.revolve(section.wrapped, nativeAxis(axis), angle * DEG2RAD),
     );

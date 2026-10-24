@@ -79,16 +79,21 @@ export class Shell extends Mixin2D {
      * build123d's shell centre: the centre of mass of its edges (`LinearProperties`), not of
      * its surface.
      */
-    center(): Vector {
+    get center(): Vector {
         let properties = native("Center of mass", () =>
             measure.massProperties(this.wrapped, "linear"),
         );
         return fromVec3(properties.centerOfMass);
     }
 
+    /** A shell has one centre, whichever kind is asked for. */
+    getCenter(): Vector {
+        return this.center;
+    }
+
     /** Placement on the face nearest `surfacePoint` (build123d `Shell.location_at`). */
     locationAt(surfacePoint: VectorLike, options: SurfaceLocationOptions = {}): Location {
-        let nearest = this.faces().sortBy(face => face.distanceTo(surfacePoint)).first;
+        let nearest = this.faces.toSortedByDistance(surfacePoint).first;
         return nearest.locationAt(surfacePoint, options);
     }
 }

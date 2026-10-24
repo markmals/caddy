@@ -14,7 +14,7 @@ export type CurveSource = Shape;
 
 function boundaryEdges(curves: CurveSource | Iterable<CurveSource>, operation: string): Edge[] {
     let sources: CurveSource[] = Symbol.iterator in curves ? [...curves] : [curves];
-    let edges = sources.flatMap(source => [...source.edges()]);
+    let edges = sources.flatMap(source => [...source.edges]);
     if (edges.length === 0) {
         throw new GeometryError(`No objects to create a ${operation}`);
     }

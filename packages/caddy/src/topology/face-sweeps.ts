@@ -60,13 +60,13 @@ export function sweepEdgeToFace(
     path: Curve | Edge | Wire,
     options: FaceSweepOptions = {},
 ): Face {
-    if (profile.edges().length !== 1 || path.edges().length !== 1) {
+    if (profile.edges.length !== 1 || path.edges.length !== 1) {
         throw new InvalidShapeError("Use Shell.sweep for multi Edge objects");
     }
     let swept = Shape.cast(
         features.sweep(
-            new Wire([path.edges()[0]!]).wrapped,
-            [new Wire([profile.edges()[0]!]).wrapped],
+            new Wire([path.edges[0]!]).wrapped,
+            [new Wire([profile.edges[0]!]).wrapped],
             {
                 solid: false,
                 frenet: false,
@@ -75,7 +75,7 @@ export function sweepEdgeToFace(
         ),
     );
     let cleaned = options.clean === false ? swept : swept.clean();
-    let faces = cleaned.faces();
+    let faces = cleaned.faces;
     if (faces.length !== 1) {
         throw new InvalidShapeError(`Sweeping produced ${faces.length} faces, not one`);
     }

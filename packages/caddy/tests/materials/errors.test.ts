@@ -52,21 +52,21 @@ describe("material lookup", () => {
 describe("mass without a density", () => {
     test("a solid with no material cannot be weighed", () => {
         let box = new Box(10, 20, 30);
-        expect(() => box.mass()).toThrow(MaterialError);
+        expect(() => box.mass).toThrow(MaterialError);
         expect(() => box.computeMass()).toThrow(/density is missing/);
     });
 
     test("clearing a material takes the density away again", () => {
         let box = new Box(10, 20, 30);
         box.material = "brass";
-        expect(box.mass()).toBeCloseTo(51, 9);
+        expect(box.mass).toBeCloseTo(51, 9);
         box.material = undefined;
-        expect(() => box.mass()).toThrow(MaterialError);
+        expect(() => box.mass).toThrow(MaterialError);
     });
 
     test("a compound of solids with no material cannot be weighed either", () => {
-        let compound = new Compound([new Box(1, 1, 1).solid()]);
-        expect(() => compound.mass()).toThrow(MaterialError);
+        let compound = new Compound([new Box(1, 1, 1).solid]);
+        expect(() => compound.mass).toThrow(MaterialError);
     });
 });
 

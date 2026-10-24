@@ -27,7 +27,13 @@ export { Compound } from "./compound.ts";
 export type { CompoundSource, UnwrapOptions } from "./compound.ts";
 export { Curve, Part, Sketch } from "./composite.ts";
 export { ShapeList } from "./shape-list.ts";
-export type { FilterOptions, GroupOptions, SortCriterion, SortOptions } from "./shape-list.ts";
+export type {
+    FilterOptions,
+    GroupOptions,
+    SortCriterion,
+    SortOptions,
+    SortOrder,
+} from "./shape-list.ts";
 export { GroupBy } from "./group-by.ts";
 export type { GroupKey } from "./group-by.ts";
 export type { CurveLike, ShapeFilter } from "./selectors.ts";

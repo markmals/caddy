@@ -47,7 +47,7 @@ export abstract class Mixin2D extends Shape {
      * the normal through `normal_at`, which only faces have; a shell needs to hold exactly one.
      */
     offset(amount: number): this {
-        let faces = this.faces();
+        let faces = this.faces;
         if (faces.length !== 1) {
             throw new InvalidShapeError("Offsetting along the normal needs a single face");
         }
@@ -86,7 +86,7 @@ export abstract class Mixin2D extends Shape {
                 let sections = booleanPieces(this, [this], [other], "section").filter(
                     shape => shape.shapeType === "Edge",
                 );
-                let commonEdges = common.flatMap(shape => [...shape.edges()]);
+                let commonEdges = common.flatMap(shape => [...shape.edges]);
                 results = [
                     ...common,
                     ...sections.filter(
@@ -94,9 +94,9 @@ export abstract class Mixin2D extends Shape {
                             !commonEdges.some(
                                 boundary =>
                                     edge
-                                        .boundingBox({ optimal: false })
+                                        .getBoundingBox({ optimal: false })
                                         .intersects(
-                                            boundary.boundingBox({ optimal: false }),
+                                            boundary.getBoundingBox({ optimal: false }),
                                             tolerance,
                                         ) && edge.distanceTo(boundary) <= tolerance,
                             ),

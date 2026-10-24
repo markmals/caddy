@@ -44,7 +44,7 @@ export function makeTriad(axesScale: number): Curve {
             ],
         },
     );
-    let arrow = new Wire([barb, mirror(barb, Plane.XZ).edges()[0]!]);
+    let arrow = new Wire([barb, mirror(barb, Plane.XZ).edges[0]!]);
     let heads = [
         arrow.moved(tips[0]!),
         arrow.rotate(Axis.Z, 90).moved(tips[1]!),
@@ -55,24 +55,20 @@ export function makeTriad(axesScale: number): Curve {
         ...makeText("X", axesScale / 4, {
             font: TRIAD_FONT,
             align: [Align.Min, Align.Center],
-        })
-            .moved(tips[0]!)
-            .edges(),
+        }).moved(tips[0]!).edges,
         ...makeText("Y", axesScale / 4, {
             font: TRIAD_FONT,
             align: [Align.Min, Align.Center],
         })
             .rotate(Axis.Z, 90)
-            .moved(tips[1]!)
-            .edges(),
+            .moved(tips[1]!).edges,
         ...makeText("Z", axesScale / 4, {
             font: TRIAD_FONT,
             align: [Align.Center, Align.Min],
         })
             .rotate(Axis.Y, 90)
             .rotate(Axis.X, 90)
-            .moved(tips[2]!)
-            .edges(),
+            .moved(tips[2]!).edges,
     ];
 
     return makeComposite([...axes, ...heads, ...letters], 1) as Curve;

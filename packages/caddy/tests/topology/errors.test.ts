@@ -5,11 +5,11 @@ import { Convexity, Edge, Face, Shell, Vertex } from "../../src/topology/index.t
 import { box } from "./oracle/shapes.ts";
 
 test("singular edge() rejects a shape with multiple edges", () => {
-    expect(() => box().edge()).toThrow("Expected exactly one edge, found 12");
+    expect(() => box().edge).toThrow("Expected exactly one edge, found 12");
 });
 
 test("singular face() rejects a shape with multiple faces", () => {
-    expect(() => box().face()).toThrow("Expected exactly one face, found 6");
+    expect(() => box().face).toThrow("Expected exactly one face, found 6");
 });
 
 test("non-circular edges cannot supply an arc radius or center", () => {
@@ -31,17 +31,17 @@ test("an edge built on its own has no convexity", () => {
 
 test("a boundary edge of a lone face has no crease to classify", () => {
     let face = Face.makeRect(4, 4);
-    expect(() => face.edges().first.convexity).toThrow("lies on one face only");
+    expect(() => face.edges.first.convexity).toThrow("lies on one face only");
 });
 
 test("only vertices, edges and faces have a convexity", () => {
     expect(() => box().convexity).toThrow("has no convexity");
-    expect(() => box().wires().first.convexity).toThrow();
+    expect(() => box().wires.first.convexity).toThrow();
 });
 
 test("a vertex taken off a lone face classifies as a corner of it", () => {
     let face = Face.makeRect(4, 4);
-    expect(face.vertices().first.convexity).toBe(Convexity.Convex);
+    expect(face.vertices.first.convexity).toBe(Convexity.Convex);
 });
 
 test("a vertex built on its own has nothing to classify it against", () => {

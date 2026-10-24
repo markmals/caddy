@@ -56,9 +56,9 @@ test("a rotated rectangle keeps its size and place", () => {
     let [wire] = [...importSvgText(document)];
     expect(wire).toBeInstanceOf(Wire);
     expect((wire as Wire).length).toBeCloseTo(60, 6);
-    let box = wire?.boundingBox();
-    expect(box?.center().toTuple()[0]).toBeCloseTo(52.5, 6);
-    expect(box?.center().toTuple()[1]).toBeCloseTo(54.330127, 6);
+    let box = wire?.boundingBox;
+    expect(box?.center.toTuple()[0]).toBeCloseTo(52.5, 6);
+    expect(box?.center.toTuple()[1]).toBeCloseTo(54.330127, 6);
 });
 
 test("importCAD reads an SVG file through its extension", async () => {
@@ -68,7 +68,7 @@ test("importCAD reads an SVG file through its extension", async () => {
         await writeFile(path, SQUARE_SVG);
         let shape = await importCAD(path);
         expect(shape.constructor.name).toBe("Wire");
-        expect(shape.edges().length).toBe(4);
+        expect(shape.edges.length).toBe(4);
     } finally {
         await rm(directory, { recursive: true, force: true });
     }
@@ -91,6 +91,6 @@ test("asking for metadata the model does not carry fails", () => {
 
 test("a shape that meshes to nothing is skipped", async () => {
     let mesher = new Mesher();
-    await mesher.addShape(Solid.makeBox(1, 1, 1).edges().first);
+    await mesher.addShape(Solid.makeBox(1, 1, 1).edges.first);
     expect(mesher.meshCount).toBe(0);
 });

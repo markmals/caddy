@@ -87,9 +87,9 @@ function straightEdges(corners: readonly Vector[], close: boolean): Edge[] {
 function nearestVertex(vertices: readonly Vertex[], point: Vector): Vertex {
     let best = vertices[0];
     if (best === undefined) throw new GeometryError("Expected a shape with vertices");
-    let shortest = best.center().sub(point).length;
+    let shortest = best.center.sub(point).length;
     for (let vertex of vertices.slice(1)) {
-        let gap = vertex.center().sub(point).length;
+        let gap = vertex.center.sub(point).length;
         if (gap < shortest) {
             shortest = gap;
             best = vertex;
@@ -108,11 +108,11 @@ function roundCorners(
     radii: readonly number[],
     close: boolean,
 ): Corner[] {
-    let edges = line.edges();
+    let edges = line.edges;
     let rounded: Corner[] = [];
     corners.forEach((point, index) => {
         let incident = edges.filter(edge =>
-            edge.vertices().some(vertex => vertex.center().sub(point).length < TOLERANCE),
+            edge.vertices.some(vertex => vertex.center.sub(point).length < TOLERANCE),
         );
         if (incident.length !== 2) return;
         let radius = radii[index - (close ? 0 : 1)] ?? 0;
@@ -124,8 +124,8 @@ function roundCorners(
             .flatMap(edge => [edge.positionAt(0), edge.positionAt(1)])
             .filter(end => end.sub(point).length > TOLERANCE);
         let corner = new Face(makeWire([...incident, makeLine(ends[0]!, ends[1]!)]));
-        let filleted = filletFace2D(corner, radius, [nearestVertex(corner.vertices(), point)]);
-        let arc = filleted.edges().find(edge => edge.geomType === GeomType.Circle);
+        let filleted = filletFace2D(corner, radius, [nearestVertex(corner.vertices, point)]);
+        let arc = filleted.edges.find(edge => edge.geomType === GeomType.Circle);
         if (arc === undefined) {
             throw new GeometryError(
                 `Fillet algorithm failed at ${point.toString()} with radius ${radius}`,
