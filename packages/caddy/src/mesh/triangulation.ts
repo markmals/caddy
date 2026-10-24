@@ -33,16 +33,19 @@ export function meshDeflection(
     };
 }
 
-export function tessellationOf(soup: occt.mesh.Triangles): Tessellation {
-    let vertices: Vector[] = [];
-    for (let index = 0; index + 2 < soup.positions.length; index += 3) {
-        vertices.push(
-            new Vector(soup.positions[index], soup.positions[index + 1], soup.positions[index + 2]),
-        );
+/** The `[x, y, z]` triples in `values` as vectors. */
+export function vectorsOf(values: Float64Array): Vector[] {
+    let vectors: Vector[] = [];
+    for (let index = 0; index + 2 < values.length; index += 3) {
+        vectors.push(new Vector(values[index], values[index + 1], values[index + 2]));
     }
+    return vectors;
+}
+
+export function tessellationOf(soup: occt.mesh.Triangles): Tessellation {
     let triangles: [number, number, number][] = [];
     for (let index = 0; index + 2 < soup.indices.length; index += 3) {
         triangles.push([soup.indices[index]!, soup.indices[index + 1]!, soup.indices[index + 2]!]);
     }
-    return { vertices, triangles };
+    return { vertices: vectorsOf(soup.positions), triangles };
 }

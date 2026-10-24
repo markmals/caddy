@@ -18,6 +18,28 @@ export function roundTo(value: number, digits: number): number {
     if (!Number.isFinite(value) || value === 0) {
         return value;
     }
+    let { negative, quotient } = scaled(value, digits);
+    return Number(decimalText(negative, quotient, digits));
+}
+
+/**
+ * `value` written with exactly `digits` decimal places, as Python's `format(value, f".{digits}f")`
+ * does: ties resolve to the even neighbour and a negative value that rounds to nothing still
+ * carries its sign (`-0.00`).
+ */
+export function formatFixed(value: number, digits: number): string {
+    if (!Number.isFinite(value)) {
+        return String(value);
+    }
+    if (value === 0) {
+        return decimalText(Object.is(value, -0), 0n, digits);
+    }
+    let { negative, quotient } = scaled(value, digits);
+    return decimalText(negative, quotient, digits);
+}
+
+/** `|value| * 10^digits` rounded half-to-even on the double's exact binary value. */
+function scaled(value: number, digits: number): { negative: boolean; quotient: bigint } {
     if (!Number.isInteger(digits)) {
         throw new RangeError(`Digits must be an integer, got ${digits}`);
     }
@@ -40,7 +62,7 @@ export function roundTo(value: number, digits: number): number {
     ) {
         quotient += 1n;
     }
-    return Number(decimalText(negative, quotient, digits));
+    return { negative, quotient };
 }
 
 /** A finite non-zero double as `(-1)^negative * mantissa * 2^exponent`, exactly. */

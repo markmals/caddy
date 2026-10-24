@@ -1,4 +1,4 @@
-import type { Shape as NativeShape } from "@roonieone/occt-native";
+import type { Recorded, Shape as NativeShape } from "@roonieone/occt-native";
 
 import { ShapeType, features, measure, shapes, topology } from "@roonieone/occt-native";
 
@@ -8,6 +8,7 @@ import { GeometryError, InvalidShapeError, NativeKernelError } from "../errors.t
 import { Edge } from "../topology/edge.ts";
 import { Face } from "../topology/face.ts";
 import { makeComposite } from "../topology/registry.ts";
+import { madeBy, ShapeHistory } from "../topology/shape-history.ts";
 import { Shape } from "../topology/shape.ts";
 
 function selectedEdges(edges: Edge | Iterable<Edge>): Edge[] {
@@ -28,9 +29,16 @@ function parentOf(edges: Edge[], target?: Shape): Shape {
     return parent;
 }
 
-function finishedPart(native: NativeShape, operation: string): Part {
-    if (!measure.isValid(native)) throw new GeometryError(`${operation} produced an invalid solid`);
-    return makeComposite([Shape.cast(native)], 3) as Part;
+/**
+ * The finished solid, with the record of what the algorithm did to the sub-shapes of the shape it
+ * worked on (build123d `Mixin3D.fillet` / `Mixin3D.chamfer`), so that `Select.Last` answers for it.
+ */
+function finishedPart(result: Recorded, operation: string, before: NativeShape): Part {
+    if (!measure.isValid(result.shape)) {
+        throw new GeometryError(`${operation} produced an invalid solid`);
+    }
+    let piece = madeBy(Shape.cast(result.shape), new ShapeHistory(result.history, [before]));
+    return makeComposite([piece], 3) as Part;
 }
 
 export function filletSolid(edges: Edge | Iterable<Edge>, radius: number, target?: Shape): Part {
@@ -47,6 +55,7 @@ export function filletSolid(edges: Edge | Iterable<Edge>, radius: number, target
                 radius,
             ),
             "Fillet",
+            parent.wrapped,
         );
     } catch (cause) {
         if (cause instanceof GeometryError) throw cause;
@@ -98,6 +107,7 @@ export function chamferSolid(
                 angle !== undefined,
             ),
             "Chamfer",
+            parent.wrapped,
         );
     } catch (cause) {
         if (cause instanceof GeometryError) throw cause;

@@ -13,6 +13,7 @@ The reference is pinned by the root `pyproject.toml`/`uv.lock`: build123d 0.13.0
 | `reference/build123d/scripts/generate_fixtures.py` | Python | Runner: generate (`--check` verifies) |
 | `reference/build123d/fixtures/<suite>.json` | generated | Committed acceptance criteria — never hand-edit |
 | `reference/build123d/fixtures/<suite>/*.brep` | generated | BREP assets referenced by cases |
+| `reference/build123d/fonts/` | checked in | Font files fixtures render with, so text cases do not depend on a machine's installed fonts (`oracle.TEST_FONT` in Python, `TEST_FONT_PATH` in TypeScript) |
 | `reference/build123d/oracle.ts` | TypeScript | `oracleSuite`, `planOracleSuite`, fixture loading |
 | `reference/build123d/fixtures.ts` | TypeScript | Validated accessors and comparison helpers (re-exported by `oracle.ts`) |
 | `reference/build123d/tolerances.ts` | TypeScript | The tolerance constants listed below |

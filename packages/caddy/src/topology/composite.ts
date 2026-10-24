@@ -4,7 +4,7 @@ import type { Location } from "../geometry/location.ts";
 import type { Vector } from "../geometry/vector.ts";
 import type { ExtrudeOptions } from "../operations/solids.ts";
 import type { LocationAtOptions } from "./mixin1d.ts";
-import type { Shape, ShapeOperand } from "./shape.ts";
+import type { Shape, ShapeOperand, SubShapeOptions } from "./shape.ts";
 
 import { extrude } from "../operations/solids.ts";
 import { Compound } from "./compound.ts";
@@ -45,9 +45,12 @@ export class Curve extends Compound {
         return new Wire(this.edges()).locationAt(position, mode, options);
     }
 
-    /** The wires the curve's edges connect into (build123d `Wire.combine`). */
-    override wires(): ShapeList<Wire> {
-        let edges = Array.from(this.edges(), edge => edge.wrapped);
+    /**
+     * The wires the curve's edges connect into (build123d `Curve.wires`, which combines the edges
+     * the selector keeps).
+     */
+    override wires(options: SubShapeOptions = {}): ShapeList<Wire> {
+        let edges = Array.from(this.edges(options), edge => edge.wrapped);
         let wires = native("Wire assembly", () => construct.connectEdgesToWires(edges));
         return new ShapeList(wires.map(wrapped => new Wire(wrapped)));
     }

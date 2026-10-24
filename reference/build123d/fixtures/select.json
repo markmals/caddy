@@ -1,0 +1,696 @@
+{
+  "cases": {
+    "chamfer-2d/closed-wire-corners": {
+      "all": {
+        "edges": 8,
+        "faces": 0,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 8,
+        "wires": 1
+      },
+      "class_name": "Wire",
+      "last": {
+        "edges": 4,
+        "faces": 0,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 8,
+        "wires": 1
+      },
+      "new": {
+        "edges": 4,
+        "faces": 0,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 8,
+        "wires": 1
+      }
+    },
+    "chamfer-2d/face-corners": {
+      "all": {
+        "edges": 8,
+        "faces": 1,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 8,
+        "wires": 1
+      },
+      "class_name": "Face",
+      "last": {
+        "edges": 4,
+        "faces": 0,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 8,
+        "wires": 1
+      },
+      "last_edge_lengths": [
+        1.4142135623730947,
+        1.4142135623730947,
+        1.4142135623730947,
+        1.4142135623730947
+      ],
+      "new": {
+        "edges": 4,
+        "faces": 0,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 8,
+        "wires": 1
+      }
+    },
+    "chamfer/box-vertical-edges": {
+      "all": {
+        "edges": 24,
+        "faces": 10,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 16,
+        "wires": 10
+      },
+      "class_name": "Solid",
+      "last": {
+        "edges": 16,
+        "faces": 4,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 16,
+        "wires": 10
+      },
+      "last_face_areas": [
+        14.14213562373095,
+        14.14213562373095,
+        14.142135623730951,
+        14.142135623730951
+      ],
+      "new": {
+        "edges": 16,
+        "faces": 4,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 16,
+        "wires": 10
+      }
+    },
+    "clean/after-a-fuse": {
+      "all": {
+        "edges": 15,
+        "faces": 8,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 10,
+        "wires": 9
+      },
+      "class_name": "Part",
+      "last": {
+        "edges": 3,
+        "faces": 2,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 2,
+        "wires": 9
+      },
+      "last_face_types": [
+        "CYLINDER",
+        "PLANE"
+      ],
+      "new": {
+        "edges": 0,
+        "faces": 0,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 0,
+        "wires": 9
+      }
+    },
+    "clean/keeps-the-record": {
+      "all": {
+        "edges": 12,
+        "faces": 6,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 8,
+        "wires": 6
+      },
+      "class_name": "Solid",
+      "last": {
+        "edges": 12,
+        "faces": 6,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 8,
+        "wires": 6
+      },
+      "new": {
+        "edges": 12,
+        "faces": 6,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 8,
+        "wires": 6
+      }
+    },
+    "cut/half-a-box": {
+      "all": {
+        "edges": 12,
+        "faces": 6,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 8,
+        "wires": 6
+      },
+      "class_name": "Part",
+      "last": {
+        "edges": 4,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 4,
+        "wires": 6
+      },
+      "last_face_areas": [
+        99.99999999999999
+      ],
+      "new": {
+        "edges": 0,
+        "faces": 0,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 0,
+        "wires": 6
+      }
+    },
+    "cut/hole-through-a-box": {
+      "all": {
+        "edges": 15,
+        "faces": 7,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 10,
+        "wires": 9
+      },
+      "class_name": "Part",
+      "last": {
+        "edges": 3,
+        "faces": 1,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 2,
+        "wires": 9
+      },
+      "last_face_types": [
+        "CYLINDER"
+      ],
+      "new": {
+        "edges": 2,
+        "faces": 0,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 2,
+        "wires": 9
+      },
+      "new_edge_lengths": [
+        6.283185307179586,
+        6.283185307179586
+      ]
+    },
+    "errors/no-record": {
+      "all_vertices": 4,
+      "last_raises": true,
+      "new_raises": true
+    },
+    "fillet-2d/closed-wire-corners": {
+      "all": {
+        "edges": 8,
+        "faces": 0,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 8,
+        "wires": 1
+      },
+      "class_name": "Wire",
+      "last": {
+        "edges": 4,
+        "faces": 0,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 8,
+        "wires": 1
+      },
+      "last_edge_types": [
+        "CIRCLE",
+        "CIRCLE",
+        "CIRCLE",
+        "CIRCLE"
+      ],
+      "new": {
+        "edges": 4,
+        "faces": 0,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 8,
+        "wires": 1
+      }
+    },
+    "fillet-2d/face-corners": {
+      "all": {
+        "edges": 8,
+        "faces": 1,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 8,
+        "wires": 1
+      },
+      "class_name": "Face",
+      "last": {
+        "edges": 8,
+        "faces": 1,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 8,
+        "wires": 1
+      },
+      "new": {
+        "edges": 8,
+        "faces": 1,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 8,
+        "wires": 1
+      }
+    },
+    "fillet-2d/open-wire-corners": {
+      "all": {
+        "edges": 5,
+        "faces": 0,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 6,
+        "wires": 1
+      },
+      "class_name": "Wire",
+      "last": {
+        "edges": 2,
+        "faces": 0,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 4,
+        "wires": 1
+      },
+      "last_edge_types": [
+        "CIRCLE",
+        "CIRCLE"
+      ],
+      "new": {
+        "edges": 2,
+        "faces": 0,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 4,
+        "wires": 1
+      }
+    },
+    "fillet/box-vertical-edges": {
+      "all": {
+        "edges": 24,
+        "faces": 10,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 16,
+        "wires": 10
+      },
+      "class_name": "Solid",
+      "last": {
+        "edges": 16,
+        "faces": 4,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 16,
+        "wires": 10
+      },
+      "last_face_types": [
+        "CYLINDER",
+        "CYLINDER",
+        "CYLINDER",
+        "CYLINDER"
+      ],
+      "new": {
+        "edges": 16,
+        "faces": 4,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 16,
+        "wires": 10
+      },
+      "new_edge_lengths": [
+        1.5707963267948966,
+        1.5707963267948966,
+        1.5707963267948966,
+        1.5707963267948966,
+        1.5707963267948966,
+        1.5707963267948966,
+        1.5707963267948966,
+        1.5707963267948966,
+        10.0,
+        10.0,
+        10.0,
+        10.0,
+        10.0,
+        10.0,
+        10.0,
+        10.0
+      ]
+    },
+    "fuse/chained-operations": {
+      "count": 1,
+      "geom_types": [
+        "SPHERE"
+      ]
+    },
+    "fuse/crossed-sketches": {
+      "all": {
+        "edges": 12,
+        "faces": 1,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 12,
+        "wires": 1
+      },
+      "class_name": "Sketch",
+      "last": {
+        "edges": 6,
+        "faces": 1,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 8,
+        "wires": 1
+      },
+      "new": {
+        "edges": 0,
+        "faces": 0,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 4,
+        "wires": 1
+      },
+      "new_vertices": [
+        [
+          -1.0,
+          -1.0,
+          0.0
+        ],
+        [
+          -1.0,
+          1.0,
+          0.0
+        ],
+        [
+          1.0,
+          -1.0,
+          0.0
+        ],
+        [
+          1.0,
+          1.0,
+          0.0
+        ]
+      ]
+    },
+    "fuse/disjoint-pieces": {
+      "all": {
+        "edges": 24,
+        "faces": 12,
+        "shells": 2,
+        "solids": 2,
+        "vertices": 16,
+        "wires": 12
+      },
+      "class_name": "Compound",
+      "last": {
+        "edges": 12,
+        "faces": 6,
+        "shells": 2,
+        "solids": 1,
+        "vertices": 8,
+        "wires": 12
+      },
+      "last_solid_centers": [
+        [
+          30.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "new": {
+        "edges": 0,
+        "faces": 0,
+        "shells": 2,
+        "solids": 0,
+        "vertices": 0,
+        "wires": 12
+      }
+    },
+    "fuse/every-shape-type": {
+      "all": {
+        "edges": 15,
+        "faces": 8,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 10,
+        "wires": 9
+      },
+      "class_name": "Part",
+      "last": {
+        "edges": 3,
+        "faces": 2,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 2,
+        "wires": 9
+      },
+      "new": {
+        "edges": 0,
+        "faces": 0,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 0,
+        "wires": 9
+      }
+    },
+    "fuse/last-faces-sit-on-top": {
+      "above_the_box": true,
+      "areas": [
+        12.566370614359169,
+        62.83185307179586
+      ],
+      "count": 2,
+      "geom_types": [
+        "CYLINDER",
+        "PLANE"
+      ]
+    },
+    "fuse/self-was-there-before": {
+      "face_count": 2,
+      "last_faces": 1
+    },
+    "intersect/overlapping-boxes": {
+      "all": {
+        "edges": 12,
+        "faces": 6,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 8,
+        "wires": 6
+      },
+      "class_name": "Part",
+      "last": {
+        "edges": 12,
+        "faces": 4,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 8,
+        "wires": 6
+      },
+      "new": {
+        "edges": 8,
+        "faces": 0,
+        "shells": 1,
+        "solids": 0,
+        "vertices": 8,
+        "wires": 6
+      }
+    },
+    "join/collinear-lines": {
+      "all": {
+        "edges": 1,
+        "faces": 0,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 2,
+        "wires": 0
+      },
+      "class_name": "Edge",
+      "last": {
+        "edges": 1,
+        "faces": 0,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 1,
+        "wires": 0
+      },
+      "last_vertices": [
+        [
+          2.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "new": {
+        "edges": 0,
+        "faces": 0,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 0,
+        "wires": 0
+      }
+    },
+    "join/connected-lines": {
+      "all": {
+        "edges": 2,
+        "faces": 0,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 3,
+        "wires": 1
+      },
+      "class_name": "Wire",
+      "last": {
+        "edges": 1,
+        "faces": 0,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 2,
+        "wires": 1
+      },
+      "last_edge_midpoints": [
+        [
+          1.0,
+          0.5,
+          0.0
+        ]
+      ],
+      "last_vertices": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "new": {
+        "edges": 0,
+        "faces": 0,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 0,
+        "wires": 1
+      }
+    },
+    "join/disjoint-lines": {
+      "all": {
+        "edges": 2,
+        "faces": 0,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 4,
+        "wires": 2
+      },
+      "class_name": "Curve",
+      "last": {
+        "edges": 1,
+        "faces": 0,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 2,
+        "wires": 1
+      },
+      "last_edge_midpoints": [
+        [
+          5.5,
+          0.0,
+          0.0
+        ]
+      ],
+      "new": {
+        "edges": 0,
+        "faces": 0,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 0,
+        "wires": 0
+      }
+    },
+    "join/onto-an-empty-curve": {
+      "all": {
+        "edges": 3,
+        "faces": 0,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 4,
+        "wires": 1
+      },
+      "class_name": "Wire",
+      "last": {
+        "edges": 3,
+        "faces": 0,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 4,
+        "wires": 1
+      },
+      "new": {
+        "edges": 0,
+        "faces": 0,
+        "shells": 0,
+        "solids": 0,
+        "vertices": 0,
+        "wires": 1
+      }
+    },
+    "select/all-is-the-default": {
+      "default_matches_all": true,
+      "fused": {
+        "edges": 15,
+        "faces": 8,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 10,
+        "wires": 9
+      },
+      "plain": {
+        "edges": 12,
+        "faces": 6,
+        "shells": 1,
+        "solids": 1,
+        "vertices": 8,
+        "wires": 6
+      }
+    },
+    "select/sub-shapes-of-a-selected-face": {
+      "face_edge_count": 1,
+      "face_has_no_record": true
+    }
+  },
+  "reference": {
+    "build123d": "0.13.0",
+    "occt": "8.0.1",
+    "ocp": "8.0.1.1.0",
+    "python": "3.13.17"
+  },
+  "suite": "select"
+}

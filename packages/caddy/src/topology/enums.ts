@@ -43,6 +43,18 @@ export const Keep = {
 
 export type Keep = (typeof Keep)[keyof typeof Keep];
 
+/**
+ * Which sub-shapes an accessor reports (build123d `Select`): all of them, those the operation
+ * that made the shape brought in or created, or only those it created outright.
+ */
+export const Select = {
+    All: "ALL",
+    Last: "LAST",
+    New: "NEW",
+} as const;
+
+export type Select = (typeof Select)[keyof typeof Select];
+
 /** How a shape's centre is computed (build123d `CenterOf`). */
 export const CenterOf = {
     Geometry: "GEOMETRY",

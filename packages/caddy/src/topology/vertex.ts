@@ -6,7 +6,7 @@ import type { Transform } from "../geometry/transform.ts";
 import type { VectorLike } from "../geometry/vector.ts";
 import type { Convexity } from "./enums.ts";
 import type { Face } from "./face.ts";
-import type { IntersectOptions, ShapeOptions } from "./shape.ts";
+import type { IntersectOptions, ShapeOptions, SubShapeOptions } from "./shape.ts";
 
 import { InvalidShapeError } from "../errors.ts";
 import { Axis } from "../geometry/axis.ts";
@@ -128,8 +128,8 @@ export class Vertex extends Shape {
         return this;
     }
 
-    override vertices(): ShapeList<Vertex> {
-        return new ShapeList<Vertex>([this]);
+    override vertices(options: SubShapeOptions = {}): ShapeList<Vertex> {
+        return this.selected(new ShapeList<Vertex>([this]), options.select);
     }
 
     /** build123d's `Vertex & other` is not supported: vertices cannot be intersected. */

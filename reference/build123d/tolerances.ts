@@ -32,3 +32,9 @@ export const MASS_TOLERANCE = 1e-9;
 
 /** OCCT `Precision::Approximation()` = 1e-6, the slack of fitted geometry (BSpline fits, offsets). */
 export const APPROXIMATION_TOLERANCE = 1e-6;
+
+/** Numbers written as C's `%.9g`, the way OBJ records every coordinate: nine digits survive. */
+export const NINE_DIGIT_TOLERANCE = 1e-9;
+
+/** Numbers that crossed a glTF float32 buffer: a 24-bit mantissa is ~7 decimal digits. */
+export const SINGLE_PRECISION_TOLERANCE = 1e-6;

@@ -11,6 +11,7 @@ import { shapes } from "@roonieone/occt-native";
 import type { Shape } from "./shape.ts";
 
 import { InvalidShapeError } from "../errors.ts";
+import { madeBy, recordOf } from "./shape-history.ts";
 
 type ShapeConstructor = (native: occt.Shape) => Shape;
 type CompositeFactory = (shapes: Shape[]) => Shape;
@@ -73,7 +74,11 @@ export function makeComposite(shapes: Iterable<Shape>, dimension?: number): Shap
     if (factory === undefined) {
         throw new InvalidShapeError("No composite class is registered");
     }
-    return factory(pieces);
+    let composite = factory(pieces);
+    // Pieces of one operation share its record; wrapping them keeps it.
+    let records = new Set(pieces.map(recordOf).filter(record => record !== undefined));
+    let [record] = records;
+    return records.size === 1 && record !== undefined ? madeBy(composite, record) : composite;
 }
 
 /**

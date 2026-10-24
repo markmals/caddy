@@ -6,7 +6,10 @@ import type { ViewportOptions } from "../drafting/viewport.ts";
 import type { Color } from "../geometry/color.ts";
 import type { VectorLike } from "../geometry/vector.ts";
 import type { Joint } from "../joints/joint.ts";
+import type { FinishedMaterial } from "../materials/finished.ts";
+import type { Material } from "../materials/material.ts";
 import type { MeshOptions, Tessellation } from "../mesh/triangulation.ts";
+import type { UvMeshOptions, UvTessellation } from "../mesh/uv.ts";
 import type { TrimmingTool } from "../operations/split-pieces.ts";
 import type { Compound } from "./compound.ts";
 import type { Edge } from "./edge.ts";
@@ -18,7 +21,7 @@ import type { Vertex } from "./vertex.ts";
 import type { Wire } from "./wire.ts";
 
 import { projectToViewport } from "../drafting/viewport.ts";
-import { GeometryError, InvalidShapeError } from "../errors.ts";
+import { GeometryError, InvalidShapeError, MaterialError } from "../errors.ts";
 import { Axis } from "../geometry/axis.ts";
 import { BoundingBox } from "../geometry/bounding-box.ts";
 import { DEG2RAD } from "../geometry/constants.ts";
@@ -27,8 +30,12 @@ import { Matrix } from "../geometry/matrix.ts";
 import { OrientedBoundBox } from "../geometry/oriented-bound-box.ts";
 import { Plane } from "../geometry/plane.ts";
 import { Transform } from "../geometry/transform.ts";
+import { UNITS_PER_KILOGRAM, UNITS_PER_METER } from "../geometry/units.ts";
 import { Vector } from "../geometry/vector.ts";
+import { MassUnit, Unit } from "../io/types.ts";
+import { resolveMaterial } from "../materials/registry.ts";
 import { meshDeflection, tessellationOf } from "../mesh/triangulation.ts";
+import { uvTessellationOf } from "../mesh/uv.ts";
 import { projectFaces } from "../operations/project-faces.ts";
 import { splitPieces } from "../operations/split-pieces.ts";
 import {
@@ -40,12 +47,13 @@ import {
     subtractionOperands,
 } from "./boolean.ts";
 import { fromVec3, locationFromMatrix, matrixOf, toVec3 } from "./conversions.ts";
-import { CenterOf, Keep } from "./enums.ts";
+import { CenterOf, Keep, Select } from "./enums.ts";
 import { principalInertia } from "./inertia.ts";
 import { intersectionOperand } from "./intersection-operand.ts";
 import { native } from "./kernel.ts";
 import { topLevelNativeShapes } from "./native-topology.ts";
 import { castShape, geometryShape } from "./registry.ts";
+import { madeBy, recordOf, ShapeHistory } from "./shape-history.ts";
 import { exactlyOne, ShapeList } from "./shape-list.ts";
 
 /** Attributes every shape carries besides its geometry. */
@@ -88,6 +96,23 @@ export interface BoundingBoxOptions {
     readonly tolerance?: number;
     /** Compute the tight box rather than the cheaper, looser one; defaults to true. */
     readonly optimal?: boolean;
+}
+
+/** Units {@link Shape#computeMass} and {@link Shape#mass} report a mass in. */
+export interface MassOptions {
+    /** Unit the mass comes back in; defaults to grams. */
+    readonly massUnit?: MassUnit;
+    /** Unit the shape's coordinates are in; defaults to millimetres. */
+    readonly lengthUnit?: Unit;
+}
+
+/** Options of the sub-shape accessors ({@link Shape#faces}, {@link Shape#edges}, ...). */
+export interface SubShapeOptions {
+    /**
+     * Report only the sub-shapes the operation that made this shape brought in or created
+     * (`Select.Last`), or created outright (`Select.New`); defaults to `Select.All`.
+     */
+    readonly select?: Select;
 }
 
 /** Options for {@link Shape#translate} and {@link Shape#rotate}. */
@@ -155,6 +180,9 @@ export abstract class Shape {
     /** Allocated on first use: most shapes never carry a joint. */
     #joints: Map<string, Joint> | undefined;
 
+    /** This shape's own material; `undefined` until one is set or inherited. */
+    #material: FinishedMaterial | undefined;
+
     /**
      * The joints bound to this shape, by label (build123d `Shape.joints`). A joint registers
      * itself here when it is created, and copies of this shape carry rebound copies of it.
@@ -162,6 +190,29 @@ export abstract class Shape {
     get joints(): Map<string, Joint> {
         this.#joints ??= new Map();
         return this.#joints;
+    }
+
+    /**
+     * What this shape is made of (build123d `Shape.material`), which is what {@link mass}
+     * weighs. A shape with no material of its own takes the nearest one along its
+     * {@link topoPath} — the solid a face was taken from, the compound a solid was taken from —
+     * and keeps it, so the walk happens once.
+     *
+     * Assign a catalog name (`"brass"`), a {@link Material} or a {@link FinishedMaterial}, or
+     * `undefined` to clear it.
+     */
+    get material(): FinishedMaterial | undefined {
+        if (this.#material === undefined) {
+            let ancestor = [...this.topoPath].reverse().find(step => step.#material !== undefined);
+            if (ancestor !== undefined) {
+                this.#material = ancestor.#material;
+            }
+        }
+        return this.#material;
+    }
+
+    set material(value: FinishedMaterial | Material | string | undefined) {
+        this.#material = value === undefined ? undefined : resolveMaterial(value);
     }
 
     /**
@@ -385,25 +436,47 @@ export abstract class Shape {
 
     // ---- Exploration ----
 
-    vertices(): ShapeList<Vertex> {
-        return this.subShapes<Vertex>(ShapeType.Vertex);
+    /**
+     * build123d `Shape._select`: narrow sub-shapes to what the operation that made this shape
+     * did. Only a shape an operation produced carries that record.
+     */
+    protected selected<T extends Shape>(
+        found: ShapeList<T>,
+        select: Select | undefined,
+    ): ShapeList<T> {
+        if (select === undefined || select === Select.All) {
+            return found;
+        }
+        let record = recordOf(this);
+        if (record === undefined) {
+            throw new InvalidShapeError(
+                `Select.${select} needs a record of how this shape was made, and this one has ` +
+                    "none - it is the result of no recorded operation",
+            );
+        }
+        return new ShapeList(record.narrow([...found], select));
+    }
+
+    vertices(options: SubShapeOptions = {}): ShapeList<Vertex> {
+        return this.selected(this.subShapes<Vertex>(ShapeType.Vertex), options.select);
     }
 
     /** Edges of the shape, without degenerate ones such as a sphere's pole seams. */
-    edges(): ShapeList<Edge> {
-        return new ShapeList(
+    edges(options: SubShapeOptions = {}): ShapeList<Edge> {
+        let found = new ShapeList(
             this.subShapes<Edge>(ShapeType.Edge).filter(
                 edge => !topology.isDegeneratedEdge(edge.wrapped),
             ),
         );
+        return this.selected(found, options.select);
     }
 
-    wires(): ShapeList<Wire> {
-        return this.subShapes<Wire>(ShapeType.Wire);
+    wires(options: SubShapeOptions = {}): ShapeList<Wire> {
+        return this.selected(this.subShapes<Wire>(ShapeType.Wire), options.select);
     }
 
-    faces(): ShapeList<Face> {
-        return this.subShapes<Face>(ShapeType.Face);
+    faces(options: SubShapeOptions = {}): ShapeList<Face> {
+        return this.selected(this.subShapes<Face>(ShapeType.Face), options.select);
     }
 
     /** Faces pierced by an infinite axis, sorted by distance to the axis origin. */
@@ -421,12 +494,12 @@ export abstract class Shape {
         );
     }
 
-    shells(): ShapeList<Shell> {
-        return this.subShapes<Shell>(ShapeType.Shell);
+    shells(options: SubShapeOptions = {}): ShapeList<Shell> {
+        return this.selected(this.subShapes<Shell>(ShapeType.Shell), options.select);
     }
 
-    solids(): ShapeList<Solid> {
-        return this.subShapes<Solid>(ShapeType.Solid);
+    solids(options: SubShapeOptions = {}): ShapeList<Solid> {
+        return this.selected(this.subShapes<Solid>(ShapeType.Solid), options.select);
     }
 
     /** Compounds within the shape; only compounds have any. */
@@ -635,6 +708,7 @@ export abstract class Shape {
                 ? { label: this.label }
                 : { label: this.label, color: this.color };
         let copy = new constructor(wrapped, options);
+        copy.#material = this.#material;
         if (this.#joints !== undefined) {
             for (let joint of this.#joints.values()) {
                 joint.rebind(copy);
@@ -669,6 +743,22 @@ export abstract class Shape {
         return tessellationOf(
             await mesh.tessellate(this.wrapped, meshDeflection(tolerance, options)),
         );
+    }
+
+    /**
+     * {@link tessellate}, plus a normal and a texture coordinate per vertex (build123d
+     * `Shape.tessellate_with_uvs`). UVs come from each face's surface parameterisation,
+     * normalised into `[0, 1]` and, unless `atlasPacking` is off, packed into one atlas.
+     */
+    async tessellateWithUvs(
+        tolerance: number,
+        options: UvMeshOptions = {},
+    ): Promise<UvTessellation> {
+        if (this.isNull) {
+            throw new InvalidShapeError("Cannot tessellate an empty shape");
+        }
+        let soup = await mesh.tessellateWithUvs(this.wrapped, meshDeflection(tolerance, options));
+        return uvTessellationOf(soup, options);
     }
 
     // ---- Measurement ----
@@ -715,6 +805,36 @@ export abstract class Shape {
             return 0;
         }
         return native("Volume", () => measure.massProperties(this.wrapped, kind).mass);
+    }
+
+    /**
+     * What the shape weighs (build123d `compute_mass`): its {@link volume} times the density of
+     * its {@link material}, converted into `massUnit` per `lengthUnit` cubed.
+     *
+     * Anything that encloses no volume — a vertex, a curve, a face, an open shell — weighs
+     * nothing, whether or not it has a material. Everything else needs one: without a material
+     * there is no density to weigh it with.
+     */
+    computeMass(options: MassOptions = {}): number {
+        let volume = this.volume;
+        if (volume === 0) {
+            return 0;
+        }
+        let material = this.material;
+        if (material === undefined) {
+            throw new MaterialError(
+                `Cannot compute the mass of a ${this.shapeType} without a material: its ` +
+                    "density is missing",
+            );
+        }
+        let perKilogram = UNITS_PER_KILOGRAM[options.massUnit ?? MassUnit.Gram];
+        let perMeter = UNITS_PER_METER[options.lengthUnit ?? Unit.Millimeter];
+        return volume * ((material.material.density * perKilogram) / perMeter ** 3);
+    }
+
+    /** What the shape weighs; build123d's per-class spelling of {@link computeMass}. */
+    mass(options: MassOptions = {}): number {
+        return this.computeMass(options);
     }
 
     // ---- Booleans ----
@@ -786,9 +906,19 @@ export abstract class Shape {
         return new ShapeList<Shape>();
     }
 
-    /** Merge faces and edges lying on the same geometry, dropping internal edges. */
+    /**
+     * Merge faces and edges lying on the same geometry, dropping internal edges. The merge joins
+     * the record of the operation that made this shape, so `Select.Last` still answers after it.
+     */
     clean(): this {
-        return this.withWrapped(clean(this.wrapped));
+        let cleaned = clean(this.wrapped);
+        let record = recordOf(this);
+        if (cleaned.history !== undefined) {
+            record?.merge(cleaned.history);
+            record ??= new ShapeHistory(cleaned.history);
+        }
+        let result = this.withWrapped(cleaned.shape);
+        return record === undefined ? result : madeBy(result, record);
     }
 
     /** Attempt ShapeFix_Shape repair on a deep copy, returning this shape if already valid. */

@@ -3,13 +3,17 @@
 
 import { Orientation, construct, query, shapes } from "@roonieone/occt-native";
 
-import type { Axis } from "../geometry/axis.ts";
-import type { Plane } from "../geometry/plane.ts";
+import type { VectorLike } from "../geometry/vector.ts";
 import type { Edge } from "../topology/edge.ts";
-import type { Shape } from "../topology/shape.ts";
 
 import { GeometryError } from "../errors.ts";
+import { Axis } from "../geometry/axis.ts";
 import { TOLERANCE } from "../geometry/constants.ts";
+import { Location } from "../geometry/location.ts";
+import { Plane } from "../geometry/plane.ts";
+import { Vector } from "../geometry/vector.ts";
+import { Shape } from "../topology/shape.ts";
+import { Vertex } from "../topology/vertex.ts";
 import { castEdge } from "./cast.ts";
 
 /**
@@ -57,11 +61,27 @@ export function trimEdgeToLength(edge: Edge, start: number, length: number): Edg
 }
 
 /**
+ * What `Edge.intersect` is handed for each of the things `trim_to_other` accepts: a point or a
+ * location stands for the vertex at it, everything else intersects as it is.
+ */
+function intersectionTarget(
+    other: Shape | Axis | Location | Plane | VectorLike,
+): Shape | Axis | Plane {
+    if (other instanceof Shape || other instanceof Axis || other instanceof Plane) {
+        return other;
+    }
+    return new Vertex(other instanceof Location ? other.position : Vector.from(other));
+}
+
+/**
  * The shortest piece of `edge`, measured from its start, that reaches an intersection with
  * `other`; `undefined` when they never meet (build123d `Edge.trim_to_other`).
  */
-export function trimEdgeToOther(edge: Edge, other: Shape | Axis | Plane): Edge | undefined {
-    let intersection = edge.intersect(other);
+export function trimEdgeToOther(
+    edge: Edge,
+    other: Shape | Axis | Location | Plane | VectorLike,
+): Edge | undefined {
+    let intersection = edge.intersect(intersectionTarget(other));
     if (intersection === undefined) {
         return undefined;
     }

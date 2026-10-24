@@ -1,12 +1,14 @@
 export { exportCAD, serialize } from "./export.ts";
 export { importCAD } from "./import.ts";
-export { CADFileType, METERS_PER_UNIT, PrecisionMode, Unit } from "./types.ts";
+export { CADFileType, MassUnit, METERS_PER_UNIT, PrecisionMode, Unit } from "./types.ts";
 export type {
     BrepOptions,
     ExportOptions,
     FormatOptions,
+    GltfOptions,
     IgesOptions,
     ImportOptions,
+    ObjOptions,
     StepOptions,
     StlOptions,
 } from "./types.ts";

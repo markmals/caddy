@@ -1,0 +1,6098 @@
+{
+  "cases": {
+    "applicability/typical-finishes": {
+      "finishes": {
+        "Brass_C360_HALF_HARD": [
+          "Bead Blast",
+          "Brushed",
+          "Fine Sanding",
+          "Smooth machining (Ra1.6µm)",
+          "Black oxide",
+          "Chrome plating",
+          "Gold plating",
+          "Nickel plating",
+          "Silver plating",
+          "Tin plating",
+          "PVD (Physical Vapor Deposition)",
+          "Vacuum plating",
+          "Powder coat",
+          "Electrophoresis",
+          "Spray painting",
+          "Laser engraving",
+          "Etching",
+          "Silkscreen"
+        ],
+        "Hardwood_OAK": [
+          "Fine Sanding",
+          "Smooth machining (Ra1.6µm)",
+          "Spray painting",
+          "Laser engraving"
+        ],
+        "PLA_GENERIC": [
+          "Bead Blast",
+          "Fine Sanding",
+          "Smooth machining (Ra1.6µm)",
+          "Dyeing",
+          "Vacuum plating",
+          "Spray painting",
+          "Laser engraving",
+          "Silkscreen"
+        ],
+        "Stainless_G304_ANNEALED": [
+          "Bead Blast",
+          "Brushed",
+          "Fine Sanding",
+          "Smooth machining (Ra1.6µm)",
+          "Electropolished",
+          "Black oxide",
+          "Passivation",
+          "Pickling",
+          "Chrome plating",
+          "Gold plating",
+          "Nickel plating",
+          "Silver plating",
+          "Tin plating",
+          "PVD (Physical Vapor Deposition)",
+          "Vacuum plating",
+          "Powder coat",
+          "Electrophoresis",
+          "Spray painting",
+          "Laser engraving",
+          "Etching",
+          "Silkscreen"
+        ]
+      }
+    },
+    "applicability/typical-materials": {
+      "byAppliedFinish": [
+        "Alu_G6061_T6",
+        "Alu_G7075_T6",
+        "Alu_G5052_H32",
+        "Alu_G2A12_T4",
+        "Alu_ALSI10MG_AS_BUILT",
+        "Alu_G2024_AEROSPACE",
+        "Titanium_GR5_ANNEALED",
+        "Titanium_TC4_AS_BUILT"
+      ],
+      "materials": {
+        "anodized": [
+          "Alu_G6061_T6",
+          "Alu_G7075_T6",
+          "Alu_G5052_H32",
+          "Alu_G2A12_T4",
+          "Alu_ALSI10MG_AS_BUILT",
+          "Alu_G2024_AEROSPACE",
+          "Titanium_GR5_ANNEALED",
+          "Titanium_TC4_AS_BUILT"
+        ],
+        "etching": [
+          "Alu_G6061_T6",
+          "Alu_G7075_T6",
+          "Alu_G5052_H32",
+          "Alu_G2A12_T4",
+          "Alu_ALSI10MG_AS_BUILT",
+          "Alu_G2024_AEROSPACE",
+          "Stainless_G304_ANNEALED",
+          "Stainless_G316L_ANNEALED",
+          "Stainless_G316L_AS_BUILT",
+          "Stainless_G303_ANNEALED",
+          "Stainless_G430_ANNEALED",
+          "Stainless_G430_COLD_WORKED",
+          "Stainless_G201_ANNEALED",
+          "MildSteel_PLAIN_CARBON_GENERIC",
+          "MildSteel_G1018_COLD_DRAWN",
+          "MildSteel_G1045_COLD_DRAWN",
+          "MildSteel_GA36_HOT_ROLLED",
+          "AlloySteel_G4140_QUENCHED_TEMPERED",
+          "AlloySteel_G4340_QUENCHED_TEMPERED",
+          "AlloySteel_G1215_COLD_DRAWN",
+          "AlloySteel.G52100_HARDENED_LOW_TEMPERED",
+          "SpringSteel_GENERIC_QUENCHED_TEMPERED",
+          "ToolSteel_D2_HARDENED",
+          "ToolSteel_A2_HARDENED",
+          "ToolSteel_O1_HARDENED",
+          "ToolSteel_A3_HARDENED",
+          "ToolSteel_S7_HARDENED",
+          "ToolSteel_H13_HARDENED",
+          "ToolSteel_GENERIC_AS_BUILT",
+          "Titanium_GR5_ANNEALED",
+          "Titanium_TC4_AS_BUILT",
+          "Brass_C360_HALF_HARD",
+          "Brass_C360_SOFT_ANNEALED",
+          "Copper_C110_ANNEALED",
+          "Magnesium_GENERIC_STRUCTURAL",
+          "Bronze_C51000_PHOSPHOR",
+          "Bronze_C90500_TIN",
+          "Bronze_C93200_BEARING",
+          "Gold_PURE",
+          "Silver_PURE",
+          "SodaLime_GENERIC",
+          "Borosilicate_GENERIC"
+        ],
+        "zinc_plating": [
+          "MildSteel_PLAIN_CARBON_GENERIC",
+          "MildSteel_G1018_COLD_DRAWN",
+          "MildSteel_G1045_COLD_DRAWN",
+          "MildSteel_GA36_HOT_ROLLED",
+          "AlloySteel_G4140_QUENCHED_TEMPERED",
+          "AlloySteel_G4340_QUENCHED_TEMPERED",
+          "AlloySteel_G1215_COLD_DRAWN",
+          "AlloySteel.G52100_HARDENED_LOW_TEMPERED",
+          "SpringSteel_GENERIC_QUENCHED_TEMPERED",
+          "ToolSteel_D2_HARDENED",
+          "ToolSteel_A2_HARDENED",
+          "ToolSteel_O1_HARDENED",
+          "ToolSteel_A3_HARDENED",
+          "ToolSteel_S7_HARDENED",
+          "ToolSteel_H13_HARDENED",
+          "ToolSteel_GENERIC_AS_BUILT"
+        ]
+      }
+    },
+    "catalog/families": {
+      "families": {
+        "abs": "ABS_GENERIC",
+        "alloy_steel": "AlloySteel_G4140_QUENCHED_TEMPERED",
+        "aluminum": "Alu_G6061_T6",
+        "american_cherry": "Hardwood_AMERICAN_CHERRY",
+        "asa": "Asa_GENERIC",
+        "ash": "Hardwood_ASH",
+        "beech": "Hardwood_BEECH",
+        "birch": "Hardwood_BIRCH",
+        "borosilicate": "Borosilicate_GENERIC",
+        "brass": "Brass_C360_HALF_HARD",
+        "bronze": "Bronze_C51000_PHOSPHOR",
+        "cardboard": "Cardboard_CORRUGATED",
+        "castable": "Castable_GENERIC",
+        "ceramic": "Ceramic_GENERIC",
+        "cfrp": "CFRP_PLATE",
+        "copper": "Copper_C110_ANNEALED",
+        "engineered_wood": "EngineeredWood_MDF",
+        "esd": "Esd_GENERIC",
+        "felt": "Felt_GENERIC",
+        "flexible": "Flexible_GENERIC",
+        "foamboard": "Foamboard_GENERIC",
+        "fr4": "FR4_GENERIC",
+        "gold": "Gold_PURE",
+        "hardwood": "Hardwood_GENERIC",
+        "high_temp": "HighTemp_GENERIC",
+        "leather": "Leather_GENERIC",
+        "magnesium": "Magnesium_GENERIC_STRUCTURAL",
+        "maple": "Hardwood_MAPLE",
+        "mdf": "EngineeredWood_MDF",
+        "mild_steel": "MildSteel_PLAIN_CARBON_GENERIC",
+        "nylon": "Nylon_PA12",
+        "oak": "Hardwood_OAK",
+        "osb": "EngineeredWood_OSB",
+        "paper": "Paper_OFFICE",
+        "pc": "PC_GENERIC",
+        "pe": "PE_HDPE",
+        "peek": "Peek_MOLDED",
+        "petg": "PETG_GENERIC",
+        "phenolic": "Phenolic_BAKELITE",
+        "pine": "Softwood_PINE",
+        "pla": "PLA_GENERIC",
+        "pmma": "PMMA_GENERIC",
+        "pom": "POM_GENERIC",
+        "pp": "PP_GENERIC",
+        "pps": "PPS_CF",
+        "ptfe": "PTFE_GENERIC",
+        "rubber": "Rubber_GENERIC",
+        "silver": "Silver_PURE",
+        "soda_lime": "SodaLime_GENERIC",
+        "softwood": "Softwood_GENERIC",
+        "spring_steel": "SpringSteel_GENERIC_QUENCHED_TEMPERED",
+        "spruce": "Softwood_SPRUCE",
+        "stainless": "Stainless_G304_ANNEALED",
+        "standard": "Standard_GENERIC",
+        "titanium": "Titanium_GR5_ANNEALED",
+        "tool_steel": "ToolSteel_D2_HARDENED",
+        "tough": "Tough_GENERIC",
+        "tpu": "TPU_SHORE_95A",
+        "transparent": "Transparent_GENERIC",
+        "walnut": "Hardwood_WALNUT",
+        "woven": "Woven_GENERIC"
+      }
+    },
+    "catalog/materials": {
+      "count": 95,
+      "materials": {
+        "ABS_FLAME_RETARDANT": {
+          "category": "plastic",
+          "density": 1200,
+          "family": "ABS",
+          "properties": {
+            "elongation_at_break": [
+              5,
+              20
+            ],
+            "glass_transition_temperature": [
+              100,
+              110
+            ],
+            "hardness": [
+              72,
+              82
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              75,
+              90
+            ],
+            "max_service_temp": [
+              60,
+              75
+            ],
+            "modulus_of_elasticity": [
+              2.0,
+              2.6
+            ],
+            "poisson_ratio": [
+              0.35,
+              0.4
+            ],
+            "shear_modulus": [
+              0.75,
+              0.95
+            ],
+            "shear_strength": [
+              22,
+              38
+            ],
+            "specific_heat_capacity": [
+              1300,
+              1500
+            ],
+            "tensile_strength": [
+              30,
+              45
+            ],
+            "thermal_conductivity": [
+              0.15,
+              0.22
+            ],
+            "thermal_expansion": [
+              8e-05,
+              0.00011
+            ],
+            "yield_strength": [
+              30,
+              42
+            ]
+          },
+          "transparent": false
+        },
+        "ABS_GENERIC": {
+          "category": "plastic",
+          "density": 1050,
+          "family": "ABS",
+          "properties": {
+            "elongation_at_break": [
+              5,
+              25
+            ],
+            "glass_transition_temperature": [
+              100,
+              110
+            ],
+            "hardness": [
+              70,
+              80
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              75,
+              95
+            ],
+            "max_service_temp": [
+              60,
+              80
+            ],
+            "modulus_of_elasticity": [
+              1.8,
+              2.5
+            ],
+            "poisson_ratio": [
+              0.35,
+              0.4
+            ],
+            "shear_modulus": [
+              0.7,
+              0.9
+            ],
+            "shear_strength": [
+              20,
+              35
+            ],
+            "specific_heat_capacity": [
+              1300,
+              1500
+            ],
+            "tensile_strength": [
+              30,
+              50
+            ],
+            "thermal_conductivity": [
+              0.15,
+              0.2
+            ],
+            "thermal_expansion": [
+              8e-05,
+              0.00011
+            ],
+            "yield_strength": [
+              30,
+              45
+            ]
+          },
+          "transparent": false
+        },
+        "AlloySteel.G52100_HARDENED_LOW_TEMPERED": {
+          "category": "metal",
+          "density": 7810,
+          "family": "alloy_steel",
+          "properties": {
+            "hardness": [
+              60,
+              65
+            ],
+            "hardness_scale": "HRC",
+            "max_service_temp": [
+              120,
+              150
+            ],
+            "melting_temperature": [
+              1420,
+              1460
+            ],
+            "modulus_of_elasticity": [
+              190,
+              210
+            ],
+            "poisson_ratio": [
+              0.27,
+              0.3
+            ],
+            "shear_modulus": [
+              80,
+              80
+            ],
+            "shear_strength": [
+              1300,
+              1400
+            ],
+            "specific_heat_capacity": [
+              460,
+              480
+            ],
+            "tensile_strength": [
+              2200,
+              2300
+            ],
+            "thermal_conductivity": [
+              40,
+              47
+            ],
+            "thermal_expansion": [
+              1.19e-05,
+              1.2e-05
+            ],
+            "yield_strength": [
+              1700,
+              2000
+            ]
+          },
+          "transparent": false
+        },
+        "AlloySteel_G1215_COLD_DRAWN": {
+          "category": "metal",
+          "density": 7850,
+          "family": "alloy_steel",
+          "properties": {
+            "hardness": [
+              120,
+              160
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              200,
+              500
+            ],
+            "melting_temperature": [
+              1450,
+              1530
+            ],
+            "modulus_of_elasticity": [
+              200,
+              210
+            ],
+            "poisson_ratio": [
+              0.28,
+              0.3
+            ],
+            "shear_modulus": [
+              80,
+              81
+            ],
+            "shear_strength": [
+              250,
+              315
+            ],
+            "specific_heat_capacity": [
+              460,
+              490
+            ],
+            "tensile_strength": [
+              440,
+              550
+            ],
+            "thermal_conductivity": [
+              45,
+              55
+            ],
+            "thermal_expansion": [
+              1.1e-05,
+              1.3e-05
+            ],
+            "yield_strength": [
+              340,
+              420
+            ]
+          },
+          "transparent": false
+        },
+        "AlloySteel_G4140_QUENCHED_TEMPERED": {
+          "category": "metal",
+          "density": 7850,
+          "family": "alloy_steel",
+          "properties": {
+            "hardness": [
+              28,
+              40
+            ],
+            "hardness_scale": "HRC",
+            "max_service_temp": [
+              200,
+              500
+            ],
+            "melting_temperature": [
+              1450,
+              1530
+            ],
+            "modulus_of_elasticity": [
+              200,
+              210
+            ],
+            "poisson_ratio": [
+              0.28,
+              0.3
+            ],
+            "shear_modulus": [
+              80,
+              81
+            ],
+            "shear_strength": [
+              455,
+              630
+            ],
+            "specific_heat_capacity": [
+              460,
+              490
+            ],
+            "tensile_strength": [
+              800,
+              1150
+            ],
+            "thermal_conductivity": [
+              30,
+              45
+            ],
+            "thermal_expansion": [
+              1.1e-05,
+              1.3e-05
+            ],
+            "yield_strength": [
+              650,
+              950
+            ]
+          },
+          "transparent": false
+        },
+        "AlloySteel_G4340_QUENCHED_TEMPERED": {
+          "category": "metal",
+          "density": 7850,
+          "family": "alloy_steel",
+          "properties": {
+            "hardness": [
+              35,
+              45
+            ],
+            "hardness_scale": "HRC",
+            "max_service_temp": [
+              200,
+              500
+            ],
+            "melting_temperature": [
+              1450,
+              1530
+            ],
+            "modulus_of_elasticity": [
+              200,
+              215
+            ],
+            "poisson_ratio": [
+              0.28,
+              0.3
+            ],
+            "shear_modulus": [
+              80,
+              81
+            ],
+            "shear_strength": [
+              560,
+              780
+            ],
+            "specific_heat_capacity": [
+              460,
+              490
+            ],
+            "tensile_strength": [
+              980,
+              1200
+            ],
+            "thermal_conductivity": [
+              30,
+              45
+            ],
+            "thermal_expansion": [
+              1.1e-05,
+              1.3e-05
+            ],
+            "yield_strength": [
+              850,
+              1080
+            ]
+          },
+          "transparent": false
+        },
+        "Alu_ALSI10MG_AS_BUILT": {
+          "category": "metal",
+          "density": 2670,
+          "family": "aluminum",
+          "properties": {
+            "hardness": [
+              80,
+              110
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              80,
+              150
+            ],
+            "melting_temperature": [
+              570,
+              600
+            ],
+            "modulus_of_elasticity": [
+              65,
+              72
+            ],
+            "poisson_ratio": [
+              0.32,
+              0.35
+            ],
+            "shear_modulus": [
+              25,
+              28
+            ],
+            "shear_strength": [
+              140,
+              215
+            ],
+            "specific_heat_capacity": [
+              875,
+              950
+            ],
+            "tensile_strength": [
+              250,
+              330
+            ],
+            "thermal_conductivity": [
+              100,
+              150
+            ],
+            "thermal_expansion": [
+              2e-05,
+              2.2e-05
+            ],
+            "yield_strength": [
+              160,
+              250
+            ]
+          },
+          "transparent": false
+        },
+        "Alu_G2024_AEROSPACE": {
+          "category": "metal",
+          "density": 2780,
+          "family": "aluminum",
+          "properties": {
+            "hardness": [
+              95,
+              120
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              80,
+              120
+            ],
+            "melting_temperature": [
+              500,
+              650
+            ],
+            "modulus_of_elasticity": [
+              70,
+              73
+            ],
+            "poisson_ratio": [
+              0.32,
+              0.35
+            ],
+            "shear_modulus": [
+              26,
+              28
+            ],
+            "shear_strength": [
+              230,
+              280
+            ],
+            "specific_heat_capacity": [
+              875,
+              950
+            ],
+            "tensile_strength": [
+              420,
+              470
+            ],
+            "thermal_conductivity": [
+              120,
+              130
+            ],
+            "thermal_expansion": [
+              2.1e-05,
+              2.4e-05
+            ],
+            "yield_strength": [
+              260,
+              320
+            ]
+          },
+          "transparent": false
+        },
+        "Alu_G2A12_T4": {
+          "category": "metal",
+          "density": 2800,
+          "family": "aluminum",
+          "properties": {
+            "hardness": [
+              95,
+              120
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              80,
+              120
+            ],
+            "melting_temperature": [
+              570,
+              660
+            ],
+            "modulus_of_elasticity": [
+              68,
+              72
+            ],
+            "poisson_ratio": [
+              0.32,
+              0.35
+            ],
+            "shear_modulus": [
+              25,
+              28
+            ],
+            "shear_strength": [
+              240,
+              310
+            ],
+            "specific_heat_capacity": [
+              875,
+              950
+            ],
+            "tensile_strength": [
+              430,
+              480
+            ],
+            "thermal_conductivity": [
+              120,
+              190
+            ],
+            "thermal_expansion": [
+              2.2e-05,
+              2.4e-05
+            ],
+            "yield_strength": [
+              300,
+              340
+            ]
+          },
+          "transparent": false
+        },
+        "Alu_G5052_H32": {
+          "category": "metal",
+          "density": 2680,
+          "family": "aluminum",
+          "properties": {
+            "hardness": [
+              60,
+              80
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              80,
+              120
+            ],
+            "melting_temperature": [
+              570,
+              660
+            ],
+            "modulus_of_elasticity": [
+              68,
+              72
+            ],
+            "poisson_ratio": [
+              0.32,
+              0.35
+            ],
+            "shear_modulus": [
+              25,
+              28
+            ],
+            "shear_strength": [
+              120,
+              160
+            ],
+            "specific_heat_capacity": [
+              875,
+              950
+            ],
+            "tensile_strength": [
+              215,
+              250
+            ],
+            "thermal_conductivity": [
+              130,
+              180
+            ],
+            "thermal_expansion": [
+              2.2e-05,
+              2.4e-05
+            ],
+            "yield_strength": [
+              160,
+              195
+            ]
+          },
+          "transparent": false
+        },
+        "Alu_G6061_T6": {
+          "category": "metal",
+          "density": 2700,
+          "family": "aluminum",
+          "properties": {
+            "hardness": [
+              85,
+              100
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              80,
+              120
+            ],
+            "melting_temperature": [
+              570,
+              660
+            ],
+            "modulus_of_elasticity": [
+              66,
+              70
+            ],
+            "poisson_ratio": [
+              0.32,
+              0.35
+            ],
+            "shear_modulus": [
+              25,
+              28
+            ],
+            "shear_strength": [
+              200,
+              210
+            ],
+            "specific_heat_capacity": [
+              875,
+              950
+            ],
+            "tensile_strength": [
+              290,
+              320
+            ],
+            "thermal_conductivity": [
+              130,
+              180
+            ],
+            "thermal_expansion": [
+              2.2e-05,
+              2.4e-05
+            ],
+            "yield_strength": [
+              240,
+              280
+            ]
+          },
+          "transparent": false
+        },
+        "Alu_G7075_T6": {
+          "category": "metal",
+          "density": 2810,
+          "family": "aluminum",
+          "properties": {
+            "hardness": [
+              135,
+              160
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              80,
+              120
+            ],
+            "melting_temperature": [
+              480,
+              640
+            ],
+            "modulus_of_elasticity": [
+              68,
+              72
+            ],
+            "poisson_ratio": [
+              0.32,
+              0.35
+            ],
+            "shear_modulus": [
+              25,
+              28
+            ],
+            "shear_strength": [
+              330,
+              350
+            ],
+            "specific_heat_capacity": [
+              875,
+              950
+            ],
+            "tensile_strength": [
+              540,
+              600
+            ],
+            "thermal_conductivity": [
+              130,
+              180
+            ],
+            "thermal_expansion": [
+              2.2e-05,
+              2.4e-05
+            ],
+            "yield_strength": [
+              480,
+              510
+            ]
+          },
+          "transparent": false
+        },
+        "Asa_GENERIC": {
+          "category": "plastic",
+          "density": 1070,
+          "family": "ASA",
+          "properties": {
+            "elongation_at_break": [
+              10,
+              40
+            ],
+            "glass_transition_temperature": [
+              100,
+              110
+            ],
+            "hardness": [
+              70,
+              80
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              85,
+              100
+            ],
+            "max_service_temp": [
+              65,
+              85
+            ],
+            "modulus_of_elasticity": [
+              1.9,
+              2.6
+            ],
+            "poisson_ratio": [
+              0.35,
+              0.4
+            ],
+            "shear_modulus": [
+              0.7,
+              0.95
+            ],
+            "shear_strength": [
+              25,
+              38
+            ],
+            "specific_heat_capacity": [
+              1300,
+              1500
+            ],
+            "tensile_strength": [
+              40,
+              55
+            ],
+            "thermal_conductivity": [
+              0.15,
+              0.2
+            ],
+            "thermal_expansion": [
+              8e-05,
+              0.0001
+            ],
+            "yield_strength": [
+              40,
+              50
+            ]
+          },
+          "transparent": false
+        },
+        "Borosilicate_GENERIC": {
+          "category": "glass",
+          "density": 2230,
+          "family": "borosilicate",
+          "properties": {
+            "glass_transition_temperature": [
+              490,
+              565
+            ],
+            "hardness": [
+              480,
+              600
+            ],
+            "hardness_scale": "HV",
+            "max_service_temp": [
+              230,
+              400
+            ],
+            "melting_temperature": [
+              1500,
+              1650
+            ],
+            "modulus_of_elasticity": [
+              60,
+              66
+            ],
+            "poisson_ratio": [
+              0.19,
+              0.22
+            ],
+            "shear_modulus": [
+              24,
+              28
+            ],
+            "specific_heat_capacity": [
+              750,
+              830
+            ],
+            "tensile_strength": [
+              30,
+              90
+            ],
+            "thermal_conductivity": [
+              1.0,
+              1.2
+            ],
+            "thermal_expansion": [
+              3e-06,
+              3.5e-06
+            ]
+          },
+          "transparent": true
+        },
+        "Brass_C360_HALF_HARD": {
+          "category": "metal",
+          "density": 8500,
+          "family": "brass",
+          "properties": {
+            "hardness": [
+              90,
+              120
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              150,
+              250
+            ],
+            "melting_temperature": [
+              880,
+              950
+            ],
+            "modulus_of_elasticity": [
+              100,
+              110
+            ],
+            "poisson_ratio": [
+              0.32,
+              0.35
+            ],
+            "shear_modulus": [
+              37,
+              40
+            ],
+            "shear_strength": [
+              210,
+              270
+            ],
+            "specific_heat_capacity": [
+              380,
+              390
+            ],
+            "tensile_strength": [
+              380,
+              450
+            ],
+            "thermal_conductivity": [
+              110,
+              130
+            ],
+            "thermal_expansion": [
+              1.9e-05,
+              2.1e-05
+            ],
+            "yield_strength": [
+              200,
+              250
+            ]
+          },
+          "transparent": false
+        },
+        "Brass_C360_SOFT_ANNEALED": {
+          "category": "metal",
+          "density": 8500,
+          "family": "brass",
+          "properties": {
+            "hardness": [
+              50,
+              75
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              150,
+              250
+            ],
+            "melting_temperature": [
+              880,
+              950
+            ],
+            "modulus_of_elasticity": [
+              97,
+              110
+            ],
+            "poisson_ratio": [
+              0.32,
+              0.35
+            ],
+            "shear_modulus": [
+              37,
+              40
+            ],
+            "shear_strength": [
+              180,
+              230
+            ],
+            "specific_heat_capacity": [
+              380,
+              390
+            ],
+            "tensile_strength": [
+              300,
+              360
+            ],
+            "thermal_conductivity": [
+              110,
+              130
+            ],
+            "thermal_expansion": [
+              1.9e-05,
+              2.1e-05
+            ],
+            "yield_strength": [
+              100,
+              160
+            ]
+          },
+          "transparent": false
+        },
+        "Bronze_C51000_PHOSPHOR": {
+          "category": "metal",
+          "density": 8800,
+          "family": "bronze",
+          "properties": {
+            "hardness": [
+              70,
+              200
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              150,
+              250
+            ],
+            "melting_temperature": [
+              900,
+              1000
+            ],
+            "modulus_of_elasticity": [
+              100,
+              120
+            ],
+            "poisson_ratio": [
+              0.33,
+              0.35
+            ],
+            "shear_modulus": [
+              40,
+              44
+            ],
+            "shear_strength": [
+              220,
+              360
+            ],
+            "specific_heat_capacity": [
+              370,
+              380
+            ],
+            "tensile_strength": [
+              300,
+              550
+            ],
+            "thermal_conductivity": [
+              50,
+              75
+            ],
+            "thermal_expansion": [
+              1.7e-05,
+              1.9e-05
+            ],
+            "yield_strength": [
+              130,
+              450
+            ]
+          },
+          "transparent": false
+        },
+        "Bronze_C90500_TIN": {
+          "category": "metal",
+          "density": 8800,
+          "family": "bronze",
+          "properties": {
+            "hardness": [
+              65,
+              110
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              150,
+              250
+            ],
+            "melting_temperature": [
+              850,
+              1000
+            ],
+            "modulus_of_elasticity": [
+              95,
+              110
+            ],
+            "poisson_ratio": [
+              0.33,
+              0.35
+            ],
+            "shear_modulus": [
+              38,
+              44
+            ],
+            "shear_strength": [
+              180,
+              280
+            ],
+            "specific_heat_capacity": [
+              370,
+              380
+            ],
+            "tensile_strength": [
+              275,
+              380
+            ],
+            "thermal_conductivity": [
+              65,
+              75
+            ],
+            "thermal_expansion": [
+              1.7e-05,
+              1.9e-05
+            ],
+            "yield_strength": [
+              130,
+              200
+            ]
+          },
+          "transparent": false
+        },
+        "Bronze_C93200_BEARING": {
+          "category": "metal",
+          "density": 8900,
+          "family": "bronze",
+          "properties": {
+            "hardness": [
+              55,
+              75
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              150,
+              250
+            ],
+            "melting_temperature": [
+              850,
+              980
+            ],
+            "modulus_of_elasticity": [
+              90,
+              105
+            ],
+            "poisson_ratio": [
+              0.33,
+              0.35
+            ],
+            "shear_modulus": [
+              36,
+              42
+            ],
+            "shear_strength": [
+              160,
+              240
+            ],
+            "specific_heat_capacity": [
+              370,
+              380
+            ],
+            "tensile_strength": [
+              240,
+              310
+            ],
+            "thermal_conductivity": [
+              45,
+              60
+            ],
+            "thermal_expansion": [
+              1.7e-05,
+              1.9e-05
+            ],
+            "yield_strength": [
+              110,
+              150
+            ]
+          },
+          "transparent": false
+        },
+        "CFRP_PLATE": {
+          "category": "plastic",
+          "density": 1600,
+          "family": "CFRP",
+          "properties": {
+            "elongation_at_break": [
+              0.5,
+              2
+            ],
+            "glass_transition_temperature": [
+              100,
+              200
+            ],
+            "hardness": [
+              85,
+              90
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              100,
+              200
+            ],
+            "max_service_temp": [
+              100,
+              180
+            ],
+            "modulus_of_elasticity": [
+              50,
+              180
+            ],
+            "poisson_ratio": [
+              0.05,
+              0.15
+            ],
+            "shear_modulus": [
+              3,
+              8
+            ],
+            "shear_strength": [
+              30,
+              90
+            ],
+            "specific_heat_capacity": [
+              800,
+              1100
+            ],
+            "tensile_strength": [
+              600,
+              2500
+            ],
+            "thermal_conductivity": [
+              0.5,
+              10
+            ],
+            "thermal_expansion": [
+              0,
+              1e-05
+            ],
+            "yield_strength": "n/a"
+          },
+          "transparent": false
+        },
+        "Cardboard_CORRUGATED": {
+          "category": "paper",
+          "density": 140,
+          "family": "corrugated_cardboard",
+          "properties": {
+            "areal_density": [
+              400,
+              700
+            ],
+            "specific_heat_capacity": [
+              1300,
+              1400
+            ],
+            "tensile_strength": [
+              5,
+              25
+            ],
+            "thermal_conductivity": [
+              0.05,
+              0.1
+            ],
+            "thickness": [
+              3,
+              5
+            ]
+          },
+          "transparent": false
+        },
+        "Castable_GENERIC": {
+          "category": "resin",
+          "density": 1150,
+          "family": "resin",
+          "properties": {
+            "elongation_at_break": [
+              3,
+              10
+            ],
+            "glass_transition_temperature": [
+              48,
+              62
+            ],
+            "hardness": [
+              76,
+              83
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              48,
+              62
+            ],
+            "max_service_temp": [
+              40,
+              55
+            ],
+            "modulus_of_elasticity": [
+              2.2,
+              3.0
+            ],
+            "poisson_ratio": [
+              0.38,
+              0.42
+            ],
+            "shear_modulus": [
+              0.8,
+              1.1
+            ],
+            "shear_strength": [
+              21,
+              30
+            ],
+            "specific_heat_capacity": [
+              1400,
+              1600
+            ],
+            "tensile_strength": [
+              35,
+              50
+            ],
+            "thermal_conductivity": [
+              0.18,
+              0.25
+            ],
+            "thermal_expansion": [
+              9e-05,
+              0.00015
+            ],
+            "yield_strength": [
+              32,
+              45
+            ]
+          },
+          "transparent": false
+        },
+        "Ceramic_GENERIC": {
+          "category": "resin",
+          "density": 1650,
+          "family": "resin",
+          "properties": {
+            "elongation_at_break": [
+              1,
+              3
+            ],
+            "glass_transition_temperature": [
+              150,
+              250
+            ],
+            "hardness": [
+              88,
+              95
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              200,
+              280
+            ],
+            "max_service_temp": [
+              150,
+              220
+            ],
+            "modulus_of_elasticity": [
+              5,
+              9
+            ],
+            "poisson_ratio": [
+              0.3,
+              0.35
+            ],
+            "shear_modulus": [
+              3.0,
+              4.5
+            ],
+            "shear_strength": [
+              36,
+              48
+            ],
+            "specific_heat_capacity": [
+              1100,
+              1300
+            ],
+            "tensile_strength": [
+              60,
+              80
+            ],
+            "thermal_conductivity": [
+              0.2,
+              0.5
+            ],
+            "thermal_expansion": [
+              3e-05,
+              7e-05
+            ],
+            "yield_strength": [
+              55,
+              72
+            ]
+          },
+          "transparent": false
+        },
+        "Copper_C110_ANNEALED": {
+          "category": "metal",
+          "density": 8900,
+          "family": "copper",
+          "properties": {
+            "hardness": [
+              40,
+              60
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              150,
+              250
+            ],
+            "melting_temperature": [
+              1080,
+              1085
+            ],
+            "modulus_of_elasticity": [
+              115,
+              130
+            ],
+            "poisson_ratio": [
+              0.34,
+              0.36
+            ],
+            "shear_modulus": [
+              44,
+              48
+            ],
+            "shear_strength": [
+              110,
+              150
+            ],
+            "specific_heat_capacity": [
+              380,
+              390
+            ],
+            "tensile_strength": [
+              200,
+              250
+            ],
+            "thermal_conductivity": [
+              390,
+              400
+            ],
+            "thermal_expansion": [
+              1.6e-05,
+              1.7e-05
+            ],
+            "yield_strength": [
+              50,
+              70
+            ]
+          },
+          "transparent": false
+        },
+        "EngineeredWood_MDF": {
+          "category": "wood",
+          "density": 750,
+          "family": "mdf",
+          "properties": {
+            "compressive_strength_parallel": [
+              10,
+              18
+            ],
+            "modulus_of_elasticity": [
+              3.0,
+              4.5
+            ],
+            "modulus_of_rupture": [
+              28,
+              42
+            ],
+            "specific_heat_capacity": [
+              1200,
+              1700
+            ],
+            "thermal_conductivity": [
+              0.1,
+              0.15
+            ]
+          },
+          "transparent": false
+        },
+        "EngineeredWood_OSB": {
+          "category": "wood",
+          "density": 640,
+          "family": "osb",
+          "properties": {
+            "compressive_strength_parallel": [
+              10,
+              18
+            ],
+            "modulus_of_elasticity": [
+              4.5,
+              7.0
+            ],
+            "modulus_of_rupture": [
+              22,
+              35
+            ],
+            "specific_heat_capacity": [
+              1200,
+              1700
+            ],
+            "thermal_conductivity": [
+              0.1,
+              0.15
+            ]
+          },
+          "transparent": false
+        },
+        "Esd_GENERIC": {
+          "category": "resin",
+          "density": 1300,
+          "family": "resin",
+          "properties": {
+            "elongation_at_break": [
+              5,
+              15
+            ],
+            "glass_transition_temperature": [
+              55,
+              70
+            ],
+            "hardness": [
+              80,
+              88
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              55,
+              70
+            ],
+            "max_service_temp": [
+              45,
+              60
+            ],
+            "modulus_of_elasticity": [
+              1.6,
+              2.4
+            ],
+            "poisson_ratio": [
+              0.38,
+              0.42
+            ],
+            "shear_modulus": [
+              0.55,
+              0.85
+            ],
+            "shear_strength": [
+              23,
+              30
+            ],
+            "specific_heat_capacity": [
+              1400,
+              1600
+            ],
+            "tensile_strength": [
+              38,
+              50
+            ],
+            "thermal_conductivity": [
+              0.18,
+              0.25
+            ],
+            "thermal_expansion": [
+              8e-05,
+              0.00013
+            ],
+            "yield_strength": [
+              35,
+              46
+            ]
+          },
+          "transparent": false
+        },
+        "FR4_GENERIC": {
+          "category": "plastic",
+          "density": 1850,
+          "family": "FR4",
+          "properties": {
+            "elongation_at_break": [
+              1,
+              3
+            ],
+            "glass_transition_temperature": [
+              130,
+              180
+            ],
+            "hardness": [
+              85,
+              90
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              130,
+              180
+            ],
+            "max_service_temp": [
+              120,
+              160
+            ],
+            "modulus_of_elasticity": [
+              18,
+              24
+            ],
+            "poisson_ratio": [
+              0.11,
+              0.18
+            ],
+            "shear_modulus": [
+              3,
+              7
+            ],
+            "shear_strength": [
+              60,
+              120
+            ],
+            "specific_heat_capacity": [
+              600,
+              900
+            ],
+            "tensile_strength": [
+              260,
+              340
+            ],
+            "thermal_conductivity": [
+              0.25,
+              0.35
+            ],
+            "thermal_expansion": [
+              1.2e-05,
+              1.8e-05
+            ],
+            "yield_strength": "n/a"
+          },
+          "transparent": false
+        },
+        "Felt_GENERIC": {
+          "category": "textile",
+          "density": 120,
+          "family": "felt",
+          "properties": {
+            "areal_density": [
+              200,
+              400
+            ],
+            "specific_heat_capacity": [
+              1300,
+              1700
+            ],
+            "tensile_strength": [
+              2,
+              10
+            ],
+            "thermal_conductivity": [
+              0.04,
+              0.08
+            ],
+            "thickness": [
+              2,
+              4
+            ]
+          },
+          "transparent": false
+        },
+        "Flexible_GENERIC": {
+          "category": "resin",
+          "density": 1150,
+          "family": "resin",
+          "properties": {
+            "elongation_at_break": [
+              25,
+              120
+            ],
+            "glass_transition_temperature": [
+              -20,
+              25
+            ],
+            "hardness": [
+              55,
+              85
+            ],
+            "hardness_scale": "Shore A",
+            "heat_deflection_temperature": "n/a",
+            "max_service_temp": [
+              40,
+              70
+            ],
+            "modulus_of_elasticity": [
+              0.001,
+              0.5
+            ],
+            "poisson_ratio": [
+              0.4,
+              0.49
+            ],
+            "shear_modulus": [
+              0.0003,
+              0.17
+            ],
+            "shear_strength": [
+              3,
+              18
+            ],
+            "specific_heat_capacity": [
+              1400,
+              1600
+            ],
+            "tensile_strength": [
+              5,
+              30
+            ],
+            "thermal_conductivity": [
+              0.15,
+              0.25
+            ],
+            "thermal_expansion": [
+              0.0001,
+              0.0002
+            ],
+            "yield_strength": "n/a"
+          },
+          "transparent": false
+        },
+        "Foamboard_GENERIC": {
+          "category": "paper",
+          "density": 120,
+          "family": "foamboard",
+          "properties": {
+            "areal_density": [
+              400,
+              550
+            ],
+            "specific_heat_capacity": [
+              1300,
+              1500
+            ],
+            "tensile_strength": [
+              2,
+              10
+            ],
+            "thermal_conductivity": [
+              0.03,
+              0.06
+            ],
+            "thickness": [
+              3,
+              6
+            ]
+          },
+          "transparent": false
+        },
+        "Gold_PURE": {
+          "category": "metal",
+          "density": 19300,
+          "family": "gold",
+          "properties": {
+            "hardness": [
+              25,
+              60
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              200,
+              400
+            ],
+            "melting_temperature": [
+              1063,
+              1064
+            ],
+            "modulus_of_elasticity": [
+              77,
+              79
+            ],
+            "poisson_ratio": [
+              0.42,
+              0.44
+            ],
+            "shear_modulus": [
+              26,
+              28
+            ],
+            "shear_strength": [
+              70,
+              110
+            ],
+            "specific_heat_capacity": [
+              128,
+              130
+            ],
+            "tensile_strength": [
+              100,
+              220
+            ],
+            "thermal_conductivity": [
+              315,
+              320
+            ],
+            "thermal_expansion": [
+              1.4e-05,
+              1.45e-05
+            ],
+            "yield_strength": [
+              30,
+              200
+            ]
+          },
+          "transparent": false
+        },
+        "Hardwood_AMERICAN_CHERRY": {
+          "category": "wood",
+          "density": 570,
+          "family": "cherry",
+          "properties": {
+            "compressive_strength_parallel": [
+              45,
+              55
+            ],
+            "janka_hardness": [
+              3900,
+              4500
+            ],
+            "modulus_of_elasticity": [
+              9,
+              11
+            ],
+            "modulus_of_rupture": [
+              80,
+              100
+            ],
+            "specific_heat_capacity": [
+              1200,
+              1700
+            ],
+            "thermal_conductivity": [
+              0.11,
+              0.16
+            ]
+          },
+          "transparent": false
+        },
+        "Hardwood_ASH": {
+          "category": "wood",
+          "density": 670,
+          "family": "ash",
+          "properties": {
+            "compressive_strength_parallel": [
+              45,
+              58
+            ],
+            "janka_hardness": [
+              5500,
+              7000
+            ],
+            "modulus_of_elasticity": [
+              10,
+              13
+            ],
+            "modulus_of_rupture": [
+              90,
+              115
+            ],
+            "specific_heat_capacity": [
+              1200,
+              1700
+            ],
+            "thermal_conductivity": [
+              0.12,
+              0.18
+            ]
+          },
+          "transparent": false
+        },
+        "Hardwood_BEECH": {
+          "category": "wood",
+          "density": 720,
+          "family": "beech",
+          "properties": {
+            "compressive_strength_parallel": [
+              44,
+              56
+            ],
+            "janka_hardness": [
+              5500,
+              7000
+            ],
+            "modulus_of_elasticity": [
+              11,
+              15
+            ],
+            "modulus_of_rupture": [
+              90,
+              115
+            ],
+            "specific_heat_capacity": [
+              1200,
+              1700
+            ],
+            "thermal_conductivity": [
+              0.12,
+              0.18
+            ]
+          },
+          "transparent": false
+        },
+        "Hardwood_BIRCH": {
+          "category": "wood",
+          "density": 660,
+          "family": "birch",
+          "properties": {
+            "compressive_strength_parallel": [
+              50,
+              62
+            ],
+            "janka_hardness": [
+              4800,
+              6200
+            ],
+            "modulus_of_elasticity": [
+              11,
+              15
+            ],
+            "modulus_of_rupture": [
+              100,
+              125
+            ],
+            "specific_heat_capacity": [
+              1200,
+              1700
+            ],
+            "thermal_conductivity": [
+              0.12,
+              0.18
+            ]
+          },
+          "transparent": false
+        },
+        "Hardwood_GENERIC": {
+          "category": "wood",
+          "density": 675,
+          "family": "oak",
+          "properties": {
+            "compressive_strength_parallel": [
+              45,
+              60
+            ],
+            "janka_hardness": [
+              4000,
+              7000
+            ],
+            "modulus_of_elasticity": [
+              10,
+              13
+            ],
+            "modulus_of_rupture": [
+              90,
+              110
+            ],
+            "specific_heat_capacity": [
+              1200,
+              1700
+            ],
+            "thermal_conductivity": [
+              0.12,
+              0.18
+            ]
+          },
+          "transparent": false
+        },
+        "Hardwood_MAPLE": {
+          "category": "wood",
+          "density": 705,
+          "family": "maple",
+          "properties": {
+            "compressive_strength_parallel": [
+              48,
+              60
+            ],
+            "janka_hardness": [
+              5500,
+              7000
+            ],
+            "modulus_of_elasticity": [
+              11,
+              14
+            ],
+            "modulus_of_rupture": [
+              95,
+              120
+            ],
+            "specific_heat_capacity": [
+              1200,
+              1700
+            ],
+            "thermal_conductivity": [
+              0.12,
+              0.18
+            ]
+          },
+          "transparent": false
+        },
+        "Hardwood_OAK": {
+          "category": "wood",
+          "density": 755,
+          "family": "oak",
+          "properties": {
+            "compressive_strength_parallel": [
+              45,
+              58
+            ],
+            "janka_hardness": [
+              5000,
+              6500
+            ],
+            "modulus_of_elasticity": [
+              10,
+              14
+            ],
+            "modulus_of_rupture": [
+              90,
+              115
+            ],
+            "specific_heat_capacity": [
+              1200,
+              1700
+            ],
+            "thermal_conductivity": [
+              0.14,
+              0.2
+            ]
+          },
+          "transparent": false
+        },
+        "Hardwood_WALNUT": {
+          "category": "wood",
+          "density": 640,
+          "family": "walnut",
+          "properties": {
+            "compressive_strength_parallel": [
+              46,
+              58
+            ],
+            "janka_hardness": [
+              4800,
+              5800
+            ],
+            "modulus_of_elasticity": [
+              10,
+              13
+            ],
+            "modulus_of_rupture": [
+              90,
+              110
+            ],
+            "specific_heat_capacity": [
+              1200,
+              1700
+            ],
+            "thermal_conductivity": [
+              0.12,
+              0.18
+            ]
+          },
+          "transparent": false
+        },
+        "HighTemp_GENERIC": {
+          "category": "resin",
+          "density": 1300,
+          "family": "resin",
+          "properties": {
+            "elongation_at_break": [
+              1,
+              10
+            ],
+            "glass_transition_temperature": [
+              110,
+              245
+            ],
+            "hardness": [
+              80,
+              86
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              100,
+              230
+            ],
+            "max_service_temp": [
+              100,
+              200
+            ],
+            "modulus_of_elasticity": [
+              2.8,
+              3.6
+            ],
+            "poisson_ratio": [
+              0.38,
+              0.42
+            ],
+            "shear_modulus": [
+              1.0,
+              1.3
+            ],
+            "shear_strength": [
+              24,
+              33
+            ],
+            "specific_heat_capacity": [
+              1400,
+              1600
+            ],
+            "tensile_strength": [
+              40,
+              55
+            ],
+            "thermal_conductivity": [
+              0.18,
+              0.25
+            ],
+            "thermal_expansion": [
+              7e-05,
+              0.00012
+            ],
+            "yield_strength": [
+              38,
+              50
+            ]
+          },
+          "transparent": false
+        },
+        "Leather_GENERIC": {
+          "category": "textile",
+          "density": 950,
+          "family": "leather",
+          "properties": {
+            "areal_density": [
+              800,
+              1600
+            ],
+            "specific_heat_capacity": [
+              1500,
+              2000
+            ],
+            "tensile_strength": [
+              10,
+              30
+            ],
+            "thermal_conductivity": [
+              0.14,
+              0.2
+            ],
+            "thickness": [
+              1,
+              3
+            ]
+          },
+          "transparent": false
+        },
+        "Magnesium_GENERIC_STRUCTURAL": {
+          "category": "metal",
+          "density": 1810,
+          "family": "magnesium",
+          "properties": {
+            "hardness": [
+              60,
+              80
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              80,
+              150
+            ],
+            "melting_temperature": [
+              430,
+              630
+            ],
+            "modulus_of_elasticity": [
+              43,
+              45
+            ],
+            "poisson_ratio": [
+              0.33,
+              0.37
+            ],
+            "shear_modulus": [
+              16,
+              18
+            ],
+            "shear_strength": [
+              120,
+              170
+            ],
+            "specific_heat_capacity": [
+              1000,
+              1100
+            ],
+            "tensile_strength": [
+              200,
+              280
+            ],
+            "thermal_conductivity": [
+              70,
+              120
+            ],
+            "thermal_expansion": [
+              2.5e-05,
+              2.7e-05
+            ],
+            "yield_strength": [
+              130,
+              200
+            ]
+          },
+          "transparent": false
+        },
+        "MildSteel_G1018_COLD_DRAWN": {
+          "category": "metal",
+          "density": 7850,
+          "family": "mild_steel",
+          "properties": {
+            "hardness": [
+              120,
+              160
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              200,
+              500
+            ],
+            "melting_temperature": [
+              1450,
+              1530
+            ],
+            "modulus_of_elasticity": [
+              200,
+              210
+            ],
+            "poisson_ratio": [
+              0.28,
+              0.3
+            ],
+            "shear_modulus": [
+              80,
+              81
+            ],
+            "shear_strength": [
+              250,
+              275
+            ],
+            "specific_heat_capacity": [
+              460,
+              490
+            ],
+            "tensile_strength": [
+              440,
+              480
+            ],
+            "thermal_conductivity": [
+              45,
+              55
+            ],
+            "thermal_expansion": [
+              1.1e-05,
+              1.3e-05
+            ],
+            "yield_strength": [
+              345,
+              410
+            ]
+          },
+          "transparent": false
+        },
+        "MildSteel_G1045_COLD_DRAWN": {
+          "category": "metal",
+          "density": 7850,
+          "family": "mild_steel",
+          "properties": {
+            "hardness": [
+              170,
+              210
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              200,
+              500
+            ],
+            "melting_temperature": [
+              1450,
+              1530
+            ],
+            "modulus_of_elasticity": [
+              200,
+              210
+            ],
+            "poisson_ratio": [
+              0.28,
+              0.3
+            ],
+            "shear_modulus": [
+              80,
+              81
+            ],
+            "shear_strength": [
+              355,
+              395
+            ],
+            "specific_heat_capacity": [
+              460,
+              490
+            ],
+            "tensile_strength": [
+              620,
+              690
+            ],
+            "thermal_conductivity": [
+              45,
+              55
+            ],
+            "thermal_expansion": [
+              1.1e-05,
+              1.3e-05
+            ],
+            "yield_strength": [
+              480,
+              600
+            ]
+          },
+          "transparent": false
+        },
+        "MildSteel_GA36_HOT_ROLLED": {
+          "category": "metal",
+          "density": 7850,
+          "family": "mild_steel",
+          "properties": {
+            "hardness": [
+              120,
+              180
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              200,
+              500
+            ],
+            "melting_temperature": [
+              1450,
+              1530
+            ],
+            "modulus_of_elasticity": [
+              200,
+              210
+            ],
+            "poisson_ratio": [
+              0.28,
+              0.3
+            ],
+            "shear_modulus": [
+              79,
+              81
+            ],
+            "shear_strength": [
+              230,
+              315
+            ],
+            "specific_heat_capacity": [
+              460,
+              490
+            ],
+            "tensile_strength": [
+              400,
+              550
+            ],
+            "thermal_conductivity": [
+              45,
+              55
+            ],
+            "thermal_expansion": [
+              1.1e-05,
+              1.3e-05
+            ],
+            "yield_strength": [
+              250,
+              350
+            ]
+          },
+          "transparent": false
+        },
+        "MildSteel_PLAIN_CARBON_GENERIC": {
+          "category": "metal",
+          "density": 7800,
+          "family": "mild_steel",
+          "properties": {
+            "hardness": [
+              110,
+              200
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              200,
+              500
+            ],
+            "melting_temperature": [
+              1450,
+              1530
+            ],
+            "modulus_of_elasticity": [
+              195,
+              210
+            ],
+            "poisson_ratio": [
+              0.27,
+              0.31
+            ],
+            "shear_modulus": [
+              75,
+              82
+            ],
+            "shear_strength": [
+              220,
+              350
+            ],
+            "specific_heat_capacity": [
+              440,
+              500
+            ],
+            "tensile_strength": [
+              350,
+              600
+            ],
+            "thermal_conductivity": [
+              40,
+              60
+            ],
+            "thermal_expansion": [
+              1.1e-05,
+              1.3e-05
+            ],
+            "yield_strength": [
+              200,
+              400
+            ]
+          },
+          "transparent": false
+        },
+        "Nylon_PA12": {
+          "category": "plastic",
+          "density": 1010,
+          "family": "PA",
+          "properties": {
+            "elongation_at_break": [
+              5,
+              300
+            ],
+            "glass_transition_temperature": [
+              40,
+              50
+            ],
+            "hardness": [
+              70,
+              80
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              45,
+              80
+            ],
+            "max_service_temp": [
+              70,
+              95
+            ],
+            "modulus_of_elasticity": [
+              1.2,
+              1.8
+            ],
+            "poisson_ratio": [
+              0.38,
+              0.42
+            ],
+            "shear_modulus": [
+              0.5,
+              0.8
+            ],
+            "shear_strength": [
+              25,
+              40
+            ],
+            "specific_heat_capacity": [
+              1700,
+              1800
+            ],
+            "tensile_strength": [
+              30,
+              55
+            ],
+            "thermal_conductivity": [
+              0.23,
+              0.28
+            ],
+            "thermal_expansion": [
+              0.0001,
+              0.00015
+            ],
+            "yield_strength": [
+              30,
+              50
+            ]
+          },
+          "transparent": false
+        },
+        "Nylon_PA12_GF35": {
+          "category": "plastic",
+          "density": 1300,
+          "family": "PA",
+          "properties": {
+            "elongation_at_break": [
+              3,
+              10
+            ],
+            "glass_transition_temperature": [
+              40,
+              50
+            ],
+            "hardness": [
+              78,
+              85
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              140,
+              175
+            ],
+            "max_service_temp": [
+              100,
+              140
+            ],
+            "modulus_of_elasticity": [
+              2.5,
+              4.5
+            ],
+            "poisson_ratio": [
+              0.38,
+              0.42
+            ],
+            "shear_modulus": [
+              1.0,
+              1.8
+            ],
+            "shear_strength": [
+              30,
+              50
+            ],
+            "specific_heat_capacity": [
+              1200,
+              1400
+            ],
+            "tensile_strength": [
+              40,
+              70
+            ],
+            "thermal_conductivity": [
+              0.25,
+              0.4
+            ],
+            "thermal_expansion": [
+              4e-05,
+              8e-05
+            ],
+            "yield_strength": [
+              40,
+              65
+            ]
+          },
+          "transparent": false
+        },
+        "Nylon_PA12_SINTERED": {
+          "category": "plastic",
+          "density": 1000,
+          "family": "PA",
+          "properties": {
+            "elongation_at_break": [
+              5,
+              25
+            ],
+            "glass_transition_temperature": [
+              40,
+              50
+            ],
+            "hardness": [
+              70,
+              80
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              70,
+              95
+            ],
+            "max_service_temp": [
+              80,
+              110
+            ],
+            "modulus_of_elasticity": [
+              1.5,
+              1.9
+            ],
+            "poisson_ratio": [
+              0.38,
+              0.42
+            ],
+            "shear_modulus": [
+              0.5,
+              0.75
+            ],
+            "shear_strength": [
+              25,
+              40
+            ],
+            "specific_heat_capacity": [
+              1700,
+              1800
+            ],
+            "tensile_strength": [
+              45,
+              50
+            ],
+            "thermal_conductivity": [
+              0.2,
+              0.3
+            ],
+            "thermal_expansion": [
+              9e-05,
+              0.00015
+            ],
+            "yield_strength": [
+              40,
+              48
+            ]
+          },
+          "transparent": false
+        },
+        "Nylon_PA6": {
+          "category": "plastic",
+          "density": 1140,
+          "family": "PA",
+          "properties": {
+            "elongation_at_break": [
+              20,
+              300
+            ],
+            "glass_transition_temperature": [
+              45,
+              60
+            ],
+            "hardness": [
+              75,
+              85
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              60,
+              100
+            ],
+            "max_service_temp": [
+              80,
+              130
+            ],
+            "modulus_of_elasticity": [
+              1.9,
+              3.5
+            ],
+            "poisson_ratio": [
+              0.38,
+              0.42
+            ],
+            "shear_modulus": [
+              0.8,
+              1.3
+            ],
+            "shear_strength": [
+              30,
+              60
+            ],
+            "specific_heat_capacity": [
+              1600,
+              1700
+            ],
+            "tensile_strength": [
+              50,
+              90
+            ],
+            "thermal_conductivity": [
+              0.24,
+              0.31
+            ],
+            "thermal_expansion": [
+              7e-05,
+              0.0001
+            ],
+            "yield_strength": [
+              45,
+              85
+            ]
+          },
+          "transparent": false
+        },
+        "PC_GENERIC": {
+          "category": "plastic",
+          "density": 1200,
+          "family": "PC",
+          "properties": {
+            "elongation_at_break": [
+              80,
+              130
+            ],
+            "glass_transition_temperature": [
+              145,
+              150
+            ],
+            "hardness": [
+              75,
+              85
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              125,
+              140
+            ],
+            "max_service_temp": [
+              115,
+              145
+            ],
+            "modulus_of_elasticity": [
+              2.2,
+              2.5
+            ],
+            "poisson_ratio": [
+              0.37,
+              0.42
+            ],
+            "shear_modulus": [
+              0.8,
+              0.95
+            ],
+            "shear_strength": [
+              35,
+              50
+            ],
+            "specific_heat_capacity": [
+              1150,
+              1250
+            ],
+            "tensile_strength": [
+              55,
+              75
+            ],
+            "thermal_conductivity": [
+              0.19,
+              0.22
+            ],
+            "thermal_expansion": [
+              6.5e-05,
+              7.5e-05
+            ],
+            "yield_strength": [
+              55,
+              70
+            ]
+          },
+          "transparent": true
+        },
+        "PETG_CF": {
+          "category": "plastic",
+          "density": 1320,
+          "family": "PETG",
+          "properties": {
+            "elongation_at_break": [
+              2,
+              6
+            ],
+            "glass_transition_temperature": [
+              75,
+              85
+            ],
+            "hardness": [
+              78,
+              85
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              65,
+              80
+            ],
+            "max_service_temp": [
+              60,
+              75
+            ],
+            "modulus_of_elasticity": [
+              3,
+              6
+            ],
+            "poisson_ratio": [
+              0.37,
+              0.42
+            ],
+            "shear_modulus": [
+              1.2,
+              2.3
+            ],
+            "shear_strength": [
+              25,
+              45
+            ],
+            "specific_heat_capacity": [
+              1100,
+              1300
+            ],
+            "tensile_strength": [
+              40,
+              60
+            ],
+            "thermal_conductivity": [
+              0.2,
+              0.4
+            ],
+            "thermal_expansion": [
+              3e-05,
+              6e-05
+            ],
+            "yield_strength": [
+              40,
+              55
+            ]
+          },
+          "transparent": false
+        },
+        "PETG_GENERIC": {
+          "category": "plastic",
+          "density": 1270,
+          "family": "PETG",
+          "properties": {
+            "elongation_at_break": [
+              50,
+              120
+            ],
+            "glass_transition_temperature": [
+              75,
+              85
+            ],
+            "hardness": [
+              75,
+              82
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              65,
+              75
+            ],
+            "max_service_temp": [
+              60,
+              70
+            ],
+            "modulus_of_elasticity": [
+              2.0,
+              2.2
+            ],
+            "poisson_ratio": [
+              0.38,
+              0.43
+            ],
+            "shear_modulus": [
+              0.7,
+              0.85
+            ],
+            "shear_strength": [
+              30,
+              40
+            ],
+            "specific_heat_capacity": [
+              1200,
+              1400
+            ],
+            "tensile_strength": [
+              45,
+              55
+            ],
+            "thermal_conductivity": [
+              0.15,
+              0.25
+            ],
+            "thermal_expansion": [
+              6e-05,
+              8e-05
+            ],
+            "yield_strength": [
+              45,
+              53
+            ]
+          },
+          "transparent": false
+        },
+        "PE_HDPE": {
+          "category": "plastic",
+          "density": 960,
+          "family": "PE",
+          "properties": {
+            "elongation_at_break": [
+              100,
+              700
+            ],
+            "glass_transition_temperature": [
+              -120,
+              -100
+            ],
+            "hardness": [
+              55,
+              65
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              40,
+              55
+            ],
+            "max_service_temp": [
+              60,
+              110
+            ],
+            "modulus_of_elasticity": [
+              0.8,
+              1.3
+            ],
+            "poisson_ratio": [
+              0.4,
+              0.46
+            ],
+            "shear_modulus": [
+              0.3,
+              0.5
+            ],
+            "shear_strength": [
+              12,
+              25
+            ],
+            "specific_heat_capacity": [
+              1800,
+              2100
+            ],
+            "tensile_strength": [
+              20,
+              35
+            ],
+            "thermal_conductivity": [
+              0.35,
+              0.51
+            ],
+            "thermal_expansion": [
+              0.0001,
+              0.0002
+            ],
+            "yield_strength": [
+              20,
+              31
+            ]
+          },
+          "transparent": false
+        },
+        "PLA_CARBON_FILLED": {
+          "category": "plastic",
+          "density": 1250,
+          "family": "PLA",
+          "properties": {
+            "elongation_at_break": [
+              1,
+              3
+            ],
+            "glass_transition_temperature": [
+              55,
+              65
+            ],
+            "hardness": [
+              80,
+              88
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              55,
+              70
+            ],
+            "max_service_temp": [
+              55,
+              65
+            ],
+            "modulus_of_elasticity": [
+              4.0,
+              7.0
+            ],
+            "poisson_ratio": [
+              0.35,
+              0.4
+            ],
+            "shear_modulus": [
+              2.0,
+              3.5
+            ],
+            "shear_strength": [
+              30,
+              50
+            ],
+            "specific_heat_capacity": [
+              1500,
+              1700
+            ],
+            "tensile_strength": [
+              40,
+              65
+            ],
+            "thermal_conductivity": [
+              0.15,
+              0.3
+            ],
+            "thermal_expansion": [
+              2.5e-05,
+              5e-05
+            ],
+            "yield_strength": [
+              40,
+              55
+            ]
+          },
+          "transparent": false
+        },
+        "PLA_GENERIC": {
+          "category": "plastic",
+          "density": 1240,
+          "family": "PLA",
+          "properties": {
+            "elongation_at_break": [
+              3,
+              7
+            ],
+            "glass_transition_temperature": [
+              55,
+              65
+            ],
+            "hardness": [
+              78,
+              85
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              50,
+              60
+            ],
+            "max_service_temp": [
+              50,
+              60
+            ],
+            "modulus_of_elasticity": [
+              3.0,
+              3.9
+            ],
+            "poisson_ratio": [
+              0.35,
+              0.4
+            ],
+            "shear_modulus": [
+              1.2,
+              1.5
+            ],
+            "shear_strength": [
+              30,
+              55
+            ],
+            "specific_heat_capacity": [
+              1800,
+              1900
+            ],
+            "tensile_strength": [
+              45,
+              70
+            ],
+            "thermal_conductivity": [
+              0.11,
+              0.16
+            ],
+            "thermal_expansion": [
+              6e-05,
+              9e-05
+            ],
+            "yield_strength": [
+              45,
+              60
+            ]
+          },
+          "transparent": false
+        },
+        "PMMA_GENERIC": {
+          "category": "plastic",
+          "density": 1180,
+          "family": "PMMA",
+          "properties": {
+            "elongation_at_break": [
+              2,
+              6
+            ],
+            "glass_transition_temperature": [
+              100,
+              110
+            ],
+            "hardness": [
+              85,
+              90
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              85,
+              105
+            ],
+            "max_service_temp": [
+              65,
+              80
+            ],
+            "modulus_of_elasticity": [
+              2.4,
+              3.3
+            ],
+            "poisson_ratio": [
+              0.35,
+              0.4
+            ],
+            "shear_modulus": [
+              0.9,
+              1.2
+            ],
+            "shear_strength": [
+              30,
+              50
+            ],
+            "specific_heat_capacity": [
+              1400,
+              1500
+            ],
+            "tensile_strength": [
+              50,
+              83
+            ],
+            "thermal_conductivity": [
+              0.17,
+              0.21
+            ],
+            "thermal_expansion": [
+              6e-05,
+              9e-05
+            ],
+            "yield_strength": [
+              50,
+              80
+            ]
+          },
+          "transparent": true
+        },
+        "POM_GENERIC": {
+          "category": "plastic",
+          "density": 1410,
+          "family": "POM",
+          "properties": {
+            "elongation_at_break": [
+              10,
+              45
+            ],
+            "glass_transition_temperature": [
+              -60,
+              -50
+            ],
+            "hardness": [
+              80,
+              90
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              90,
+              110
+            ],
+            "max_service_temp": [
+              90,
+              105
+            ],
+            "modulus_of_elasticity": [
+              2.8,
+              4.0
+            ],
+            "poisson_ratio": [
+              0.35,
+              0.4
+            ],
+            "shear_modulus": [
+              1.0,
+              1.4
+            ],
+            "shear_strength": [
+              35,
+              55
+            ],
+            "specific_heat_capacity": [
+              1400,
+              1500
+            ],
+            "tensile_strength": [
+              60,
+              90
+            ],
+            "thermal_conductivity": [
+              0.3,
+              0.4
+            ],
+            "thermal_expansion": [
+              8e-05,
+              0.00014
+            ],
+            "yield_strength": [
+              60,
+              73
+            ]
+          },
+          "transparent": false
+        },
+        "PPS_CF": {
+          "category": "plastic",
+          "density": 1400,
+          "family": "PPS",
+          "properties": {
+            "elongation_at_break": [
+              1,
+              3
+            ],
+            "glass_transition_temperature": [
+              85,
+              105
+            ],
+            "hardness": [
+              85,
+              92
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              200,
+              270
+            ],
+            "max_service_temp": [
+              200,
+              240
+            ],
+            "modulus_of_elasticity": [
+              7,
+              20
+            ],
+            "poisson_ratio": [
+              0.36,
+              0.4
+            ],
+            "shear_modulus": [
+              2.5,
+              7
+            ],
+            "shear_strength": [
+              45,
+              90
+            ],
+            "specific_heat_capacity": [
+              1000,
+              1200
+            ],
+            "tensile_strength": [
+              80,
+              150
+            ],
+            "thermal_conductivity": [
+              0.25,
+              0.45
+            ],
+            "thermal_expansion": [
+              2e-05,
+              5e-05
+            ],
+            "yield_strength": [
+              80,
+              140
+            ]
+          },
+          "transparent": false
+        },
+        "PP_GENERIC": {
+          "category": "plastic",
+          "density": 905,
+          "family": "PP",
+          "properties": {
+            "elongation_at_break": [
+              10,
+              600
+            ],
+            "glass_transition_temperature": [
+              -20,
+              -10
+            ],
+            "hardness": [
+              70,
+              80
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              50,
+              65
+            ],
+            "max_service_temp": [
+              80,
+              130
+            ],
+            "modulus_of_elasticity": [
+              1.1,
+              1.8
+            ],
+            "poisson_ratio": [
+              0.4,
+              0.45
+            ],
+            "shear_modulus": [
+              0.4,
+              0.7
+            ],
+            "shear_strength": [
+              15,
+              30
+            ],
+            "specific_heat_capacity": [
+              1800,
+              2000
+            ],
+            "tensile_strength": [
+              25,
+              40
+            ],
+            "thermal_conductivity": [
+              0.11,
+              0.27
+            ],
+            "thermal_expansion": [
+              0.0001,
+              0.00018
+            ],
+            "yield_strength": [
+              25,
+              38
+            ]
+          },
+          "transparent": false
+        },
+        "PTFE_GENERIC": {
+          "category": "plastic",
+          "density": 2170,
+          "family": "PTFE",
+          "properties": {
+            "elongation_at_break": [
+              200,
+              400
+            ],
+            "glass_transition_temperature": "n/a",
+            "hardness": [
+              50,
+              65
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              50,
+              80
+            ],
+            "max_service_temp": [
+              250,
+              270
+            ],
+            "modulus_of_elasticity": [
+              0.4,
+              0.75
+            ],
+            "poisson_ratio": [
+              0.42,
+              0.47
+            ],
+            "shear_modulus": [
+              0.15,
+              0.28
+            ],
+            "shear_strength": [
+              10,
+              20
+            ],
+            "specific_heat_capacity": [
+              1000,
+              1050
+            ],
+            "tensile_strength": [
+              20,
+              35
+            ],
+            "thermal_conductivity": [
+              0.23,
+              0.27
+            ],
+            "thermal_expansion": [
+              0.0001,
+              0.0002
+            ],
+            "yield_strength": [
+              15,
+              25
+            ]
+          },
+          "transparent": false
+        },
+        "Paper_OFFICE": {
+          "category": "paper",
+          "density": 800,
+          "family": "paper",
+          "properties": {
+            "areal_density": [
+              70,
+              90
+            ],
+            "specific_heat_capacity": [
+              1300,
+              1400
+            ],
+            "tensile_strength": [
+              20,
+              60
+            ],
+            "thermal_conductivity": [
+              0.05,
+              0.1
+            ],
+            "thickness": [
+              0.09,
+              0.12
+            ]
+          },
+          "transparent": false
+        },
+        "Peek_MOLDED": {
+          "category": "plastic",
+          "density": 1300,
+          "family": "PEEK",
+          "properties": {
+            "elongation_at_break": [
+              20,
+              100
+            ],
+            "glass_transition_temperature": [
+              143,
+              150
+            ],
+            "hardness": [
+              85,
+              90
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              140,
+              160
+            ],
+            "max_service_temp": [
+              240,
+              260
+            ],
+            "modulus_of_elasticity": [
+              3.5,
+              4.2
+            ],
+            "poisson_ratio": [
+              0.38,
+              0.42
+            ],
+            "shear_modulus": [
+              1.3,
+              1.6
+            ],
+            "shear_strength": [
+              50,
+              75
+            ],
+            "specific_heat_capacity": [
+              1300,
+              1400
+            ],
+            "tensile_strength": [
+              90,
+              110
+            ],
+            "thermal_conductivity": [
+              0.24,
+              0.29
+            ],
+            "thermal_expansion": [
+              4.5e-05,
+              6e-05
+            ],
+            "yield_strength": [
+              90,
+              100
+            ]
+          },
+          "transparent": false
+        },
+        "Peek_PRINTED": {
+          "category": "plastic",
+          "density": 1300,
+          "family": "PEEK",
+          "properties": {
+            "elongation_at_break": [
+              5,
+              30
+            ],
+            "glass_transition_temperature": [
+              143,
+              150
+            ],
+            "hardness": [
+              85,
+              90
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              140,
+              160
+            ],
+            "max_service_temp": [
+              160,
+              250
+            ],
+            "modulus_of_elasticity": [
+              3.5,
+              4.2
+            ],
+            "poisson_ratio": [
+              0.38,
+              0.42
+            ],
+            "shear_modulus": [
+              1.3,
+              1.6
+            ],
+            "shear_strength": [
+              45,
+              70
+            ],
+            "specific_heat_capacity": [
+              1300,
+              1400
+            ],
+            "tensile_strength": [
+              80,
+              120
+            ],
+            "thermal_conductivity": [
+              0.24,
+              0.29
+            ],
+            "thermal_expansion": [
+              4.5e-05,
+              6e-05
+            ],
+            "yield_strength": [
+              80,
+              105
+            ]
+          },
+          "transparent": false
+        },
+        "Phenolic_BAKELITE": {
+          "category": "plastic",
+          "density": 1300,
+          "family": "phenolic",
+          "properties": {
+            "elongation_at_break": [
+              0.5,
+              2
+            ],
+            "glass_transition_temperature": [
+              150,
+              200
+            ],
+            "hardness": [
+              88,
+              95
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              150,
+              200
+            ],
+            "max_service_temp": [
+              120,
+              180
+            ],
+            "modulus_of_elasticity": [
+              5,
+              9
+            ],
+            "poisson_ratio": [
+              0.3,
+              0.4
+            ],
+            "shear_modulus": [
+              2.0,
+              3.5
+            ],
+            "shear_strength": [
+              25,
+              45
+            ],
+            "specific_heat_capacity": [
+              1200,
+              1600
+            ],
+            "tensile_strength": [
+              40,
+              70
+            ],
+            "thermal_conductivity": [
+              0.15,
+              0.3
+            ],
+            "thermal_expansion": [
+              3e-05,
+              5e-05
+            ],
+            "yield_strength": "n/a"
+          },
+          "transparent": false
+        },
+        "Rubber_GENERIC": {
+          "category": "plastic",
+          "density": 1200,
+          "family": "rubber",
+          "properties": {
+            "elongation_at_break": [
+              100,
+              700
+            ],
+            "glass_transition_temperature": [
+              -70,
+              -40
+            ],
+            "hardness": [
+              40,
+              80
+            ],
+            "hardness_scale": "Shore A",
+            "heat_deflection_temperature": "n/a",
+            "max_service_temp": [
+              60,
+              100
+            ],
+            "modulus_of_elasticity": [
+              0.001,
+              0.01
+            ],
+            "poisson_ratio": [
+              0.48,
+              0.5
+            ],
+            "shear_modulus": [
+              0.0003,
+              0.003
+            ],
+            "shear_strength": [
+              5,
+              15
+            ],
+            "specific_heat_capacity": [
+              1800,
+              2000
+            ],
+            "tensile_strength": [
+              10,
+              25
+            ],
+            "thermal_conductivity": [
+              0.13,
+              0.3
+            ],
+            "thermal_expansion": [
+              0.0001,
+              0.0002
+            ],
+            "yield_strength": "n/a"
+          },
+          "transparent": false
+        },
+        "Silver_PURE": {
+          "category": "metal",
+          "density": 10490,
+          "family": "silver",
+          "properties": {
+            "hardness": [
+              25,
+              70
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              200,
+              400
+            ],
+            "melting_temperature": [
+              961,
+              962
+            ],
+            "modulus_of_elasticity": [
+              76,
+              83
+            ],
+            "poisson_ratio": [
+              0.36,
+              0.38
+            ],
+            "shear_modulus": [
+              29,
+              31
+            ],
+            "shear_strength": [
+              100,
+              140
+            ],
+            "specific_heat_capacity": [
+              233,
+              236
+            ],
+            "tensile_strength": [
+              125,
+              200
+            ],
+            "thermal_conductivity": [
+              420,
+              430
+            ],
+            "thermal_expansion": [
+              1.85e-05,
+              1.95e-05
+            ],
+            "yield_strength": [
+              40,
+              140
+            ]
+          },
+          "transparent": false
+        },
+        "SodaLime_GENERIC": {
+          "category": "glass",
+          "density": 2500,
+          "family": "soda_lime",
+          "properties": {
+            "glass_transition_temperature": [
+              520,
+              570
+            ],
+            "hardness": [
+              470,
+              570
+            ],
+            "hardness_scale": "HV",
+            "max_service_temp": [
+              150,
+              300
+            ],
+            "melting_temperature": [
+              1400,
+              1600
+            ],
+            "modulus_of_elasticity": [
+              68,
+              74
+            ],
+            "poisson_ratio": [
+              0.21,
+              0.24
+            ],
+            "shear_modulus": [
+              26,
+              30
+            ],
+            "specific_heat_capacity": [
+              750,
+              880
+            ],
+            "tensile_strength": [
+              30,
+              90
+            ],
+            "thermal_conductivity": [
+              0.9,
+              1.1
+            ],
+            "thermal_expansion": [
+              8.5e-06,
+              9.5e-06
+            ]
+          },
+          "transparent": true
+        },
+        "Softwood_GENERIC": {
+          "category": "wood",
+          "density": 470,
+          "family": "spruce",
+          "properties": {
+            "compressive_strength_parallel": [
+              30,
+              40
+            ],
+            "janka_hardness": [
+              2000,
+              3000
+            ],
+            "modulus_of_elasticity": [
+              8,
+              11
+            ],
+            "modulus_of_rupture": [
+              60,
+              80
+            ],
+            "specific_heat_capacity": [
+              1200,
+              1700
+            ],
+            "thermal_conductivity": [
+              0.1,
+              0.15
+            ]
+          },
+          "transparent": false
+        },
+        "Softwood_PINE": {
+          "category": "wood",
+          "density": 500,
+          "family": "pine",
+          "properties": {
+            "compressive_strength_parallel": [
+              35,
+              55
+            ],
+            "janka_hardness": [
+              1700,
+              4500
+            ],
+            "modulus_of_elasticity": [
+              8,
+              12
+            ],
+            "modulus_of_rupture": [
+              65,
+              100
+            ],
+            "specific_heat_capacity": [
+              1200,
+              1700
+            ],
+            "thermal_conductivity": [
+              0.1,
+              0.15
+            ]
+          },
+          "transparent": false
+        },
+        "Softwood_SPRUCE": {
+          "category": "wood",
+          "density": 430,
+          "family": "spruce",
+          "properties": {
+            "compressive_strength_parallel": [
+              33,
+              43
+            ],
+            "janka_hardness": [
+              2200,
+              2900
+            ],
+            "modulus_of_elasticity": [
+              8,
+              12
+            ],
+            "modulus_of_rupture": [
+              60,
+              80
+            ],
+            "specific_heat_capacity": [
+              1200,
+              1700
+            ],
+            "thermal_conductivity": [
+              0.1,
+              0.14
+            ]
+          },
+          "transparent": false
+        },
+        "SpringSteel_GENERIC_QUENCHED_TEMPERED": {
+          "category": "metal",
+          "density": 7850,
+          "family": "spring_steel",
+          "properties": {
+            "hardness": [
+              40,
+              55
+            ],
+            "hardness_scale": "HRC",
+            "max_service_temp": [
+              150,
+              300
+            ],
+            "melting_temperature": [
+              1450,
+              1530
+            ],
+            "modulus_of_elasticity": [
+              200,
+              210
+            ],
+            "poisson_ratio": [
+              0.28,
+              0.3
+            ],
+            "shear_modulus": [
+              80,
+              81
+            ],
+            "shear_strength": [
+              570,
+              855
+            ],
+            "specific_heat_capacity": [
+              460,
+              490
+            ],
+            "tensile_strength": [
+              980,
+              1500
+            ],
+            "thermal_conductivity": [
+              30,
+              45
+            ],
+            "thermal_expansion": [
+              1.1e-05,
+              1.3e-05
+            ],
+            "yield_strength": [
+              780,
+              1350
+            ]
+          },
+          "transparent": false
+        },
+        "Stainless_G201_ANNEALED": {
+          "category": "metal",
+          "density": 7860,
+          "family": "stainless",
+          "properties": {
+            "hardness": [
+              180,
+              230
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              400,
+              600
+            ],
+            "melting_temperature": [
+              1400,
+              1450
+            ],
+            "modulus_of_elasticity": [
+              190,
+              200
+            ],
+            "poisson_ratio": [
+              0.27,
+              0.31
+            ],
+            "shear_modulus": [
+              75,
+              82
+            ],
+            "shear_strength": [
+              380,
+              515
+            ],
+            "specific_heat_capacity": [
+              480,
+              500
+            ],
+            "tensile_strength": [
+              600,
+              760
+            ],
+            "thermal_conductivity": [
+              14,
+              16
+            ],
+            "thermal_expansion": [
+              1.6e-05,
+              1.8e-05
+            ],
+            "yield_strength": [
+              275,
+              450
+            ]
+          },
+          "transparent": false
+        },
+        "Stainless_G303_ANNEALED": {
+          "category": "metal",
+          "density": 8030,
+          "family": "stainless",
+          "properties": {
+            "hardness": [
+              150,
+              200
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              400,
+              600
+            ],
+            "melting_temperature": [
+              1400,
+              1450
+            ],
+            "modulus_of_elasticity": [
+              190,
+              200
+            ],
+            "poisson_ratio": [
+              0.29,
+              0.31
+            ],
+            "shear_modulus": [
+              75,
+              82
+            ],
+            "shear_strength": [
+              275,
+              360
+            ],
+            "specific_heat_capacity": [
+              480,
+              500
+            ],
+            "tensile_strength": [
+              500,
+              625
+            ],
+            "thermal_conductivity": [
+              14,
+              17
+            ],
+            "thermal_expansion": [
+              1.6e-05,
+              1.8e-05
+            ],
+            "yield_strength": [
+              205,
+              290
+            ]
+          },
+          "transparent": false
+        },
+        "Stainless_G304_ANNEALED": {
+          "category": "metal",
+          "density": 7930,
+          "family": "stainless",
+          "properties": {
+            "hardness": [
+              150,
+              200
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              400,
+              600
+            ],
+            "melting_temperature": [
+              1400,
+              1450
+            ],
+            "modulus_of_elasticity": [
+              190,
+              200
+            ],
+            "poisson_ratio": [
+              0.29,
+              0.31
+            ],
+            "shear_modulus": [
+              75,
+              82
+            ],
+            "shear_strength": [
+              280,
+              350
+            ],
+            "specific_heat_capacity": [
+              480,
+              500
+            ],
+            "tensile_strength": [
+              515,
+              620
+            ],
+            "thermal_conductivity": [
+              14,
+              17
+            ],
+            "thermal_expansion": [
+              1.6e-05,
+              1.8e-05
+            ],
+            "yield_strength": [
+              205,
+              240
+            ]
+          },
+          "transparent": false
+        },
+        "Stainless_G316L_ANNEALED": {
+          "category": "metal",
+          "density": 8000,
+          "family": "stainless",
+          "properties": {
+            "hardness": [
+              150,
+              200
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              400,
+              600
+            ],
+            "melting_temperature": [
+              1375,
+              1450
+            ],
+            "modulus_of_elasticity": [
+              190,
+              200
+            ],
+            "poisson_ratio": [
+              0.29,
+              0.31
+            ],
+            "shear_modulus": [
+              75,
+              82
+            ],
+            "shear_strength": [
+              280,
+              350
+            ],
+            "specific_heat_capacity": [
+              480,
+              500
+            ],
+            "tensile_strength": [
+              480,
+              620
+            ],
+            "thermal_conductivity": [
+              14,
+              17
+            ],
+            "thermal_expansion": [
+              1.6e-05,
+              1.8e-05
+            ],
+            "yield_strength": [
+              170,
+              310
+            ]
+          },
+          "transparent": false
+        },
+        "Stainless_G316L_AS_BUILT": {
+          "category": "metal",
+          "density": 7990,
+          "family": "stainless",
+          "properties": {
+            "hardness": [
+              200,
+              250
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              400,
+              600
+            ],
+            "melting_temperature": [
+              1375,
+              1450
+            ],
+            "modulus_of_elasticity": [
+              185,
+              200
+            ],
+            "poisson_ratio": [
+              0.29,
+              0.31
+            ],
+            "shear_modulus": [
+              75,
+              82
+            ],
+            "shear_strength": [
+              330,
+              420
+            ],
+            "specific_heat_capacity": [
+              480,
+              500
+            ],
+            "tensile_strength": [
+              550,
+              700
+            ],
+            "thermal_conductivity": [
+              14,
+              16
+            ],
+            "thermal_expansion": [
+              1.6e-05,
+              1.8e-05
+            ],
+            "yield_strength": [
+              450,
+              550
+            ]
+          },
+          "transparent": false
+        },
+        "Stainless_G430_ANNEALED": {
+          "category": "metal",
+          "density": 7750,
+          "family": "stainless",
+          "properties": {
+            "hardness": [
+              150,
+              190
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              400,
+              600
+            ],
+            "melting_temperature": [
+              1425,
+              1510
+            ],
+            "modulus_of_elasticity": [
+              190,
+              205
+            ],
+            "poisson_ratio": [
+              0.27,
+              0.3
+            ],
+            "shear_modulus": [
+              75,
+              82
+            ],
+            "shear_strength": [
+              250,
+              300
+            ],
+            "specific_heat_capacity": [
+              480,
+              500
+            ],
+            "tensile_strength": [
+              450,
+              500
+            ],
+            "thermal_conductivity": [
+              25,
+              30
+            ],
+            "thermal_expansion": [
+              1.1e-05,
+              1.2e-05
+            ],
+            "yield_strength": [
+              275,
+              310
+            ]
+          },
+          "transparent": false
+        },
+        "Stainless_G430_COLD_WORKED": {
+          "category": "metal",
+          "density": 7750,
+          "family": "stainless",
+          "properties": {
+            "hardness": [
+              185,
+              230
+            ],
+            "hardness_scale": "HB",
+            "max_service_temp": [
+              400,
+              600
+            ],
+            "melting_temperature": [
+              1425,
+              1510
+            ],
+            "modulus_of_elasticity": [
+              190,
+              205
+            ],
+            "poisson_ratio": [
+              0.27,
+              0.3
+            ],
+            "shear_modulus": [
+              75,
+              82
+            ],
+            "shear_strength": [
+              300,
+              400
+            ],
+            "specific_heat_capacity": [
+              480,
+              500
+            ],
+            "tensile_strength": [
+              500,
+              650
+            ],
+            "thermal_conductivity": [
+              25,
+              30
+            ],
+            "thermal_expansion": [
+              1.1e-05,
+              1.2e-05
+            ],
+            "yield_strength": [
+              350,
+              550
+            ]
+          },
+          "transparent": false
+        },
+        "Standard_GENERIC": {
+          "category": "resin",
+          "density": 1150,
+          "family": "resin",
+          "properties": {
+            "elongation_at_break": [
+              5,
+              12
+            ],
+            "glass_transition_temperature": [
+              50,
+              65
+            ],
+            "hardness": [
+              80,
+              86
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              50,
+              65
+            ],
+            "max_service_temp": [
+              45,
+              55
+            ],
+            "modulus_of_elasticity": [
+              2.4,
+              3.2
+            ],
+            "poisson_ratio": [
+              0.38,
+              0.42
+            ],
+            "shear_modulus": [
+              0.85,
+              1.15
+            ],
+            "shear_strength": [
+              27,
+              36
+            ],
+            "specific_heat_capacity": [
+              1400,
+              1600
+            ],
+            "tensile_strength": [
+              45,
+              60
+            ],
+            "thermal_conductivity": [
+              0.18,
+              0.25
+            ],
+            "thermal_expansion": [
+              8e-05,
+              0.00013
+            ],
+            "yield_strength": [
+              42,
+              55
+            ]
+          },
+          "transparent": false
+        },
+        "TPU_SHORE_95A": {
+          "category": "plastic",
+          "density": 1200,
+          "family": "TPU",
+          "properties": {
+            "elongation_at_break": [
+              300,
+              700
+            ],
+            "glass_transition_temperature": [
+              -40,
+              -20
+            ],
+            "hardness": [
+              93,
+              97
+            ],
+            "hardness_scale": "Shore A",
+            "heat_deflection_temperature": "n/a",
+            "max_service_temp": [
+              70,
+              90
+            ],
+            "modulus_of_elasticity": [
+              0.007,
+              0.1
+            ],
+            "poisson_ratio": [
+              0.45,
+              0.49
+            ],
+            "shear_modulus": [
+              0.002,
+              0.035
+            ],
+            "shear_strength": [
+              10,
+              30
+            ],
+            "specific_heat_capacity": [
+              1700,
+              1900
+            ],
+            "tensile_strength": [
+              25,
+              55
+            ],
+            "thermal_conductivity": [
+              0.15,
+              0.25
+            ],
+            "thermal_expansion": [
+              0.00012,
+              0.0002
+            ],
+            "yield_strength": "n/a"
+          },
+          "transparent": false
+        },
+        "TPU_SINTERED": {
+          "category": "plastic",
+          "density": 1200,
+          "family": "TPU",
+          "properties": {
+            "elongation_at_break": [
+              100,
+              400
+            ],
+            "glass_transition_temperature": [
+              -40,
+              -20
+            ],
+            "hardness": [
+              88,
+              92
+            ],
+            "hardness_scale": "Shore A",
+            "heat_deflection_temperature": "n/a",
+            "max_service_temp": [
+              70,
+              90
+            ],
+            "modulus_of_elasticity": [
+              0.02,
+              0.1
+            ],
+            "poisson_ratio": [
+              0.45,
+              0.49
+            ],
+            "shear_modulus": [
+              0.007,
+              0.03
+            ],
+            "shear_strength": [
+              5,
+              20
+            ],
+            "specific_heat_capacity": [
+              1700,
+              1900
+            ],
+            "tensile_strength": [
+              10,
+              25
+            ],
+            "thermal_conductivity": [
+              0.15,
+              0.25
+            ],
+            "thermal_expansion": [
+              0.00012,
+              0.0002
+            ],
+            "yield_strength": "n/a"
+          },
+          "transparent": false
+        },
+        "Titanium_GR5_ANNEALED": {
+          "category": "metal",
+          "density": 4430,
+          "family": "titanium",
+          "properties": {
+            "hardness": [
+              30,
+              38
+            ],
+            "hardness_scale": "HRC",
+            "max_service_temp": [
+              300,
+              400
+            ],
+            "melting_temperature": [
+              1600,
+              1660
+            ],
+            "modulus_of_elasticity": [
+              110,
+              120
+            ],
+            "poisson_ratio": [
+              0.29,
+              0.32
+            ],
+            "shear_modulus": [
+              42,
+              45
+            ],
+            "shear_strength": [
+              500,
+              570
+            ],
+            "specific_heat_capacity": [
+              520,
+              560
+            ],
+            "tensile_strength": [
+              900,
+              1000
+            ],
+            "thermal_conductivity": [
+              6,
+              9
+            ],
+            "thermal_expansion": [
+              8.5e-06,
+              9.5e-06
+            ],
+            "yield_strength": [
+              830,
+              960
+            ]
+          },
+          "transparent": false
+        },
+        "Titanium_TC4_AS_BUILT": {
+          "category": "metal",
+          "density": 4430,
+          "family": "titanium",
+          "properties": {
+            "hardness": [
+              32,
+              40
+            ],
+            "hardness_scale": "HRC",
+            "max_service_temp": [
+              250,
+              350
+            ],
+            "melting_temperature": [
+              1600,
+              1660
+            ],
+            "modulus_of_elasticity": [
+              110,
+              120
+            ],
+            "poisson_ratio": [
+              0.29,
+              0.32
+            ],
+            "shear_modulus": [
+              42,
+              45
+            ],
+            "shear_strength": [
+              525,
+              660
+            ],
+            "specific_heat_capacity": [
+              520,
+              560
+            ],
+            "tensile_strength": [
+              950,
+              1100
+            ],
+            "thermal_conductivity": [
+              6,
+              9
+            ],
+            "thermal_expansion": [
+              8.5e-06,
+              9.5e-06
+            ],
+            "yield_strength": [
+              860,
+              1000
+            ]
+          },
+          "transparent": false
+        },
+        "ToolSteel_A2_HARDENED": {
+          "category": "metal",
+          "density": 7860,
+          "family": "tool_steel",
+          "properties": {
+            "hardness": [
+              55,
+              60
+            ],
+            "hardness_scale": "HRC",
+            "max_service_temp": [
+              200,
+              350
+            ],
+            "melting_temperature": [
+              1450,
+              1520
+            ],
+            "modulus_of_elasticity": [
+              200,
+              220
+            ],
+            "poisson_ratio": [
+              0.27,
+              0.3
+            ],
+            "shear_modulus": [
+              80,
+              83
+            ],
+            "shear_strength": [
+              800,
+              1085
+            ],
+            "specific_heat_capacity": [
+              460,
+              500
+            ],
+            "tensile_strength": [
+              1400,
+              1900
+            ],
+            "thermal_conductivity": [
+              20,
+              28
+            ],
+            "thermal_expansion": [
+              1.2e-05,
+              1.3e-05
+            ],
+            "yield_strength": [
+              1200,
+              1700
+            ]
+          },
+          "transparent": false
+        },
+        "ToolSteel_A3_HARDENED": {
+          "category": "metal",
+          "density": 7860,
+          "family": "tool_steel",
+          "properties": {
+            "hardness": [
+              55,
+              60
+            ],
+            "hardness_scale": "HRC",
+            "max_service_temp": [
+              200,
+              350
+            ],
+            "melting_temperature": [
+              1450,
+              1520
+            ],
+            "modulus_of_elasticity": [
+              200,
+              215
+            ],
+            "poisson_ratio": [
+              0.27,
+              0.3
+            ],
+            "shear_modulus": [
+              80,
+              83
+            ],
+            "shear_strength": [
+              800,
+              1085
+            ],
+            "specific_heat_capacity": [
+              460,
+              500
+            ],
+            "tensile_strength": [
+              1400,
+              1900
+            ],
+            "thermal_conductivity": [
+              32,
+              40
+            ],
+            "thermal_expansion": [
+              1.2e-05,
+              1.3e-05
+            ],
+            "yield_strength": [
+              1200,
+              1700
+            ]
+          },
+          "transparent": false
+        },
+        "ToolSteel_D2_HARDENED": {
+          "category": "metal",
+          "density": 7700,
+          "family": "tool_steel",
+          "properties": {
+            "hardness": [
+              55,
+              62
+            ],
+            "hardness_scale": "HRC",
+            "max_service_temp": [
+              200,
+              350
+            ],
+            "melting_temperature": [
+              1450,
+              1520
+            ],
+            "modulus_of_elasticity": [
+              200,
+              215
+            ],
+            "poisson_ratio": [
+              0.27,
+              0.3
+            ],
+            "shear_modulus": [
+              80,
+              83
+            ],
+            "shear_strength": [
+              855,
+              1140
+            ],
+            "specific_heat_capacity": [
+              460,
+              500
+            ],
+            "tensile_strength": [
+              1500,
+              2200
+            ],
+            "thermal_conductivity": [
+              18,
+              32
+            ],
+            "thermal_expansion": [
+              1.2e-05,
+              1.3e-05
+            ],
+            "yield_strength": [
+              1300,
+              2000
+            ]
+          },
+          "transparent": false
+        },
+        "ToolSteel_GENERIC_AS_BUILT": {
+          "category": "metal",
+          "density": 7800,
+          "family": "tool_steel",
+          "properties": {
+            "hardness": [
+              45,
+              60
+            ],
+            "hardness_scale": "HRC",
+            "max_service_temp": [
+              200,
+              350
+            ],
+            "melting_temperature": [
+              1450,
+              1520
+            ],
+            "modulus_of_elasticity": [
+              200,
+              215
+            ],
+            "poisson_ratio": [
+              0.27,
+              0.3
+            ],
+            "shear_modulus": [
+              80,
+              83
+            ],
+            "shear_strength": [
+              570,
+              800
+            ],
+            "specific_heat_capacity": [
+              460,
+              500
+            ],
+            "tensile_strength": [
+              1000,
+              1400
+            ],
+            "thermal_conductivity": [
+              18,
+              28
+            ],
+            "thermal_expansion": [
+              1.2e-05,
+              1.3e-05
+            ],
+            "yield_strength": [
+              850,
+              1300
+            ]
+          },
+          "transparent": false
+        },
+        "ToolSteel_H13_HARDENED": {
+          "category": "metal",
+          "density": 7800,
+          "family": "tool_steel",
+          "properties": {
+            "hardness": [
+              44,
+              52
+            ],
+            "hardness_scale": "HRC",
+            "max_service_temp": [
+              500,
+              650
+            ],
+            "melting_temperature": [
+              1450,
+              1520
+            ],
+            "modulus_of_elasticity": [
+              200,
+              215
+            ],
+            "poisson_ratio": [
+              0.27,
+              0.3
+            ],
+            "shear_modulus": [
+              80,
+              83
+            ],
+            "shear_strength": [
+              740,
+              912
+            ],
+            "specific_heat_capacity": [
+              460,
+              500
+            ],
+            "tensile_strength": [
+              1300,
+              1600
+            ],
+            "thermal_conductivity": [
+              22,
+              28
+            ],
+            "thermal_expansion": [
+              1.2e-05,
+              1.3e-05
+            ],
+            "yield_strength": [
+              1100,
+              1500
+            ]
+          },
+          "transparent": false
+        },
+        "ToolSteel_O1_HARDENED": {
+          "category": "metal",
+          "density": 7830,
+          "family": "tool_steel",
+          "properties": {
+            "hardness": [
+              55,
+              60
+            ],
+            "hardness_scale": "HRC",
+            "max_service_temp": [
+              200,
+              350
+            ],
+            "melting_temperature": [
+              1450,
+              1520
+            ],
+            "modulus_of_elasticity": [
+              200,
+              220
+            ],
+            "poisson_ratio": [
+              0.27,
+              0.3
+            ],
+            "shear_modulus": [
+              80,
+              83
+            ],
+            "shear_strength": [
+              800,
+              1085
+            ],
+            "specific_heat_capacity": [
+              460,
+              500
+            ],
+            "tensile_strength": [
+              1400,
+              1900
+            ],
+            "thermal_conductivity": [
+              30,
+              40
+            ],
+            "thermal_expansion": [
+              1.2e-05,
+              1.3e-05
+            ],
+            "yield_strength": [
+              1200,
+              1700
+            ]
+          },
+          "transparent": false
+        },
+        "ToolSteel_S7_HARDENED": {
+          "category": "metal",
+          "density": 7830,
+          "family": "tool_steel",
+          "properties": {
+            "hardness": [
+              50,
+              56
+            ],
+            "hardness_scale": "HRC",
+            "max_service_temp": [
+              200,
+              350
+            ],
+            "melting_temperature": [
+              1450,
+              1520
+            ],
+            "modulus_of_elasticity": [
+              200,
+              215
+            ],
+            "poisson_ratio": [
+              0.27,
+              0.3
+            ],
+            "shear_modulus": [
+              80,
+              83
+            ],
+            "shear_strength": [
+              800,
+              1025
+            ],
+            "specific_heat_capacity": [
+              460,
+              500
+            ],
+            "tensile_strength": [
+              1400,
+              1900
+            ],
+            "thermal_conductivity": [
+              30,
+              40
+            ],
+            "thermal_expansion": [
+              1.2e-05,
+              1.3e-05
+            ],
+            "yield_strength": [
+              1200,
+              1700
+            ]
+          },
+          "transparent": false
+        },
+        "Tough_GENERIC": {
+          "category": "resin",
+          "density": 1150,
+          "family": "resin",
+          "properties": {
+            "elongation_at_break": [
+              20,
+              60
+            ],
+            "glass_transition_temperature": [
+              45,
+              60
+            ],
+            "hardness": [
+              78,
+              84
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              45,
+              58
+            ],
+            "max_service_temp": [
+              40,
+              55
+            ],
+            "modulus_of_elasticity": [
+              2.0,
+              2.8
+            ],
+            "poisson_ratio": [
+              0.38,
+              0.42
+            ],
+            "shear_modulus": [
+              0.7,
+              1.0
+            ],
+            "shear_strength": [
+              24,
+              33
+            ],
+            "specific_heat_capacity": [
+              1400,
+              1600
+            ],
+            "tensile_strength": [
+              40,
+              55
+            ],
+            "thermal_conductivity": [
+              0.18,
+              0.25
+            ],
+            "thermal_expansion": [
+              9e-05,
+              0.00015
+            ],
+            "yield_strength": [
+              35,
+              48
+            ]
+          },
+          "transparent": false
+        },
+        "Transparent_GENERIC": {
+          "category": "resin",
+          "density": 1300,
+          "family": "resin",
+          "properties": {
+            "elongation_at_break": [
+              5,
+              15
+            ],
+            "glass_transition_temperature": [
+              45,
+              62
+            ],
+            "hardness": [
+              80,
+              88
+            ],
+            "hardness_scale": "Shore D",
+            "heat_deflection_temperature": [
+              45,
+              60
+            ],
+            "max_service_temp": [
+              40,
+              55
+            ],
+            "modulus_of_elasticity": [
+              1.6,
+              2.4
+            ],
+            "poisson_ratio": [
+              0.38,
+              0.42
+            ],
+            "shear_modulus": [
+              0.55,
+              0.85
+            ],
+            "shear_strength": [
+              23,
+              31
+            ],
+            "specific_heat_capacity": [
+              1400,
+              1600
+            ],
+            "tensile_strength": [
+              38,
+              52
+            ],
+            "thermal_conductivity": [
+              0.18,
+              0.25
+            ],
+            "thermal_expansion": [
+              8e-05,
+              0.00013
+            ],
+            "yield_strength": [
+              35,
+              48
+            ]
+          },
+          "transparent": true
+        },
+        "Woven_GENERIC": {
+          "category": "textile",
+          "density": 500,
+          "family": "fabric_weave",
+          "properties": {
+            "areal_density": [
+              150,
+              300
+            ],
+            "specific_heat_capacity": [
+              1300,
+              1700
+            ],
+            "tensile_strength": [
+              10,
+              50
+            ],
+            "thermal_conductivity": [
+              0.03,
+              0.07
+            ],
+            "thickness": [
+              0.3,
+              0.6
+            ]
+          },
+          "transparent": false
+        }
+      },
+      "order": [
+        "Alu_G6061_T6",
+        "Alu_G7075_T6",
+        "Alu_G5052_H32",
+        "Alu_G2A12_T4",
+        "Alu_ALSI10MG_AS_BUILT",
+        "Alu_G2024_AEROSPACE",
+        "Stainless_G304_ANNEALED",
+        "Stainless_G316L_ANNEALED",
+        "Stainless_G316L_AS_BUILT",
+        "Stainless_G303_ANNEALED",
+        "Stainless_G430_ANNEALED",
+        "Stainless_G430_COLD_WORKED",
+        "Stainless_G201_ANNEALED",
+        "MildSteel_PLAIN_CARBON_GENERIC",
+        "MildSteel_G1018_COLD_DRAWN",
+        "MildSteel_G1045_COLD_DRAWN",
+        "MildSteel_GA36_HOT_ROLLED",
+        "AlloySteel_G4140_QUENCHED_TEMPERED",
+        "AlloySteel_G4340_QUENCHED_TEMPERED",
+        "AlloySteel_G1215_COLD_DRAWN",
+        "AlloySteel.G52100_HARDENED_LOW_TEMPERED",
+        "SpringSteel_GENERIC_QUENCHED_TEMPERED",
+        "ToolSteel_D2_HARDENED",
+        "ToolSteel_A2_HARDENED",
+        "ToolSteel_O1_HARDENED",
+        "ToolSteel_A3_HARDENED",
+        "ToolSteel_S7_HARDENED",
+        "ToolSteel_H13_HARDENED",
+        "ToolSteel_GENERIC_AS_BUILT",
+        "Titanium_GR5_ANNEALED",
+        "Titanium_TC4_AS_BUILT",
+        "Brass_C360_HALF_HARD",
+        "Brass_C360_SOFT_ANNEALED",
+        "Copper_C110_ANNEALED",
+        "Magnesium_GENERIC_STRUCTURAL",
+        "Bronze_C51000_PHOSPHOR",
+        "Bronze_C90500_TIN",
+        "Bronze_C93200_BEARING",
+        "Gold_PURE",
+        "Silver_PURE",
+        "PLA_GENERIC",
+        "PLA_CARBON_FILLED",
+        "ABS_GENERIC",
+        "ABS_FLAME_RETARDANT",
+        "Nylon_PA6",
+        "Nylon_PA12",
+        "Nylon_PA12_SINTERED",
+        "Nylon_PA12_GF35",
+        "Peek_MOLDED",
+        "Peek_PRINTED",
+        "TPU_SHORE_95A",
+        "TPU_SINTERED",
+        "PC_GENERIC",
+        "PP_GENERIC",
+        "POM_GENERIC",
+        "PTFE_GENERIC",
+        "PMMA_GENERIC",
+        "PE_HDPE",
+        "Phenolic_BAKELITE",
+        "Rubber_GENERIC",
+        "PETG_GENERIC",
+        "PETG_CF",
+        "Asa_GENERIC",
+        "PPS_CF",
+        "FR4_GENERIC",
+        "CFRP_PLATE",
+        "Standard_GENERIC",
+        "Tough_GENERIC",
+        "HighTemp_GENERIC",
+        "Ceramic_GENERIC",
+        "Castable_GENERIC",
+        "Esd_GENERIC",
+        "Transparent_GENERIC",
+        "Flexible_GENERIC",
+        "SodaLime_GENERIC",
+        "Borosilicate_GENERIC",
+        "Hardwood_GENERIC",
+        "Hardwood_AMERICAN_CHERRY",
+        "Hardwood_ASH",
+        "Hardwood_BEECH",
+        "Hardwood_BIRCH",
+        "Hardwood_MAPLE",
+        "Hardwood_OAK",
+        "Hardwood_WALNUT",
+        "Softwood_GENERIC",
+        "Softwood_SPRUCE",
+        "Softwood_PINE",
+        "EngineeredWood_MDF",
+        "EngineeredWood_OSB",
+        "Paper_OFFICE",
+        "Cardboard_CORRUGATED",
+        "Foamboard_GENERIC",
+        "Woven_GENERIC",
+        "Felt_GENERIC",
+        "Leather_GENERIC"
+      ]
+    },
+    "catalog/name-normalization": {
+      "family": "Hardwood_WALNUT",
+      "grade": "Alu_G6061_T6",
+      "resolved": {
+        "BRASS": "Brass_C360_HALF_HARD",
+        "Brass": "Brass_C360_HALF_HARD",
+        "Brass-C360-half hard": "Brass_C360_HALF_HARD",
+        "brass": "Brass_C360_HALF_HARD",
+        "brass_c360_half_hard": "Brass_C360_HALF_HARD"
+      }
+    },
+    "catalog/names": {
+      "names": [
+        "abs",
+        "abs_flame_retardant",
+        "abs_generic",
+        "alloy_steel",
+        "alloysteel.g52100_hardened_low_tempered",
+        "alloysteel_g1215_cold_drawn",
+        "alloysteel_g4140_quenched_tempered",
+        "alloysteel_g4340_quenched_tempered",
+        "alu_alsi10mg_as_built",
+        "alu_g2024_aerospace",
+        "alu_g2a12_t4",
+        "alu_g5052_h32",
+        "alu_g6061_t6",
+        "alu_g7075_t6",
+        "aluminum",
+        "american_cherry",
+        "asa",
+        "asa_generic",
+        "ash",
+        "beech",
+        "birch",
+        "borosilicate",
+        "borosilicate_generic",
+        "brass",
+        "brass_c360_half_hard",
+        "brass_c360_soft_annealed",
+        "bronze",
+        "bronze_c51000_phosphor",
+        "bronze_c90500_tin",
+        "bronze_c93200_bearing",
+        "cardboard",
+        "cardboard_corrugated",
+        "castable",
+        "castable_generic",
+        "ceramic",
+        "ceramic_generic",
+        "cfrp",
+        "cfrp_plate",
+        "copper",
+        "copper_c110_annealed",
+        "engineered_wood",
+        "engineeredwood_mdf",
+        "engineeredwood_osb",
+        "esd",
+        "esd_generic",
+        "felt",
+        "felt_generic",
+        "flexible",
+        "flexible_generic",
+        "foamboard",
+        "foamboard_generic",
+        "fr4",
+        "fr4_generic",
+        "gold",
+        "gold_pure",
+        "hardwood",
+        "hardwood_american_cherry",
+        "hardwood_ash",
+        "hardwood_beech",
+        "hardwood_birch",
+        "hardwood_generic",
+        "hardwood_maple",
+        "hardwood_oak",
+        "hardwood_walnut",
+        "high_temp",
+        "hightemp_generic",
+        "leather",
+        "leather_generic",
+        "magnesium",
+        "magnesium_generic_structural",
+        "maple",
+        "mdf",
+        "mild_steel",
+        "mildsteel_g1018_cold_drawn",
+        "mildsteel_g1045_cold_drawn",
+        "mildsteel_ga36_hot_rolled",
+        "mildsteel_plain_carbon_generic",
+        "nylon",
+        "nylon_pa12",
+        "nylon_pa12_gf35",
+        "nylon_pa12_sintered",
+        "nylon_pa6",
+        "oak",
+        "osb",
+        "paper",
+        "paper_office",
+        "pc",
+        "pc_generic",
+        "pe",
+        "pe_hdpe",
+        "peek",
+        "peek_molded",
+        "peek_printed",
+        "petg",
+        "petg_cf",
+        "petg_generic",
+        "phenolic",
+        "phenolic_bakelite",
+        "pine",
+        "pla",
+        "pla_carbon_filled",
+        "pla_generic",
+        "pmma",
+        "pmma_generic",
+        "pom",
+        "pom_generic",
+        "pp",
+        "pp_generic",
+        "pps",
+        "pps_cf",
+        "ptfe",
+        "ptfe_generic",
+        "rubber",
+        "rubber_generic",
+        "silver",
+        "silver_pure",
+        "soda_lime",
+        "sodalime_generic",
+        "softwood",
+        "softwood_generic",
+        "softwood_pine",
+        "softwood_spruce",
+        "spring_steel",
+        "springsteel_generic_quenched_tempered",
+        "spruce",
+        "stainless",
+        "stainless_g201_annealed",
+        "stainless_g303_annealed",
+        "stainless_g304_annealed",
+        "stainless_g316l_annealed",
+        "stainless_g316l_as_built",
+        "stainless_g430_annealed",
+        "stainless_g430_cold_worked",
+        "standard",
+        "standard_generic",
+        "titanium",
+        "titanium_gr5_annealed",
+        "titanium_tc4_as_built",
+        "tool_steel",
+        "toolsteel_a2_hardened",
+        "toolsteel_a3_hardened",
+        "toolsteel_d2_hardened",
+        "toolsteel_generic_as_built",
+        "toolsteel_h13_hardened",
+        "toolsteel_o1_hardened",
+        "toolsteel_s7_hardened",
+        "tough",
+        "tough_generic",
+        "tpu",
+        "tpu_shore_95a",
+        "tpu_sintered",
+        "transparent",
+        "transparent_generic",
+        "walnut",
+        "woven",
+        "woven_generic"
+      ]
+    },
+    "catalog/property-units": {
+      "units": {
+        "areal_density": "g/m²",
+        "compressive_strength_parallel": "MPa",
+        "density": "kg/m³",
+        "elongation_at_break": "%",
+        "glass_transition_temperature": "°C",
+        "hardness": "per hardness_scale",
+        "heat_deflection_temperature": "°C",
+        "janka_hardness": "N",
+        "max_service_temp": "°C",
+        "melting_temperature": "°C",
+        "modulus_of_elasticity": "GPa",
+        "modulus_of_rupture": "MPa",
+        "poisson_ratio": "",
+        "shear_modulus": "GPa",
+        "shear_strength": "MPa",
+        "specific_heat_capacity": "J/(kg·K)",
+        "tensile_strength": "MPa",
+        "thermal_conductivity": "W/(m·K)",
+        "thermal_expansion": "1/K",
+        "thickness": "mm",
+        "yield_strength": "MPa"
+      }
+    },
+    "finishes/applied": {
+      "anodize": {
+        "colored": true,
+        "name": "Anodized",
+        "rotation": 0.0,
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "sheen": null
+      },
+      "beadBlast": {
+        "colored": false,
+        "name": "Bead Blast",
+        "rotation": 0.0,
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "sheen": null
+      },
+      "beadBlastScaled": {
+        "colored": false,
+        "name": "Bead Blast",
+        "rotation": 0.0,
+        "scale": [
+          2.0,
+          3.0
+        ],
+        "sheen": null
+      },
+      "brushed": {
+        "colored": false,
+        "name": "Brushed",
+        "rotation": 45.0,
+        "scale": [
+          2.0,
+          2.0
+        ],
+        "sheen": null
+      },
+      "electrophoresis": {
+        "colored": true,
+        "name": "Electrophoresis",
+        "rotation": 0.0,
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "sheen": null
+      },
+      "passivate": {
+        "colored": false,
+        "name": "Passivation",
+        "rotation": 0.0,
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "sheen": null
+      },
+      "powderCoat": {
+        "colored": true,
+        "name": "Powder coat",
+        "rotation": 0.0,
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "sheen": "gloss"
+      },
+      "powderCoatMatte": {
+        "colored": true,
+        "name": "Powder coat",
+        "rotation": 0.0,
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "sheen": "matte"
+      },
+      "silkscreen": {
+        "colored": true,
+        "name": "Silkscreen",
+        "rotation": 0.0,
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "sheen": null
+      },
+      "smoothMachining": {
+        "colored": false,
+        "name": "Smooth machining (Ra1.6µm)",
+        "rotation": 0.0,
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "sheen": null
+      },
+      "vacuumPlating": {
+        "colored": true,
+        "name": "Vacuum plating",
+        "rotation": 0.0,
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "sheen": "matte"
+      },
+      "zincPlate": {
+        "colored": true,
+        "name": "Zinc plating",
+        "rotation": 0.0,
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "sheen": null
+      }
+    },
+    "finishes/catalog": {
+      "count": 26,
+      "groups": {
+        "chemical": {
+          "anodized": {
+            "name": "Anodized",
+            "notes": "typical colors: natural, black, gray, gold, rose gold, red, blue, champagne, brown, purple, green, orange"
+          },
+          "black_oxide": {
+            "name": "Black oxide",
+            "notes": "color: black"
+          },
+          "chem_film": {
+            "name": "Chemical conversion coat (Chem film)",
+            "notes": "typical colors: clear, gold"
+          },
+          "conductive_oxidation": {
+            "name": "Electrically conductive oxidation",
+            "notes": "color: clear"
+          },
+          "dyeing": {
+            "name": "Dyeing",
+            "notes": "anodized aluminum, or dyeable polymers (esp. nylon)"
+          },
+          "passivation": {
+            "name": "Passivation",
+            "notes": null
+          },
+          "pickling": {
+            "name": "Pickling",
+            "notes": null
+          }
+        },
+        "coating": {
+          "electrophoresis": {
+            "name": "Electrophoresis",
+            "notes": null
+          },
+          "powder_coat": {
+            "name": "Powder coat",
+            "notes": null
+          },
+          "spray_paint": {
+            "name": "Spray painting",
+            "notes": null
+          }
+        },
+        "marking": {
+          "etching": {
+            "name": "Etching",
+            "notes": null
+          },
+          "laser_engraving": {
+            "name": "Laser engraving",
+            "notes": null
+          },
+          "silkscreen": {
+            "name": "Silkscreen",
+            "notes": null
+          }
+        },
+        "mechanical": {
+          "bead_blast": {
+            "name": "Bead Blast",
+            "notes": null
+          },
+          "brushed": {
+            "name": "Brushed",
+            "notes": null
+          },
+          "electropolished": {
+            "name": "Electropolished",
+            "notes": null
+          },
+          "fine_sanding": {
+            "name": "Fine Sanding",
+            "notes": null
+          },
+          "smooth_machining": {
+            "name": "Smooth machining (Ra1.6µm)",
+            "notes": "as-machined roughness spec"
+          }
+        },
+        "metal_plating": {
+          "chrome_plating": {
+            "name": "Chrome plating",
+            "notes": "color: chrome"
+          },
+          "gold_plating": {
+            "name": "Gold plating",
+            "notes": "color: gold"
+          },
+          "nickel_plating": {
+            "name": "Nickel plating",
+            "notes": "color: nickel"
+          },
+          "pvd": {
+            "name": "PVD (Physical Vapor Deposition)",
+            "notes": "typical colors: gold, rose gold, black, gunmetal, blue"
+          },
+          "silver_plating": {
+            "name": "Silver plating",
+            "notes": "color: silver"
+          },
+          "tin_plating": {
+            "name": "Tin plating",
+            "notes": "color: silver"
+          },
+          "vacuum_plating": {
+            "name": "Vacuum plating",
+            "notes": null
+          },
+          "zinc_plating": {
+            "name": "Zinc plating",
+            "notes": "corrosion protection for ferrous steels; typical colors: clear, blue, yellow, black"
+          }
+        }
+      }
+    },
+    "mass/box-brass": {
+      "density": 8500,
+      "masses": {
+        "g-mm": 51.00000000000001,
+        "kg-m": 51000000.0,
+        "lb-in": 1842.4918920042678
+      },
+      "name": "Brass_C360_HALF_HARD",
+      "volume": 6000.0
+    },
+    "mass/by-name": {
+      "byFactory": 51.00000000000001,
+      "byName": 51.00000000000001,
+      "name": "Brass_C360_HALF_HARD"
+    },
+    "mass/compound": {
+      "mass": 16.999999999999996,
+      "volume": 1999.9999999999995
+    },
+    "mass/density-override": {
+      "density": 1234.0,
+      "mass": 7.404000000000001,
+      "name": "Brass_C360_HALF_HARD",
+      "zeroDensityMass": 0.0
+    },
+    "mass/finish-does-not-change-mass": {
+      "finished": 51.00000000000001,
+      "plain": 51.00000000000001
+    },
+    "mass/inherited": {
+      "inherited": 8.499999999999998,
+      "inheritedName": "Brass_C360_HALF_HARD",
+      "ownName": "Hardwood_WALNUT",
+      "ownWins": 0.6399999999999999
+    },
+    "mass/shell": {
+      "closedMass": 51.00000000000001,
+      "closedVolume": 6000.0,
+      "openMass": 0.0,
+      "openVolume": 0.0
+    },
+    "mass/sphere-walnut": {
+      "density": 640,
+      "masses": {
+        "g-mm": 2.680825731063291,
+        "kg-m": 2680825.7310632905,
+        "lb-in": 96.8509739874613
+      },
+      "name": "Hardwood_WALNUT",
+      "volume": 4188.790204786392
+    },
+    "mass/zero-volume": {
+      "edge": 0.0,
+      "emptyCompound": 0.0,
+      "face": 0.0,
+      "faceWithoutMaterial": 0.0,
+      "vertex": 0.0,
+      "wire": 0.0
+    },
+    "processes/applied": {
+      "authored": {
+        "layerHeightMm": 0.2,
+        "lineWidthMm": 0.4,
+        "skinRotation": 45.0
+      },
+      "cast": {
+        "mmPerUv": 1.0,
+        "pitchMm": null,
+        "process": "cast",
+        "rotation": 0.0,
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "skin": false
+      },
+      "fdm": {
+        "mmPerUv": 1.0,
+        "pitchMm": 0.2,
+        "process": "fdm",
+        "rotation": 0.0,
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "skin": false
+      },
+      "fdmSkin": {
+        "mmPerUv": 1.0,
+        "pitchMm": 0.4,
+        "process": "fdm",
+        "rotation": 45.0,
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "skin": true
+      },
+      "fdmSkinBottom": {
+        "mmPerUv": 1.0,
+        "pitchMm": 0.6,
+        "process": "fdm",
+        "rotation": -45,
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "skin": true
+      },
+      "fdmTuned": {
+        "mmPerUv": 25,
+        "pitchMm": 0.3,
+        "process": "fdm",
+        "rotation": 90,
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "skin": false
+      },
+      "machined": {
+        "mmPerUv": 1.0,
+        "pitchMm": null,
+        "process": "machined",
+        "rotation": 0.0,
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "skin": false
+      },
+      "mjf": {
+        "mmPerUv": 1.0,
+        "pitchMm": null,
+        "process": "mjf",
+        "rotation": 0.0,
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "skin": false
+      },
+      "molded": {
+        "mmPerUv": 1.0,
+        "pitchMm": null,
+        "process": "molded",
+        "rotation": 0.0,
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "skin": false
+      },
+      "slm": {
+        "mmPerUv": 1.0,
+        "pitchMm": null,
+        "process": "slm",
+        "rotation": 0.0,
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "skin": false
+      },
+      "sls": {
+        "mmPerUv": 1.0,
+        "pitchMm": null,
+        "process": "sls",
+        "rotation": 0.0,
+        "scale": [
+          2.0,
+          2.0
+        ],
+        "skin": false
+      },
+      "vat": {
+        "mmPerUv": 1.0,
+        "pitchMm": null,
+        "process": "vat",
+        "rotation": 0.0,
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "skin": false
+      },
+      "wrought": {
+        "mmPerUv": 1.0,
+        "pitchMm": null,
+        "process": "wrought",
+        "rotation": 0.0,
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "skin": false
+      }
+    }
+  },
+  "reference": {
+    "build123d": "0.13.0",
+    "occt": "8.0.1",
+    "ocp": "8.0.1.1.0",
+    "python": "3.13.17"
+  },
+  "suite": "materials"
+}

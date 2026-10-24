@@ -6,6 +6,8 @@ import { TOLERANCE } from "../geometry/constants.ts";
 import { Vector } from "../geometry/vector.ts";
 import { Edge } from "../topology/edge.ts";
 import { PositionMode } from "../topology/enums.ts";
+import { ShapeHistory } from "../topology/shape-history.ts";
+import { matchByMidpoint, recordRebuiltEdge } from "../topology/wire-record.ts";
 import { Wire } from "../topology/wire.ts";
 import { makeConstrainedArcs } from "./constrained.ts";
 import { trimEdge } from "./edge-trim.ts";
@@ -82,14 +84,21 @@ function trimmedToContact(edge: Edge, corner: Vector, contact: Vector): Edge | u
     return trimEdge(edge, start, end);
 }
 
+/** A rounded corner: the rebuilt wire, and the record of what the splice did to its edges. */
+export interface RoundedCorner {
+    readonly wire: Wire;
+    /** Absent when the corner needed no rounding, so the wire came back as it was. */
+    readonly record: ShapeHistory | undefined;
+}
+
 /**
  * `wire` with the corner at `point` replaced by a tangent arc of `radius`. A corner whose edges
  * already run smoothly into each other is left alone, as build123d does.
  */
-export function filletWireCorner(wire: Wire, point: Vector, radius: number): Wire {
+export function filletWireCorner(wire: Wire, point: Vector, radius: number): RoundedCorner {
     let corner = cornerAt(wire, point);
     if (isTangentContinuous(corner)) {
-        return wire;
+        return { wire, record: undefined };
     }
 
     let arcs = makeConstrainedArcs([corner.edges[0], corner.edges[1]], {
@@ -111,9 +120,19 @@ export function filletWireCorner(wire: Wire, point: Vector, radius: number): Wir
     return spliceCorner(corner, trimmed, arc);
 }
 
-/** Rebuilds the wire with the corner's edges trimmed back and the arc inserted between them. */
-function spliceCorner(corner: WireCorner, trimmed: readonly (Edge | undefined)[], arc: Edge): Wire {
+/**
+ * Rebuilds the wire with the corner's edges trimmed back and the arc inserted between them, and
+ * records what became of each edge it was built from: the two beside the corner trimmed, the rest
+ * copied as they were, and the arc made from the corner itself.
+ */
+function spliceCorner(
+    corner: WireCorner,
+    trimmed: readonly (Edge | undefined)[],
+    arc: Edge,
+): RoundedCorner {
     let edges: (Edge | undefined)[] = [...corner.allEdges];
+    // Which edge of the original wire each entry came from; the arc came from no edge at all.
+    let sources: (Edge | undefined)[] = [...corner.allEdges];
     corner.indices.forEach((index, which) => {
         edges[index] = trimmed[which];
     });
@@ -126,10 +145,22 @@ function spliceCorner(corner: WireCorner, trimmed: readonly (Edge | undefined)[]
     for (let index of [...corner.indices].sort((left, right) => right - left)) {
         if (edges[index] === undefined) {
             edges.splice(index, 1);
+            sources.splice(index, 1);
             if (index < insertAt) insertAt -= 1;
         }
     }
     edges.splice(insertAt, 0, arc);
+    sources.splice(insertAt, 0, undefined);
 
-    return new Wire(edges.filter((edge): edge is Edge => edge !== undefined));
+    let spliced = edges.filter((edge): edge is Edge => edge !== undefined);
+    let wire = new Wire(spliced);
+    let record = ShapeHistory.empty();
+    let placed = matchByMidpoint(spliced, wire.edges());
+    sources.forEach((source, index) => {
+        let copy = placed[index];
+        if (source !== undefined && copy !== undefined) {
+            recordRebuiltEdge(record, source, copy);
+        }
+    });
+    return { wire, record };
 }

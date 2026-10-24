@@ -7,6 +7,7 @@ import {
     Orientation,
     query,
     shapes,
+    surfaces,
 } from "@roonieone/occt-native";
 
 import type { Offset2DOptions } from "../curves/offset-2d.ts";
@@ -36,8 +37,10 @@ import { CenterOf, Convexity, FrameMethod, PositionMode } from "./enums.ts";
 import { native } from "./kernel.ts";
 import { nativeDimension, topLevelNativeShapes } from "./native-topology.ts";
 import { castShape } from "./registry.ts";
+import { madeBy, recordOf } from "./shape-history.ts";
 import { ShapeList } from "./shape-list.ts";
 import { Shape } from "./shape.ts";
+import { joinRecord } from "./wire-record.ts";
 
 /** build123d's `TOLERANCE`: how far a line may deviate from a shared plane. */
 const COMMON_PLANE_TOLERANCE = 1e-6;
@@ -151,8 +154,36 @@ export abstract class Mixin1D extends Shape {
         return native("Length", () => measure.massProperties(this.wrapped, "linear").mass);
     }
 
-    /** Radius of the underlying circle (of the first edge, for a wire). */
-    abstract get radius(): number;
+    /**
+     * Radius of the underlying circle; for a wire, the radius of its first edge (build123d puts
+     * `radius` on `Mixin1D`).
+     */
+    get radius(): number {
+        if (this.shapeType === "Wire") {
+            return this.edges().first.radius;
+        }
+        let conic = query.curveConic(this.wrapped);
+        if (conic?.kind !== "circle") {
+            throw new InvalidShapeError("Shape could not be reduced to a circle");
+        }
+        return conic.radius;
+    }
+
+    /**
+     * The normal of the plane this line lies in (build123d `Mixin1D.normal`): the axis direction
+     * of a circle or an ellipse, otherwise the normal of the plane OCCT fits to the curve.
+     */
+    normal(): Vector {
+        let conic = query.curveConic(this.wrapped);
+        if (conic !== undefined) {
+            return fromVec3(conic.axis);
+        }
+        let normal = native("Normal", () => surfaces.shapePlaneNormal(this.wrapped));
+        if (normal === undefined) {
+            throw new GeometryError("Normal not defined");
+        }
+        return fromVec3(normal);
+    }
 
     /** Map a position along the shape to an edge and its OCCT curve parameter. */
     abstract curvePosition(position: number, mode?: PositionMode): CurvePosition;
@@ -440,7 +471,11 @@ function nativeOperands(operands: readonly ShapeOperand[]): occt.Shape[] {
         .flatMap(shape => topLevelNativeShapes(shape.wrapped));
 }
 
-/** build123d `Mixin1D.__add__`, shared by edges, wires and curves. */
+/**
+ * build123d `Mixin1D.__add__`, shared by edges, wires and curves. A join keeps the record of what
+ * it did to the edges it was given (build123d `_joined_wire`), so that `Select.Last` answers for
+ * it; the fuse it falls back to keeps its own.
+ */
 export function unionCurves(self: Shape, operands: readonly ShapeOperand[]): Shape {
     let summands = nativeOperands(operands);
     if (summands.length === 0) {
@@ -451,15 +486,23 @@ export function unionCurves(self: Shape, operands: readonly ShapeOperand[]): Sha
     }
     let pieces = summands.map(castShape);
     let edges = [...self.edges(), ...pieces.flatMap(piece => [...piece.edges()])];
-    let sum: Shape;
+    let joined: Shape | undefined;
     try {
-        sum = castShape(construct.makeWire(edges.map(edge => edge.wrapped)));
+        joined = castShape(construct.makeWire(edges.map(edge => edge.wrapped)));
     } catch (error) {
         if (!isOcctError(error)) {
             throw error;
         }
-        sum = self.fuse(pieces);
     }
-    sum = sum.clean();
-    return sum.edges().length === 1 ? sum.edge() : sum;
+    let assembled =
+        joined === undefined
+            ? self.fuse(pieces)
+            : madeBy(joined, joinRecord(edges, joined.edges(), [self.wrapped], summands));
+    let sum = assembled.clean();
+    if (sum.edges().length !== 1) {
+        return sum;
+    }
+    let only = sum.edge();
+    let record = recordOf(sum);
+    return record === undefined ? only : madeBy(only, record);
 }

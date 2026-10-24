@@ -15,6 +15,7 @@ import type { VectorLike } from "../geometry/vector.ts";
 import type { CurvePosition } from "./mixin1d.ts";
 import type { Shape } from "./shape.ts";
 import type { ShapeOptions } from "./shape.ts";
+import type { Wire } from "./wire.ts";
 
 import {
     makeCircle,
@@ -42,6 +43,7 @@ import { fromVec3, toVec3 } from "./conversions.ts";
 import { GeomType, PositionMode } from "./enums.ts";
 import { native } from "./kernel.ts";
 import { extrudeVertex } from "./makers/extrude.ts";
+import { closeEdge } from "./makers/wire-edits.ts";
 import { Mixin1D } from "./mixin1d.ts";
 import { registerShapeConstructor } from "./registry.ts";
 import { Vertex } from "./vertex.ts";
@@ -99,15 +101,6 @@ export class Edge extends Mixin1D {
             throw new InvalidShapeError(`${this.geomType} has no arc center`);
         }
         return fromVec3(conic.center);
-    }
-
-    /** Radius of the underlying circle. */
-    get radius(): number {
-        let conic = query.curveConic(this.wrapped);
-        if (conic?.kind !== "circle") {
-            throw new InvalidShapeError("Shape could not be reduced to a circle");
-        }
-        return conic.radius;
     }
 
     /**
@@ -345,11 +338,20 @@ export class Edge extends Mixin1D {
     }
 
     /**
-     * The shortest section from this edge's start that reaches `other`, or `undefined` when they
-     * never meet (build123d `Edge.trim_to_other`).
+     * The shortest section from this edge's start that reaches `other` - a shape, an axis, a
+     * plane, a location or a bare point - or `undefined` when they never meet (build123d
+     * `Edge.trim_to_other`).
      */
-    trimToOther(other: Shape | Axis | Plane): Edge | undefined {
+    trimToOther(other: Shape | Axis | Location | Plane | VectorLike): Edge | undefined {
         return trimEdgeToOther(this, other);
+    }
+
+    /**
+     * This edge closed into a wire by a straight edge back to its start (build123d `Edge.close`);
+     * an edge that already closes is returned unchanged.
+     */
+    close(): Edge | Wire {
+        return closeEdge(this);
     }
 
     /** The edge a vertex sweeps out (build123d `Edge.extrude`). */

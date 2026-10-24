@@ -91,6 +91,9 @@ async function decode(source: string | Uint8Array, type: CADFileType): Promise<S
             return oneOrCompound([...importDxfText(new TextDecoder("latin1").decode(bytes))]);
         case CADFileType.ThreeMf:
             return oneOrCompound(await new Mesher().read(bytes));
+        case CADFileType.Obj:
+        case CADFileType.Gltf:
+            throw new ImportError(`Caddy writes ${type} files but cannot read them`);
     }
 }
 

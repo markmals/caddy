@@ -35,6 +35,14 @@ export interface PlaneOptions {
 }
 
 /**
+ * Anything a plane can reposition by being multiplied with it - every shape, as `Shape#moved`
+ * places one. Declared structurally because geometry never depends on the topology.
+ */
+export interface Movable<T> {
+    moved(location: Location | Plane): T;
+}
+
+/**
  * An immutable right-handed coordinate system whose XY plane is the plane itself
  * (build123d `Plane`).
  */
@@ -299,9 +307,23 @@ export class Plane implements CoordinateSystem {
         return this.contains(point) ? point : undefined;
     }
 
-    /** Compose: place `other` relative to this plane (build123d `plane * other`). */
-    multiply(other: Location | Plane): Location {
-        return this.location.multiply(other instanceof Plane ? other.location : other);
+    /**
+     * build123d's `plane * other`: a shape moved onto this plane, this plane composed with a
+     * location or another plane's frame, or one composed location per item of an iterable.
+     */
+    transform(other: Location | Plane): Location;
+    transform(others: Iterable<Location | Plane>): Location[];
+    transform<T>(shape: Movable<T>): T;
+    transform<T>(
+        other: Location | Plane | Iterable<Location | Plane> | Movable<T>,
+    ): Location | Location[] | T {
+        if (other instanceof Location || other instanceof Plane) {
+            return this.location.multiply(other instanceof Plane ? other.location : other);
+        }
+        if (isMovable(other)) {
+            return other.moved(this);
+        }
+        return Array.from(other, each => this.transform(each));
     }
 
     /** The plane's frame as a plain coordinate system. */
@@ -377,6 +399,11 @@ function defaultXDirection(normal: Vector): Vector {
         return (bAbs > cAbs ? new Vector(0, -c, b) : new Vector(0, c, -b)).normalized();
     }
     return (aAbs > bAbs ? new Vector(-b, a, 0) : new Vector(b, -a, 0)).normalized();
+}
+
+/** A single object to place, rather than an iterable of locations to place a plane against. */
+function isMovable<T>(value: Iterable<Location | Plane> | Movable<T>): value is Movable<T> {
+    return typeof (value as Movable<T>).moved === "function";
 }
 
 /** Shared body of `toLocalCoords`/`fromLocalCoords`; corners move, they are not re-ordered. */

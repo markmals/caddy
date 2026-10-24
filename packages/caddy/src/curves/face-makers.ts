@@ -10,22 +10,15 @@ import type { Wire } from "../topology/wire.ts";
 import { Plane } from "../geometry/plane.ts";
 import { Vector } from "../geometry/vector.ts";
 import { castFace } from "./cast.ts";
-import { makeWirePolygon } from "./wire-makers.ts";
+import { frameOf } from "./frame.ts";
 
 /**
- * Rectangle centred on the plane's origin, `width` along its X axis. build123d builds this face
- * straight from the plane, so its normal is the plane's: the outline runs counter-clockwise,
- * unlike `Wire.makeRect`.
+ * Rectangle centred on the plane's origin, `width` along its X axis. build123d cuts this face
+ * straight out of the plane, so its normal is the plane's and its outline runs counter-clockwise
+ * from the `(-width/2, height/2)` corner, unlike `Wire.makeRect`.
  */
 export function makeFaceRect(width: number, height: number, plane: Plane = Plane.XY): Face {
-    let corners: VectorLike[] = [
-        [-width / 2, -height / 2, 0],
-        [width / 2, -height / 2, 0],
-        [width / 2, height / 2, 0],
-        [-width / 2, height / 2, 0],
-    ];
-    let outline = makeWirePolygon(corners.map(corner => plane.fromLocalCoords(corner)));
-    return castFace("Face.makeRect", () => construct.makeFace(outline.wrapped, []));
+    return castFace("Face.makeRect", () => construct.makeRectFace(frameOf(plane), width, height));
 }
 
 /** Options of {@link makeSurface} and {@link Face.makeSurface}. */

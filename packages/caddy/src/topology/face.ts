@@ -9,6 +9,7 @@ import type { ExtrudeOptions } from "../operations/solids.ts";
 import type { Curve, Part } from "./composite.ts";
 import type { Edge } from "./edge.ts";
 import type { FaceGeometry } from "./face-geometry.ts";
+import type { GordonSurfaceOptions } from "./face-gordon.ts";
 import type { SurfaceLocationOptions } from "./face-location.ts";
 import type {
     BezierSurfaceOptions,
@@ -16,6 +17,8 @@ import type {
     SurfacePatchOptions,
 } from "./face-surfaces.ts";
 import type { FaceSweepOptions } from "./face-sweeps.ts";
+import type { WrapOptions } from "./face-wrap-edge.ts";
+import type { WrapFacesOptions } from "./face-wrap.ts";
 import type { Shape, ShapeOptions } from "./shape.ts";
 import type { Shell } from "./shell.ts";
 import type { Vertex } from "./vertex.ts";
@@ -34,6 +37,7 @@ import { fromVec3, toVec3 } from "./conversions.ts";
 import { surfaceConvexity } from "./convexity.ts";
 import { CenterOf, Convexity, GeomType } from "./enums.ts";
 import { faceGeometry } from "./face-geometry.ts";
+import { makeGordonSurface } from "./face-gordon.ts";
 import { makeHoles, withoutHoles } from "./face-holes.ts";
 import { centerLocation, locationOnSurface } from "./face-location.ts";
 import { sewFaces } from "./face-sewing.ts";
@@ -46,6 +50,7 @@ import {
 } from "./face-surfaces.ts";
 import { extrudeEdgeToFace, revolveEdgeToFace, sweepEdgeToFace } from "./face-sweeps.ts";
 import { axesOfSymmetry } from "./face-symmetry.ts";
+import { wrapFacesOnSurface, wrapOnSurface } from "./face-wrap.ts";
 import { native } from "./kernel.ts";
 import { Mixin2D } from "./mixin2d.ts";
 import { registerShapeConstructor } from "./registry.ts";
@@ -253,6 +258,30 @@ export class Face extends Mixin2D {
         return extrude(this, amount, options);
     }
 
+    /**
+     * Lay a flat edge, wire or face defined on the XY plane onto this face's surface, starting at
+     * `surfaceLocation` (build123d `Face.wrap`).
+     */
+    wrap(planarShape: Edge, surfaceLocation: Location, options?: WrapOptions): Edge;
+    wrap(planarShape: Wire, surfaceLocation: Location, options?: WrapOptions): Wire;
+    wrap(planarShape: Face, surfaceLocation: Location, options?: WrapOptions): Face;
+    wrap(
+        planarShape: Edge | Wire | Face,
+        surfaceLocation: Location,
+        options: WrapOptions = {},
+    ): Edge | Wire | Face {
+        return wrapOnSurface(this, planarShape as Face, surfaceLocation, options);
+    }
+
+    /** Lay `faces` onto this face's surface along `path` (build123d `Face.wrap_faces`). */
+    wrapFaces(
+        faces: Iterable<Face>,
+        path: Edge | Wire,
+        options: WrapFacesOptions = {},
+    ): ShapeList<Face> {
+        return wrapFacesOnSurface(this, faces, path, options);
+    }
+
     /** A rectangle centred on the plane's origin. */
     static makeRect(width: number, height: number, plane?: Plane): Face {
         return makeFaceRect(width, height, plane);
@@ -272,6 +301,19 @@ export class Face extends Mixin2D {
         options?: BezierSurfaceOptions,
     ): Face {
         return makeBezierSurface(points, options);
+    }
+
+    /**
+     * Gordon surface through a network of profiles and guides (build123d
+     * `Face.make_gordon_surface`). Every profile must intersect every guide; a point may stand
+     * in for the first or last entry of either list.
+     */
+    static makeGordonSurface(
+        profiles: Iterable<Edge | VectorLike>,
+        guides: Iterable<Edge | VectorLike>,
+        options?: GordonSurfaceOptions,
+    ): Face {
+        return makeGordonSurface(profiles, guides, options);
     }
 
     /**
@@ -399,6 +441,39 @@ export class Face extends Mixin2D {
     get semiAngle(): number | undefined {
         let semiAngle = native("Semi angle", () => surfaces.faceSemiAngle(this.wrapped));
         return semiAngle === undefined ? undefined : semiAngle * RAD2DEG;
+    }
+
+    /** Major and minor radius of a torus, or `undefined` for any other surface. */
+    get radii(): [number, number] | undefined {
+        return native("Radii", () => surfaces.faceRadii(this.wrapped));
+    }
+
+    /**
+     * Radius of a cylinder or a sphere, or `undefined` for any other surface — and for a
+     * trimmed one, whose radius build123d does not report either.
+     */
+    get radius(): number | undefined {
+        return native("Radius", () => surfaces.faceRadius(this.wrapped));
+    }
+
+    /** Extent of a planar face along its own plane's X axis, or `undefined` when it curves. */
+    get length(): number | undefined {
+        return this.#planarExtent("x");
+    }
+
+    /** Extent of a planar face along its own plane's Y axis, or `undefined` when it curves. */
+    get width(): number | undefined {
+        return this.#planarExtent("y");
+    }
+
+    /** How far this face's corners reach along one axis of its own plane. */
+    #planarExtent(axis: "x" | "y"): number | undefined {
+        let plane = this.isPlanar;
+        if (plane === undefined) {
+            return undefined;
+        }
+        let local = this.vertices().map(vertex => plane.toLocalCoords(vertex.center())[axis]);
+        return Math.max(...local) - Math.min(...local);
     }
 
     /** This face's boundary drawn on the XY plane as its own (u, v) parameters. */

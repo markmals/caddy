@@ -1,6 +1,6 @@
 /**
- * build123d's wire-level repairs and queries: edge ordering, stitching, trimming, degenerate
- * edge removal and geometric comparison.
+ * build123d's wire-level repairs and queries: edge ordering, closing, stitching, trimming,
+ * degenerate edge removal and geometric comparison.
  */
 
 import { construct } from "@roonieone/occt-native";
@@ -8,6 +8,7 @@ import { construct } from "@roonieone/occt-native";
 import type { VectorLike } from "../../geometry/vector.ts";
 import type { Edge } from "../edge.ts";
 
+import { makeLine } from "../../curves/edge-makers.ts";
 import { GeometryError } from "../../errors.ts";
 import { TOLERANCE } from "../../geometry/constants.ts";
 import { ShapeList } from "../shape-list.ts";
@@ -19,6 +20,25 @@ export interface GeomEqualOptions {
     readonly tolerance?: number;
     /** Points sampled along curve types without an analytic comparison. */
     readonly samples?: number;
+}
+
+/**
+ * build123d `Edge.close`: an open edge becomes the closed wire of itself and the straight edge
+ * back to its start; one that already closes is returned unchanged.
+ */
+export function closeEdge(edge: Edge): Edge | Wire {
+    return edge.isClosed ? edge : closeWire(new Wire([edge]));
+}
+
+/**
+ * build123d `Wire.close`: an open wire gains a straight edge from its end back to its start; one
+ * that already closes is returned unchanged.
+ */
+export function closeWire(wire: Wire): Wire {
+    if (wire.isClosed) {
+        return wire;
+    }
+    return Wire.combine([wire, makeLine(wire.endPoint(), wire.startPoint())]).first;
 }
 
 /** The wire's edges along its direction, each oriented to start where the previous one ends. */

@@ -7,7 +7,7 @@ import type { PolygonOptions } from "../curves/wire-makers.ts";
 import type { VectorLike } from "../geometry/vector.ts";
 import type { GeomEqualOptions } from "./makers/wire-edits.ts";
 import type { CurvePosition } from "./mixin1d.ts";
-import type { ShapeOptions } from "./shape.ts";
+import type { ShapeOptions, SubShapeOptions } from "./shape.ts";
 import type { Vertex } from "./vertex.ts";
 
 import { makeConvexHull } from "../curves/convex-hull.ts";
@@ -27,6 +27,7 @@ import { Edge } from "./edge.ts";
 import { PositionMode } from "./enums.ts";
 import { native } from "./kernel.ts";
 import {
+    closeWire,
     fixDegenerateEdges,
     geomEqual,
     orderChamferEdges,
@@ -68,17 +69,12 @@ export class Wire extends Mixin1D {
     }
 
     /** The edges in connection order (BRepTools_WireExplorer). */
-    override edges(): ShapeList<Edge> {
+    override edges(options: SubShapeOptions = {}): ShapeList<Edge> {
         let edges = query.wireEdges(this.wrapped).map(wrapped => new Edge(wrapped));
         for (let edge of edges) {
             edge.topoPath = [...this.topoPath, this];
         }
-        return new ShapeList(edges);
-    }
-
-    /** Radius of the first edge's circle. */
-    get radius(): number {
-        return this.edges().first.radius;
+        return this.selected(new ShapeList(edges), options.select);
     }
 
     curvePosition(position: number, mode: PositionMode = PositionMode.Parameter): CurvePosition {
@@ -238,6 +234,14 @@ export class Wire extends Mixin1D {
     /** Drops edges shorter than `precision` and closes the gaps they leave behind. */
     fixDegenerateEdges(precision: number): Wire {
         return fixDegenerateEdges(this, precision);
+    }
+
+    /**
+     * This wire closed with a straight edge from its end back to its start (build123d
+     * `Wire.close`); a wire that already closes is returned unchanged.
+     */
+    close(): Wire {
+        return closeWire(this);
     }
 
     /** Whether `other` has the same geometry, edge by edge in wire order. */

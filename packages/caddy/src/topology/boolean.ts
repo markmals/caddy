@@ -6,7 +6,7 @@
 
 import type * as occt from "@roonieone/occt-native";
 
-import { booleans, ShapeType, shapes, topology } from "@roonieone/occt-native";
+import { booleans, history, ShapeType, shapes, topology } from "@roonieone/occt-native";
 
 import type { FuseOptions, IntersectOptions, Shape, ShapeOperand } from "./shape.ts";
 
@@ -14,18 +14,12 @@ import { BooleanOperationError, InvalidShapeError } from "../errors.ts";
 import { native } from "./kernel.ts";
 import { topLevelNativeShapes, unwrapNativeCompound } from "./native-topology.ts";
 import { castShape, makeComposite } from "./registry.ts";
+import { madeBy, recordOf, ShapeHistory } from "./shape-history.ts";
 
 /** The rank of Compound and its composites; results of that rank are never re-wrapped. */
 const COMPOUND_ORDER = 4;
 
 type BooleanKind = "fuse" | "cut" | "common" | "section";
-
-const OPERATIONS = {
-    fuse: booleans.fuse,
-    cut: booleans.cut,
-    common: booleans.common,
-    section: booleans.section,
-} as const;
 
 interface BooleanRequest {
     readonly kind: BooleanKind;
@@ -51,16 +45,22 @@ function nativeCompound(members: readonly occt.Shape[]): occt.Shape {
     return topology.makeCompound(members);
 }
 
+/** A cleaned shape and the record of what the clean merged, absent when the clean failed. */
+interface Cleaned {
+    readonly shape: occt.Shape;
+    readonly history: occt.History | undefined;
+}
+
 /**
  * build123d's `ShapeUpgrade_UnifySameDomain` pass after every boolean. Cleaning is best effort
  * there: a failure keeps the uncleaned result and warns, and so does this.
  */
-export function clean(wrapped: occt.Shape): occt.Shape {
+export function clean(wrapped: occt.Shape): Cleaned {
     try {
-        return booleans.unifySameDomain(wrapped);
+        return booleans.unifyWithHistory(wrapped);
     } catch (error) {
         process.emitWarning(`Unable to clean shape: ${String(error)}`);
-        return wrapped;
+        return { shape: wrapped, history: undefined };
     }
 }
 
@@ -94,16 +94,15 @@ function runBoolean(
     request: BooleanRequest,
     args: readonly occt.Shape[],
     tools: readonly occt.Shape[],
-): occt.Shape {
+): occt.Recorded {
     let options: booleans.BooleanOptions = {
         glue: request.glue === true ? "shift" : "off",
         fuzzyValue: request.fuzzyValue ?? 0,
         parallel: true,
     };
-    let operation = OPERATIONS[request.kind];
     return native(
         `Boolean ${request.kind}`,
-        () => operation(args, tools, options),
+        () => booleans.withHistory(request.kind, args, tools, options),
         BooleanOperationError,
     );
 }
@@ -130,28 +129,40 @@ export function booleanOperation(
     if (shortcut === "empty") {
         return castShape(nativeCompound([]));
     }
-    let result = clean(shortcut ?? runBoolean(request, argShapes, toolShapes));
+    // The arguments were there before and the tools are brought in. An empty record means every
+    // input sub-shape came through untouched, which is what the shortcuts produce.
+    let operation =
+        shortcut === undefined
+            ? runBoolean(request, argShapes, toolShapes)
+            : { shape: shortcut, history: history.empty() };
+    let cleaned = clean(operation.shape);
+    let record = new ShapeHistory(operation.history, argShapes, toolShapes);
+    if (cleaned.history !== undefined) {
+        record.merge(cleaned.history);
+    }
+
+    let result = cleaned.shape;
     if (shapes.shapeType(result) === ShapeType.Compound) {
         result = unwrapNativeCompound(result);
     }
-
     if (shapes.shapeType(result) === ShapeType.Compound && highestOrder !== COMPOUND_ORDER) {
         let pieces = topLevelNativeShapes(result).map(castShape);
         for (let piece of pieces) {
-            inheritAttributes(piece, base);
+            madeBy(inheritAttributes(piece, base), record);
         }
-        return inheritAttributes(makeComposite(pieces, highestOrder), base);
+        return madeBy(inheritAttributes(makeComposite(pieces, highestOrder), base), record);
     }
-    return inheritAttributes(castShape(result), base);
+    return madeBy(inheritAttributes(castShape(result), base), record);
 }
 
 /**
- * build123d's `copy_attributes_to`: `target` takes `source`'s label, colour and joints where it
- * has none of its own.
+ * build123d's `copy_attributes_to`: `target` takes `source`'s label, colour, material and joints
+ * where it has none of its own.
  */
 export function inheritAttributes<T extends Shape>(target: T, source: Shape): T {
     target.label ||= source.label;
     target.color ??= source.color;
+    target.material ??= source.material;
     if (target.joints.size === 0) {
         for (let joint of source.joints.values()) {
             joint.rebind(target);
@@ -181,10 +192,17 @@ export function booleanPieces(
     kind: BooleanKind,
 ): Shape[] {
     let result = booleanOperation(base, args, tools, { kind });
-    if (shapes.shapeType(result.wrapped) === ShapeType.Compound) {
-        return [...result.getTopLevelShapes()];
+    if (shapes.shapeType(result.wrapped) !== ShapeType.Compound) {
+        return [result];
     }
-    return [result];
+    let pieces = [...result.getTopLevelShapes()];
+    let record = recordOf(result);
+    if (record !== undefined) {
+        for (let piece of pieces) {
+            madeBy(piece, record);
+        }
+    }
+    return pieces;
 }
 
 /**

@@ -59,12 +59,13 @@ function exported(name: string): unknown {
 const API_NAME = /^([A-Za-z_$][\w$]*)(?:([#.])([A-Za-z_$][\w$]*))?/;
 
 /** Resolves `Name`, `Name#member` or `Name.member` against the runtime package. */
-function resolves(caddyName: string, sources: string): boolean {
+function resolves(caddyName: string, sources: readonly string[]): boolean {
     let [, owner = "", separator, member] = API_NAME.exec(caddyName) ?? [];
     let value = exported(owner);
     if (member === undefined) {
         return (
-            value !== undefined || new RegExp(`export (type|interface) ${owner}\\b`).test(sources)
+            value !== undefined ||
+            sources.some(source => new RegExp(`export (type|interface) ${owner}\\b`).test(source))
         );
     }
     if (separator === "." && typeof value === "object" && value !== null) return member in value;
@@ -73,10 +74,28 @@ function resolves(caddyName: string, sources: string): boolean {
     if ((typeof target === "object" && target !== null) || typeof target === "function") {
         if (member in target) return true;
     }
-    // Instance fields live on objects, not the prototype: accept a field declaration instead.
-    return (
-        separator === "#" && new RegExp(`^\\s+(readonly\\s+)?${member}[?!]?:`, "m").test(sources)
+    if (separator !== "#") return false;
+    // Instance fields live on objects, not the prototype: accept a field declared in the source
+    // file of the class or one of its ancestors.
+    let field = new RegExp(`^\\s+(readonly\\s+)?${member}[?!]?:`, "m");
+    return classChain(value).some(name =>
+        sources.some(
+            source => new RegExp(`\\bclass ${name}\\b`).test(source) && field.test(source),
+        ),
     );
+}
+
+/** Names of a class and its ancestors, nearest first. */
+function classChain(constructor: Function): string[] {
+    let names: string[] = [];
+    for (
+        let current: unknown = constructor;
+        typeof current === "function" && current.name !== "";
+    ) {
+        names.push(current.name);
+        current = Object.getPrototypeOf(current);
+    }
+    return names;
 }
 
 interface Corpora {
@@ -84,7 +103,7 @@ interface Corpora {
     /** Test modules that assert build123d fixtures. */
     readonly oracleTests: string;
     readonly cases: string;
-    readonly sources: string;
+    readonly sources: readonly string[];
 }
 
 function status(entry: Entry, corpora: Corpora): Status {
@@ -168,7 +187,7 @@ function main(): void {
         tests: testFiles.join("\n"),
         oracleTests: testFiles.filter(assertsFixtures).join("\n"),
         cases: corpus(filesUnder(CASES, ".py").filter(file => !file.endsWith("selftest.py"))),
-        sources: corpus(filesUnder(SOURCES, ".ts")),
+        sources: filesUnder(SOURCES, ".ts").map(file => readFileSync(file, "utf8")),
     };
     let entries = inventory.entries.map(entry => ({
         ...entry,

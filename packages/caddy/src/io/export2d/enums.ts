@@ -1,5 +1,19 @@
-// Enumerations the 2D exporters take as options (build123d `ColorIndex`, `DotLength`,
-// `PageSize`).
+// Enumerations the 2D exporters take as options (build123d `ApproxOption`, `ColorIndex`,
+// `DotLength`, `PageSize`).
+
+/**
+ * How a DXF export approximates a spline (build123d `ApproxOption`).
+ *
+ * build123d 0.13.0 declares this enum but never reads it: `ExportDXF` always writes a B-spline
+ * entity, so Caddy ships the enum without a setting that takes it rather than inventing a
+ * behaviour the oracle cannot confirm.
+ */
+export const ApproxOption = {
+    Arc: "ARC",
+    None: "NONE",
+    Spline: "SPLINE",
+} as const;
+export type ApproxOption = (typeof ApproxOption)[keyof typeof ApproxOption];
 
 /** AutoCAD colour index, the only colour model DXF layers carry. */
 export const ColorIndex = {

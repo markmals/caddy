@@ -15,6 +15,8 @@ import type { ExportOptions, FormatOptions } from "./types.ts";
 import { ExportError } from "../errors.ts";
 import { Shape } from "../topology/index.ts";
 import { toStepNode } from "./assembly.ts";
+import { encodeGltf } from "./export-gltf.ts";
+import { encodeObj } from "./export-obj.ts";
 import { CADFileType, IGES_UNIT_NAMES, METERS_PER_UNIT, PrecisionMode, Unit } from "./types.ts";
 
 /** Encodes `shape` in memory. The returned bytes are exactly what {@link exportCAD} writes. */
@@ -66,6 +68,10 @@ function encode(shape: Shape, options: FormatOptions): Promise<Uint8Array> {
                 IGES_UNIT_NAMES[options.unit ?? Unit.Millimeter],
                 options.brepEntities === true ? 1 : 0,
             );
+        case CADFileType.Obj:
+            return encodeObj(shape, options);
+        case CADFileType.Gltf:
+            return encodeGltf(shape, options);
         case CADFileType.Step:
             return io.writeStep(toStepNode(shape), {
                 lengthUnitMeters: METERS_PER_UNIT[options.unit ?? Unit.Millimeter],

@@ -5,14 +5,20 @@ import { measure, ShapeType, shapes, topology } from "@roonieone/occt-native";
 import type { Axis } from "../geometry/axis.ts";
 import type { BoundingBox } from "../geometry/bounding-box.ts";
 import type { Plane } from "../geometry/plane.ts";
+import type { VectorLike } from "../geometry/vector.ts";
+import type { SystemFont } from "../text/font-manager.ts";
+import type { MakeTextOptions, ResolveFontOptions } from "../text/make-text.ts";
 import type { IntersectOptions, ShapeOperand, ShapeOptions, TouchOptions } from "./shape.ts";
+import type { Shell } from "./shell.ts";
 
 import { InvalidShapeError } from "../errors.ts";
 import { Vector } from "../geometry/vector.ts";
+import { makeText, resolveFont } from "../text/make-text.ts";
 import { booleanOperation, inheritAttributes, uniqueShapes } from "./boolean.ts";
 import { fromVec3 } from "./conversions.ts";
 import { CenterOf } from "./enums.ts";
 import { native } from "./kernel.ts";
+import { extrudeShell } from "./makers/extrude.ts";
 import { unionCurves } from "./mixin1d.ts";
 import { Mixin3D } from "./mixin3d.ts";
 import { nativeDimension } from "./native-topology.ts";
@@ -22,8 +28,10 @@ import {
     registerCompositeFactory,
     registerShapeConstructor,
 } from "./registry.ts";
+import { madeBy, recordOf } from "./shape-history.ts";
 import { ShapeList } from "./shape-list.ts";
 import { Shape } from "./shape.ts";
+import { makeTriad } from "./triad.ts";
 
 /** build123d's `TOLERANCE`, the fuzzy value of compound addition. */
 const TOLERANCE = 1e-6;
@@ -80,6 +88,26 @@ export class Compound extends Mixin3D implements Iterable<Shape> {
     /** Wrap a native compound (or any native shape), or group `shapes` into a new compound. */
     constructor(source: CompoundSource = [], options: ShapeOptions = {}) {
         super(compoundOf(source), options);
+    }
+
+    /** The solids a shell sweeps out when extruded, grouped as one (build123d `Compound.extrude`). */
+    static extrude(profile: Shell, direction: VectorLike): Compound {
+        return extrudeShell(profile, direction);
+    }
+
+    /** `txt` rendered at `fontSize` as one shape per glyph (build123d `Compound.make_text`). */
+    static makeText(txt: string, fontSize: number, options: MakeTextOptions = {}): Compound {
+        return makeText(txt, fontSize, options);
+    }
+
+    /** The registry entry a font request resolves to (build123d `Compound.resolve_font`). */
+    static resolveFont(options: ResolveFontOptions = {}): SystemFont {
+        return resolveFont(options);
+    }
+
+    /** The three labelled axes of a coordinate system (build123d `Compound.make_triad`). */
+    static makeTriad(axesScale: number): Compound {
+        return makeTriad(axesScale);
     }
 
     /** The common dimension of the top-level shapes; undefined when they differ. */
@@ -193,7 +221,8 @@ export class Compound extends Mixin3D implements Iterable<Shape> {
 
     /**
      * Strip compounds holding a single shape: the innermost shape with `fully`, otherwise the
-     * innermost single-child compound.
+     * innermost single-child compound. What comes out answers for the operation that made the
+     * compound, as the compound itself does.
      */
     unwrap(options: UnwrapOptions = {}): Shape {
         let fully = options.fully ?? true;
@@ -203,6 +232,10 @@ export class Compound extends Mixin3D implements Iterable<Shape> {
             return this;
         }
         inheritAttributes(single, this);
+        let record = recordOf(this);
+        if (record !== undefined && recordOf(single) === undefined) {
+            madeBy(single, record);
+        }
         if (single instanceof Compound) {
             let unwrapped = single.unwrap(options);
             return inheritAttributes(fully ? unwrapped : this.withWrapped(unwrapped.wrapped), this);
@@ -224,13 +257,21 @@ export class Compound extends Mixin3D implements Iterable<Shape> {
         if (brought.length === 0) {
             return this;
         }
-        let summands = [...this.getTopLevelShapes(), ...brought];
+        let mine = [...this.getTopLevelShapes()];
+        let summands = [...mine, ...brought];
         let [first, ...rest] = summands;
         if (first === undefined || rest.length === 0) {
             return makeComposite(summands.slice(0, 1), this.dimension);
         }
         inheritAttributes(first, this);
         let result = booleanOperation(this, [first], rest, { kind: "fuse", fuzzyValue: TOLERANCE });
+        // The fuse ran one piece of this compound against all the rest; for the record,
+        // everything this compound held was there before and the operands were brought in.
+        let record = recordOf(result);
+        if (record !== undefined) {
+            let inputs = (pieces: Shape[]): occt.Shape[] => pieces.map(piece => piece.wrapped);
+            madeBy(result, record.withInputs(inputs(mine), inputs(brought)));
+        }
         return result instanceof Compound ? result : makeComposite([result], this.dimension);
     }
 

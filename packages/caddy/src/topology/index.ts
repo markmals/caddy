@@ -5,9 +5,11 @@ export type {
     BoundingBoxOptions,
     FuseOptions,
     IntersectOptions,
+    MassOptions,
     MoveOptions,
     ShapeOperand,
     ShapeOptions,
+    SubShapeOptions,
     TouchOptions,
 } from "./shape.ts";
 export { Vertex } from "./vertex.ts";
@@ -29,6 +31,16 @@ export type { FilterOptions, GroupOptions, SortCriterion, SortOptions } from "./
 export { GroupBy } from "./group-by.ts";
 export type { GroupKey } from "./group-by.ts";
 export type { CurveLike, ShapeFilter } from "./selectors.ts";
-export { CenterOf, Convexity, FrameMethod, GeomType, Keep, PositionMode, SortBy } from "./enums.ts";
+export {
+    CenterOf,
+    Convexity,
+    FrameMethod,
+    GeomType,
+    Keep,
+    PositionMode,
+    Select,
+    SortBy,
+} from "./enums.ts";
 export type { ShapeTypeName } from "./enums.ts";
+export { ShapeHistory } from "./shape-history.ts";
 export * from "./helpers/index.ts";

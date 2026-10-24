@@ -4,9 +4,11 @@ import type { JointConnection, JointRange } from "./joint.ts";
 
 import { Location, Rotation } from "../geometry/location.ts";
 import { Plane } from "../geometry/plane.ts";
+import { Compound } from "../topology/index.ts";
 import { withinRange } from "./constraints.ts";
 import { describe, Joint } from "./joint.ts";
 import { RigidJoint } from "./rigid.ts";
+import { gimbalSymbol } from "./symbols.ts";
 
 /** Per-axis `(min, max)` angle pairs for X, Y and Z. */
 export type BallJointRanges = readonly [JointRange, JointRange, JointRange];
@@ -46,6 +48,12 @@ export class BallJoint<Parent extends Shape = Shape> extends Joint<Parent> {
 
     override get location(): Location {
         return this.parent.location.multiply(this.relativeLocation);
+    }
+
+    /** The gimbal drawn in global space: three labelled circles about the joint. */
+    get symbol(): Compound {
+        let radius = this.parent.boundingBox({ optimal: false }).diagonal / 30;
+        return gimbalSymbol(radius, this.angleReference).moved(this.location);
     }
 
     override relativeTo(other: Joint, connection: JointConnection = {}): Location {

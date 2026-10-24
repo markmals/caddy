@@ -22,7 +22,7 @@ export type { MatrixIndex } from "./matrix3.ts";
 export { OrientedBoundBox } from "./oriented-bound-box.ts";
 export type { OrientedBounds } from "./oriented-bound-box.ts";
 export { Plane } from "./plane.ts";
-export type { PlaneOptions } from "./plane.ts";
+export type { Movable, PlaneOptions } from "./plane.ts";
 export { Quaternion } from "./quaternion.ts";
 export { roundTo } from "./rounding.ts";
 export { Transform } from "./transform.ts";

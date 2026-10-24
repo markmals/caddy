@@ -17,3 +17,7 @@ Caddy is a derivative work of build123d 0.13.0 (Apache-2.0); see `NOTICE` for th
 ## bd_materials
 
 `src/materials` is a TypeScript port of bd_materials 0.2.5 (Apache-2.0), Copyright 2026 Bernhard Walter, https://github.com/bernhard-42/bd_materials. Each ported module names the Python file it derives from; `NOTICE` carries the attribution and the statement of changes.
+
+## Relief SingleLine CAD
+
+`data/fonts/reliefsingleline/ReliefSingleLineCAD-Regular.ttf` is the single-stroke font build123d bundles and registers under the name `singleline`, shipped here so that text rendered with that font matches build123d on every machine. Copyright 2022 The Relief SingleLine Project Authors (https://github.com/isdat-type/Relief-SingleLine), licensed under the SIL Open Font License, Version 1.1; the full text ships beside it as `data/fonts/reliefsingleline/OFL.txt`. The font is redistributed unmodified and is not sold on its own.

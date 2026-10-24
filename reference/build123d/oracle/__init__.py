@@ -15,6 +15,7 @@ Case modules (`reference/build123d/cases/<suite>.py`) import from here:
 
 from __future__ import annotations
 
+from .fonts import FONTS_DIR, SINGLE_LINE_FONT, TEST_FONT, TEST_FONT_NAME
 from .registry import (
     CASES_DIR,
     FIXTURES_DIR,
@@ -34,8 +35,12 @@ from .serialize import brep, location, plane, shape_metrics, vec
 __all__ = [
     "CASES_DIR",
     "FIXTURES_DIR",
+    "FONTS_DIR",
     "REFERENCE_ROOT",
     "REPO_ROOT",
+    "SINGLE_LINE_FONT",
+    "TEST_FONT",
+    "TEST_FONT_NAME",
     "Case",
     "CaseContext",
     "OracleError",

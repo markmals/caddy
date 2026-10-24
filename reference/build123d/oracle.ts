@@ -38,6 +38,14 @@ export const FIXTURES_DIR = fileURLToPath(new URL("./fixtures/", import.meta.url
 export const EXPECTED_BUILD123D_VERSION = "0.13.0";
 export const EXPECTED_OCCT_VERSION = "8.0.1";
 
+/**
+ * The font every text fixture renders with, checked into the repository because system fonts
+ * differ between machines (see `oracle/fonts.py`, which hands the same file to build123d).
+ */
+export const TEST_FONT_PATH = fileURLToPath(new URL("./fonts/DejaVuSans.ttf", import.meta.url));
+/** The face name that font file registers under, which is what resolving it reports. */
+export const TEST_FONT_NAME = "DejaVu Sans Book";
+
 const REGENERATE_HINT = "run `pnpm oracle:generate`";
 
 /**

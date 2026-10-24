@@ -29,6 +29,12 @@ export class ExportError extends CaddyError {}
 /** The native OCCT addon reported a failure or could not be loaded. */
 export class NativeKernelError extends CaddyError {}
 
+/** A material is unknown, malformed, or missing the data an operation needs. */
+export class MaterialError extends CaddyError {}
+
+/** A font is unknown to the registry, or its file cannot be read. */
+export class FontError extends CaddyError {}
+
 /** Details of a draft the kernel refused. */
 export interface DraftAngleErrorOptions extends ErrorOptions {
     /** The face OCCT could not draft, when it failed on a particular one. */

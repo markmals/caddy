@@ -17,7 +17,7 @@ Everything marked **Verified** was read directly from the files or URLs cited. E
 
 | Artifact | Contents | License of the artifact | Third-party code it carries |
 | --- | --- | --- | --- |
-| `@roonieone/caddy` | TypeScript/JS only: our code plus ports of build123d and bd_materials | `Apache-2.0` | No LGPL code at all; Apache-2.0 attributions for the two ports |
+| `@roonieone/caddy` | TypeScript/JS only: our code plus ports of build123d and bd_materials, and the single-stroke font build123d bundles (`data/fonts/reliefsingleline/`) | `Apache-2.0 AND OFL-1.1` | No LGPL code at all; Apache-2.0 attributions for the two ports, OFL-1.1 for the bundled font |
 | `@roonieone/occt-native` | JS loader, TypeScript types, full Rust crate source, build scripts; `optionalDependencies` on the platform packages | `Apache-2.0` | No LGPL source; ports of ocp_gordon (Apache-2.0) and SciPy (BSD-3-Clause) |
 | `@roonieone/occt-native-<platform>-<arch>` | Prebuilt `occt-native.node` + OCCT shared libraries (`libTK*.dylib` / `.so` / `.dll`), FreeType, and OCCT resource files | `Apache-2.0 AND LGPL-2.1-only WITH OCCT-exception-1.0 AND FTL` | Yes, as binaries: OCCT (LGPL-2.1 with the exception) and FreeType (FTL) |
 
@@ -34,6 +34,8 @@ Linkage column: _dynamic_ = separate file loaded at run time; _static_ = object 
 | `delabella` (inside OCCT `TKMesh`) | bundled in OCCT 8.0.1 | MIT | Delaunay triangulation used by `BRepMesh` | static inside `libTKMesh` | Reproduce MIT text + copyright in notices |
 | `FlexLexer.h` (inside OCCT `TKernel`) | bundled in OCCT 8.0.1 | BSD-style (UC Regents, 3-clause without advertising clause) | flex lexer base class used by data-exchange parsers | static inside OCCT libs | Reproduce copyright + conditions + disclaimer in binary-distribution notices |
 | DejaVu Sans Latin subset (inside OCCT `TKService`) | bundled in OCCT 8.0.1 | Bitstream Vera Fonts License (MIT-style, name restrictions) + public-domain DejaVu changes | Fallback font data | static inside `libTKService` (only if we ship `TKService`) | Reproduce the font copyright/permission notice; do not rename-abuse "Bitstream"/"Vera" |
+| Relief SingleLine CAD (inside `@roonieone/caddy`) | the copy build123d 0.13.0 bundles, redistributed unmodified | SIL Open Font License 1.1 | The single-stroke font build123d registers as `singleline`; shipped so text rendered with it matches the oracle on any machine | data file beside the published bundle (`data/fonts/reliefsingleline/`) | Ship `OFL.txt` and the copyright notice; never sell the font on its own; keep the reserved font name unmodified |
+| DejaVu Sans (`reference/build123d/fonts/`) | 2.37, redistributed unmodified | Bitstream Vera Fonts License + public-domain DejaVu changes (`LICENSE-DejaVu.txt` beside it) | The font every text fixture renders with, so fixtures do not depend on which fonts a machine has installed | build-time (in the repository, never published) | Reproduce the font copyright/permission notice; do not rename-abuse "Bitstream"/"Vera" |
 | `opencascade-sys` (this repo) | 0.4.0 | Apache-2.0 | The cxx bridges to OCCT: `src/*.rs` and `include/generated/*.hxx` are emitted by our `occt-bindgen`, `include/bindings_common.hxx` is ours | static | Ours to license; see [The bindings are our own code](#the-bindings-are-our-own-code) for the residual risk |
 | `occt-bindgen` (this repo) | 0.1.0 | Apache-2.0 | libclang generator that writes the bridges from the OCCT headers | build-time | Ours; shipped as source so users can regenerate |
 | `occt-neon` (this repo) | 0.1.0 | Apache-2.0 | The addon itself: one Neon function per operation | static | Ours; carries the OCCT notice and the ported-code attributions below |
@@ -260,7 +262,7 @@ Adopted by the owner; these are the SPDX expressions as published.
 
 | Package or crate | License | Why |
 | --- | --- | --- |
-| `@roonieone/caddy` | `Apache-2.0` | Derivative of build123d and bd_materials, both Apache-2.0. The same license keeps attribution and patent terms coherent and matches the ecosystem it is ported from. |
+| `@roonieone/caddy` | `Apache-2.0 AND OFL-1.1` | Our code plus the build123d and bd_materials ports (all Apache-2.0), aggregated with the Relief SingleLine CAD font build123d bundles, which stays under the OFL. The same license keeps attribution and patent terms coherent and matches the ecosystem it is ported from. |
 | `@roonieone/occt-native` | `Apache-2.0` | No LGPL source in it: the cxx bridges are generated from OCCT's own headers by our generator, and OCCT ships as a separate shared library whose own license is unaffected. |
 | `@roonieone/occt-native-<platform>-<arch>` | `Apache-2.0 AND LGPL-2.1-only WITH OCCT-exception-1.0 AND FTL` | An aggregate, and the expression says so: our addon (Apache-2.0), the OCCT shared libraries (LGPL-2.1 with the exception), FreeType (FTL, elected over GPLv2). |
 | `occt-neon`, `opencascade-sys`, `occt-bindgen` (crates) | `Apache-2.0` | All three are our code; the generator and the bridges it emits are one work in two forms, so they carry one license. |

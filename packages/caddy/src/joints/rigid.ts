@@ -2,6 +2,7 @@ import type { Shape } from "../topology/shape.ts";
 import type { JointConnection } from "./joint.ts";
 
 import { Location } from "../geometry/location.ts";
+import { Compound } from "../topology/index.ts";
 import { describe, Joint } from "./joint.ts";
 
 export interface RigidJointOptions {
@@ -28,6 +29,13 @@ export class RigidJoint<Parent extends Shape = Shape> extends Joint<Parent> {
 
     override get location(): Location {
         return this.parent.location.multiply(this.relativeLocation);
+    }
+
+    /** The joint's coordinate system drawn in global space, as a labelled triad. */
+    get symbol(): Compound {
+        return Compound.makeTriad(
+            this.parent.boundingBox({ optimal: false }).diagonal / 12,
+        ).located(this.location);
     }
 
     override relativeTo(other: Joint, connection: JointConnection = {}): Location {

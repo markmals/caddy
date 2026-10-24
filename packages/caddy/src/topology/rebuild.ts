@@ -22,6 +22,8 @@ export function rebuilt<T extends Shape>(original: T, base: ShapeBase, wrapped: 
     let copy = Reflect.construct(base, [wrapped, options], original.constructor as ShapeBase) as T;
     let carried = Object.entries(original).filter(([key]) => !Object.hasOwn(copy, key));
     Object.assign(copy, Object.fromEntries(carried));
+    // The material is a private field, so it travels by assignment rather than with `carried`.
+    copy.material = original.material;
     for (let joint of original.joints.values()) {
         joint.rebind(copy);
     }

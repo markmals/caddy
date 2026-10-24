@@ -179,9 +179,9 @@ export const planeCases: OracleCases = {
         expectLocation(
             expected,
             "by_location",
-            source.multiply(Location.fromOrientation([1, 0, 0], [0, 0, 45])),
+            source.transform(Location.fromOrientation([1, 0, 0], [0, 0, 45])),
         );
-        expectLocation(expected, "by_plane", source.multiply(Plane.YZ));
+        expectLocation(expected, "by_plane", source.transform(Plane.YZ));
         expectLocation(expected, "plane_location", source.location);
     },
 

@@ -83,13 +83,18 @@ export function sweep(
             let part = new Part(solids);
             return options.clean === false ? part : new Part(part.clean().wrapped);
         }
-        let swept = profiles.map(profile =>
-            Shape.cast(
-                features.sweep(spine.wrapped, [profile.wrapped], { ...sweepOptions, solid: false }),
-            ),
-        );
-        let sketch = new Sketch(swept);
-        return options.clean === false ? sketch : new Sketch(sketch.clean().wrapped);
+        // OCCT's pipe shell only takes a wire section, so a loose edge becomes a one-edge wire,
+        // and build123d keeps the faces the shell produced — cleaned one by one — not the shell.
+        let swept = profiles.flatMap(profile => [
+            ...Shape.cast(
+                features.sweep(
+                    spine.wrapped,
+                    [profile instanceof Edge ? new Wire([profile]).wrapped : profile.wrapped],
+                    { ...sweepOptions, solid: false },
+                ),
+            ).faces(),
+        ]);
+        return new Sketch(options.clean === false ? swept : swept.map(face => face.clean()));
     } catch (cause) {
         throw new NativeKernelError("Sweep failed", { cause });
     }

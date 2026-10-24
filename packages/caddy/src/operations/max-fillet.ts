@@ -48,7 +48,7 @@ export function maxFillet(
 /** A radius works when OCCT builds a fillet at all and the result survives BRepCheck. */
 function rounds(solid: NativeShape, edges: readonly NativeShape[], radius: number): boolean {
     try {
-        return measure.isValid(features.fillet(solid, edges, radius));
+        return measure.isValid(features.fillet(solid, edges, radius).shape);
     } catch {
         return false;
     }

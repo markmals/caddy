@@ -16,6 +16,18 @@ export const Unit = {
 } as const;
 export type Unit = (typeof Unit)[keyof typeof Unit];
 
+/**
+ * Mass units, ported from build123d's `Unit`, which holds lengths and masses in one enum. They
+ * are separate here because every length-unit table of the I/O layer is exhaustive, and a STEP
+ * file has no use for grams.
+ */
+export const MassUnit = {
+    Gram: "g",
+    Kilogram: "kg",
+    Pound: "lb",
+} as const;
+export type MassUnit = (typeof MassUnit)[keyof typeof MassUnit];
+
 /** Metres per model unit, as OCCT's `XCAFDoc_DocumentTool::SetLengthUnit` wants it. */
 export const METERS_PER_UNIT: Readonly<Record<Unit, number>> = {
     [Unit.Micrometer]: 1e-6,
@@ -51,6 +63,10 @@ export const CADFileType = {
     Dxf: "dxf",
     /** 3MF triangle meshes, read as solids. */
     ThreeMf: "3mf",
+    /** Wavefront OBJ: a triangle soup with optional normals and texture coordinates. */
+    Obj: "obj",
+    /** glTF 2.0, as JSON with an embedded buffer or as a binary GLB. */
+    Gltf: "gltf",
 } as const;
 export type CADFileType = (typeof CADFileType)[keyof typeof CADFileType];
 
@@ -82,6 +98,32 @@ export interface BrepOptions {
     readonly type: typeof CADFileType.Brep | typeof CADFileType.BrepBinary;
 }
 
+export interface ObjOptions {
+    readonly type: typeof CADFileType.Obj;
+    /** Maximum distance between a curve and its tessellation. Defaults to `1e-3`. */
+    readonly tolerance?: number;
+    /** Maximum angle, in radians, between polyline segments. Defaults to `0.1`. */
+    readonly angularTolerance?: number;
+    /** Write per-vertex normals and texture coordinates. Defaults to `true`. */
+    readonly includeUvs?: boolean;
+    /** Pack every face's UVs into one atlas rather than normalising each face. Defaults to `true`. */
+    readonly atlasPacking?: boolean;
+    /** Empty margin kept around every packed island, in atlas units. Defaults to `0`. */
+    readonly atlasGutter?: number;
+}
+
+export interface GltfOptions {
+    readonly type: typeof CADFileType.Gltf;
+    /** Model units the geometry is in; glTF itself is always metres. Defaults to millimetres. */
+    readonly unit?: Unit;
+    /** Write a binary GLB rather than JSON. Defaults to `false`. */
+    readonly binary?: boolean;
+    /** Maximum distance between a curve and its tessellation. Defaults to `1e-3`. */
+    readonly tolerance?: number;
+    /** Maximum angle, in radians, between polyline segments. Defaults to `0.1`. */
+    readonly angularTolerance?: number;
+}
+
 export interface IgesOptions {
     readonly type: typeof CADFileType.Iges;
     /** IGES unit name written in the global section. Defaults to `"MM"`. */
@@ -91,7 +133,13 @@ export interface IgesOptions {
 }
 
 /** Everything `serialize` accepts; `exportCAD` adds the destination `name`. */
-export type FormatOptions = StepOptions | StlOptions | BrepOptions | IgesOptions;
+export type FormatOptions =
+    | StepOptions
+    | StlOptions
+    | BrepOptions
+    | IgesOptions
+    | ObjOptions
+    | GltfOptions;
 
 /** `FormatOptions` plus the path to write. */
 export type ExportOptions = FormatOptions & { readonly name: string };
