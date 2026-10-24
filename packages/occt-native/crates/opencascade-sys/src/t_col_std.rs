@@ -14,6 +14,8 @@ mod inner {
         type TColStd_Array2OfReal;
         type TColStd_HArray1OfBoolean;
         type TColStd_HArray1OfReal;
+        type TColStd_SequenceOfHAsciiString;
+        type Handle_TCollection_HAsciiString = crate::t_collection::Handle_TCollection_HAsciiString;
 
         fn TColStd_Array1OfInteger_new(lower: i32, upper: i32) -> Result<UniquePtr<TColStd_Array1OfInteger>>;
         fn TColStd_Array1OfInteger_set_value(self_: Pin<&mut TColStd_Array1OfInteger>, index: i32, item: i32) -> Result<()>;
@@ -62,6 +64,11 @@ mod inner {
         fn Handle_TColStd_HArray1OfReal_clone(handle: &Handle_TColStd_HArray1OfReal) -> UniquePtr<Handle_TColStd_HArray1OfReal>;
         fn Handle_TColStd_HArray1OfReal_get(handle: &Handle_TColStd_HArray1OfReal) -> Result<&TColStd_HArray1OfReal>;
         fn Handle_TColStd_HArray1OfReal_get_mut(handle: Pin<&mut Handle_TColStd_HArray1OfReal>) -> Result<Pin<&mut TColStd_HArray1OfReal>>;
+
+        fn TColStd_SequenceOfHAsciiString_new() -> Result<UniquePtr<TColStd_SequenceOfHAsciiString>>;
+        fn TColStd_SequenceOfHAsciiString_append(self_: Pin<&mut TColStd_SequenceOfHAsciiString>, item: &Handle_TCollection_HAsciiString) -> Result<()>;
+        fn TColStd_SequenceOfHAsciiString_length(self_: &TColStd_SequenceOfHAsciiString) -> Result<i32>;
+        fn TColStd_SequenceOfHAsciiString_value(self_: &TColStd_SequenceOfHAsciiString, index: i32) -> Result<&Handle_TCollection_HAsciiString>;
     }
 
     impl UniquePtr<Handle_TColStd_HArray1OfBoolean> {}
@@ -69,4 +76,5 @@ mod inner {
     impl UniquePtr<TColStd_Array1OfInteger> {}
     impl UniquePtr<TColStd_Array1OfReal> {}
     impl UniquePtr<TColStd_Array2OfReal> {}
+    impl UniquePtr<TColStd_SequenceOfHAsciiString> {}
 }

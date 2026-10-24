@@ -87,7 +87,7 @@ fn short_type(ty: &Ty, full: bool) -> String {
         .to_owned(),
         Ty::Enum(name) | Ty::Class(name) | Ty::Collection(name) => tail(name),
         Ty::Handle(name) => format!("h{}", tail(name)),
-        Ty::Str | Ty::AsciiString => "str".to_owned(),
+        Ty::Str | Ty::AsciiString | Ty::Utf8String => "str".to_owned(),
         Ty::Stream => "stream".to_owned(),
     }
 }

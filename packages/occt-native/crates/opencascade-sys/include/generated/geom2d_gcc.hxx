@@ -30,6 +30,8 @@ inline std::unique_ptr<Geom2dGcc_Circ2d2TanRad> Geom2dGcc_Circ2d2TanRad_new_hpoi
 
 inline std::unique_ptr<gp_Circ2d> Geom2dGcc_Circ2d2TanRad_ThisSolution(const Geom2dGcc_Circ2d2TanRad& self_, int32_t index) { return std::make_unique<gp_Circ2d>(self_.ThisSolution(index)); }
 
+inline void Geom2dGcc_Circ2d2TanRad_WhichQualifier(const Geom2dGcc_Circ2d2TanRad& self_, int32_t index, GccEnt_Position& qualif1, GccEnt_Position& qualif2) { self_.WhichQualifier(index, qualif1, qualif2); }
+
 inline std::unique_ptr<Geom2dGcc_Circ2d2TanOn> Geom2dGcc_Circ2d2TanOn_new_qualifiedcurve2_curve_real4(const Geom2dGcc_QualifiedCurve& qualified1, const Geom2dGcc_QualifiedCurve& qualified2, const Geom2dAdaptor_Curve& on_curve, double tolerance, double param1, double param2, double param_on) { return std::make_unique<Geom2dGcc_Circ2d2TanOn>(qualified1, qualified2, on_curve, tolerance, param1, param2, param_on); }
 
 inline std::unique_ptr<Geom2dGcc_Circ2d2TanOn> Geom2dGcc_Circ2d2TanOn_new_qualifiedcurve_hpoint_curve_real3(const Geom2dGcc_QualifiedCurve& qualified1, const Handle_Geom2d_Point& point, const Geom2dAdaptor_Curve& on_curve, double tolerance, double param1, double param_on) { return std::make_unique<Geom2dGcc_Circ2d2TanOn>(qualified1, point, on_curve, tolerance, param1, param_on); }
@@ -37,6 +39,8 @@ inline std::unique_ptr<Geom2dGcc_Circ2d2TanOn> Geom2dGcc_Circ2d2TanOn_new_qualif
 inline std::unique_ptr<Geom2dGcc_Circ2d2TanOn> Geom2dGcc_Circ2d2TanOn_new_hpoint2_curve_real(const Handle_Geom2d_Point& point1, const Handle_Geom2d_Point& point2, const Geom2dAdaptor_Curve& on_curve, double tolerance) { return std::make_unique<Geom2dGcc_Circ2d2TanOn>(point1, point2, on_curve, tolerance); }
 
 inline std::unique_ptr<gp_Circ2d> Geom2dGcc_Circ2d2TanOn_ThisSolution(const Geom2dGcc_Circ2d2TanOn& self_, int32_t index) { return std::make_unique<gp_Circ2d>(self_.ThisSolution(index)); }
+
+inline void Geom2dGcc_Circ2d2TanOn_WhichQualifier(const Geom2dGcc_Circ2d2TanOn& self_, int32_t index, GccEnt_Position& qualif1, GccEnt_Position& qualif2) { self_.WhichQualifier(index, qualif1, qualif2); }
 
 inline std::unique_ptr<Geom2dGcc_Circ2d3Tan> Geom2dGcc_Circ2d3Tan_new_qualifiedcurve3_real4(const Geom2dGcc_QualifiedCurve& qualified1, const Geom2dGcc_QualifiedCurve& qualified2, const Geom2dGcc_QualifiedCurve& qualified3, double tolerance, double param1, double param2, double param3) { return std::make_unique<Geom2dGcc_Circ2d3Tan>(qualified1, qualified2, qualified3, tolerance, param1, param2, param3); }
 
@@ -48,15 +52,21 @@ inline std::unique_ptr<Geom2dGcc_Circ2d3Tan> Geom2dGcc_Circ2d3Tan_new_hpoint3_re
 
 inline std::unique_ptr<gp_Circ2d> Geom2dGcc_Circ2d3Tan_ThisSolution(const Geom2dGcc_Circ2d3Tan& self_, int32_t index) { return std::make_unique<gp_Circ2d>(self_.ThisSolution(index)); }
 
+inline void Geom2dGcc_Circ2d3Tan_WhichQualifier(const Geom2dGcc_Circ2d3Tan& self_, int32_t index, GccEnt_Position& qualif1, GccEnt_Position& qualif2, GccEnt_Position& qualif3) { self_.WhichQualifier(index, qualif1, qualif2, qualif3); }
+
 inline std::unique_ptr<Geom2dGcc_Circ2dTanCen> Geom2dGcc_Circ2dTanCen_new_qualifiedcurve_hpoint_real(const Geom2dGcc_QualifiedCurve& qualified1, const Handle_Geom2d_Point& pcenter, double tolerance) { return std::make_unique<Geom2dGcc_Circ2dTanCen>(qualified1, pcenter, tolerance); }
 
 inline std::unique_ptr<gp_Circ2d> Geom2dGcc_Circ2dTanCen_ThisSolution(const Geom2dGcc_Circ2dTanCen& self_, int32_t index) { return std::make_unique<gp_Circ2d>(self_.ThisSolution(index)); }
+
+inline void Geom2dGcc_Circ2dTanCen_WhichQualifier(const Geom2dGcc_Circ2dTanCen& self_, int32_t index, GccEnt_Position& qualif1) { self_.WhichQualifier(index, qualif1); }
 
 inline std::unique_ptr<Geom2dGcc_Circ2dTanOnRad> Geom2dGcc_Circ2dTanOnRad_new_qualifiedcurve_curve_real2(const Geom2dGcc_QualifiedCurve& qualified1, const Geom2dAdaptor_Curve& on_curv, double radius, double tolerance) { return std::make_unique<Geom2dGcc_Circ2dTanOnRad>(qualified1, on_curv, radius, tolerance); }
 
 inline std::unique_ptr<Geom2dGcc_Circ2dTanOnRad> Geom2dGcc_Circ2dTanOnRad_new_hpoint_curve_real2(const Handle_Geom2d_Point& point1, const Geom2dAdaptor_Curve& on_curv, double radius, double tolerance) { return std::make_unique<Geom2dGcc_Circ2dTanOnRad>(point1, on_curv, radius, tolerance); }
 
 inline std::unique_ptr<gp_Circ2d> Geom2dGcc_Circ2dTanOnRad_ThisSolution(const Geom2dGcc_Circ2dTanOnRad& self_, int32_t index) { return std::make_unique<gp_Circ2d>(self_.ThisSolution(index)); }
+
+inline void Geom2dGcc_Circ2dTanOnRad_WhichQualifier(const Geom2dGcc_Circ2dTanOnRad& self_, int32_t index, GccEnt_Position& qualif1) { self_.WhichQualifier(index, qualif1); }
 
 inline std::unique_ptr<Geom2dGcc_Lin2d2Tan> Geom2dGcc_Lin2d2Tan_new_qualifiedcurve2_real(const Geom2dGcc_QualifiedCurve& qualified1, const Geom2dGcc_QualifiedCurve& qualified2, double tolang) { return std::make_unique<Geom2dGcc_Lin2d2Tan>(qualified1, qualified2, tolang); }
 
@@ -68,8 +78,12 @@ inline std::unique_ptr<Geom2dGcc_Lin2d2Tan> Geom2dGcc_Lin2d2Tan_new_qualifiedcur
 
 inline std::unique_ptr<gp_Lin2d> Geom2dGcc_Lin2d2Tan_ThisSolution(const Geom2dGcc_Lin2d2Tan& self_, int32_t index) { return std::make_unique<gp_Lin2d>(self_.ThisSolution(index)); }
 
+inline void Geom2dGcc_Lin2d2Tan_WhichQualifier(const Geom2dGcc_Lin2d2Tan& self_, int32_t index, GccEnt_Position& qualif1, GccEnt_Position& qualif2) { self_.WhichQualifier(index, qualif1, qualif2); }
+
 inline std::unique_ptr<Geom2dGcc_Lin2dTanObl> Geom2dGcc_Lin2dTanObl_new_qualifiedcurve_lin2d_real2(const Geom2dGcc_QualifiedCurve& qualified1, const gp_Lin2d& the_lin, double tol_ang, double angle) { return std::make_unique<Geom2dGcc_Lin2dTanObl>(qualified1, the_lin, tol_ang, angle); }
 
 inline std::unique_ptr<Geom2dGcc_Lin2dTanObl> Geom2dGcc_Lin2dTanObl_new_qualifiedcurve_lin2d_real3(const Geom2dGcc_QualifiedCurve& qualified1, const gp_Lin2d& the_lin, double tol_ang, double param1, double angle) { return std::make_unique<Geom2dGcc_Lin2dTanObl>(qualified1, the_lin, tol_ang, param1, angle); }
 
 inline std::unique_ptr<gp_Lin2d> Geom2dGcc_Lin2dTanObl_ThisSolution(const Geom2dGcc_Lin2dTanObl& self_, int32_t index) { return std::make_unique<gp_Lin2d>(self_.ThisSolution(index)); }
+
+inline void Geom2dGcc_Lin2dTanObl_WhichQualifier(const Geom2dGcc_Lin2dTanObl& self_, int32_t index, GccEnt_Position& qualif1) { self_.WhichQualifier(index, qualif1); }

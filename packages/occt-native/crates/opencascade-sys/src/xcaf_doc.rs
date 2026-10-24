@@ -32,6 +32,7 @@ mod inner {
         type Quantity_ColorRGBA = crate::quantity::Quantity_ColorRGBA;
         type Standard_GUID = crate::standard::Standard_GUID;
         type Standard_Transient = crate::standard::Standard_Transient;
+        type TColStd_SequenceOfHAsciiString = crate::t_col_std::TColStd_SequenceOfHAsciiString;
         type TDF_Attribute = crate::tdf::TDF_Attribute;
         type TDF_Label = crate::tdf::TDF_Label;
         type TDF_LabelSequence = crate::tdf::TDF_LabelSequence;
@@ -281,6 +282,9 @@ mod inner {
         #[Self = "XCAFDoc_ShapeTool"]
         fn GetComponents(l: &TDF_Label, labels: Pin<&mut TDF_LabelSequence>, getsubchilds: bool) -> Result<bool>;
 
+        #[Self = "XCAFDoc_ShapeTool"]
+        fn GetExternRefs(l: &TDF_Label, s_h_a_s: Pin<&mut TColStd_SequenceOfHAsciiString>) -> Result<()>;
+
         fn GetFreeShapes(self: &XCAFDoc_ShapeTool, free_labels: Pin<&mut TDF_LabelSequence>) -> Result<()>;
 
         fn XCAFDoc_ShapeTool_GetID() -> Result<UniquePtr<Standard_GUID>>;
@@ -398,6 +402,11 @@ mod inner {
 
         #[Self = "XCAFDoc_ShapeTool"]
         fn SetAutoNaming(v: bool) -> Result<()>;
+
+        fn XCAFDoc_ShapeTool_SetExternRefs_sequenceofhasciistring(self_: &XCAFDoc_ShapeTool, s_h_a_s: &TColStd_SequenceOfHAsciiString) -> Result<UniquePtr<TDF_Label>>;
+
+        #[cxx_name = "SetExternRefs"]
+        fn SetExternRefs_label_sequenceofhasciistring(self: &XCAFDoc_ShapeTool, l: &TDF_Label, s_h_a_s: &TColStd_SequenceOfHAsciiString) -> Result<()>;
 
         #[cxx_name = "SetID"]
         fn SetID_guid(self: Pin<&mut XCAFDoc_ShapeTool>, arg0: &Standard_GUID) -> Result<()>;

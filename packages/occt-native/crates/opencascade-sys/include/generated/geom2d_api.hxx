@@ -4,9 +4,14 @@
 #include "handles.hxx"
 
 #include <Geom2dAPI_InterCurveCurve.hxx>
+#include <Geom2dAPI_Interpolate.hxx>
 #include <Geom2dAPI_ProjectPointOnCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Curve.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColgp_HArray1OfPnt2d.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
 
 inline std::unique_ptr<Geom2dAPI_ProjectPointOnCurve> Geom2dAPI_ProjectPointOnCurve_new() { return std::make_unique<Geom2dAPI_ProjectPointOnCurve>(); }
 
@@ -17,6 +22,10 @@ inline std::unique_ptr<Geom2dAPI_ProjectPointOnCurve> Geom2dAPI_ProjectPointOnCu
 inline std::unique_ptr<gp_Pnt2d> Geom2dAPI_ProjectPointOnCurve_NearestPoint(const Geom2dAPI_ProjectPointOnCurve& self_) { return std::make_unique<gp_Pnt2d>(self_.NearestPoint()); }
 
 inline std::unique_ptr<gp_Pnt2d> Geom2dAPI_ProjectPointOnCurve_Point(const Geom2dAPI_ProjectPointOnCurve& self_, int32_t index) { return std::make_unique<gp_Pnt2d>(self_.Point(index)); }
+
+inline std::unique_ptr<Geom2dAPI_Interpolate> Geom2dAPI_Interpolate_new_hharray1ofpnt2d_bool_real(const Handle_TColgp_HArray1OfPnt2d& points, bool periodic_flag, double tolerance) { return std::make_unique<Geom2dAPI_Interpolate>(points, periodic_flag, tolerance); }
+
+inline std::unique_ptr<Geom2dAPI_Interpolate> Geom2dAPI_Interpolate_new_hharray1ofpnt2d_hharray1ofreal_bool_real(const Handle_TColgp_HArray1OfPnt2d& points, const Handle_TColStd_HArray1OfReal& parameters, bool periodic_flag, double tolerance) { return std::make_unique<Geom2dAPI_Interpolate>(points, parameters, periodic_flag, tolerance); }
 
 inline std::unique_ptr<Geom2dAPI_InterCurveCurve> Geom2dAPI_InterCurveCurve_new() { return std::make_unique<Geom2dAPI_InterCurveCurve>(); }
 

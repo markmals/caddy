@@ -56,6 +56,8 @@ mod inner {
 
         fn Geom2dGcc_Circ2d2TanRad_ThisSolution(self_: &Geom2dGcc_Circ2d2TanRad, index: i32) -> Result<UniquePtr<gp_Circ2d>>;
 
+        fn Geom2dGcc_Circ2d2TanRad_WhichQualifier(self_: &Geom2dGcc_Circ2d2TanRad, index: i32, qualif1: &mut GccEnt_Position, qualif2: &mut GccEnt_Position) -> Result<()>;
+
         fn Geom2dGcc_Circ2d2TanOn_new_qualifiedcurve2_curve_real4(qualified1: &Geom2dGcc_QualifiedCurve, qualified2: &Geom2dGcc_QualifiedCurve, on_curve: &Geom2dAdaptor_Curve, tolerance: f64, param1: f64, param2: f64, param_on: f64) -> Result<UniquePtr<Geom2dGcc_Circ2d2TanOn>>;
 
         fn Geom2dGcc_Circ2d2TanOn_new_qualifiedcurve_hpoint_curve_real3(qualified1: &Geom2dGcc_QualifiedCurve, point: &Handle_Geom2d_Point, on_curve: &Geom2dAdaptor_Curve, tolerance: f64, param1: f64, param_on: f64) -> Result<UniquePtr<Geom2dGcc_Circ2d2TanOn>>;
@@ -77,6 +79,8 @@ mod inner {
         fn Tangency2(self: &Geom2dGcc_Circ2d2TanOn, index: i32, par_sol: &mut f64, par_arg: &mut f64, pnt_sol: Pin<&mut gp_Pnt2d>) -> Result<()>;
 
         fn Geom2dGcc_Circ2d2TanOn_ThisSolution(self_: &Geom2dGcc_Circ2d2TanOn, index: i32) -> Result<UniquePtr<gp_Circ2d>>;
+
+        fn Geom2dGcc_Circ2d2TanOn_WhichQualifier(self_: &Geom2dGcc_Circ2d2TanOn, index: i32, qualif1: &mut GccEnt_Position, qualif2: &mut GccEnt_Position) -> Result<()>;
 
         fn Geom2dGcc_Circ2d3Tan_new_qualifiedcurve3_real4(qualified1: &Geom2dGcc_QualifiedCurve, qualified2: &Geom2dGcc_QualifiedCurve, qualified3: &Geom2dGcc_QualifiedCurve, tolerance: f64, param1: f64, param2: f64, param3: f64) -> Result<UniquePtr<Geom2dGcc_Circ2d3Tan>>;
 
@@ -104,6 +108,8 @@ mod inner {
 
         fn Geom2dGcc_Circ2d3Tan_ThisSolution(self_: &Geom2dGcc_Circ2d3Tan, index: i32) -> Result<UniquePtr<gp_Circ2d>>;
 
+        fn Geom2dGcc_Circ2d3Tan_WhichQualifier(self_: &Geom2dGcc_Circ2d3Tan, index: i32, qualif1: &mut GccEnt_Position, qualif2: &mut GccEnt_Position, qualif3: &mut GccEnt_Position) -> Result<()>;
+
         fn Geom2dGcc_Circ2dTanCen_new_qualifiedcurve_hpoint_real(qualified1: &Geom2dGcc_QualifiedCurve, pcenter: &Handle_Geom2d_Point, tolerance: f64) -> Result<UniquePtr<Geom2dGcc_Circ2dTanCen>>;
 
         fn IsDone(self: &Geom2dGcc_Circ2dTanCen) -> Result<bool>;
@@ -115,6 +121,8 @@ mod inner {
         fn Tangency1(self: &Geom2dGcc_Circ2dTanCen, index: i32, par_sol: &mut f64, par_arg: &mut f64, pnt_sol: Pin<&mut gp_Pnt2d>) -> Result<()>;
 
         fn Geom2dGcc_Circ2dTanCen_ThisSolution(self_: &Geom2dGcc_Circ2dTanCen, index: i32) -> Result<UniquePtr<gp_Circ2d>>;
+
+        fn Geom2dGcc_Circ2dTanCen_WhichQualifier(self_: &Geom2dGcc_Circ2dTanCen, index: i32, qualif1: &mut GccEnt_Position) -> Result<()>;
 
         fn Geom2dGcc_Circ2dTanOnRad_new_qualifiedcurve_curve_real2(qualified1: &Geom2dGcc_QualifiedCurve, on_curv: &Geom2dAdaptor_Curve, radius: f64, tolerance: f64) -> Result<UniquePtr<Geom2dGcc_Circ2dTanOnRad>>;
 
@@ -131,6 +139,8 @@ mod inner {
         fn Tangency1(self: &Geom2dGcc_Circ2dTanOnRad, index: i32, par_sol: &mut f64, par_arg: &mut f64, pnt_sol: Pin<&mut gp_Pnt2d>) -> Result<()>;
 
         fn Geom2dGcc_Circ2dTanOnRad_ThisSolution(self_: &Geom2dGcc_Circ2dTanOnRad, index: i32) -> Result<UniquePtr<gp_Circ2d>>;
+
+        fn Geom2dGcc_Circ2dTanOnRad_WhichQualifier(self_: &Geom2dGcc_Circ2dTanOnRad, index: i32, qualif1: &mut GccEnt_Position) -> Result<()>;
 
         fn Geom2dGcc_Lin2d2Tan_new_qualifiedcurve2_real(qualified1: &Geom2dGcc_QualifiedCurve, qualified2: &Geom2dGcc_QualifiedCurve, tolang: f64) -> Result<UniquePtr<Geom2dGcc_Lin2d2Tan>>;
 
@@ -150,6 +160,8 @@ mod inner {
 
         fn Geom2dGcc_Lin2d2Tan_ThisSolution(self_: &Geom2dGcc_Lin2d2Tan, index: i32) -> Result<UniquePtr<gp_Lin2d>>;
 
+        fn Geom2dGcc_Lin2d2Tan_WhichQualifier(self_: &Geom2dGcc_Lin2d2Tan, index: i32, qualif1: &mut GccEnt_Position, qualif2: &mut GccEnt_Position) -> Result<()>;
+
         fn Geom2dGcc_Lin2dTanObl_new_qualifiedcurve_lin2d_real2(qualified1: &Geom2dGcc_QualifiedCurve, the_lin: &gp_Lin2d, tol_ang: f64, angle: f64) -> Result<UniquePtr<Geom2dGcc_Lin2dTanObl>>;
 
         fn Geom2dGcc_Lin2dTanObl_new_qualifiedcurve_lin2d_real3(qualified1: &Geom2dGcc_QualifiedCurve, the_lin: &gp_Lin2d, tol_ang: f64, param1: f64, angle: f64) -> Result<UniquePtr<Geom2dGcc_Lin2dTanObl>>;
@@ -165,6 +177,8 @@ mod inner {
         fn Tangency1(self: &Geom2dGcc_Lin2dTanObl, index: i32, par_sol: &mut f64, par_arg: &mut f64, pnt_sol: Pin<&mut gp_Pnt2d>) -> Result<()>;
 
         fn Geom2dGcc_Lin2dTanObl_ThisSolution(self_: &Geom2dGcc_Lin2dTanObl, index: i32) -> Result<UniquePtr<gp_Lin2d>>;
+
+        fn Geom2dGcc_Lin2dTanObl_WhichQualifier(self_: &Geom2dGcc_Lin2dTanObl, index: i32, qualif1: &mut GccEnt_Position) -> Result<()>;
     }
 
     impl UniquePtr<Geom2dGcc_Circ2d2TanOn> {}

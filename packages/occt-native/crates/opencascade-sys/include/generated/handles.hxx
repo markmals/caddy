@@ -13,6 +13,8 @@
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <BRepTools_History.hxx>
 #include <BRepTools_ReShape.hxx>
+#include <Font_FontMgr.hxx>
+#include <Font_SystemFont.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_BoundedCurve.hxx>
@@ -83,6 +85,7 @@
 #include <ShapeUpgrade_UnifySameDomain.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
+#include <StdPrs_BRepFont.hxx>
 #include <StepData_StepModel.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
 #include <TColStd_HArray1OfReal.hxx>
@@ -198,6 +201,9 @@ typedef opencascade::handle<XCAFApp_Application> Handle_XCAFApp_Application;
 typedef opencascade::handle<XCAFDoc_DocumentTool> Handle_XCAFDoc_DocumentTool;
 typedef opencascade::handle<XCAFDoc_ShapeTool> Handle_XCAFDoc_ShapeTool;
 typedef opencascade::handle<XCAFDoc_ColorTool> Handle_XCAFDoc_ColorTool;
+typedef opencascade::handle<Font_FontMgr> Handle_Font_FontMgr;
+typedef opencascade::handle<Font_SystemFont> Handle_Font_SystemFont;
+typedef opencascade::handle<StdPrs_BRepFont> Handle_StdPrs_BRepFont;
 typedef opencascade::handle<TColStd_HArray1OfBoolean> Handle_TColStd_HArray1OfBoolean;
 typedef opencascade::handle<TColStd_HArray1OfReal> Handle_TColStd_HArray1OfReal;
 typedef opencascade::handle<TColgp_HArray1OfPnt> Handle_TColgp_HArray1OfPnt;

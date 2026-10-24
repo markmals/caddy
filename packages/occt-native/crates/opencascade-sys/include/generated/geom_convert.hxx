@@ -3,17 +3,24 @@
 #include "../bindings_common.hxx"
 #include "handles.hxx"
 
+#include <Adaptor3d_Curve.hxx>
+#include <Convert_ParameterisationType.hxx>
+#include <GeomAbs_Shape.hxx>
 #include <GeomConvert.hxx>
+#include <GeomConvert_ApproxCurve.hxx>
 #include <GeomConvert_BSplineCurveToBezierCurve.hxx>
 #include <GeomConvert_CompCurveToBSplineCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BoundedCurve.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
 inline std::unique_ptr<GeomConvert> GeomConvert_new() { return std::make_unique<GeomConvert>(); }
+
+inline std::unique_ptr<Handle_Geom_BSplineCurve> GeomConvert_CurveToBSplineCurve(const Handle_Geom_Curve& c, Convert_ParameterisationType parameterisation) { return std::make_unique<Handle_Geom_BSplineCurve>(GeomConvert::CurveToBSplineCurve(c, parameterisation)); }
 
 inline std::unique_ptr<Handle_Geom_BSplineCurve> GeomConvert_SplitBSplineCurve_hbsplinecurve_int2_bool(const Handle_Geom_BSplineCurve& c, int32_t from_k1, int32_t to_k2, bool same_orientation) { return std::make_unique<Handle_Geom_BSplineCurve>(GeomConvert::SplitBSplineCurve(c, from_k1, to_k2, same_orientation)); }
 
@@ -29,6 +36,10 @@ inline std::unique_ptr<Handle_Geom_BSplineSurface> GeomConvert_SplitBSplineSurfa
 
 inline std::unique_ptr<Handle_Geom_BSplineSurface> GeomConvert_SurfaceToBSplineSurface(const Handle_Geom_Surface& s) { return std::make_unique<Handle_Geom_BSplineSurface>(GeomConvert::SurfaceToBSplineSurface(s)); }
 
+inline std::unique_ptr<GeomConvert_CompCurveToBSplineCurve> GeomConvert_CompCurveToBSplineCurve_new_parameterisationtype(Convert_ParameterisationType parameterisation) { return std::make_unique<GeomConvert_CompCurveToBSplineCurve>(parameterisation); }
+
+inline std::unique_ptr<GeomConvert_CompCurveToBSplineCurve> GeomConvert_CompCurveToBSplineCurve_new_hboundedcurve_parameterisationtype(const Handle_Geom_BoundedCurve& basis_curve, Convert_ParameterisationType parameterisation) { return std::make_unique<GeomConvert_CompCurveToBSplineCurve>(basis_curve, parameterisation); }
+
 inline std::unique_ptr<Handle_Geom_BSplineCurve> GeomConvert_CompCurveToBSplineCurve_BSplineCurve(const GeomConvert_CompCurveToBSplineCurve& self_) { return std::make_unique<Handle_Geom_BSplineCurve>(self_.BSplineCurve()); }
 
 inline std::unique_ptr<GeomConvert_BSplineCurveToBezierCurve> GeomConvert_BSplineCurveToBezierCurve_new_hbsplinecurve(const Handle_Geom_BSplineCurve& basis_curve) { return std::make_unique<GeomConvert_BSplineCurveToBezierCurve>(basis_curve); }
@@ -36,3 +47,11 @@ inline std::unique_ptr<GeomConvert_BSplineCurveToBezierCurve> GeomConvert_BSplin
 inline std::unique_ptr<GeomConvert_BSplineCurveToBezierCurve> GeomConvert_BSplineCurveToBezierCurve_new_hbsplinecurve_real3(const Handle_Geom_BSplineCurve& basis_curve, double u1, double u2, double parametric_tolerance) { return std::make_unique<GeomConvert_BSplineCurveToBezierCurve>(basis_curve, u1, u2, parametric_tolerance); }
 
 inline std::unique_ptr<Handle_Geom_BezierCurve> GeomConvert_BSplineCurveToBezierCurve_Arc(GeomConvert_BSplineCurveToBezierCurve& self_, int32_t index) { return std::make_unique<Handle_Geom_BezierCurve>(self_.Arc(index)); }
+
+inline std::unique_ptr<GeomConvert_ApproxCurve> GeomConvert_ApproxCurve_new_hgeom_curve_real_geomabs_shape_int2(const Handle_Geom_Curve& curve, double tol3d, GeomAbs_Shape order, int32_t max_segments, int32_t max_degree) { return std::make_unique<GeomConvert_ApproxCurve>(curve, tol3d, order, max_segments, max_degree); }
+
+inline std::unique_ptr<GeomConvert_ApproxCurve> GeomConvert_ApproxCurve_new_hadaptor3d_curve_real_geomabs_shape_int2(const Handle_Adaptor3d_Curve& curve, double tol3d, GeomAbs_Shape order, int32_t max_segments, int32_t max_degree) { return std::make_unique<GeomConvert_ApproxCurve>(curve, tol3d, order, max_segments, max_degree); }
+
+inline std::unique_ptr<Handle_Geom_BSplineCurve> GeomConvert_ApproxCurve_Curve(const GeomConvert_ApproxCurve& self_) { return std::make_unique<Handle_Geom_BSplineCurve>(self_.Curve()); }
+
+inline void GeomConvert_ApproxCurve_Dump(const GeomConvert_ApproxCurve& self_, OcctStream& o) { self_.Dump(o); }

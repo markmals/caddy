@@ -149,6 +149,11 @@ fn shim_params(function: &Function, item: &mut Item) -> Result<Shim, String> {
             (Ty::Enum(e), Pass::Value | Pass::ConstRef) => {
                 (e.clone(), format!("{e} {name}"), name.clone())
             }
+            // OCCT uses enum out-parameters to report what a lookup settled on, for example the
+            // aspect `Font_FontMgr::FindFont` resolved an alias to.
+            (Ty::Enum(e), Pass::MutRef) => {
+                (format!("&mut {e}"), format!("{e}& {name}"), name.clone())
+            }
             (Ty::Str, Pass::Value | Pass::ConstRef) if param.optional_text => (
                 "&str".into(),
                 format!("rust::Str {name}"),
@@ -161,6 +166,11 @@ fn shim_params(function: &Function, item: &mut Item) -> Result<Shim, String> {
                 "&str".into(),
                 format!("rust::Str {name}"),
                 format!("TCollection_AsciiString(std::string({name}).c_str())"),
+            ),
+            (Ty::Utf8String, Pass::Value | Pass::ConstRef) => (
+                "&str".into(),
+                format!("rust::Str {name}"),
+                format!("NCollection_String(std::string({name}).c_str())"),
             ),
             (Ty::Stream, Pass::MutRef) => {
                 let t = super::types::STREAM_TYPE;
@@ -216,7 +226,8 @@ enum Returned {
     Value { rust: String, cpp: String },
     Owned(String),
     Reference { rust: String, cpp: String, tied_to_self: bool },
-    Text { ascii: bool },
+    // `object` means an OCCT string class, read with `ToCString()`; otherwise a `const char*`.
+    Text { object: bool },
 }
 
 fn returned(function: &Function, context: &Context) -> Result<Returned, String> {
@@ -246,8 +257,10 @@ fn returned(function: &Function, context: &Context) -> Result<Returned, String> 
         (Ty::Enum(e), Pass::Value | Pass::ConstRef) => {
             Ok(Returned::Value { rust: e.clone(), cpp: e.clone() })
         }
-        (Ty::Str, _) => Ok(Returned::Text { ascii: false }),
-        (Ty::AsciiString, Pass::Value | Pass::ConstRef) => Ok(Returned::Text { ascii: true }),
+        (Ty::Str, _) => Ok(Returned::Text { object: false }),
+        (Ty::AsciiString | Ty::Utf8String, Pass::Value | Pass::ConstRef) => {
+            Ok(Returned::Text { object: true })
+        }
         (ty, Pass::Value) if is_opaque(ty) => Ok(Returned::Owned(opaque_name(ty))),
         (ty, Pass::ConstRef) if is_opaque(ty) => {
             let t = opaque_name(ty);
@@ -311,12 +324,12 @@ fn wrapper(function: &Function, context: &Context) -> Result<Item, String> {
             let rust = if tied_to_self { rust.replacen('&', "&'a ", 1) } else { rust };
             (rust, cpp, format!("return {call};"))
         }
-        Returned::Text { ascii: true } => (
+        Returned::Text { object: true } => (
             "String".into(),
             "rust::String".into(),
             format!("return rust::String({call}.ToCString());"),
         ),
-        Returned::Text { ascii: false } => (
+        Returned::Text { object: false } => (
             "String".into(),
             "rust::String".into(),
             format!(

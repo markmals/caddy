@@ -115,6 +115,11 @@ impl TypeTable {
         if let Some(name) = self.collections.get(&spelling) {
             return Ok(Ty::Collection(name.clone()));
         }
+        // `NCollection_String` is a specialization, not a typedef target the allowlist can name;
+        // OCCT documents its payload as UTF-8, which is what `Ty::Utf8String` carries.
+        if spelling == "NCollection_UtfString<char>" {
+            return Ok(Ty::Utf8String);
+        }
         let name = declaration_name(canonical)?;
         if name == "TCollection_AsciiString" {
             Ok(Ty::AsciiString)

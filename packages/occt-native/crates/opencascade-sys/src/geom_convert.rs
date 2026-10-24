@@ -8,19 +8,27 @@ mod inner {
         include!("opencascade-sys/include/generated/geom_convert.hxx");
 
         type GeomConvert;
+        type GeomConvert_ApproxCurve;
         type GeomConvert_BSplineCurveToBezierCurve;
         type GeomConvert_CompCurveToBSplineCurve;
+        type Convert_ParameterisationType = crate::convert::Convert_ParameterisationType;
+        type GeomAbs_Shape = crate::geom_abs::GeomAbs_Shape;
+        type Handle_Adaptor3d_Curve = crate::adaptor3d::Handle_Adaptor3d_Curve;
         type Handle_Geom_BSplineCurve = crate::geom::Handle_Geom_BSplineCurve;
         type Handle_Geom_BSplineSurface = crate::geom::Handle_Geom_BSplineSurface;
         type Handle_Geom_BezierCurve = crate::geom::Handle_Geom_BezierCurve;
         type Handle_Geom_BoundedCurve = crate::geom::Handle_Geom_BoundedCurve;
+        type Handle_Geom_Curve = crate::geom::Handle_Geom_Curve;
         type Handle_Geom_Surface = crate::geom::Handle_Geom_Surface;
+        type OcctStream = crate::occt_stream::OcctStream;
         type TColStd_Array1OfReal = crate::t_col_std::TColStd_Array1OfReal;
 
         fn GeomConvert_new() -> Result<UniquePtr<GeomConvert>>;
 
         #[Self = "GeomConvert"]
         fn C0BSplineToC1BSplineCurve(b_s: Pin<&mut Handle_Geom_BSplineCurve>, tolerance: f64, angular_tolerance: f64) -> Result<()>;
+
+        fn GeomConvert_CurveToBSplineCurve(c: &Handle_Geom_Curve, parameterisation: Convert_ParameterisationType) -> Result<UniquePtr<Handle_Geom_BSplineCurve>>;
 
         fn GeomConvert_SplitBSplineCurve_hbsplinecurve_int2_bool(c: &Handle_Geom_BSplineCurve, from_k1: i32, to_k2: i32, same_orientation: bool) -> Result<UniquePtr<Handle_Geom_BSplineCurve>>;
 
@@ -35,6 +43,10 @@ mod inner {
         fn GeomConvert_SplitBSplineSurface_hbsplinesurface_real2_bool_real_bool(s: &Handle_Geom_BSplineSurface, from_param1: f64, to_param2: f64, u_split: bool, parametric_tolerance: f64, same_orientation: bool) -> Result<UniquePtr<Handle_Geom_BSplineSurface>>;
 
         fn GeomConvert_SurfaceToBSplineSurface(s: &Handle_Geom_Surface) -> Result<UniquePtr<Handle_Geom_BSplineSurface>>;
+
+        fn GeomConvert_CompCurveToBSplineCurve_new_parameterisationtype(parameterisation: Convert_ParameterisationType) -> Result<UniquePtr<GeomConvert_CompCurveToBSplineCurve>>;
+
+        fn GeomConvert_CompCurveToBSplineCurve_new_hboundedcurve_parameterisationtype(basis_curve: &Handle_Geom_BoundedCurve, parameterisation: Convert_ParameterisationType) -> Result<UniquePtr<GeomConvert_CompCurveToBSplineCurve>>;
 
         fn Add(self: Pin<&mut GeomConvert_CompCurveToBSplineCurve>, new_curve: &Handle_Geom_BoundedCurve, tolerance: f64, after: bool, with_ratio: bool, min_m: i32) -> Result<bool>;
 
@@ -51,8 +63,24 @@ mod inner {
         fn Knots(self: &GeomConvert_BSplineCurveToBezierCurve, t_knots: Pin<&mut TColStd_Array1OfReal>) -> Result<()>;
 
         fn NbArcs(self: &GeomConvert_BSplineCurveToBezierCurve) -> Result<i32>;
+
+        fn GeomConvert_ApproxCurve_new_hgeom_curve_real_geomabs_shape_int2(curve: &Handle_Geom_Curve, tol3d: f64, order: GeomAbs_Shape, max_segments: i32, max_degree: i32) -> Result<UniquePtr<GeomConvert_ApproxCurve>>;
+
+        fn GeomConvert_ApproxCurve_new_hadaptor3d_curve_real_geomabs_shape_int2(curve: &Handle_Adaptor3d_Curve, tol3d: f64, order: GeomAbs_Shape, max_segments: i32, max_degree: i32) -> Result<UniquePtr<GeomConvert_ApproxCurve>>;
+
+        fn GeomConvert_ApproxCurve_Curve(self_: &GeomConvert_ApproxCurve) -> Result<UniquePtr<Handle_Geom_BSplineCurve>>;
+
+        fn GeomConvert_ApproxCurve_Dump(self_: &GeomConvert_ApproxCurve, o: Pin<&mut OcctStream>) -> Result<()>;
+
+        fn HasResult(self: &GeomConvert_ApproxCurve) -> Result<bool>;
+
+        fn IsDone(self: &GeomConvert_ApproxCurve) -> Result<bool>;
+
+        fn MaxError(self: &GeomConvert_ApproxCurve) -> Result<f64>;
     }
 
     impl UniquePtr<GeomConvert> {}
+    impl UniquePtr<GeomConvert_ApproxCurve> {}
     impl UniquePtr<GeomConvert_BSplineCurveToBezierCurve> {}
+    impl UniquePtr<GeomConvert_CompCurveToBSplineCurve> {}
 }

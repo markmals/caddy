@@ -8,6 +8,8 @@
 #include <TColStd_Array2OfReal.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
 #include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_SequenceOfHAsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 inline std::unique_ptr<TColStd_Array1OfInteger> TColStd_Array1OfInteger_new(int32_t lower, int32_t upper) { return std::make_unique<TColStd_Array1OfInteger>(lower, upper); }
 inline void TColStd_Array1OfInteger_set_value(TColStd_Array1OfInteger& self_, int32_t index, int32_t item) { self_.SetValue(index, item); }
@@ -56,3 +58,8 @@ inline bool Handle_TColStd_HArray1OfReal_is_null(const Handle_TColStd_HArray1OfR
 inline std::unique_ptr<Handle_TColStd_HArray1OfReal> Handle_TColStd_HArray1OfReal_clone(const Handle_TColStd_HArray1OfReal& handle) { return std::make_unique<Handle_TColStd_HArray1OfReal>(handle); }
 inline const TColStd_HArray1OfReal& Handle_TColStd_HArray1OfReal_get(const Handle_TColStd_HArray1OfReal& handle) { return occt_bindings::handle_get(handle); }
 inline TColStd_HArray1OfReal& Handle_TColStd_HArray1OfReal_get_mut(Handle_TColStd_HArray1OfReal& handle) { return occt_bindings::handle_get(handle); }
+
+inline std::unique_ptr<TColStd_SequenceOfHAsciiString> TColStd_SequenceOfHAsciiString_new() { return std::make_unique<TColStd_SequenceOfHAsciiString>(); }
+inline void TColStd_SequenceOfHAsciiString_append(TColStd_SequenceOfHAsciiString& self_, const Handle_TCollection_HAsciiString& item) { self_.Append(item); }
+inline int32_t TColStd_SequenceOfHAsciiString_length(const TColStd_SequenceOfHAsciiString& self_) { return self_.Length(); }
+inline const Handle_TCollection_HAsciiString& TColStd_SequenceOfHAsciiString_value(const TColStd_SequenceOfHAsciiString& self_, int32_t index) { return self_.Value(index); }

@@ -36,7 +36,7 @@ pub fn bridge_name(ty: &Ty) -> Option<String> {
         Ty::Class(name) | Ty::Collection(name) | Ty::Enum(name) => Some(name.clone()),
         Ty::Handle(name) => Some(format!("Handle_{name}")),
         Ty::Stream => Some(STREAM_TYPE.to_owned()),
-        Ty::Prim(_) | Ty::Str | Ty::AsciiString => None,
+        Ty::Prim(_) | Ty::Str | Ty::AsciiString | Ty::Utf8String => None,
     }
 }
 
@@ -45,6 +45,7 @@ pub fn header_owner(ty: &Ty) -> Option<&str> {
     match ty {
         Ty::Class(name) | Ty::Collection(name) | Ty::Enum(name) | Ty::Handle(name) => Some(name),
         Ty::AsciiString => Some("TCollection_AsciiString"),
+        Ty::Utf8String => Some("NCollection_String"),
         Ty::Prim(_) | Ty::Str | Ty::Stream => None,
     }
 }

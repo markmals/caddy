@@ -8,9 +8,14 @@ mod inner {
         include!("opencascade-sys/include/generated/geom2d_api.hxx");
 
         type Geom2dAPI_InterCurveCurve;
+        type Geom2dAPI_Interpolate;
         type Geom2dAPI_ProjectPointOnCurve;
+        type Handle_Geom2d_BSplineCurve = crate::geom2d::Handle_Geom2d_BSplineCurve;
         type Handle_Geom2d_Curve = crate::geom2d::Handle_Geom2d_Curve;
+        type Handle_TColStd_HArray1OfReal = crate::t_col_std::Handle_TColStd_HArray1OfReal;
+        type Handle_TColgp_HArray1OfPnt2d = crate::t_colgp::Handle_TColgp_HArray1OfPnt2d;
         type gp_Pnt2d = crate::gp::gp_Pnt2d;
+        type gp_Vec2d = crate::gp::gp_Vec2d;
 
         fn Geom2dAPI_ProjectPointOnCurve_new() -> Result<UniquePtr<Geom2dAPI_ProjectPointOnCurve>>;
 
@@ -42,6 +47,20 @@ mod inner {
 
         fn Geom2dAPI_ProjectPointOnCurve_Point(self_: &Geom2dAPI_ProjectPointOnCurve, index: i32) -> Result<UniquePtr<gp_Pnt2d>>;
 
+        fn Geom2dAPI_Interpolate_new_hharray1ofpnt2d_bool_real(points: &Handle_TColgp_HArray1OfPnt2d, periodic_flag: bool, tolerance: f64) -> Result<UniquePtr<Geom2dAPI_Interpolate>>;
+
+        fn Geom2dAPI_Interpolate_new_hharray1ofpnt2d_hharray1ofreal_bool_real(points: &Handle_TColgp_HArray1OfPnt2d, parameters: &Handle_TColStd_HArray1OfReal, periodic_flag: bool, tolerance: f64) -> Result<UniquePtr<Geom2dAPI_Interpolate>>;
+
+        fn ClearTangents(self: Pin<&mut Geom2dAPI_Interpolate>) -> Result<()>;
+
+        fn Curve(self: &Geom2dAPI_Interpolate) -> Result<&Handle_Geom2d_BSplineCurve>;
+
+        fn IsDone(self: &Geom2dAPI_Interpolate) -> Result<bool>;
+
+        fn Load(self: Pin<&mut Geom2dAPI_Interpolate>, initial_tangent: &gp_Vec2d, final_tangent: &gp_Vec2d, scale: bool) -> Result<()>;
+
+        fn Perform(self: Pin<&mut Geom2dAPI_Interpolate>) -> Result<()>;
+
         fn Geom2dAPI_InterCurveCurve_new() -> Result<UniquePtr<Geom2dAPI_InterCurveCurve>>;
 
         fn Geom2dAPI_InterCurveCurve_new_hcurve2_real(c1: &Handle_Geom2d_Curve, c2: &Handle_Geom2d_Curve, tol: f64) -> Result<UniquePtr<Geom2dAPI_InterCurveCurve>>;
@@ -64,5 +83,6 @@ mod inner {
     }
 
     impl UniquePtr<Geom2dAPI_InterCurveCurve> {}
+    impl UniquePtr<Geom2dAPI_Interpolate> {}
     impl UniquePtr<Geom2dAPI_ProjectPointOnCurve> {}
 }

@@ -37,6 +37,8 @@ classes = [
     "gp_Sphere",
     "gp_Torus",
     "Precision",
+    "BSplCLib",
+    "math_Matrix",
     "Message",
     "Message_Messenger",
     "Message_Printer",
@@ -142,6 +144,7 @@ classes = [
     "GeomConvert",
     "GeomConvert_CompCurveToBSplineCurve",
     "GeomConvert_BSplineCurveToBezierCurve",
+    "GeomConvert_ApproxCurve",
     "GeomLib_IsPlanarSurface",
     "GeomProjLib",
     "GeomFill_TrihedronLaw",
@@ -167,6 +170,7 @@ classes = [
     "Geom2d_Point",
     "Geom2d_CartesianPoint",
     "Geom2dAPI_ProjectPointOnCurve",
+    "Geom2dAPI_Interpolate",
     "Geom2dAPI_InterCurveCurve",
     "Geom2dGcc_QualifiedCurve",
     "Geom2dGcc_Circ2d2TanRad",
@@ -306,6 +310,12 @@ classes = [
     "XCAFDoc_ColorTool",
     "Quantity_Color",
     "Quantity_ColorRGBA",
+
+    # Text: the FreeType-backed font registry and BRep glyph rendering
+    "Font_FontMgr",
+    "Font_SystemFont",
+    "StdPrs_BRepFont",
+    "StdPrs_BRepTextBuilder",
 ]
 
 enums = [
@@ -318,6 +328,7 @@ enums = [
     "GeomAbs_CurveType",
     "GeomAbs_SurfaceType",
     "GeomAbs_JoinType",
+    "Convert_ParameterisationType",
     "BRepBuilderAPI_EdgeError",
     "BRepBuilderAPI_WireError",
     "BRepBuilderAPI_FaceError",
@@ -347,6 +358,10 @@ enums = [
     "ChFiDS_ErrorStatus",
     "GccEnt_Position",
     "XCAFDoc_ColorType",
+    "Font_FontAspect",
+    "Font_StrictLevel",
+    "Graphic3d_HorizontalTextAlignment",
+    "Graphic3d_VerticalTextAlignment",
 ]
 
 clone = [
@@ -427,5 +442,7 @@ TColStd_Array2OfReal = "array2"
 TColStd_HArray1OfBoolean = "array1"
 TColGeom_SequenceOfCurve = "sequence"
 TDF_LabelSequence = "sequence"
+Font_NListOfSystemFont = "list"
+TColStd_SequenceOfHAsciiString = "sequence"
 
 [exclude]

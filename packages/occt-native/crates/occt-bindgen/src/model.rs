@@ -28,6 +28,8 @@ pub enum Ty {
     Str,
     /// `TCollection_AsciiString`, exchanged as UTF-8 text.
     AsciiString,
+    /// `NCollection_String` (`NCollection_UtfString<char>`), exchanged as UTF-8 text.
+    Utf8String,
     /// `std::ostream` / `std::istream`, exchanged as an in-memory `OcctStream`.
     Stream,
 }

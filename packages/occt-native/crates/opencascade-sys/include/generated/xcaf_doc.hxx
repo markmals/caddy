@@ -8,6 +8,7 @@
 #include <Standard_GUID.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
+#include <TColStd_SequenceOfHAsciiString.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelSequence.hxx>
@@ -129,6 +130,8 @@ inline std::unique_ptr<TDF_Label> XCAFDoc_ShapeTool_Label(const XCAFDoc_ShapeToo
 inline std::unique_ptr<TDF_Label> XCAFDoc_ShapeTool_NewShape(const XCAFDoc_ShapeTool& self_) { return std::make_unique<TDF_Label>(self_.NewShape()); }
 
 inline std::unique_ptr<Handle_XCAFDoc_ShapeTool> XCAFDoc_ShapeTool_Set(const TDF_Label& l) { return std::make_unique<Handle_XCAFDoc_ShapeTool>(XCAFDoc_ShapeTool::Set(l)); }
+
+inline std::unique_ptr<TDF_Label> XCAFDoc_ShapeTool_SetExternRefs_sequenceofhasciistring(const XCAFDoc_ShapeTool& self_, const TColStd_SequenceOfHAsciiString& s_h_a_s) { return std::make_unique<TDF_Label>(self_.SetExternRefs(s_h_a_s)); }
 
 inline rust::String XCAFDoc_ShapeTool_get_type_name() { const char* text = XCAFDoc_ShapeTool::get_type_name(); return rust::String(text != nullptr ? text : ""); }
 
