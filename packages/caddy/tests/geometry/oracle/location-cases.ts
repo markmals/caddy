@@ -169,4 +169,12 @@ export const locationCases: OracleCases = {
             new Rotation(new Axis([1, 0, 0], [0, 0, 1]), 0),
         );
     },
+
+    "location/iteration": expected => {
+        let [position = new Vector(), orientation = new Vector()] = [
+            ...Location.fromOrientation([1, 2, 3], [10, 20, 30]),
+        ];
+        expectVectorClose(expected, "position", position.toTuple(), LINEAR_TOLERANCE);
+        expectVectorClose(expected, "orientation", orientation.toTuple(), ORIENTATION_TOLERANCE);
+    },
 };

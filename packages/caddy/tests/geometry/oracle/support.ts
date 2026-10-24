@@ -2,20 +2,33 @@ import type {
     FixtureCase,
     OracleImplementation,
 } from "../../../../../reference/build123d/oracle.ts";
-import type { BoundingBox, EulerOrdering, Location, Plane } from "../../../src/index.ts";
+import type { BoundingBox, EulerOrdering } from "../../../src/index.ts";
 
 import {
+    expectClose,
     expectMatrixClose,
+    expectNumbersClose,
     expectVectorClose,
     fixtureBoolean,
     fixtureRecord,
+    fixtureString,
+    fixtureValue,
 } from "../../../../../reference/build123d/oracle.ts";
 import {
     ANGULAR_TOLERANCE,
+    EXACT_TOLERANCE,
     LINEAR_TOLERANCE,
     ORIENTATION_TOLERANCE,
 } from "../../../../../reference/build123d/tolerances.ts";
-import { Extrinsic, Intrinsic, Quaternion } from "../../../src/index.ts";
+import {
+    Axis,
+    Extrinsic,
+    Intrinsic,
+    Location,
+    Plane,
+    Quaternion,
+    Vector,
+} from "../../../src/index.ts";
 
 /** One group of fixture-case implementations, keyed by case name. */
 export type OracleCases = Record<string, OracleImplementation>;
@@ -71,6 +84,74 @@ export function expectBounds(expected: FixtureCase, key: string, actual: Boundin
     expectVectorClose(record, "min", actual.min.toTuple(), LINEAR_TOLERANCE);
     expectVectorClose(record, "max", actual.max.toTuple(), LINEAR_TOLERANCE);
     expectVectorClose(record, "size", actual.size.toTuple(), LINEAR_TOLERANCE);
+}
+
+/** Compare against the `axis_data()` serializer: position and direction. */
+export function expectAxis(expected: FixtureCase, key: string, actual: Axis): void {
+    let record = fixtureRecord(expected, key);
+    expectVectorClose(record, "position", actual.position.toTuple(), LINEAR_TOLERANCE);
+    expectVectorClose(record, "direction", actual.direction.toTuple(), ANGULAR_TOLERANCE);
+}
+
+/** Anything `intersect` can answer with. */
+export type Intersection = Vector | Axis | Location | Plane | undefined;
+
+/**
+ * Compare against the `intersection()` serializer, which tags the result with its kind: an
+ * intersection that returns the wrong kind of geometry is as wrong as one off by a millimetre.
+ */
+export function expectIntersection(expected: FixtureCase, key: string, actual: Intersection): void {
+    if (fixtureValue(expected, key) === null) {
+        if (actual !== undefined) {
+            throw new Error(`${expected.name}.${key}: expected nothing, got ${String(actual)}`);
+        }
+        return;
+    }
+    let record = fixtureRecord(expected, key);
+    let kind = fixtureString(record, "kind");
+    if (actual === undefined) {
+        throw new Error(`${expected.name}.${key}: expected a ${kind}, got nothing`);
+    }
+    if (kind === "vector" && actual instanceof Vector) {
+        expectVectorClose(record, "vector", actual.toTuple(), LINEAR_TOLERANCE);
+        return;
+    }
+    if (kind === "axis" && actual instanceof Axis) {
+        expectAxis(record, "axis", actual);
+        return;
+    }
+    if (kind === "plane" && actual instanceof Plane) {
+        expectPlane(record, "plane", actual);
+        return;
+    }
+    if (kind === "location" && actual instanceof Location) {
+        expectLocation(record, "location", actual);
+        return;
+    }
+    throw new Error(`${expected.name}.${key}: expected a ${kind}, got ${actual.constructor.name}`);
+}
+
+/** Compare against the `location_list()` serializer: count, then every position and orientation. */
+export function expectLocationList(
+    expected: FixtureCase,
+    key: string,
+    actual: Iterable<Location>,
+): void {
+    let record = fixtureRecord(expected, key);
+    let locations = [...actual];
+    expectClose(record, "count", locations.length, EXACT_TOLERANCE);
+    expectNumbersClose(
+        record,
+        "positions",
+        locations.flatMap(placement => placement.position.toTuple()),
+        LINEAR_TOLERANCE,
+    );
+    expectNumbersClose(
+        record,
+        "orientations",
+        locations.flatMap(placement => placement.orientation.toTuple()),
+        ORIENTATION_TOLERANCE,
+    );
 }
 
 /** Compare a batch of boolean predicates, naming the first one that disagrees. */

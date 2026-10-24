@@ -12,10 +12,15 @@ import { Plane } from "../../src/index.ts";
 import { axisCases } from "./oracle/axis-cases.ts";
 import { boundingBoxCases } from "./oracle/bounding-box-cases.ts";
 import { eulerCases } from "./oracle/euler-cases.ts";
+import { intersectCases } from "./oracle/intersect-cases.ts";
 import { locationCases } from "./oracle/location-cases.ts";
+import { locationsCases } from "./oracle/locations-cases.ts";
+import { matrixCases } from "./oracle/matrix-cases.ts";
+import { obbCases } from "./oracle/obb-cases.ts";
 import { occtCases } from "./oracle/occt-cases.ts";
 import { planeCases } from "./oracle/plane-cases.ts";
 import { expectPlane, ORDERINGS } from "./oracle/support.ts";
+import { unitsCases } from "./oracle/units-cases.ts";
 import { vectorCases } from "./oracle/vector-cases.ts";
 
 const NAMED_PLANES: Record<string, Plane> = {
@@ -41,6 +46,11 @@ oracleSuite("geometry", {
     ...planeCases,
     ...locationCases,
     ...boundingBoxCases,
+    ...intersectCases,
+    ...locationsCases,
+    ...matrixCases,
+    ...obbCases,
+    ...unitsCases,
     ...occtCases,
 
     ...Object.fromEntries(

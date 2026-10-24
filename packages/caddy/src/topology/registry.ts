@@ -14,9 +14,12 @@ import { InvalidShapeError } from "../errors.ts";
 
 type ShapeConstructor = (native: occt.Shape) => Shape;
 type CompositeFactory = (shapes: Shape[]) => Shape;
+type GeometryClass = abstract new (...args: never[]) => object;
+type GeometryConstructor = (geometry: object) => Shape;
 
 const SHAPE_CONSTRUCTORS = new Map<occt.ShapeType, ShapeConstructor>();
 const COMPOSITE_FACTORIES = new Map<number | undefined, CompositeFactory>();
+const GEOMETRY_CONSTRUCTORS = new Map<GeometryClass, GeometryConstructor>();
 
 export function registerShapeConstructor(
     type: occt.ShapeType,
@@ -30,6 +33,14 @@ export function registerCompositeFactory(
     factory: CompositeFactory,
 ): void {
     COMPOSITE_FACTORIES.set(dimension, factory);
+}
+
+/** Register how a geometry class - Vector, Location, Axis, Plane - becomes a shape. */
+export function registerGeometryConstructor<T extends object>(
+    geometryClass: abstract new (...args: never[]) => T,
+    constructor: (geometry: T) => Shape,
+): void {
+    GEOMETRY_CONSTRUCTORS.set(geometryClass, constructor as GeometryConstructor);
 }
 
 /** Wrap a native shape in the subclass matching its type (build123d `Shape.cast`). */
@@ -63,4 +74,18 @@ export function makeComposite(shapes: Iterable<Shape>, dimension?: number): Shap
         throw new InvalidShapeError("No composite class is registered");
     }
     return factory(pieces);
+}
+
+/**
+ * The shape equivalent of a geometry object - a vertex for a point or location, an edge for an
+ * axis, a face for a plane - or `undefined` when `geometry` is none of them (build123d
+ * `Shape.as_shape`'s geometry constructors).
+ */
+export function geometryShape(geometry: object): Shape | undefined {
+    for (let [geometryClass, constructor] of GEOMETRY_CONSTRUCTORS) {
+        if (geometry instanceof geometryClass) {
+            return constructor(geometry);
+        }
+    }
+    return undefined;
 }

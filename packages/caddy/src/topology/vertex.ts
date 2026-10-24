@@ -57,6 +57,11 @@ export class Vertex extends Shape {
         super(native("Vertex construction", () => construct.makeVertex(toVec3(point))));
     }
 
+    /** Vertices are 0D: extrusion only ever raises a dimension, so it cannot build one. */
+    static extrude(): never {
+        throw new InvalidShapeError("Vertices can't be created by extrusion");
+    }
+
     get dimension(): number {
         return 0;
     }

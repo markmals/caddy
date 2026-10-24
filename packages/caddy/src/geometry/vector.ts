@@ -1,4 +1,5 @@
 import type { Axis } from "./axis.ts";
+import type { Location } from "./location.ts";
 import type { Plane } from "./plane.ts";
 import type { Transform } from "./transform.ts";
 
@@ -14,6 +15,16 @@ export type VectorLike = Vector | readonly number[];
 export interface VectorTransformOptions {
     /** Treat the vector as a direction: rotate and re-normalize it instead of moving a point. */
     readonly isDirection?: boolean;
+}
+
+/**
+ * Geometry that decides for itself whether a point lies on it: `Axis`, `Location`, `Plane`.
+ *
+ * Declared structurally so that `vector.ts` stays a leaf module — importing those three classes
+ * for a run-time `instanceof` would make the geometry modules load-order dependent.
+ */
+interface PointIntersector {
+    intersect(point: Vector): Vector | undefined;
 }
 
 /**
@@ -183,6 +194,21 @@ export class Vector {
         );
     }
 
+    /**
+     * This point when it also lies on `other`, otherwise `undefined` (build123d `vector & other`).
+     *
+     * Every case is answered by the other operand: a point only ever intersects geometry in the
+     * point itself.
+     */
+    intersect(other: Axis | Location | Plane | VectorLike): Vector | undefined;
+    intersect(other: PointIntersector | VectorLike): Vector | undefined {
+        if (!(other instanceof Vector) && "intersect" in other) {
+            return other.intersect(this);
+        }
+        let point = Vector.from(other);
+        return this.equals(point) ? point : undefined;
+    }
+
     equals(other: Vector, tolerance = GEOM_TOLERANCE): boolean {
         return (
             Math.abs(this.x - other.x) <= tolerance &&
@@ -211,6 +237,12 @@ export function angleBetween(first: Vector, second: Vector): number {
     let a = first.normalized();
     let b = second.normalized();
     return angleFromCosine(a.dot(b), a.cross(b).length);
+}
+
+/** Cartesian `[x, y]` of the polar coordinates `length` and `angle` (in degrees). */
+export function polar(length: number, angle: number): [number, number] {
+    let radians = angle * DEG2RAD;
+    return [length * Math.cos(radians), length * Math.sin(radians)];
 }
 
 /** OCCT's conditioned angle reconstruction from a cosine and the matching sine magnitude. */

@@ -54,6 +54,19 @@ export class BoundingBox {
     }
 
     /**
+     * Whichever of the two boxes strictly encloses the other in X and Y, ignoring Z, or
+     * `undefined` when neither does (build123d's deprecated `find_outside_box_2d`).
+     *
+     * {@link contains} answers the same question in three dimensions and without the strictness.
+     */
+    static findOutsideBox2D(first: BoundingBox, second: BoundingBox): BoundingBox | undefined {
+        if (encloses2D(first, second)) {
+            return first;
+        }
+        return encloses2D(second, first) ? second : undefined;
+    }
+
+    /**
      * Lebesgue measure: length for 1D extents, area for 2D, volume for 3D.
      *
      * Axes thinner than {@link TOLERANCE} drop out of the product, which leaves a fully
@@ -133,6 +146,14 @@ export class BoundingBox {
     /** Is this box contained in `other`? */
     within(other: BoundingBox, tolerance = TOLERANCE): boolean {
         return other.contains(this, tolerance);
+    }
+
+    /**
+     * Alias of {@link within}, matching build123d's `is_inside`, which it deprecates in favour
+     * of `within`.
+     */
+    isInside(other: BoundingBox, tolerance = TOLERANCE): boolean {
+        return this.within(other, tolerance);
     }
 
     /** Is the distance between the boxes within `tolerance`? */
@@ -218,6 +239,16 @@ function axes(self: BoundingBox, other: BoundingBox): AxisOverlap[] {
         otherMin: otherMin[index] ?? 0,
         otherMax: otherMax[index] ?? 0,
     }));
+}
+
+/** Strict enclosure in X and Y, with no tolerance, as `find_outside_box_2d` compares. */
+function encloses2D(outer: BoundingBox, inner: BoundingBox): boolean {
+    return (
+        outer.min.x < inner.min.x &&
+        outer.max.x > inner.max.x &&
+        outer.min.y < inner.min.y &&
+        outer.max.y > inner.max.y
+    );
 }
 
 /**

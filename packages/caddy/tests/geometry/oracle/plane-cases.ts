@@ -184,4 +184,14 @@ export const planeCases: OracleCases = {
         expectLocation(expected, "by_plane", source.multiply(Plane.YZ));
         expectLocation(expected, "plane_location", source.location);
     },
+
+    "plane/move": expected => {
+        let source = new Plane({ origin: [1, 0, 0], xDir: [1, 0, 0], zDir: [0, 0, 1] });
+        let moved = source.move(Location.fromOrientation([0, 2, 0], [0, 0, 90]));
+        expectPlane(expected, "by_location", moved);
+        // build123d relocates the source plane itself; the immutable copy must match what the
+        // mutated plane became, and the source must be left alone.
+        expectPlane(expected, "mutated_in_place", moved);
+        expectPlane(expected, "by_plane", source.move(Plane.YZ));
+    },
 };

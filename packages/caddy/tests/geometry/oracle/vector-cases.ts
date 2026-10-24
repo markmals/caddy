@@ -1,12 +1,16 @@
 import type { OracleCases } from "./support.ts";
 
-import { expectClose, expectVectorClose } from "../../../../../reference/build123d/oracle.ts";
+import {
+    expectClose,
+    expectNumbersClose,
+    expectVectorClose,
+} from "../../../../../reference/build123d/oracle.ts";
 import {
     ANGULAR_TOLERANCE,
     EXACT_TOLERANCE,
     LINEAR_TOLERANCE,
 } from "../../../../../reference/build123d/tolerances.ts";
-import { Axis, Plane, Vector } from "../../../src/index.ts";
+import { Axis, Plane, polar, Vector } from "../../../src/index.ts";
 import { expectFlags } from "./support.ts";
 
 /** `Vector` arithmetic, angles, projection and rounding. */
@@ -212,5 +216,14 @@ export const vectorCases: OracleCases = {
             within_tolerance: base.equals(new Vector(1, 2, 3 + 1e-9)),
             outside_tolerance: base.equals(new Vector(1, 2, 3.001)),
         });
+    },
+
+    "vector/polar": expected => {
+        expectNumbersClose(expected, "zero", polar(5, 0), EXACT_TOLERANCE);
+        expectNumbersClose(expected, "quarter", polar(5, 90), EXACT_TOLERANCE);
+        expectNumbersClose(expected, "diagonal", polar(2, 45), EXACT_TOLERANCE);
+        expectNumbersClose(expected, "negative_angle", polar(3, -120), EXACT_TOLERANCE);
+        expectNumbersClose(expected, "beyond_turn", polar(1, 450), EXACT_TOLERANCE);
+        expectNumbersClose(expected, "zero_length", polar(0, 33), EXACT_TOLERANCE);
     },
 };

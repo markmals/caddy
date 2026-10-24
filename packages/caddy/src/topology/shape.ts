@@ -1,6 +1,6 @@
 import type * as occt from "@roonieone/occt-native";
 
-import { measure, mesh, query, shapes, ShapeType, topology } from "@roonieone/occt-native";
+import { measure, mesh, obb, query, shapes, ShapeType, topology } from "@roonieone/occt-native";
 
 import type { ViewportOptions } from "../drafting/viewport.ts";
 import type { Color } from "../geometry/color.ts";
@@ -23,6 +23,8 @@ import { Axis } from "../geometry/axis.ts";
 import { BoundingBox } from "../geometry/bounding-box.ts";
 import { DEG2RAD } from "../geometry/constants.ts";
 import { Location } from "../geometry/location.ts";
+import { Matrix } from "../geometry/matrix.ts";
+import { OrientedBoundBox } from "../geometry/oriented-bound-box.ts";
 import { Plane } from "../geometry/plane.ts";
 import { Transform } from "../geometry/transform.ts";
 import { Vector } from "../geometry/vector.ts";
@@ -43,7 +45,7 @@ import { principalInertia } from "./inertia.ts";
 import { intersectionOperand } from "./intersection-operand.ts";
 import { native } from "./kernel.ts";
 import { topLevelNativeShapes } from "./native-topology.ts";
-import { castShape } from "./registry.ts";
+import { castShape, geometryShape } from "./registry.ts";
 import { exactlyOne, ShapeList } from "./shape-list.ts";
 
 /** Attributes every shape carries besides its geometry. */
@@ -94,6 +96,16 @@ export interface MoveOptions {
     readonly transform?: boolean;
 }
 
+/** Options of {@link Shape#toSplines}. */
+export interface ToSplinesOptions {
+    /** Largest spline degree the approximation may use; defaults to 3. */
+    readonly degree?: number;
+    /** How far the splines may stray from the geometry they replace; defaults to 1e-3. */
+    readonly tolerance?: number;
+    /** Allow rational (weighted) splines; defaults to false. */
+    readonly nurbs?: boolean;
+}
+
 /** Either side of an algebraic operation: one shape or several. */
 export type ShapeOperand = Shape | Iterable<Shape>;
 
@@ -107,6 +119,17 @@ const SHAPE_TYPE_NAMES: Record<occt.ShapeType, ShapeTypeName> = {
     [ShapeType.Edge]: "Edge",
     [ShapeType.Vertex]: "Vertex",
     [ShapeType.Shape]: "Compound",
+};
+
+/** Which mass integral build123d's `compute_volume` runs per shape type; a vertex has none. */
+const MASS_PROPERTY: Partial<Record<occt.ShapeType, "linear" | "surface" | "volume">> = {
+    [ShapeType.Edge]: "linear",
+    [ShapeType.Wire]: "linear",
+    [ShapeType.Face]: "surface",
+    [ShapeType.Shell]: "surface",
+    [ShapeType.Solid]: "volume",
+    [ShapeType.CompSolid]: "volume",
+    [ShapeType.Compound]: "volume",
 };
 
 /**
@@ -156,6 +179,21 @@ export abstract class Shape {
     /** Wrap a native shape in the class matching its type. */
     static cast(nativeShape: occt.Shape): Shape {
         return castShape(nativeShape);
+    }
+
+    /**
+     * The shape equivalent of a geometry object (build123d `Shape.as_shape`): a vertex for a
+     * point or a location, an edge for an axis, a face for a plane. A shape comes back unchanged.
+     */
+    static asShape(obj: Shape | Vector | Location | Axis | Plane): Shape {
+        if (obj instanceof Shape) {
+            return obj;
+        }
+        let shape = geometryShape(obj);
+        if (shape === undefined) {
+            throw new InvalidShapeError(`A ${obj.constructor.name} has no shape equivalent`);
+        }
+        return shape;
     }
 
     /** Volume-weighted mass centre or the mean of bounding-box centres for several shapes. */
@@ -253,6 +291,16 @@ export abstract class Shape {
         return locationFromMatrix(shapes.location(this.wrapped));
     }
 
+    /**
+     * Where the shape sits in world coordinates (build123d `global_location`). build123d walks an
+     * assembly tree and composes the placement of every ancestor; Caddy models assemblies as
+     * nested compounds, where OCCT has already composed a child's placement with its parents', so
+     * this is the shape's own location.
+     */
+    get globalLocation(): Location {
+        return this.location;
+    }
+
     get position(): Vector {
         return this.location.position;
     }
@@ -320,6 +368,19 @@ export abstract class Shape {
             return new BoundingBox([0, 0, 0], [0, 0, 0]);
         }
         return new BoundingBox(bounds.min, bounds.max);
+    }
+
+    /**
+     * Minimum-volume bounds, free to turn with the shape (build123d `oriented_bounding_box`).
+     *
+     * The axes OCCT picks are arbitrary and need not be stable between similar shapes.
+     */
+    orientedBoundingBox(): OrientedBoundBox {
+        let bounds = native("Oriented bounding box", () => obb.orientedBoundingBox(this.wrapped));
+        if (bounds === undefined) {
+            throw new InvalidShapeError("An empty shape has no oriented bounding box");
+        }
+        return new OrientedBoundBox(bounds);
     }
 
     // ---- Exploration ----
@@ -521,8 +582,13 @@ export abstract class Shape {
      * A copy with a general affine matrix (rows of `[a, b, c, translation]`) applied, allowing
      * stretch and shear; lines and circles may become splines (build123d `transform_geometry`).
      */
-    transformGeometry(rows: Transform | readonly (readonly number[])[]): this {
-        let matrix = rows instanceof Transform ? matrixOf(rows) : rows.flat();
+    transformGeometry(rows: Matrix | Transform | readonly (readonly number[])[]): this {
+        let matrix =
+            rows instanceof Matrix
+                ? rows.toRows().flat()
+                : rows instanceof Transform
+                  ? matrixOf(rows)
+                  : rows.flat();
         if (matrix.length !== 12) {
             throw new GeometryError("A geometry transform needs three rows of four numbers");
         }
@@ -638,6 +704,19 @@ export abstract class Shape {
         return others.map(other => this.distanceTo(other));
     }
 
+    /**
+     * The measure of the shape in its own dimension (build123d `compute_volume`): the length of a
+     * curve, the area of a surface, the volume of a solid or compound, and zero for a vertex.
+     * Unlike {@link volume} it does not ask what the shape encloses, only what it measures.
+     */
+    computeVolume(): number {
+        let kind = MASS_PROPERTY[shapes.shapeType(this.wrapped)];
+        if (kind === undefined) {
+            return 0;
+        }
+        return native("Volume", () => measure.massProperties(this.wrapped, kind).mass);
+    }
+
     // ---- Booleans ----
 
     /**
@@ -717,6 +796,23 @@ export abstract class Shape {
         if (this.isValid) return this;
         let copy = native("Copy", () => shapes.copy(this.wrapped));
         return this.withWrapped(native("Fix shape", () => query.fixShape(copy)));
+    }
+
+    /**
+     * A copy with every curve and surface approximated by B-splines (build123d `to_splines`), for
+     * tools and formats that only read spline geometry.
+     */
+    toSplines(options: ToSplinesOptions = {}): this {
+        return this.withWrapped(
+            native("Spline approximation", () =>
+                shapes.toSplines(
+                    this.wrapped,
+                    options.degree ?? 3,
+                    options.tolerance ?? 1e-3,
+                    options.nurbs ?? false,
+                ),
+            ),
+        );
     }
 
     /**

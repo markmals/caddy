@@ -1,7 +1,9 @@
 import { construct } from "@roonieone/occt-native";
 
+import type { Location } from "../geometry/location.ts";
 import type { Vector } from "../geometry/vector.ts";
 import type { ExtrudeOptions } from "../operations/solids.ts";
+import type { LocationAtOptions } from "./mixin1d.ts";
 import type { Shape, ShapeOperand } from "./shape.ts";
 
 import { extrude } from "../operations/solids.ts";
@@ -32,6 +34,15 @@ export class Curve extends Compound {
     /** Tangent at `position` along the curve's edges joined into one wire (`%`). */
     tangentAt(position = 0.5, mode: PositionMode = PositionMode.Parameter): Vector {
         return new Wire(this.edges()).tangentAt(position, mode);
+    }
+
+    /** Frame at `position` along the curve's edges joined into one wire (`^`). */
+    locationAt(
+        position: number,
+        mode: PositionMode = PositionMode.Parameter,
+        options: LocationAtOptions = {},
+    ): Location {
+        return new Wire(this.edges()).locationAt(position, mode, options);
     }
 
     /** The wires the curve's edges connect into (build123d `Wire.combine`). */

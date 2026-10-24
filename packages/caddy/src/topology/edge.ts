@@ -9,6 +9,7 @@ import type {
     SplineApproxOptions,
     SplineOptions,
 } from "../curves/spline-makers.ts";
+import type { Location } from "../geometry/location.ts";
 import type { Plane } from "../geometry/plane.ts";
 import type { VectorLike } from "../geometry/vector.ts";
 import type { CurvePosition } from "./mixin1d.ts";
@@ -23,6 +24,7 @@ import {
     makeThreePointArc,
 } from "../curves/edge-makers.ts";
 import { trimEdge, trimEdgeToLength, trimEdgeToOther } from "../curves/edge-trim.ts";
+import { frameOf } from "../curves/frame.ts";
 import {
     makeBezier,
     makeBspline,
@@ -32,14 +34,17 @@ import {
 } from "../curves/spline-makers.ts";
 import { GeometryError, InvalidShapeError } from "../errors.ts";
 import { Axis } from "../geometry/axis.ts";
+import { Pos } from "../geometry/location.ts";
 import { roundTo } from "../geometry/rounding.ts";
 import { Vector } from "../geometry/vector.ts";
 import { boundedMinimum } from "./bounded-minimum.ts";
 import { fromVec3, toVec3 } from "./conversions.ts";
 import { GeomType, PositionMode } from "./enums.ts";
 import { native } from "./kernel.ts";
+import { extrudeVertex } from "./makers/extrude.ts";
 import { Mixin1D } from "./mixin1d.ts";
 import { registerShapeConstructor } from "./registry.ts";
+import { Vertex } from "./vertex.ts";
 
 /** build123d's `TOLERANCE` and the decimals it corresponds to. */
 const TOLERANCE = 1e-6;
@@ -58,6 +63,22 @@ const CURVE_GEOM_TYPES: Record<query.CurveType, GeomType> = {
     [query.CurveType.OffsetCurve]: GeomType.Offset,
     [query.CurveType.OtherCurve]: GeomType.Other,
 };
+
+/** Options of {@link Edge#distributeLocations}. */
+export interface DistributeOptions {
+    /** Where along the edge the first location sits; defaults to 0. */
+    readonly start?: number;
+    /** Where the last location sits; defaults to 1. */
+    readonly stop?: number;
+    /** Drop the orientation from every location; defaults to false. */
+    readonly positionsOnly?: boolean;
+}
+
+/** Options of {@link Edge#findIntersectionPoints}. */
+export interface FindIntersectionOptions {
+    /** How precisely the crossings are computed; defaults to 1e-6. */
+    readonly tolerance?: number;
+}
 
 /** A bounded piece of a curve: the 1D building block of wires and faces (build123d `Edge`). */
 export class Edge extends Mixin1D {
@@ -329,6 +350,115 @@ export class Edge extends Mixin1D {
      */
     trimToOther(other: Shape | Axis | Plane): Edge | undefined {
         return trimEdgeToOther(this, other);
+    }
+
+    /** The edge a vertex sweeps out (build123d `Edge.extrude`). */
+    static extrude(profile: Vertex, direction: VectorLike): Edge {
+        return extrudeVertex(profile, direction);
+    }
+
+    /**
+     * `count` locations spread evenly between `start` and `stop` along this edge (build123d
+     * `distribute_locations`). With `positionsOnly` the locations carry no orientation.
+     */
+    distributeLocations(count: number, options: DistributeOptions = {}): Location[] {
+        if (count < 2) {
+            throw new GeometryError("Distributing locations needs a count of two or more");
+        }
+        let start = options.start ?? 0;
+        let stop = options.stop ?? 1;
+        let positions = Array.from(
+            { length: count },
+            (_, index) => start + (index * (stop - start)) / (count - 1),
+        );
+        let locations = this.locations(positions);
+        return options.positionsOnly === true
+            ? locations.map(location => new Pos(location.position))
+            : locations;
+    }
+
+    /**
+     * Where this edge crosses `other` - or itself, when `other` is left out (build123d
+     * `find_intersection_points`). Both curves must lie in one plane; an axis is taken as a line
+     * long enough to span this edge.
+     */
+    findIntersectionPoints(other?: Axis | Edge, options: FindIntersectionOptions = {}): Vector[] {
+        let curve = other instanceof Axis ? this.#spanningLine(other) : other;
+        let plane = this.commonPlane(curve);
+        if (plane === undefined) {
+            throw new GeometryError("Intersection points need both curves on the same plane");
+        }
+        let crossings = native("Curve intersections", () =>
+            query.curveCrossings(
+                this.wrapped,
+                curve?.wrapped,
+                frameOf(plane),
+                options.tolerance ?? TOLERANCE,
+            ),
+        );
+        return crossings
+            .map(([u, v]) => plane.fromLocalCoords([u, v, 0]))
+            .filter(
+                point =>
+                    this.distanceTo(point) <= TOLERANCE &&
+                    (curve === undefined || curve.distanceTo(point) <= TOLERANCE),
+            );
+    }
+
+    /** A line along `axis`, reaching past both ends of this edge (build123d's axis conversion). */
+    #spanningLine(axis: Axis): Edge {
+        let reach = this.boundingBox().add(new Vertex(axis.position).boundingBox()).diagonal;
+        return makeLine(
+            axis.position.add(axis.direction.multiply(-reach)),
+            axis.position.add(axis.direction.multiply(reach)),
+        );
+    }
+
+    /**
+     * The normalized positions where this edge's tangent points at `angle` degrees in Plane.XY
+     * (build123d `find_tangent`). The tangent angle is sampled in one-percent steps and the
+     * crossings are read off a spline through those samples, so the positions are approximate.
+     */
+    findTangent(angle: number): number[] {
+        let target = pythonModulo(angle, 360);
+        if (this.geomType === GeomType.Line) {
+            return this.tangentAngleAt(0) === target ? [0] : [];
+        }
+        let samples = this.#tangentAngleSamples();
+        let curve = makeSpline(samples);
+        let bounds = curve.boundingBox();
+        let lowest = 360 * Math.floor(bounds.min.y / 360);
+        let highest = 360 * Math.ceil(bounds.max.y / 360);
+        let crossings: Vector[] = [];
+        for (let turn = lowest; turn <= highest; turn += 360) {
+            crossings.push(
+                ...curve.findIntersectionPoints(
+                    makeLine([0, target + turn, 0], [100, target + turn, 0]),
+                ),
+            );
+        }
+        return crossings.map(crossing => crossing.x);
+    }
+
+    /**
+     * The tangent angle at every percent of the edge, as `(position, angle)` points. Each sample
+     * is lifted by a whole turn where the angle wraps, so the samples form one continuous curve.
+     */
+    #tangentAngleSamples(): Vector[] {
+        let count = this.isClosed ? 100 : 101;
+        let samples: Vector[] = [];
+        let turns = 0;
+        let previous: number | undefined;
+        for (let step = 0; step < count; step += 1) {
+            let angle = this.tangentAngleAt(step / 100) + turns * 360;
+            if (previous !== undefined && Math.abs(previous - angle) > 300) {
+                turns = Math.sign(previous - angle);
+                angle += 360 * turns;
+            }
+            previous = angle;
+            samples.push(new Vector(step / 100, angle));
+        }
+        return samples;
     }
 }
 /** Python's float `%`: C `fmod`, moved into the divisor's sign. */

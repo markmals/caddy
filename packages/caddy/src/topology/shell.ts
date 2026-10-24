@@ -2,13 +2,25 @@ import type * as occt from "@roonieone/occt-native";
 
 import { construct, measure, query, ShapeType, shapes } from "@roonieone/occt-native";
 
+import type { Axis } from "../geometry/axis.ts";
+import type { Location } from "../geometry/location.ts";
+import type { VectorLike } from "../geometry/vector.ts";
+import type { Transition } from "../operations/sweep.ts";
+import type { SurfaceLocationOptions } from "./face-location.ts";
 import type { Face } from "./face.ts";
-import type { ShapeOptions } from "./shape.ts";
+import type { LoftOptions } from "./makers/loft.ts";
+import type { Shape, ShapeOptions } from "./shape.ts";
+import type { Vertex } from "./vertex.ts";
+import type { Wire } from "./wire.ts";
 
 import { InvalidShapeError } from "../errors.ts";
 import { Vector } from "../geometry/vector.ts";
 import { fromVec3 } from "./conversions.ts";
 import { native } from "./kernel.ts";
+import { extrudeWire } from "./makers/extrude.ts";
+import { makeLoftShell } from "./makers/loft.ts";
+import { revolveShell } from "./makers/revolve.ts";
+import { sweepShell } from "./makers/sweep.ts";
 import { Mixin2D } from "./mixin2d.ts";
 import { registerShapeConstructor } from "./registry.ts";
 
@@ -22,6 +34,33 @@ export class Shell extends Mixin2D {
     constructor(faces: Face | Iterable<Face>, options?: ShapeOptions);
     constructor(source: occt.Shape | Face | Iterable<Face>, options: ShapeOptions = {}) {
         super(shellOf(source), options);
+    }
+
+    /** The shell a wire sweeps out when extruded (build123d `Shell.extrude`). */
+    static extrude(profile: Wire, direction: VectorLike): Shell {
+        return extrudeWire(profile, direction);
+    }
+
+    /**
+     * The shell skinned through the sections; vertices may only cap the run, and the wires may
+     * be open (build123d `Shell.make_loft`).
+     */
+    static makeLoft(objs: Iterable<Vertex | Wire>, options?: LoftOptions): Shell {
+        return makeLoftShell(objs, options);
+    }
+
+    /** Revolve a 1D profile `angle` degrees about `axis`. */
+    static revolve(profile: Shape, angle: number, axis: Axis): Shell {
+        return revolveShell(profile, angle, axis);
+    }
+
+    /** Sweep a 1D profile along a 1D path; the result may be non-planar. */
+    static sweep(
+        profile: Shape,
+        path: Shape,
+        options?: { readonly transition?: Transition },
+    ): Shell {
+        return sweepShell(profile, path, options);
     }
 
     /**
@@ -45,6 +84,12 @@ export class Shell extends Mixin2D {
             measure.massProperties(this.wrapped, "linear"),
         );
         return fromVec3(properties.centerOfMass);
+    }
+
+    /** Placement on the face nearest `surfacePoint` (build123d `Shell.location_at`). */
+    locationAt(surfacePoint: VectorLike, options: SurfaceLocationOptions = {}): Location {
+        let nearest = this.faces().sortBy(face => face.distanceTo(surfacePoint)).first;
+        return nearest.locationAt(surfacePoint, options);
     }
 }
 

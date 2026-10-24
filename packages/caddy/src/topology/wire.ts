@@ -5,6 +5,7 @@ import { construct, query, ShapeType, topology } from "@roonieone/occt-native";
 import type { ArcOptions } from "../curves/edge-makers.ts";
 import type { PolygonOptions } from "../curves/wire-makers.ts";
 import type { VectorLike } from "../geometry/vector.ts";
+import type { GeomEqualOptions } from "./makers/wire-edits.ts";
 import type { CurvePosition } from "./mixin1d.ts";
 import type { ShapeOptions } from "./shape.ts";
 import type { Vertex } from "./vertex.ts";
@@ -25,6 +26,14 @@ import { toVec3 } from "./conversions.ts";
 import { Edge } from "./edge.ts";
 import { PositionMode } from "./enums.ts";
 import { native } from "./kernel.ts";
+import {
+    fixDegenerateEdges,
+    geomEqual,
+    orderChamferEdges,
+    orderEdges,
+    stitch,
+    trim,
+} from "./makers/wire-edits.ts";
 import { Mixin1D } from "./mixin1d.ts";
 import { registerShapeConstructor } from "./registry.ts";
 import { ShapeList } from "./shape-list.ts";
@@ -206,6 +215,44 @@ export class Wire extends Mixin1D {
         reference?: Edge,
     ): Wire {
         return chamferWire2D(this, distance, distance2, vertices, reference);
+    }
+
+    /** Wires are 1D: extrusion only ever raises a dimension, so it cannot build one. */
+    static extrude(): never {
+        throw new InvalidShapeError("Wires can't be created by extrusion");
+    }
+
+    /** The chamfer's two edges, with `reference` first when one is given. */
+    static orderChamferEdges(
+        reference: Edge | undefined,
+        edges: readonly [Edge, Edge],
+    ): readonly [Edge, Edge] {
+        return orderChamferEdges(reference, edges);
+    }
+
+    /** This wire's edges along its direction, each starting where the previous one ends. */
+    orderEdges(): ShapeList<Edge> {
+        return orderEdges(this);
+    }
+
+    /** Drops edges shorter than `precision` and closes the gaps they leave behind. */
+    fixDegenerateEdges(precision: number): Wire {
+        return fixDegenerateEdges(this, precision);
+    }
+
+    /** Whether `other` has the same geometry, edge by edge in wire order. */
+    geomEqual(other: Wire, options?: GeomEqualOptions): boolean {
+        return geomEqual(this, other, options);
+    }
+
+    /** One wire holding this wire's edges and `other`'s; they must meet at a shared end. */
+    stitch(other: Wire): Wire {
+        return stitch(this, other);
+    }
+
+    /** The part between two normalized positions, or between two points on the wire. */
+    trim(start: number | VectorLike, end: number | VectorLike): Wire {
+        return trim(this, start, end);
     }
 }
 

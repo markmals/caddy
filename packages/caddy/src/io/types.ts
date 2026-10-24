@@ -45,6 +45,12 @@ export const CADFileType = {
     BrepBinary: "brep-binary",
     /** IGES 5.3. */
     Iges: "iges",
+    /** SVG paths and shapes, read as wires and faces. */
+    Svg: "svg",
+    /** DXF entities, read as edges and wires. */
+    Dxf: "dxf",
+    /** 3MF triangle meshes, read as solids. */
+    ThreeMf: "3mf",
 } as const;
 export type CADFileType = (typeof CADFileType)[keyof typeof CADFileType];
 

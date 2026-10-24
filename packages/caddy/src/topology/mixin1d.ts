@@ -10,18 +10,18 @@ import {
 } from "@roonieone/occt-native";
 
 import type { Offset2DOptions } from "../curves/offset-2d.ts";
-import type { Plane } from "../geometry/plane.ts";
 import type { VectorLike } from "../geometry/vector.ts";
 import type { ProjectToShapeOptions } from "../operations/project-to-shape.ts";
 import type { Edge } from "./edge.ts";
 import type { Face } from "./face.ts";
-import type { ShapeList } from "./shape-list.ts";
 import type { IntersectOptions, ShapeOperand } from "./shape.ts";
 import type { Wire } from "./wire.ts";
 
 import { offset2D } from "../curves/offset-2d.ts";
-import { InvalidShapeError } from "../errors.ts";
+import { GeometryError, InvalidShapeError } from "../errors.ts";
+import { TOLERANCE } from "../geometry/constants.ts";
 import { Location } from "../geometry/location.ts";
+import { Plane } from "../geometry/plane.ts";
 import { Vector } from "../geometry/vector.ts";
 import {
     projectEdgeToShape,
@@ -36,6 +36,7 @@ import { CenterOf, Convexity, FrameMethod, PositionMode } from "./enums.ts";
 import { native } from "./kernel.ts";
 import { nativeDimension, topLevelNativeShapes } from "./native-topology.ts";
 import { castShape } from "./registry.ts";
+import { ShapeList } from "./shape-list.ts";
 import { Shape } from "./shape.ts";
 
 /** build123d's `TOLERANCE`: how far a line may deviate from a shared plane. */
@@ -53,6 +54,14 @@ export interface LocationAtOptions {
 export interface CommonPlaneOptions {
     /** How far the lines may deviate from the plane; defaults to 1e-6. */
     readonly tolerance?: number;
+}
+
+/** Options of {@link Mixin1D#curvatureComb}. */
+export interface CurvatureCombOptions {
+    /** How many points along the curve are sampled; defaults to 100. */
+    readonly count?: number;
+    /** Length of the tooth at the sharpest sample; defaults to a tenth of the curve's extent. */
+    readonly maxToothSize?: number;
 }
 
 /** Where a position along an edge or wire lands: an edge, its curve parameter and direction. */
@@ -221,6 +230,79 @@ export abstract class Mixin1D extends Shape {
         return this.isForward ? location : location.negate();
     }
 
+    /** Locations at each of `distances`, each one as {@link locationAt} builds it. */
+    locations(
+        distances: Iterable<number>,
+        mode: PositionMode = PositionMode.Parameter,
+        options: LocationAtOptions = {},
+    ): Location[] {
+        return Array.from(distances, distance => this.locationAt(distance, mode, options));
+    }
+
+    /**
+     * The angle of the tangent at `position`, measured in `plane` from its X direction and
+     * wrapped into [0, 360) degrees (build123d `tangent_angle_at`).
+     */
+    tangentAngleAt(
+        position = 0.5,
+        mode: PositionMode = PositionMode.Parameter,
+        plane: Plane = Plane.XY,
+    ): number {
+        let tangent = this.tangentAt(position, mode);
+        return (plane.xDir.getSignedAngle(tangent, plane.zDir) + 360) % 360;
+    }
+
+    /**
+     * A line of `length` in `plane`, centred on the point at `uValue` and square to the curve
+     * there (build123d `perpendicular_line`).
+     */
+    perpendicularLine(length: number, uValue: number, plane: Plane = Plane.XY): Edge {
+        let start = this.positionAt(uValue);
+        let local = new Plane({ origin: start, xDir: this.tangentAt(uValue), zDir: plane.zDir });
+        let reach = local.yDir.multiply(length / 2);
+        return lineEdge(start.add(reach), start.sub(reach));
+    }
+
+    /**
+     * A curvature comb: short lines raised off the curve whose length is proportional to the
+     * curvature there and whose direction carries its sign (build123d `curvature_comb`). Reading
+     * the comb shows how fair the curve is and where its continuity breaks.
+     *
+     * Only curves lying in Plane.XY have one, because the sign of the curvature is read against
+     * +Z. Straight stretches raise no tooth at all, so the comb is usually shorter than `count`.
+     */
+    curvatureComb(options: CurvatureCombOptions = {}): ShapeList<Edge> {
+        let count = options.count ?? 100;
+        let plane = this.commonPlane();
+        if (plane === undefined || Math.abs(Math.abs(plane.zDir.z) - 1) > TOLERANCE) {
+            throw new GeometryError("A curvature comb only works for curves on Plane.XY");
+        }
+        // A closed curve would raise the same tooth at 0 and at 1, so the last sample is dropped.
+        let step = this.isClosed ? 1 / count : count > 1 ? 1 / (count - 1) : 0;
+        let samples = Array.from({ length: count }, (_, index) => this.#curvature(index * step));
+        let steepest = Math.max(TOLERANCE, ...samples.map(sample => Math.abs(sample.curvature)));
+        let bounds = this.boundingBox();
+        let extent = Math.max(...bounds.max.sub(bounds.min).toTuple());
+        let scale = (options.maxToothSize ?? extent / 10) / steepest;
+        return new ShapeList(
+            samples.flatMap(sample => {
+                let length = scale * sample.curvature;
+                if (Math.abs(length) < TOLERANCE) return [];
+                let anchor = this.positionAt(sample.position);
+                let outwards = sample.tangent.normalized().cross(new Vector(0, 0, 1));
+                return [lineEdge(anchor, anchor.add(outwards.multiply(length)))];
+            }),
+        );
+    }
+
+    /** Signed curvature at a normalized position, with the tangent it was measured from. */
+    #curvature(position: number): { position: number; tangent: Vector; curvature: number } {
+        let tangent = this.derivativeAt(position, 1);
+        let cross = tangent.cross(this.derivativeAt(position, 2));
+        let magnitude = cross.length / (tangent.length ** 3 + TOLERANCE);
+        return { position, tangent, curvature: cross.z >= 0 ? magnitude : -magnitude };
+    }
+
     /**
      * The `order`-th derivative of the curve at a position or at a point on the shape. Odd
      * derivatives follow the shape's direction.
@@ -327,6 +409,12 @@ export abstract class Mixin1D extends Shape {
             ? projectEdgeToShape(line as Edge, target, options)
             : projectWireToShape(line as Wire, target, options);
     }
+}
+
+/** A straight edge, built without importing the edge makers (which import this module). */
+function lineEdge(start: Vector, end: Vector): Edge {
+    let wrapped = native("Line", () => construct.makeLineEdge(toVec3(start), toVec3(end)));
+    return castShape(wrapped) as Edge;
 }
 
 /** The first of `edges` nearest to `point`. */

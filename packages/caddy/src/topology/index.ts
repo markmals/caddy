@@ -31,3 +31,4 @@ export type { GroupKey } from "./group-by.ts";
 export type { CurveLike, ShapeFilter } from "./selectors.ts";
 export { CenterOf, Convexity, FrameMethod, GeomType, Keep, PositionMode, SortBy } from "./enums.ts";
 export type { ShapeTypeName } from "./enums.ts";
+export * from "./helpers/index.ts";

@@ -117,6 +117,28 @@ export class Axis {
         return angleBetween(this.direction, other.direction) * RAD2DEG;
     }
 
+    /**
+     * Where this axis meets `other` (build123d `axis & other`): the shared line for coaxial
+     * axes, a point where two lines cross, the location itself when its Z direction runs along
+     * this axis, and `undefined` when they never meet.
+     */
+    intersect(point: VectorLike): Vector | undefined;
+    intersect(axis: Axis): Vector | Axis | undefined;
+    intersect(location: Location): Vector | Location | undefined;
+    intersect(plane: Plane): Vector | Axis | undefined;
+    intersect(other: Axis | Location | Plane | VectorLike): Vector | Axis | Location | undefined {
+        if (other instanceof Axis) {
+            return this.intersectAxis(other);
+        }
+        if (other instanceof Plane) {
+            return other.intersect(this);
+        }
+        if (other instanceof Location) {
+            return this.intersectLocation(other);
+        }
+        return this.intersectPoint(Vector.from(other));
+    }
+
     /** A copy with the direction reversed. */
     reverse(): Axis {
         return new Axis(this.position, this.direction.negate());
@@ -138,5 +160,41 @@ export class Axis {
         return `Axis: (position=${this.position.toTuple().join(", ")}, direction=${this.direction
             .toTuple()
             .join(", ")})`;
+    }
+
+    /** This axis when the lines coincide, the crossing point when they meet once. */
+    private intersectAxis(other: Axis): Vector | Axis | undefined {
+        if (this.isCoaxial(other)) {
+            return this;
+        }
+        if (this.isSkew(other)) {
+            return undefined;
+        }
+        let between = other.position.sub(this.position);
+        let cosine = this.direction.dot(other.direction);
+        // Antiparallel axes on the same line leave the crossing point undetermined; build123d
+        // solves the singular system with numpy's minimum-norm solution, the midpoint.
+        let distance =
+            this.direction.cross(other.direction).length === 0
+                ? between.dot(this.direction) / 2
+                : (between.dot(this.direction) - cosine * between.dot(other.direction)) /
+                  (1 - cosine * cosine);
+        return this.position.add(this.direction.multiply(distance));
+    }
+
+    /** A location on this axis, kept whole when it also points along the axis. */
+    private intersectLocation(location: Location): Vector | Location | undefined {
+        if (this.intersectPoint(location.position) === undefined) {
+            return undefined;
+        }
+        return Plane.fromLocation(location).zDir.equals(this.direction)
+            ? location
+            : location.position;
+    }
+
+    private intersectPoint(point: Vector): Vector | undefined {
+        let along = point.sub(this.position).dot(this.direction);
+        let projected = this.position.add(this.direction.multiply(along));
+        return point.equals(projected) ? point : undefined;
     }
 }

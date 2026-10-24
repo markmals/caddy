@@ -15,9 +15,11 @@ import { extname, join } from "node:path";
 import type { ImportOptions } from "./types.ts";
 
 import { ImportError } from "../errors.ts";
+import { Mesher } from "../mesh/mesher/index.ts";
 import { Compound } from "../topology/compound.ts";
 import { Shape } from "../topology/index.ts";
 import { fromStepNodes } from "./assembly.ts";
+import { importDxfText, importSvgText } from "./import2d/index.ts";
 import { CADFileType } from "./types.ts";
 
 const EXTENSIONS: Readonly<Record<string, CADFileType>> = {
@@ -28,6 +30,9 @@ const EXTENSIONS: Readonly<Record<string, CADFileType>> = {
     ".brp": CADFileType.Brep,
     ".iges": CADFileType.Iges,
     ".igs": CADFileType.Iges,
+    ".svg": CADFileType.Svg,
+    ".dxf": CADFileType.Dxf,
+    ".3mf": CADFileType.ThreeMf,
 };
 
 /**
@@ -78,12 +83,21 @@ async function decode(source: string | Uint8Array, type: CADFileType): Promise<S
             return Shape.cast(await io.readBrep(bytes, isBinaryBrep(bytes)));
         case CADFileType.Stl:
             return Shape.cast(await mesh.readStl(bytes));
-        case CADFileType.Step: {
-            let shapes = fromStepNodes(await io.readStep(bytes));
-            let [single] = shapes;
-            return shapes.length === 1 && single !== undefined ? single : new Compound(shapes);
-        }
+        case CADFileType.Step:
+            return oneOrCompound(fromStepNodes(await io.readStep(bytes)));
+        case CADFileType.Svg:
+            return oneOrCompound([...importSvgText(new TextDecoder().decode(bytes))]);
+        case CADFileType.Dxf:
+            return oneOrCompound([...importDxfText(new TextDecoder("latin1").decode(bytes))]);
+        case CADFileType.ThreeMf:
+            return oneOrCompound(await new Mesher().read(bytes));
     }
+}
+
+/** A file holding a single shape imports as that shape; several become a compound. */
+function oneOrCompound(shapes: readonly Shape[]): Shape {
+    let [single] = shapes;
+    return shapes.length === 1 && single !== undefined ? single : new Compound(shapes);
 }
 
 /**

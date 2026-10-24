@@ -8,6 +8,8 @@ answer each case without the native kernel.
 
 from __future__ import annotations
 
+import warnings
+from collections.abc import Iterable
 from math import degrees, radians
 from typing import Any
 
@@ -16,16 +18,36 @@ from build123d import (
     Axis,
     BoundBox,
     Extrinsic,
+    GridLocations,
+    HexLocations,
     Intrinsic,
     Location,
+    Locations,
     Matrix,
     Plane,
+    PolarLocations,
     Pos,
     Rotation,
     Vector,
+    polar,
 )
-from build123d.geometry import to_align_offset
-from OCP.Bnd import Bnd_Box
+from build123d.build_constants import (
+    CM,
+    FT,
+    G,
+    G_PER_LB,
+    IN,
+    KG,
+    LB,
+    M,
+    MC,
+    MM,
+    THOU,
+    UNITS_PER_KILOGRAM,
+    UNITS_PER_METER,
+)
+from build123d.geometry import OrientedBoundBox, to_align_offset
+from OCP.Bnd import Bnd_Box, Bnd_OBB
 from OCP.gp import gp_Ax1, gp_Ax2, gp_Ax3, gp_Dir, gp_Pnt, gp_Quaternion, gp_Trsf, gp_Vec
 
 from oracle import case, location, plane, vec
@@ -76,6 +98,35 @@ def quat_values(quaternion: gp_Quaternion) -> list[float]:
 
 def euler_sequence(ordering: Extrinsic | Intrinsic) -> Any:
     return Location._rot_order_dict[ordering]
+
+
+def axis_data(value: Axis) -> dict[str, Any]:
+    return {"position": vec(value.position), "direction": vec(value.direction)}
+
+
+def intersection(value: Any) -> dict[str, Any] | None:
+    """Tag an intersection result so the TypeScript side can assert the same kind of answer."""
+    if value is None:
+        return None
+    if isinstance(value, Vector):
+        return {"kind": "vector", "vector": vec(value)}
+    if isinstance(value, Axis):
+        return {"kind": "axis", "axis": axis_data(value)}
+    if isinstance(value, Plane):
+        return {"kind": "plane", "plane": plane(value)}
+    if isinstance(value, Location):
+        return {"kind": "location", "location": location(value)}
+    raise TypeError(f"unexpected intersection result: {value!r}")
+
+
+def location_list(items: Iterable[Location]) -> dict[str, Any]:
+    """A group of locations, flattened so one mismatch names the offending coordinate."""
+    values = list(items)
+    return {
+        "count": len(values),
+        "positions": [coord for item in values for coord in vec(item.position)],
+        "orientations": [angle for item in values for angle in vec(item.orientation)],
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -999,3 +1050,486 @@ def ax3_from_normal() -> dict[str, Any]:
             "z_dir": [float(c) for c in frame.Direction().Coord()],
         }
     return results
+
+
+# ---------------------------------------------------------------------------
+# polar coordinates and unit constants
+# ---------------------------------------------------------------------------
+
+
+@case("vector/polar")
+def vector_polar() -> dict[str, Any]:
+    return {
+        "zero": list(polar(5.0, 0.0)),
+        "quarter": list(polar(5.0, 90.0)),
+        "diagonal": list(polar(2.0, 45.0)),
+        "negative_angle": list(polar(3.0, -120.0)),
+        "beyond_turn": list(polar(1.0, 450.0)),
+        "zero_length": list(polar(0.0, 33.0)),
+    }
+
+
+@case("units/constants")
+def units_constants() -> dict[str, Any]:
+    return {
+        "mc": MC,
+        "mm": MM,
+        "cm": CM,
+        "m": M,
+        "in": IN,
+        "ft": FT,
+        "thou": THOU,
+        "g": G,
+        "kg": KG,
+        "g_per_lb": G_PER_LB,
+        "lb": LB,
+        "units_per_meter": {unit.value: value for unit, value in UNITS_PER_METER.items()},
+        "units_per_kilogram": {unit.value: value for unit, value in UNITS_PER_KILOGRAM.items()},
+    }
+
+
+# ---------------------------------------------------------------------------
+# location collections
+# ---------------------------------------------------------------------------
+
+
+@case("locations/points")
+def locations_points() -> dict[str, Any]:
+    return {
+        "mixed": location_list(
+            Locations(
+                (1.0, 2.0),
+                (3.0, 4.0, 5.0),
+                Vector(0.0, 0.0, 1.0),
+                Location((1.0, 1.0, 1.0), (0.0, 0.0, 45.0)),
+                Pos(2.0, 0.0, 0.0),
+            )
+        ),
+        "frames": location_list(Locations(Plane.YZ, Axis.Z, Axis((1.0, 2.0, 3.0), (0.0, 1.0, 0.0)))),
+        "nested": location_list(Locations([(1.0, 0.0), (2.0, 0.0)], [(3.0, 0.0)])),
+        "empty": location_list(Locations()),
+        "empty_group": location_list(Locations([])),
+    }
+
+
+@case("locations/grid")
+def locations_grid() -> dict[str, Any]:
+    grid = GridLocations(10.0, 20.0, 3, 2)
+    return {
+        "centered": location_list(grid),
+        "size": vec(grid.size),
+        "min": vec(grid.min),
+        "max": vec(grid.max),
+        "single": location_list(GridLocations(10.0, 20.0, 1, 1)),
+        "row": location_list(GridLocations(5.0, 5.0, 4, 1)),
+    }
+
+
+@case("locations/grid-align")
+def locations_grid_align() -> dict[str, Any]:
+    return {
+        "min": location_list(GridLocations(10.0, 20.0, 3, 2, align=Align.MIN)),
+        "max": location_list(GridLocations(10.0, 20.0, 3, 2, align=Align.MAX)),
+        "mixed": location_list(
+            GridLocations(10.0, 20.0, 3, 2, align=(Align.MIN, Align.MAX))
+        ),
+        "none": location_list(GridLocations(10.0, 20.0, 3, 2, align=Align.NONE)),
+    }
+
+
+@case("locations/hex")
+def locations_hex() -> dict[str, Any]:
+    hexagons = HexLocations(5.0, 3, 4)
+    return {
+        "minor_radius": location_list(hexagons),
+        "apothem": hexagons.apothem,
+        "diagonal": hexagons.diagonal,
+        "single": location_list(HexLocations(5.0, 1, 1)),
+        "aligned_min": location_list(HexLocations(5.0, 3, 4, align=Align.MIN)),
+    }
+
+
+@case("locations/hex-major")
+def locations_hex_major() -> dict[str, Any]:
+    hexagons = HexLocations(5.0, 2, 3, major_radius=True)
+    return {
+        "major_radius": location_list(hexagons),
+        "apothem": hexagons.apothem,
+        "diagonal": hexagons.diagonal,
+        "wide": location_list(HexLocations(2.0, 4, 2, major_radius=True)),
+    }
+
+
+@case("locations/polar")
+def locations_polar() -> dict[str, Any]:
+    return {
+        "quarters": location_list(PolarLocations(10.0, 4)),
+        "single": location_list(PolarLocations(10.0, 1)),
+        "no_rotate": location_list(PolarLocations(10.0, 4, rotate=False)),
+        "arc": location_list(PolarLocations(10.0, 3, 30.0, 120.0)),
+    }
+
+
+@case("locations/polar-options")
+def locations_polar_options() -> dict[str, Any]:
+    return {
+        "endpoint": location_list(PolarLocations(10.0, 4, 0.0, 90.0, endpoint=True)),
+        "open": location_list(PolarLocations(10.0, 4, 0.0, 90.0)),
+        "negative_range": location_list(PolarLocations(4.0, 3, 45.0, -90.0)),
+        "single_endpoint": location_list(PolarLocations(10.0, 1, 15.0, 90.0, endpoint=True)),
+    }
+
+
+# ---------------------------------------------------------------------------
+# matrix
+# ---------------------------------------------------------------------------
+
+
+@case("matrix/basics")
+def matrix_basics() -> dict[str, Any]:
+    source = Matrix([[1.0, 2.0, 3.0, 4.0], [5.0, 6.0, 7.0, 8.0], [9.0, 10.0, 11.0, 12.0]])
+    rigid = gp_Trsf()
+    rigid.SetRotation(gp_Ax1(gp_Pnt(1.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), radians(35.0))
+    return {
+        "rows": matrix_rows(source),
+        "identity": matrix_rows(Matrix()),
+        "four_rows": matrix_rows(
+            Matrix(
+                [
+                    [1.0, 2.0, 3.0, 4.0],
+                    [5.0, 6.0, 7.0, 8.0],
+                    [9.0, 10.0, 11.0, 12.0],
+                    [0.0, 0.0, 0.0, 1.0],
+                ]
+            )
+        ),
+        "from_transform": matrix_rows(Matrix(rigid)),
+        "first": source[0, 0],
+        "translation_z": source[2, 3],
+        "implied_corner": source[3, 3],
+        "implied_zero": source[3, 1],
+        "transposed": list(source.transposed_list()),
+    }
+
+
+@case("matrix/multiply")
+def matrix_multiply() -> dict[str, Any]:
+    scale = Matrix([[2.0, 0.0, 0.0, 1.0], [0.0, 3.0, 0.0, 2.0], [0.0, 0.0, 4.0, 3.0]])
+    shear = Matrix([[1.0, 0.5, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0]])
+    rigid = gp_Trsf()
+    rigid.SetRotation(gp_Ax1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), radians(90.0))
+    return {
+        "scale_then_shear": matrix_rows(shear.multiply(scale)),
+        "shear_then_scale": matrix_rows(scale.multiply(shear)),
+        "point": vec(Matrix(rigid).multiply(Vector(1.0, 2.0, 3.0))),
+    }
+
+
+@case("matrix/inverse")
+def matrix_inverse() -> dict[str, Any]:
+    general = Matrix([[2.0, 0.5, 0.0, 1.0], [0.0, 3.0, 0.0, 2.0], [0.0, 0.0, 4.0, 3.0]])
+    rigid = gp_Trsf()
+    rigid.SetRotation(gp_Ax1(gp_Pnt(1.0, 2.0, 0.0), gp_Dir(0.0, 1.0, 0.0)), radians(40.0))
+    return {
+        "general": matrix_rows(general.inverse()),
+        "roundtrip": matrix_rows(general.multiply(general.inverse())),
+        "rigid": matrix_rows(Matrix(rigid).inverse()),
+    }
+
+
+@case("matrix/rotate")
+def matrix_rotate() -> dict[str, Any]:
+    source = Matrix([[1.0, 0.0, 0.0, 1.0], [0.0, 1.0, 0.0, 2.0], [0.0, 0.0, 1.0, 3.0]])
+    source.rotate(Axis.Z, 45.0)
+    about_x = Matrix([[2.0, 0.0, 0.0, 0.0], [0.0, 2.0, 0.0, 0.0], [0.0, 0.0, 2.0, 0.0]])
+    about_x.rotate(Axis((0.0, 1.0, 0.0), (1.0, 0.0, 0.0)), 90.0)
+    return {
+        "about_z": matrix_rows(source),
+        "about_offset_x": matrix_rows(about_x),
+    }
+
+
+# ---------------------------------------------------------------------------
+# oriented bounding box
+# ---------------------------------------------------------------------------
+
+
+def oriented_bounds(box: OrientedBoundBox) -> dict[str, Any]:
+    return {
+        "center": vec(box.center()),
+        "size": vec(box.size),
+        "x_direction": vec(box.x_direction),
+        "y_direction": vec(box.y_direction),
+        "z_direction": vec(box.z_direction),
+        "diagonal": box.diagonal,
+        "plane": plane(box.plane),
+        "location": location(box.location),
+        "corners": [coord for corner in box.corners for coord in vec(corner)],
+    }
+
+
+def oriented_box(
+    center: tuple[float, float, float],
+    x_direction: tuple[float, float, float],
+    y_direction: tuple[float, float, float],
+    z_direction: tuple[float, float, float],
+    half_sizes: tuple[float, float, float],
+) -> OrientedBoundBox:
+    return OrientedBoundBox(
+        Bnd_OBB(
+            gp_Pnt(*center),
+            gp_Dir(*x_direction),
+            gp_Dir(*y_direction),
+            gp_Dir(*z_direction),
+            *half_sizes,
+        )
+    )
+
+
+@case("obb/solid")
+def obb_solid() -> dict[str, Any]:
+    turned = oriented_box(
+        (1.0, 2.0, 3.0), (1.0, 1.0, 0.0), (-1.0, 1.0, 0.0), (0.0, 0.0, 1.0), (2.0, 1.0, 0.5)
+    )
+    axis_aligned = oriented_box(
+        (0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0), (1.0, 2.0, 3.0)
+    )
+    return {"turned": oriented_bounds(turned), "axis_aligned": oriented_bounds(axis_aligned)}
+
+
+@case("obb/degenerate")
+def obb_degenerate() -> dict[str, Any]:
+    flat_z = oriented_box(
+        (0.0, 0.0, 1.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0), (2.0, 1.0, 0.0)
+    )
+    flat_x = oriented_box(
+        (0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0), (0.0, 1.0, 2.0)
+    )
+    flat_y = oriented_box(
+        (0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0), (1.0, 0.0, 2.0)
+    )
+    line_x = oriented_box(
+        (0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0), (3.0, 0.0, 0.0)
+    )
+    line_z = oriented_box(
+        (1.0, 1.0, 0.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0), (0.0, 0.0, 2.0)
+    )
+    return {
+        "flat_z": oriented_bounds(flat_z),
+        "flat_x": oriented_bounds(flat_x),
+        "flat_y": oriented_bounds(flat_y),
+        "line_x": oriented_bounds(line_x),
+        "line_z": oriented_bounds(line_z),
+    }
+
+
+@case("obb/predicates")
+def obb_predicates() -> dict[str, Any]:
+    outer = oriented_box(
+        (0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0), (5.0, 5.0, 5.0)
+    )
+    inner = oriented_box(
+        (1.0, 0.0, 0.0), (1.0, 1.0, 0.0), (-1.0, 1.0, 0.0), (0.0, 0.0, 1.0), (1.0, 1.0, 1.0)
+    )
+    straddling = oriented_box(
+        (4.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0), (2.0, 1.0, 1.0)
+    )
+    return {
+        "inner_inside": outer.is_completely_inside(inner),
+        "outer_inside_inner": inner.is_completely_inside(outer),
+        "straddling_inside": outer.is_completely_inside(straddling),
+        "self_inside": outer.is_completely_inside(outer),
+        "center_outside": outer.is_outside(Vector(0.0, 0.0, 0.0)),
+        "corner_outside": outer.is_outside(Vector(5.0, 5.0, 5.0)),
+        "beyond_outside": outer.is_outside(Vector(5.0, 5.0, 5.001)),
+        "rotated_outside": inner.is_outside(Vector(2.4, 0.0, 0.0)),
+        "rotated_inside_corner": inner.is_outside(Vector(2.41, 0.0, 0.0)),
+    }
+
+
+# ---------------------------------------------------------------------------
+# intersections
+# ---------------------------------------------------------------------------
+
+
+@case("intersect/vector")
+def intersect_vector() -> dict[str, Any]:
+    point = Vector(3.0, 0.0, 0.0)
+    return {
+        "same_point": intersection(point.intersect((3.0, 0.0, 0.0))),
+        "other_point": intersection(point.intersect((3.0, 1.0, 0.0))),
+        "on_axis": intersection(point.intersect(Axis.X)),
+        "off_axis": intersection(point.intersect(Axis.Y)),
+        "on_plane": intersection(point.intersect(Plane.XY)),
+        "off_plane": intersection(point.intersect(Plane.XY.offset(1.0))),
+        "on_location": intersection(point.intersect(Location((3.0, 0.0, 0.0), (0.0, 0.0, 45.0)))),
+        "off_location": intersection(point.intersect(Location((3.0, 0.0, 1.0)))),
+    }
+
+
+@case("intersect/axis-axis")
+def intersect_axis_axis() -> dict[str, Any]:
+    return {
+        "coaxial": intersection(Axis.X.intersect(Axis.X)),
+        "coaxial_shifted": intersection(Axis.X.intersect(Axis((5.0, 0.0, 0.0), (1.0, 0.0, 0.0)))),
+        "antiparallel_coincident": intersection(
+            Axis.X.intersect(Axis((5.0, 0.0, 0.0), (-1.0, 0.0, 0.0)))
+        ),
+        "antiparallel_oblique": intersection(
+            Axis((0.0, 0.0, 0.0), (1.0, 1.0, 0.0)).intersect(
+                Axis((4.0, 4.0, 0.0), (-1.0, -1.0, 0.0))
+            )
+        ),
+        "parallel_distinct": intersection(Axis.X.intersect(Axis((0.0, 1.0, 0.0), (1.0, 0.0, 0.0)))),
+        "crossing": intersection(Axis.X.intersect(Axis((2.0, 0.0, 0.0), (0.0, 1.0, 0.0)))),
+        "crossing_oblique": intersection(
+            Axis((0.0, 0.0, 0.0), (1.0, 1.0, 0.0)).intersect(
+                Axis((2.0, 0.0, 0.0), (-1.0, 1.0, 0.0))
+            )
+        ),
+        "crossing_in_space": intersection(
+            Axis((0.0, 0.0, 1.0), (1.0, 0.0, 1.0)).intersect(
+                Axis((2.0, 0.0, 3.0), (0.0, 1.0, 0.0))
+            )
+        ),
+        "skew": intersection(Axis.X.intersect(Axis((0.0, 0.0, 1.0), (0.0, 1.0, 0.0)))),
+    }
+
+
+@case("intersect/axis-other")
+def intersect_axis_other() -> dict[str, Any]:
+    return {
+        "point_on": intersection(Axis.X.intersect((3.0, 0.0, 0.0))),
+        "point_off": intersection(Axis.X.intersect((3.0, 1.0, 0.0))),
+        "location_aligned": intersection(Axis.Z.intersect(Location((0.0, 0.0, 5.0)))),
+        "location_turned": intersection(Axis.Z.intersect(Location((0.0, 0.0, 5.0), (0.0, 90.0, 0.0)))),
+        "location_spun": intersection(Axis.Z.intersect(Location((0.0, 0.0, 5.0), (0.0, 0.0, 30.0)))),
+        "location_off": intersection(Axis.Z.intersect(Location((1.0, 0.0, 5.0)))),
+        "plane_crossing": intersection(Axis.Z.intersect(Plane.XY)),
+        "plane_contained": intersection(Axis.X.intersect(Plane.XY)),
+        "plane_parallel": intersection(Axis.X.intersect(Plane.XY.offset(2.0))),
+    }
+
+
+@case("intersect/plane-plane")
+def intersect_plane_plane() -> dict[str, Any]:
+    tilted = Plane(origin=(1.0, 2.0, 3.0), x_dir=(1.0, 1.0, 0.0), z_dir=(0.0, 0.0, 1.0))
+    return {
+        "same": intersection(Plane.XY.intersect(Plane.XY)),
+        "same_shifted_origin": intersection(
+            Plane.XY.intersect(Plane(origin=(3.0, 4.0, 0.0), z_dir=(0.0, 0.0, 1.0)))
+        ),
+        "reversed": intersection(Plane.XY.intersect(Plane.XY.reverse())),
+        "parallel": intersection(Plane.XY.intersect(Plane.XY.offset(5.0))),
+        "perpendicular": intersection(Plane.XY.intersect(Plane.YZ)),
+        "offset_perpendicular": intersection(
+            Plane(origin=(1.0, 2.0, 3.0), z_dir=(0.0, 0.0, 1.0)).intersect(
+                Plane(origin=(0.0, 0.0, 0.0), x_dir=(1.0, 0.0, 0.0), z_dir=(0.0, 1.0, 0.0))
+            )
+        ),
+        "oblique": intersection(
+            tilted.intersect(Plane(origin=(-1.0, 0.0, 2.0), x_dir=(0.0, 1.0, 1.0), z_dir=(1.0, 2.0, 3.0)))
+        ),
+        "shallow": intersection(
+            Plane.XY.intersect(Plane(origin=(0.0, 0.0, 1.0), z_dir=(1e-5, 0.0, 1.0)))
+        ),
+        "nearly_parallel": intersection(
+            Plane.XY.intersect(Plane(origin=(0.0, 0.0, 1.0), z_dir=(1e-7, 0.0, 1.0)))
+        ),
+    }
+
+
+@case("intersect/plane-other")
+def intersect_plane_other() -> dict[str, Any]:
+    return {
+        "axis_contained": intersection(Plane.XY.intersect(Axis((0.0, 0.0, 0.0), (1.0, 1.0, 0.0)))),
+        "axis_crossing": intersection(Plane.XY.intersect(Axis((1.0, 2.0, 3.0), (0.0, 0.0, 1.0)))),
+        "axis_oblique": intersection(Plane.XY.intersect(Axis((1.0, 2.0, 3.0), (1.0, 1.0, -1.0)))),
+        "axis_parallel_off": intersection(Plane.XY.intersect(Axis((0.0, 0.0, 1.0), (1.0, 0.0, 0.0)))),
+        "point_on": intersection(Plane.XY.intersect((1.0, 2.0, 0.0))),
+        "point_within_tolerance": intersection(Plane.XY.intersect((1.0, 2.0, 1e-7))),
+        "point_off": intersection(Plane.XY.intersect((1.0, 2.0, 1e-5))),
+        "location_on": intersection(Plane.XY.intersect(Location((1.0, 2.0, 0.0)))),
+        "location_turned": intersection(
+            Plane.XY.intersect(Location((1.0, 2.0, 0.0), (0.0, 90.0, 0.0)))
+        ),
+        "location_spun": intersection(
+            Plane.XY.intersect(Location((1.0, 2.0, 0.0), (0.0, 0.0, 30.0)))
+        ),
+        "location_off": intersection(Plane.XY.intersect(Location((1.0, 2.0, 3.0)))),
+    }
+
+
+@case("intersect/location")
+def intersect_location() -> dict[str, Any]:
+    source = Location((1.0, 2.0, 3.0), (0.0, 0.0, 45.0))
+    return {
+        "same": intersection(source.intersect(Location((1.0, 2.0, 3.0), (0.0, 0.0, 45.0)))),
+        "same_position": intersection(source.intersect(Location((1.0, 2.0, 3.0), (0.0, 0.0, 90.0)))),
+        "different": intersection(source.intersect(Location((1.0, 2.0, 4.0), (0.0, 0.0, 45.0)))),
+        "point_on": intersection(source.intersect((1.0, 2.0, 3.0))),
+        "point_off": intersection(source.intersect((1.0, 2.0, 3.5))),
+        "axis_through": intersection(Location((0.0, 0.0, 5.0)).intersect(Axis.Z)),
+        "axis_off": intersection(source.intersect(Axis.Z)),
+        "plane_on": intersection(Location((1.0, 2.0, 0.0)).intersect(Plane.XY)),
+        "plane_off": intersection(source.intersect(Plane.XY)),
+    }
+
+
+@case("location/iteration")
+def location_iteration() -> dict[str, Any]:
+    position, orientation = Location((1.0, 2.0, 3.0), (10.0, 20.0, 30.0))
+    return {"position": vec(position), "orientation": vec(orientation)}
+
+
+@case("plane/move")
+def plane_move() -> dict[str, Any]:
+    """`move` relocates the plane in place, so each call starts from a fresh source."""
+
+    def source() -> Plane:
+        return Plane(origin=(1.0, 0.0, 0.0), x_dir=(1.0, 0.0, 0.0), z_dir=(0.0, 0.0, 1.0))
+
+    mutated = source()
+    returned = mutated.move(Location((0.0, 2.0, 0.0), (0.0, 0.0, 90.0)))
+    return {
+        "by_location": plane(returned),
+        "mutated_in_place": plane(mutated),
+        "by_plane": plane(source().move(Plane.YZ)),
+    }
+
+
+@case("bounding-box/find-outside-2d")
+def bounding_box_find_outside_2d() -> dict[str, Any]:
+    outer = bbox((0.0, 0.0, 0.0), (10.0, 10.0, 10.0))
+    inner = bbox((1.0, 1.0, -5.0), (2.0, 2.0, 50.0))
+    flush = bbox((0.0, 1.0, 0.0), (10.0, 2.0, 1.0))
+    separate = bbox((20.0, 20.0, 0.0), (21.0, 21.0, 1.0))
+    first_outside = BoundBox.find_outside_box_2d(outer, inner)
+    second_outside = BoundBox.find_outside_box_2d(inner, outer)
+    return {
+        "first_encloses": None if first_outside is None else bounds(first_outside),
+        "second_encloses": None if second_outside is None else bounds(second_outside),
+        "touching_edges": BoundBox.find_outside_box_2d(outer, flush) is None,
+        "disjoint": BoundBox.find_outside_box_2d(outer, separate) is None,
+        "identical": BoundBox.find_outside_box_2d(outer, outer) is None,
+    }
+
+
+@case("bounding-box/is-inside")
+def bounding_box_is_inside() -> dict[str, Any]:
+    """`is_inside` is deprecated upstream and simply defers to `within`."""
+    outer = bbox((0.0, 0.0, 0.0), (10.0, 10.0, 10.0))
+    inner = bbox((1.0, 1.0, 1.0), (2.0, 2.0, 2.0))
+    flush = bbox((0.0, 0.0, 0.0), (10.0, 10.0, 5.0))
+    straddling = bbox((5.0, 5.0, 5.0), (15.0, 15.0, 15.0))
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", DeprecationWarning)
+        return {
+            "nested": inner.is_inside(outer),
+            "reversed": outer.is_inside(inner),
+            "flush": flush.is_inside(outer),
+            "straddling": straddling.is_inside(outer),
+            "self": outer.is_inside(outer),
+            "matches_within": inner.is_inside(outer) == inner.within(outer),
+            "loose_tolerance": straddling.is_inside(outer, 10.0),
+        }

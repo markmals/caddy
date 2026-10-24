@@ -1,20 +1,30 @@
 import { shapes } from "@roonieone/occt-native";
 
+import type { Axis } from "../geometry/axis.ts";
 import type { PerimeterSide } from "../operations/split-by-perimeter.ts";
 import type { Edge } from "./edge.ts";
 import type { Face } from "./face.ts";
+import type { AxisIntersection } from "./helpers/axis-intersections.ts";
 import type { ShapeList } from "./shape-list.ts";
 import type { IntersectOptions, TouchOptions } from "./shape.ts";
 import type { Wire } from "./wire.ts";
 
 import { InvalidShapeError } from "../errors.ts";
+import { TOLERANCE } from "../geometry/constants.ts";
 import { Pos } from "../geometry/location.ts";
 import { splitByPerimeter } from "../operations/split-by-perimeter.ts";
 import { booleanPieces, expandShapes } from "./boolean.ts";
 import { Keep } from "./enums.ts";
+import { axisIntersections } from "./helpers/axis-intersections.ts";
 import { native } from "./kernel.ts";
 import { Shape } from "./shape.ts";
 import { touch2D } from "./touch.ts";
+
+/** Options of {@link Mixin2D#findIntersectionPoints} and {@link Mixin3D#findIntersectionPoints}. */
+export interface AxisHitOptions {
+    /** How close the axis must come to count as a hit; defaults to 1e-6. */
+    readonly tolerance?: number;
+}
 
 /** Shared behaviour of faces and shells (build123d `Mixin2D`). */
 export abstract class Mixin2D extends Shape {
@@ -42,6 +52,14 @@ export abstract class Mixin2D extends Shape {
             throw new InvalidShapeError("Offsetting along the normal needs a single face");
         }
         return this.moved(new Pos(faces[0]!.normalAt().multiply(amount)));
+    }
+
+    /**
+     * Where `axis` pierces this surface, with the normal at each point, ordered along the axis
+     * (build123d `find_intersection_points`).
+     */
+    findIntersectionPoints(axis: Axis, options: AxisHitOptions = {}): AxisIntersection[] {
+        return axisIntersections(this, axis, options.tolerance ?? TOLERANCE);
     }
 
     /** Divide this surface along a closed perimeter (build123d `split_by_perimeter`). */

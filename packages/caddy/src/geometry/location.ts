@@ -175,6 +175,29 @@ export class Location {
         );
     }
 
+    /**
+     * Where this placement meets `other` (build123d `location & other`): this location when
+     * `other` agrees with it completely, the shared position when only the positions agree, and
+     * `undefined` when the position is not on `other` at all.
+     */
+    intersect(point: VectorLike): Vector | undefined;
+    intersect(axis: Axis): Vector | Location | undefined;
+    intersect(plane: Plane): Vector | Location | undefined;
+    intersect(location: Location): Vector | Location | undefined;
+    intersect(other: Axis | Location | Plane | VectorLike): Vector | Location | undefined {
+        if (other instanceof Axis || other instanceof Plane) {
+            return other.intersect(this);
+        }
+        if (other instanceof Location) {
+            if (this.equals(other)) {
+                return this;
+            }
+            return this.position.equals(other.position) ? this.position : undefined;
+        }
+        let point = Vector.from(other);
+        return this.position.equals(point) ? point : undefined;
+    }
+
     /** Equal position and equal rotation; quaternions are compared up to their sign. */
     equals(other: Location, tolerance = GEOM_TOLERANCE): boolean {
         if (!this.position.equals(other.position, tolerance)) {
@@ -190,6 +213,12 @@ export class Location {
             `${this.constructor.name}: (position=${this.position.toTuple().join(", ")}, ` +
             `orientation=${this.orientation.toTuple().join(", ")})`
         );
+    }
+
+    /** Position then orientation, so a location destructures as build123d's iteration does. */
+    *[Symbol.iterator](): IterableIterator<Vector> {
+        yield this.position;
+        yield this.orientation;
     }
 }
 

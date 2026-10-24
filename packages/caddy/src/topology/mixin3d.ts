@@ -1,17 +1,21 @@
 import { measure, query } from "@roonieone/occt-native";
 
+import type { Axis } from "../geometry/axis.ts";
 import type { VectorLike } from "../geometry/vector.ts";
 import type { DPrismOptions } from "../operations/dprism.ts";
 import type { MaxFilletOptions } from "../operations/max-fillet.ts";
 import type { Part } from "./composite.ts";
 import type { Edge } from "./edge.ts";
 import type { Face } from "./face.ts";
+import type { AxisIntersection } from "./helpers/axis-intersections.ts";
+import type { AxisHitOptions } from "./mixin2d.ts";
 import type { ShapeList } from "./shape-list.ts";
 import type { IntersectOptions, TouchOptions } from "./shape.ts";
 import type { Solid } from "./solid.ts";
 import type { Wire } from "./wire.ts";
 
 import { GeometryError, InvalidShapeError } from "../errors.ts";
+import { TOLERANCE } from "../geometry/constants.ts";
 import { Vector } from "../geometry/vector.ts";
 import { dprism } from "../operations/dprism.ts";
 import { chamferSolid, filletSolid } from "../operations/fillet-solid.ts";
@@ -22,6 +26,7 @@ import { Kind } from "../sketch/enums.ts";
 import { booleanPieces, expandShapes } from "./boolean.ts";
 import { fromVec3, toVec3 } from "./conversions.ts";
 import { CenterOf } from "./enums.ts";
+import { axisIntersections } from "./helpers/axis-intersections.ts";
 import { native } from "./kernel.ts";
 import { Shape } from "./shape.ts";
 import { touch3D } from "./touch.ts";
@@ -120,6 +125,14 @@ export abstract class Mixin3D extends Shape {
             query.classifyPoint(this.wrapped, target, tolerance),
         );
         return classification.state === query.PointState.In || classification.onFace;
+    }
+
+    /**
+     * Where `axis` pierces the faces of this shape, with the normal at each point, ordered along
+     * the axis (build123d `find_intersection_points`).
+     */
+    findIntersectionPoints(axis: Axis, options: AxisHitOptions = {}): AxisIntersection[] {
+        return axisIntersections(this, axis, options.tolerance ?? TOLERANCE);
     }
 
     /**

@@ -3,6 +3,7 @@ import type * as occt from "@roonieone/occt-native";
 import { measure, ShapeType, shapes, topology } from "@roonieone/occt-native";
 
 import type { Axis } from "../geometry/axis.ts";
+import type { BoundingBox } from "../geometry/bounding-box.ts";
 import type { Plane } from "../geometry/plane.ts";
 import type { IntersectOptions, ShapeOperand, ShapeOptions, TouchOptions } from "./shape.ts";
 
@@ -45,6 +46,24 @@ export type CompoundSource = occt.Shape | Iterable<Shape>;
 export interface UnwrapOptions {
     /** Strip every nesting level down to the single shape inside; defaults to true. */
     readonly fully?: boolean;
+}
+
+/** Options of {@link Compound#doChildrenIntersect}. */
+export interface ChildIntersectionOptions {
+    /** Test the compound itself against its children as well; defaults to false. */
+    readonly includeParent?: boolean;
+    /** Shared volume that still counts as not intersecting; defaults to 1e-5. */
+    readonly tolerance?: number;
+}
+
+/** What {@link Compound#doChildrenIntersect} found. */
+export interface ChildIntersection {
+    /** Whether a pair shares more volume than the tolerance allows. */
+    readonly intersect: boolean;
+    /** The first intersecting pair, or `undefined` when none was found. */
+    readonly shapes: readonly [Shape, Shape] | undefined;
+    /** Volume that pair shares; zero when none was found. */
+    readonly volume: number;
 }
 
 function compoundOf(source: CompoundSource): occt.Shape {
@@ -138,6 +157,38 @@ export class Compound extends Mixin3D implements Iterable<Shape> {
         return this.compounds().flatMap(compound =>
             [...compound].filter((child): child is T => child.constructor === type),
         );
+    }
+
+    /**
+     * The first pair of nested shapes that share more volume than `tolerance` allows (build123d
+     * `do_children_intersect`). The compound itself is only tested with `includeParent`; pairs
+     * are checked by their bounding boxes first, because a real intersection is expensive.
+     */
+    doChildrenIntersect(options: ChildIntersectionOptions = {}): ChildIntersection {
+        let tolerance = options.tolerance ?? 1e-5;
+        let children = [...nested(this)];
+        if (options.includeParent !== true) {
+            children.shift();
+        }
+        let boxes = children.map(child => child.boundingBox());
+        for (let first = 0; first < children.length; first += 1) {
+            for (let second = first + 1; second < children.length; second += 1) {
+                if (!(boxes[first] as BoundingBox).intersects(boxes[second] as BoundingBox)) {
+                    continue;
+                }
+                let one = children[first] as Shape;
+                let other = children[second] as Shape;
+                let common = one.intersect(other);
+                let volume =
+                    common === undefined
+                        ? 0
+                        : common.solids().reduce((total, solid) => total + solid.volume, 0);
+                if (volume > tolerance) {
+                    return { intersect: true, shapes: [one, other], volume };
+                }
+            }
+        }
+        return { intersect: false, shapes: undefined, volume: 0 };
     }
 
     /**
@@ -239,6 +290,16 @@ function additionOperandsOf(operands: readonly ShapeOperand[]): Shape[] {
     return operands
         .flatMap(operand => (operand instanceof Shape ? [operand] : [...operand]))
         .flatMap(shape => [...shape.getTopLevelShapes()]);
+}
+
+/** A compound and everything inside it, outermost first (build123d's pre-order assembly walk). */
+function* nested(shape: Shape): Generator<Shape> {
+    yield shape;
+    if (shape instanceof Compound) {
+        for (let child of shape) {
+            yield* nested(child);
+        }
+    }
 }
 
 registerShapeConstructor(ShapeType.Compound, wrapped => new Compound(wrapped));

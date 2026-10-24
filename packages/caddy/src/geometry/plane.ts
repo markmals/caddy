@@ -8,6 +8,7 @@ import { BoundingBox } from "./bounding-box.ts";
 import { DEG2RAD, GEOM_TOLERANCE, TOLERANCE } from "./constants.ts";
 import { Intrinsic } from "./enums.ts";
 import { Location } from "./location.ts";
+import { planeCrossing } from "./plane-crossing.ts";
 import { Quaternion } from "./quaternion.ts";
 import { Transform } from "./transform.ts";
 import { angleBetween, Vector } from "./vector.ts";
@@ -220,6 +221,14 @@ export class Plane implements CoordinateSystem {
         return Plane.fromLocation(this.location.multiply(relative));
     }
 
+    /**
+     * Alias of {@link moved}: build123d's `move` relocates the plane in place, which an
+     * immutable plane cannot do, so it returns the relocated copy instead.
+     */
+    move(loc: Location | Plane): Plane {
+        return this.moved(loc);
+    }
+
     /** This plane expressed as a location. */
     get location(): Location {
         return Location.fromPlane(this);
@@ -265,6 +274,31 @@ export class Plane implements CoordinateSystem {
         return Math.abs(Vector.from(obj).sub(this.origin).dot(this.zDir)) <= tolerance;
     }
 
+    /**
+     * Where this plane meets `other` (build123d `plane & other`): the point a line crosses it,
+     * the line two planes share, this plane when `other` lies in it the same way round, and
+     * `undefined` when they never meet.
+     */
+    intersect(point: VectorLike): Vector | undefined;
+    intersect(axis: Axis): Vector | Axis | undefined;
+    intersect(plane: Plane): Axis | Plane | undefined;
+    intersect(location: Location): Vector | Location | undefined;
+    intersect(
+        other: Axis | Location | Plane | VectorLike,
+    ): Vector | Axis | Location | Plane | undefined {
+        if (other instanceof Axis) {
+            return this.intersectAxis(other);
+        }
+        if (other instanceof Plane) {
+            return this.intersectPlane(other);
+        }
+        if (other instanceof Location) {
+            return this.intersectLocation(other);
+        }
+        let point = Vector.from(other);
+        return this.contains(point) ? point : undefined;
+    }
+
     /** Compose: place `other` relative to this plane (build123d `plane * other`). */
     multiply(other: Location | Plane): Location {
         return this.location.multiply(other instanceof Plane ? other.location : other);
@@ -288,6 +322,42 @@ export class Plane implements CoordinateSystem {
             `Plane: (origin=${this.origin.toTuple().join(", ")}, ` +
             `xDir=${this.xDir.toTuple().join(", ")}, zDir=${this.zDir.toTuple().join(", ")})`
         );
+    }
+
+    /** The axis itself when it lies in the plane, otherwise the single point where it crosses. */
+    private intersectAxis(axis: Axis): Vector | Axis | undefined {
+        if (this.contains(axis)) {
+            return axis;
+        }
+        let slope = this.zDir.dot(axis.direction);
+        if (slope === 0) {
+            return undefined;
+        }
+        let distance = this.origin.sub(axis.position).dot(this.zDir) / slope;
+        return axis.position.add(axis.direction.multiply(distance));
+    }
+
+    /**
+     * This plane when `other` is the same plane the same way round, otherwise the shared line.
+     *
+     * Coincident planes facing opposite ways have no crossing line, and build123d's equality
+     * check only accepts the identical normal, so those answer `undefined`.
+     */
+    private intersectPlane(other: Plane): Axis | Plane | undefined {
+        if (this.contains(other.origin) && this.zDir.equals(other.zDir)) {
+            return this;
+        }
+        let crossing = planeCrossing(this, other);
+        return crossing === undefined ? undefined : new Axis(crossing.position, crossing.direction);
+    }
+
+    /** A location in the plane, kept whole when its Z direction is the plane's normal. */
+    private intersectLocation(location: Location): Vector | Location | undefined {
+        let frame = Plane.fromLocation(location);
+        if (!this.contains(frame.origin)) {
+            return undefined;
+        }
+        return this.zDir.equals(frame.zDir) ? location : frame.origin;
     }
 }
 

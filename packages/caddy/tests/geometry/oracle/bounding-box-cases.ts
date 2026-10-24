@@ -131,4 +131,39 @@ export const boundingBoxCases: OracleCases = {
             EXACT_TOLERANCE,
         );
     },
+
+    "bounding-box/find-outside-2d": expected => {
+        let outer = new BoundingBox([0, 0, 0], [10, 10, 10]);
+        let inner = new BoundingBox([1, 1, -5], [2, 2, 50]);
+        let flush = new BoundingBox([0, 1, 0], [10, 2, 1]);
+        let separate = new BoundingBox([20, 20, 0], [21, 21, 1]);
+        let firstOutside = BoundingBox.findOutsideBox2D(outer, inner);
+        let secondOutside = BoundingBox.findOutsideBox2D(inner, outer);
+        if (firstOutside === undefined || secondOutside === undefined) {
+            throw new Error("expected the enclosing box of a nested pair in either order");
+        }
+        expectBounds(expected, "first_encloses", firstOutside);
+        expectBounds(expected, "second_encloses", secondOutside);
+        expectFlags(expected, {
+            touching_edges: BoundingBox.findOutsideBox2D(outer, flush) === undefined,
+            disjoint: BoundingBox.findOutsideBox2D(outer, separate) === undefined,
+            identical: BoundingBox.findOutsideBox2D(outer, outer) === undefined,
+        });
+    },
+
+    "bounding-box/is-inside": expected => {
+        let outer = new BoundingBox([0, 0, 0], [10, 10, 10]);
+        let inner = new BoundingBox([1, 1, 1], [2, 2, 2]);
+        let flush = new BoundingBox([0, 0, 0], [10, 10, 5]);
+        let straddling = new BoundingBox([5, 5, 5], [15, 15, 15]);
+        expectFlags(expected, {
+            nested: inner.isInside(outer),
+            reversed: outer.isInside(inner),
+            flush: flush.isInside(outer),
+            straddling: straddling.isInside(outer),
+            self: outer.isInside(outer),
+            matches_within: inner.isInside(outer) === inner.within(outer),
+            loose_tolerance: straddling.isInside(outer, 10),
+        });
+    },
 };

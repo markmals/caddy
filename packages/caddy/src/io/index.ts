@@ -11,3 +11,4 @@ export type {
     StlOptions,
 } from "./types.ts";
 export * from "./export2d/index.ts";
+export * from "./import2d/index.ts";
