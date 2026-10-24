@@ -12,6 +12,8 @@ export default defineConfig({
             "reference/build123d/fixtures/**",
             "reference/build123d/inventory/**",
             "packages/occt-native/crates/opencascade-sys/bindings-report.md",
+            "docs/compatibility.json",
+            "docs/compatibility.md",
         ],
         printWidth: 100,
         tabWidth: 4,

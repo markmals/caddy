@@ -68,7 +68,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -83,7 +83,7 @@
             ],
             "native": [],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -91,7 +91,9 @@
             "kind": "enum",
             "caddy": "ApproxOption",
             "behavior": "Selects how splines are approximated when exporting 2D geometry to DXF: ARC, SPLINE or NONE.",
-            "referenceTests": ["tests/test_build_enums.py::TestEnumRepr::test_repr"],
+            "referenceTests": [
+                "tests/test_build_enums.py::TestEnumRepr::test_repr"
+            ],
             "native": [],
             "capability": "io",
             "status": "planned",
@@ -103,7 +105,11 @@
             "caddy": "Arrow",
             "behavior": "Planar sketch of an arrow: a shaft of the given width following a path, with an arrow head of the given type at one or both ends.",
             "referenceTests": [],
-            "native": ["BRepOffsetAPI_MakePipeShell", "TopoDS", "TopoDS_Shape"],
+            "native": [
+                "BRepOffsetAPI_MakePipeShell",
+                "TopoDS",
+                "TopoDS_Shape"
+            ],
             "capability": "drafting",
             "status": "planned",
             "notes": ""
@@ -113,8 +119,14 @@
             "kind": "class",
             "caddy": "ArrowHead",
             "behavior": "Planar sketch of a single arrow head of the given tip-to-tail size and head type, rotated by the given angle.",
-            "referenceTests": ["tests/test_drafting.py::ArrowHeadTests::test_arrowhead_types"],
-            "native": ["HSequence_TopoDS_Shape", "ShapeAnalysis_FreeBounds", "TopoDS_Wire"],
+            "referenceTests": [
+                "tests/test_drafting.py::ArrowHeadTests::test_arrowhead_types"
+            ],
+            "native": [
+                "HSequence_TopoDS_Shape",
+                "ShapeAnalysis_FreeBounds",
+                "TopoDS_Wire"
+            ],
             "capability": "drafting",
             "status": "planned",
             "notes": ""
@@ -129,9 +141,16 @@
                 "tests/test_direct_api/test_axis.py::TestAxis::test_axis_init",
                 "tests/test_direct_api/test_axis.py::TestAxis::test_axis_intersect"
             ],
-            "native": ["BRep_Tool", "TopoDS_Edge", "gp_Ax1", "gp_Dir", "gp_Pnt", "gp_Vec"],
+            "native": [
+                "BRep_Tool",
+                "TopoDS_Edge",
+                "gp_Ax1",
+                "gp_Dir",
+                "gp_Pnt",
+                "gp_Vec"
+            ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -152,7 +171,7 @@
                 "Geom_BSplineCurve"
             ],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -244,7 +263,7 @@
                 "Geom_BezierCurve"
             ],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -272,7 +291,12 @@
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_constructor_errors",
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_shape_constructor"
             ],
-            "native": ["BRepBndLib", "BRepTools", "Bnd_Box", "TopoDS_Shape"],
+            "native": [
+                "BRepBndLib",
+                "BRepTools",
+                "Bnd_Box",
+                "TopoDS_Shape"
+            ],
             "capability": "geometry",
             "status": "planned",
             "notes": ""
@@ -287,9 +311,12 @@
                 "tests/test_algebra.py::ObjectTests::test_box_max",
                 "tests/test_algebra.py::ObjectTests::test_box_min"
             ],
-            "native": ["BRepPrimAPI_MakeBox", "TopoDS"],
+            "native": [
+                "BRepPrimAPI_MakeBox",
+                "TopoDS"
+            ],
             "capability": "primitives-3d",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -360,9 +387,13 @@
                 "tests/test_algebra.py::AlgebraTests::test_curve_operators",
                 "tests/test_direct_api/test_constrained_arcs.py::test_eggplant"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge", "GC_MakeArcOfCircle", "gp_Circ"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "GC_MakeArcOfCircle",
+                "gp_Circ"
+            ],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -377,7 +408,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -397,7 +428,7 @@
                 "gp_Circ"
             ],
             "capability": "primitives-2d",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -410,9 +441,13 @@
                 "tests/test_direct_api/test_color.py::test_color_likes",
                 "tests/test_direct_api/test_color.py::test_color_likes_alpha"
             ],
-            "native": ["Quantity_Color", "Quantity_ColorRGBA", "Quantity_TypeOfColor"],
+            "native": [
+                "Quantity_Color",
+                "Quantity_ColorRGBA",
+                "Quantity_TypeOfColor"
+            ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -425,9 +460,13 @@
                 "tests/test_direct_api/test_functions.py::TestFunctions::test_unwrap_topods_compound",
                 "tests/test_algebra.py::AlgebraTests::test_compound_plus"
             ],
-            "native": ["TopoDS_Builder", "TopoDS_Compound", "TopoDS_Shape"],
+            "native": [
+                "TopoDS_Builder",
+                "TopoDS_Compound",
+                "TopoDS_Shape"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -440,9 +479,12 @@
                 "tests/test_algebra.py::ObjectTests::test_cone0",
                 "tests/test_algebra.py::ObjectTests::test_cone0_max"
             ],
-            "native": ["BRepPrimAPI_MakeCone", "TopoDS"],
+            "native": [
+                "BRepPrimAPI_MakeCone",
+                "TopoDS"
+            ],
             "capability": "primitives-3d",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -530,7 +572,9 @@
                 "tests/test_algebra.py::ObjectTests::test_convex_polyhedron",
                 "tests/test_build_part.py::TestConvexPolyhedron::test_convex_polyhedron"
             ],
-            "native": ["BRepBuilderAPI_MakePolygon"],
+            "native": [
+                "BRepBuilderAPI_MakePolygon"
+            ],
             "capability": "primitives-3d",
             "status": "planned",
             "notes": ""
@@ -560,9 +604,12 @@
                 "tests/test_algebra.py::ObjectTests::test_counter_bore_hole_error",
                 "tests/test_build_part.py::TestCounterBoreHole::test_fixed_depth"
             ],
-            "native": ["BRepPrimAPI_MakeCylinder", "TopoDS"],
+            "native": [
+                "BRepPrimAPI_MakeCylinder",
+                "TopoDS"
+            ],
             "capability": "primitives-3d",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -575,9 +622,13 @@
                 "tests/test_algebra.py::ObjectTests::test_counter_sink_hole_error",
                 "tests/test_build_part.py::TestCounterSinkHole::test_fixed_depth"
             ],
-            "native": ["BRepPrimAPI_MakeCone", "BRepPrimAPI_MakeCylinder", "TopoDS"],
+            "native": [
+                "BRepPrimAPI_MakeCone",
+                "BRepPrimAPI_MakeCylinder",
+                "TopoDS"
+            ],
             "capability": "primitives-3d",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -590,9 +641,13 @@
                 "tests/test_algebra.py::AlgebraTests::test_curve_operators",
                 "tests/test_algebra.py::AlgebraTests::test_curve_plus_nothing"
             ],
-            "native": ["TopoDS_Builder", "TopoDS_Compound", "TopoDS_Shape"],
+            "native": [
+                "TopoDS_Builder",
+                "TopoDS_Compound",
+                "TopoDS_Shape"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "implemented",
             "notes": ""
         },
         {
@@ -605,9 +660,12 @@
                 "tests/test_algebra.py::ObjectTests::test_cylinder_90",
                 "tests/test_algebra.py::ObjectTests::test_cylinder_90_max"
             ],
-            "native": ["BRepPrimAPI_MakeCylinder", "TopoDS"],
+            "native": [
+                "BRepPrimAPI_MakeCylinder",
+                "TopoDS"
+            ],
             "capability": "primitives-3d",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -635,7 +693,10 @@
                 "tests/test_drafting.py::DimensionLineTestCase::test_edge",
                 "tests/test_drafting.py::DimensionLineTestCase::test_face"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge", "BRepBuilderAPI_MakePolygon"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "BRepBuilderAPI_MakePolygon"
+            ],
             "capability": "drafting",
             "status": "planned",
             "notes": ""
@@ -656,8 +717,14 @@
             "kind": "class",
             "caddy": "DoubleTangentArc",
             "behavior": "Create a circular arc defined by a point/tangent pair and another line find a tangent to.",
-            "referenceTests": ["tests/test_build_line.py::BuildLineTests::test_double_tangent_arc"],
-            "native": ["BRepBuilderAPI_MakeEdge", "GC_MakeArcOfCircle", "gp_Circ"],
+            "referenceTests": [
+                "tests/test_build_line.py::BuildLineTests::test_double_tangent_arc"
+            ],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "GC_MakeArcOfCircle",
+                "gp_Circ"
+            ],
             "capability": "curves",
             "status": "planned",
             "notes": ""
@@ -702,9 +769,14 @@
                 "tests/test_direct_api/test_geom_equal.py::TestWireGeomEqual::test_all_edges_reversed_not_equal",
                 "tests/test_direct_api/test_geom_equal.py::TestWireGeomEqual::test_edges_different_start_point"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge", "Geom_Line", "TopoDS_Edge", "TopoDS_Shape"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "Geom_Line",
+                "TopoDS_Edge",
+                "TopoDS_Shape"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -717,9 +789,14 @@
                 "tests/test_algebra.py::ObjectTests::test_ellipse_center",
                 "tests/test_algebra.py::ObjectTests::test_ellipse_max"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge", "GC_MakeArcOfEllipse", "gp_Ax1", "gp_Elips"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "GC_MakeArcOfEllipse",
+                "gp_Ax1",
+                "gp_Elips"
+            ],
             "capability": "primitives-2d",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -732,9 +809,14 @@
                 "tests/test_import_dxf.py::test_convert_hatch_edge_ellipse",
                 "tests/test_import_dxf.py::test_convert_hatch_edge_ellipse_clockwise"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge", "GC_MakeArcOfEllipse", "gp_Ax1", "gp_Elips"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "GC_MakeArcOfEllipse",
+                "gp_Ax1",
+                "gp_Elips"
+            ],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -746,7 +828,12 @@
                 "tests/test_build_line.py::BuildLineTests::test_elliptical_start_arc",
                 "tests/test_importers.py::ImportSVG::test_import_svg_as_buildline_code"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge", "GC_MakeArcOfEllipse", "gp_Ax1", "gp_Elips"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "GC_MakeArcOfEllipse",
+                "gp_Ax1",
+                "gp_Elips"
+            ],
             "capability": "curves",
             "status": "planned",
             "notes": ""
@@ -825,7 +912,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -863,7 +950,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -876,9 +963,11 @@
                 "tests/test_build_generic.py::OffsetTests::test_offset_algebra_wire",
                 "tests/test_build_part.py::TestMakeBrakeFormed::test_curve_line"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge"
+            ],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -926,7 +1015,7 @@
             ],
             "native": [],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -981,7 +1070,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1018,7 +1107,9 @@
             "kind": "class",
             "caddy": "Helix",
             "behavior": "Create a helix defined by pitch, height, and radius.",
-            "referenceTests": ["tests/test_build_line.py::BuildLineTests::test_three_d"],
+            "referenceTests": [
+                "tests/test_build_line.py::BuildLineTests::test_three_d"
+            ],
             "native": [
                 "BRepBuilderAPI_MakeEdge",
                 "BRepLib",
@@ -1032,7 +1123,7 @@
                 "gp_Pnt2d"
             ],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1060,9 +1151,12 @@
                 "tests/test_algebra.py::ObjectTests::test_hole_error",
                 "tests/test_build_part.py::TestHole::test_through_hole"
             ],
-            "native": ["BRepPrimAPI_MakeCylinder", "TopoDS"],
+            "native": [
+                "BRepPrimAPI_MakeCylinder",
+                "TopoDS"
+            ],
             "capability": "primitives-3d",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1075,7 +1169,12 @@
                 "tests/test_build_line.py::BuildLineTests::test_hyperbolic_center_arc",
                 "tests/test_build_line.py::BuildLineTests::test_hyperbolic_center_arc_arc_size"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge", "GC_MakeArcOfHyperbola", "gp_Ax1", "gp_Hypr"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "GC_MakeArcOfHyperbola",
+                "gp_Ax1",
+                "gp_Hypr"
+            ],
             "capability": "curves",
             "status": "planned",
             "notes": ""
@@ -1100,10 +1199,14 @@
             "kind": "class",
             "caddy": "IntersectingLine",
             "behavior": "Create a straight line defined by a point/direction pair and another line to intersect.",
-            "referenceTests": ["tests/test_build_line.py::BuildLineTests::test_intersecting_line"],
-            "native": ["BRepBuilderAPI_MakeEdge"],
+            "referenceTests": [
+                "tests/test_build_line.py::BuildLineTests::test_intersecting_line"
+            ],
+            "native": [
+                "BRepBuilderAPI_MakeEdge"
+            ],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1118,7 +1221,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1131,9 +1234,13 @@
                 "tests/test_build_line.py::BuildLineTests::test_jern_arc",
                 "tests/test_direct_api/test_face.py::TestFace::test_revolve"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge", "GC_MakeArcOfCircle", "gp_Circ"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "GC_MakeArcOfCircle",
+                "gp_Circ"
+            ],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1174,7 +1281,7 @@
             ],
             "native": [],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1189,7 +1296,7 @@
             ],
             "native": [],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1218,7 +1325,7 @@
             ],
             "native": [],
             "capability": "drafting",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1231,9 +1338,11 @@
                 "tests/test_algebra.py::ObjectTests::test_line",
                 "tests/test_direct_api/test_geom_equal.py::TestEdgeGeomEqualTolerance::test_line_endpoint_outside_tolerance"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge"
+            ],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1283,7 +1392,7 @@
                 "gp_Trsf"
             ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1332,7 +1441,9 @@
             "kind": "constant",
             "caddy": "MM",
             "behavior": "Length-unit constant: one millimetre, which is build123d's internal modelling unit (1).",
-            "referenceTests": ["tests/test_materials.py::TestMaterialMass::test_mass_g"],
+            "referenceTests": [
+                "tests/test_materials.py::TestMaterialMass::test_mass_g"
+            ],
             "native": [],
             "capability": "misc",
             "status": "planned",
@@ -1348,7 +1459,10 @@
                 "tests/test_direct_api/test_matrix.py::TestMatrix::test_matrix_functionality",
                 "tests/test_direct_api/test_shape.py::TestShape::test_empty_shape"
             ],
-            "native": ["gp_GTrsf", "gp_Trsf"],
+            "native": [
+                "gp_GTrsf",
+                "gp_Trsf"
+            ],
             "capability": "geometry",
             "status": "planned",
             "notes": ""
@@ -1426,7 +1540,10 @@
                 "tests/test_direct_api/test_oriented_bound_box.py::TestOrientedBoundBox::test_repr",
                 "tests/test_direct_api/test_oriented_bound_box.py::TestOrientedBoundBox::test_init_from_bnd_obb"
             ],
-            "native": ["BRepBndLib", "Bnd_OBB"],
+            "native": [
+                "BRepBndLib",
+                "Bnd_OBB"
+            ],
             "capability": "geometry",
             "status": "planned",
             "notes": ""
@@ -1436,7 +1553,9 @@
             "kind": "enum",
             "caddy": "PageSize",
             "behavior": "Paper size for 2D export: A0-A10, LETTER, LEGAL or LEDGER (build123d's docstring for this enum is a copy-paste of Align's).",
-            "referenceTests": ["tests/test_build_enums.py::TestEnumRepr::test_repr"],
+            "referenceTests": [
+                "tests/test_build_enums.py::TestEnumRepr::test_repr"
+            ],
             "native": [],
             "capability": "io",
             "status": "planned",
@@ -1452,7 +1571,11 @@
                 "tests/test_build_line.py::BuildLineTests::test_parabolic_center_arc",
                 "tests/test_build_line.py::BuildLineTests::test_parabolic_center_arc_arc_size"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge", "GC_MakeArcOfParabola", "gp_Parab"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "GC_MakeArcOfParabola",
+                "gp_Parab"
+            ],
             "capability": "curves",
             "status": "planned",
             "notes": ""
@@ -1467,9 +1590,13 @@
                 "tests/test_algebra.py::AlgebraTests::test_empty_minus_part",
                 "tests/test_algebra.py::AlgebraTests::test_empty_plus_mixed_curved_parts"
             ],
-            "native": ["TopoDS_Builder", "TopoDS_Compound", "TopoDS_Shape"],
+            "native": [
+                "TopoDS_Builder",
+                "TopoDS_Compound",
+                "TopoDS_Shape"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1498,7 +1625,7 @@
                 "gp_Vec"
             ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1511,9 +1638,11 @@
                 "tests/test_build_line.py::BuildLineTests::test_polar_line",
                 "tests/test_direct_api/test_constrained_arcs.py::test_tan2_center_on_1"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge"
+            ],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1541,9 +1670,11 @@
                 "tests/test_direct_api/test_oriented_bound_box.py::TestOrientedBoundBox::test_planar_face_corners",
                 "tests/test_direct_api/test_face.py::TestFace::test_wrap"
             ],
-            "native": ["BRepBuilderAPI_MakePolygon"],
+            "native": [
+                "BRepBuilderAPI_MakePolygon"
+            ],
             "capability": "primitives-2d",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1565,7 +1696,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1580,7 +1711,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": "Position-only Location subclass; Caddy keeps the short constructor form `Pos(x, y, z)`."
         },
         {
@@ -1595,7 +1726,7 @@
             ],
             "native": [],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1606,7 +1737,7 @@
             "referenceTests": [],
             "native": [],
             "capability": "io",
-            "status": "planned",
+            "status": "implemented",
             "notes": ""
         },
         {
@@ -1621,7 +1752,7 @@
             ],
             "native": [],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1634,9 +1765,11 @@
                 "tests/test_direct_api/test_geom_equal.py::TestWireGeomEqual::test_same_rectangle_wire",
                 "tests/test_direct_api/test_face.py::TestFace::test_axes_of_symmetry"
             ],
-            "native": ["BRepBuilderAPI_MakeFace"],
+            "native": [
+                "BRepBuilderAPI_MakeFace"
+            ],
             "capability": "primitives-2d",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1649,9 +1782,11 @@
                 "tests/test_build_sketch.py::TestBuildSketchObjects::test_rectangle_rounded",
                 "tests/test_build_part.py::TestThicken::test_thicken"
             ],
-            "native": ["BRepBuilderAPI_MakeFace"],
+            "native": [
+                "BRepBuilderAPI_MakeFace"
+            ],
             "capability": "primitives-2d",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1664,9 +1799,11 @@
                 "tests/test_direct_api/test_face.py::TestFace::test_geometry",
                 "tests/test_direct_api/test_face.py::TestFace::test_make_holes"
             ],
-            "native": ["BRepBuilderAPI_MakePolygon"],
+            "native": [
+                "BRepBuilderAPI_MakePolygon"
+            ],
             "capability": "primitives-2d",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1709,9 +1846,11 @@
                 "tests/test_direct_api/test_oriented_bound_box.py::TestOrientedBoundBox::test_rotated_cube_corners",
                 "tests/test_algebra.py::AlgebraTests::test_location_multiply_shape_iterable"
             ],
-            "native": ["gp_Trsf"],
+            "native": [
+                "gp_Trsf"
+            ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -1724,9 +1863,11 @@
                 "tests/test_direct_api/test_rotation.py::TestRotationValidation::test_rotation_like_must_be_a_supported_type",
                 "tests/test_direct_api/test_rotation.py::TestRotationValidation::test_rotation_like_conflicts_with_euler_angles"
             ],
-            "native": ["gp_Trsf"],
+            "native": [
+                "gp_Trsf"
+            ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": "`Rot` is the short alias of this class; both produce a rotation-only Location."
         },
         {
@@ -1739,7 +1880,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "implemented",
             "notes": ""
         },
         {
@@ -1769,7 +1910,7 @@
             ],
             "native": [],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1799,7 +1940,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1821,7 +1962,7 @@
                 "TopoDS_Shell"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "implemented",
             "notes": ""
         },
         {
@@ -1836,7 +1977,7 @@
             ],
             "native": [],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1849,9 +1990,13 @@
                 "tests/test_algebra.py::AlgebraTests::test_empty_and_sketch",
                 "tests/test_algebra.py::AlgebraTests::test_empty_minus_sketch"
             ],
-            "native": ["TopoDS_Builder", "TopoDS_Compound", "TopoDS_Shape"],
+            "native": [
+                "TopoDS_Builder",
+                "TopoDS_Compound",
+                "TopoDS_Shape"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -1859,10 +2004,12 @@
             "kind": "class",
             "caddy": "SlotArc",
             "behavior": "Create a slot defined by a line and height.",
-            "referenceTests": ["tests/test_build_sketch.py::TestBuildSketchObjects::test_slot_arc"],
+            "referenceTests": [
+                "tests/test_build_sketch.py::TestBuildSketchObjects::test_slot_arc"
+            ],
             "native": [],
             "capability": "primitives-2d",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1882,7 +2029,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "primitives-2d",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1893,9 +2040,11 @@
             "referenceTests": [
                 "tests/test_build_sketch.py::TestBuildSketchObjects::test_slot_center_to_center"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge"
+            ],
             "capability": "primitives-2d",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1907,9 +2056,11 @@
                 "tests/test_pack.py::TestPack::test_random_slots",
                 "tests/test_build_sketch.py::TestBuildSketchObjects::test_slot_overall"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge"
+            ],
             "capability": "primitives-2d",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1922,9 +2073,13 @@
                 "tests/test_direct_api/test_shape_list.py::TestShapeList::test_solid",
                 "tests/test_direct_api/test_shape_list.py::TestShapeList::test_solids"
             ],
-            "native": ["ShapeFix_Solid", "TopoDS_Shape", "TopoDS_Solid"],
+            "native": [
+                "ShapeFix_Solid",
+                "TopoDS_Shape",
+                "TopoDS_Solid"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1939,7 +2094,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1952,9 +2107,12 @@
                 "tests/test_algebra.py::ObjectTests::test_sphere",
                 "tests/test_algebra.py::ObjectTests::test_sphere_45_90"
             ],
-            "native": ["BRepPrimAPI_MakeSphere", "TopoDS"],
+            "native": [
+                "BRepPrimAPI_MakeSphere",
+                "TopoDS"
+            ],
             "capability": "primitives-3d",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1976,7 +2134,7 @@
                 "HArray1_gp_Pnt"
             ],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -2000,7 +2158,7 @@
                 "gp_Elips"
             ],
             "capability": "primitives-2d",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -2039,9 +2197,12 @@
                 "tests/test_build_line.py::BuildLineTests::test_basic_functions",
                 "tests/test_build_line.py::BuildLineTests::test_error_conditions"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge", "GC_MakeArcOfCircle"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "GC_MakeArcOfCircle"
+            ],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -2049,7 +2210,9 @@
             "kind": "class",
             "caddy": "TechnicalDrawing",
             "behavior": "The border of a technical drawing with external frame and text box.",
-            "referenceTests": ["tests/test_drafting.py::test_basic_drawing"],
+            "referenceTests": [
+                "tests/test_drafting.py::test_basic_drawing"
+            ],
             "native": [
                 "BOPAlgo_GlueEnum",
                 "BRepAlgoAPI_Fuse",
@@ -2133,9 +2296,12 @@
                 "tests/test_direct_api/test_face.py::TestFace::test_make_gordon_surface_input_types",
                 "tests/test_direct_api/test_constrained_arcs.py::test_eggplant"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge", "GC_MakeArcOfCircle"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "GC_MakeArcOfCircle"
+            ],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -2148,9 +2314,12 @@
                 "tests/test_algebra.py::ObjectTests::test_torus_max",
                 "tests/test_algebra.py::ObjectTests::test_torus_min"
             ],
-            "native": ["BRepPrimAPI_MakeTorus", "TopoDS"],
+            "native": [
+                "BRepPrimAPI_MakeTorus",
+                "TopoDS"
+            ],
             "capability": "primitives-3d",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -2178,9 +2347,11 @@
                 "tests/test_direct_api/test_plane.py::TestPlane::test_plane_init",
                 "tests/test_build_generic.py::MirrorTests::test_changing_object_type"
             ],
-            "native": ["BRepBuilderAPI_MakePolygon"],
+            "native": [
+                "BRepBuilderAPI_MakePolygon"
+            ],
             "capability": "primitives-2d",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -2193,9 +2364,14 @@
                 "tests/test_direct_api/test_face.py::TestFace::test_axes_of_symmetry",
                 "tests/test_build_sketch.py::TestBuildSketchObjects::test_full_round"
             ],
-            "native": ["BRepBuilderAPI_MakePolygon", "TopExp_Explorer", "TopoDS", "TopoDS_Edge"],
+            "native": [
+                "BRepBuilderAPI_MakePolygon",
+                "TopExp_Explorer",
+                "TopoDS",
+                "TopoDS_Edge"
+            ],
             "capability": "primitives-2d",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -2214,7 +2390,9 @@
             "kind": "constant",
             "caddy": "UNITS_PER_METER",
             "behavior": "Lookup table giving how many of each length Unit fit in one metre, used when converting densities and masses.",
-            "referenceTests": ["tests/test_importers.py::test_stl_import_rescale_units"],
+            "referenceTests": [
+                "tests/test_importers.py::test_stl_import_rescale_units"
+            ],
             "native": [],
             "capability": "misc",
             "status": "planned",
@@ -2232,7 +2410,7 @@
             ],
             "native": [],
             "capability": "io",
-            "status": "planned",
+            "status": "implemented",
             "notes": ""
         },
         {
@@ -2247,7 +2425,7 @@
             ],
             "native": [],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -2260,9 +2438,16 @@
                 "tests/test_direct_api/test_vector.py::TestVector::test_vector_operators",
                 "tests/test_direct_api/test_vector.py::TestVector::test_vector_project"
             ],
-            "native": ["BRep_Tool", "TopoDS_Vertex", "gp_Dir", "gp_Pnt", "gp_Vec", "gp_XYZ"],
+            "native": [
+                "BRep_Tool",
+                "TopoDS_Vertex",
+                "gp_Dir",
+                "gp_Pnt",
+                "gp_Vec",
+                "gp_XYZ"
+            ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -2275,7 +2460,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "implemented",
             "notes": ""
         },
         {
@@ -2297,7 +2482,7 @@
                 "gp_Pnt"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -2310,9 +2495,12 @@
                 "tests/test_build_part.py::TestWedge::test_invalid_wedge",
                 "tests/test_build_part.py::TestWedge::test_simple_wedge"
             ],
-            "native": ["BRepPrimAPI_MakeWedge", "TopoDS"],
+            "native": [
+                "BRepPrimAPI_MakeWedge",
+                "TopoDS"
+            ],
             "capability": "primitives-3d",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -2342,7 +2530,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -2385,15 +2573,19 @@
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_bounding_box_repr",
                 "tests/test_direct_api/test_solid.py::TestSolid::test_from_bounding_box"
             ],
-            "native": ["BRepBuilderAPI_MakePolygon", "BRepPrimAPI_MakeBox", "TopoDS"],
+            "native": [
+                "BRepBuilderAPI_MakePolygon",
+                "BRepPrimAPI_MakeBox",
+                "TopoDS"
+            ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": "Also exported as a free function returning the bounding-box solid/face of the given shapes."
         },
         {
             "python": "chamfer",
             "kind": "function",
-            "caddy": "Shape#chamfer",
+            "caddy": "chamfer",
             "behavior": "Cuts a flat chamfer of the given length(s) or length-and-angle across the selected edges of a 3D shape or vertices of a 2D shape.",
             "referenceTests": [
                 "tests/test_direct_api/test_mixin3_d.py::TestMixin3D::test_chamfer_invalid_shape_raises_error",
@@ -2416,7 +2608,7 @@
                 "gp_Vec"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": "Also exported as a free function `chamfer(edgesOrVertices, length, length2?)`."
         },
         {
@@ -2466,9 +2658,11 @@
                 "tests/test_direct_api/test_solid.py::TestSolidDraft::test_adddone_failure_raises_draftangleerror",
                 "tests/test_direct_api/test_solid.py::TestSolidDraft::test_build_failure_raises_draftangleerror"
             ],
-            "native": ["BRepOffsetAPI_DraftAngle"],
+            "native": [
+                "BRepOffsetAPI_DraftAngle"
+            ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -2529,9 +2723,11 @@
                 "tests/test_direct_api/test_import_export.py::TestImportExport::test_import_export",
                 "tests/test_importers.py::test_pathlike_brep"
             ],
-            "native": ["BRepTools"],
+            "native": [
+                "BRepTools"
+            ],
             "capability": "io",
-            "status": "planned",
+            "status": "validated",
             "notes": "Reachable through `export(shape, { type: CADFileType.Brep })`."
         },
         {
@@ -2563,7 +2759,7 @@
                 "XCAFDoc_ShapeTool"
             ],
             "capability": "io",
-            "status": "planned",
+            "status": "tested",
             "notes": "Reachable through `export(shape, { type: CADFileType.Gltf })`."
         },
         {
@@ -2578,7 +2774,7 @@
             ],
             "native": [],
             "capability": "io",
-            "status": "planned",
+            "status": "tested",
             "notes": "Reachable through `export(shape, { type: CADFileType.Obj })`."
         },
         {
@@ -2615,7 +2811,7 @@
                 "XSControl_WorkSession"
             ],
             "capability": "io",
-            "status": "planned",
+            "status": "validated",
             "notes": "All `export_*` functions collapse into one `export(shape, { name, type })` entry point in Caddy."
         },
         {
@@ -2628,9 +2824,12 @@
                 "tests/test_exporters3d.py::test_export_stl_missing_destination_directory",
                 "tests/test_direct_api/test_face.py::TestFace::test_import_stl"
             ],
-            "native": ["BRepMesh_IncrementalMesh", "StlAPI_Writer"],
+            "native": [
+                "BRepMesh_IncrementalMesh",
+                "StlAPI_Writer"
+            ],
             "capability": "io",
-            "status": "planned",
+            "status": "validated",
             "notes": "Reachable through `export(shape, { type: CADFileType.Stl })`."
         },
         {
@@ -2699,7 +2898,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": "Exported as a free function; `Face#extrude`/`Solid.extrude` cover the single-shape forms."
         },
         {
@@ -2735,7 +2934,7 @@
         {
             "python": "fillet",
             "kind": "function",
-            "caddy": "Shape#fillet",
+            "caddy": "fillet",
             "behavior": "Rounds the selected edges of a 3D shape (or the selected vertices of a 2D shape) with a constant radius.",
             "referenceTests": [
                 "tests/test_direct_api/test_history.py::TestShapeHistory::test_algorithm_history_from_a_fillet",
@@ -2753,7 +2952,7 @@
                 "gp_Vec"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": "Also exported as a free function `fillet(edgesOrVertices, radius)` for multi-object use."
         },
         {
@@ -2793,17 +2992,23 @@
         {
             "python": "import_brep",
             "kind": "function",
-            "caddy": "importBrep",
+            "caddy": "importCAD",
             "behavior": "Import shape from a BREP file.",
             "referenceTests": [
                 "tests/test_direct_api/test_import_export.py::TestImportExport::test_import_export",
                 "tests/test_importers.py::ImportBREP::test_bad_filename",
                 "tests/test_importers.py::test_pathlike_brep"
             ],
-            "native": ["BRepTools", "BRep_Builder", "TopAbs_ShapeEnum", "TopoDS", "TopoDS_Shape"],
+            "native": [
+                "BRepTools",
+                "BRep_Builder",
+                "TopAbs_ShapeEnum",
+                "TopoDS",
+                "TopoDS_Shape"
+            ],
             "capability": "io",
-            "status": "planned",
-            "notes": ""
+            "status": "validated",
+            "notes": "Caddy uses one importCAD(source, { type }) for every format."
         },
         {
             "python": "import_dxf",
@@ -2823,7 +3028,7 @@
         {
             "python": "import_step",
             "kind": "function",
-            "caddy": "importStep",
+            "caddy": "importCAD",
             "behavior": "Extract shapes from a STEP file and return them as a Compound object.",
             "referenceTests": [
                 "tests/test_direct_api/test_import_export.py::TestImportExport::test_import_export",
@@ -2853,13 +3058,13 @@
                 "XCAFDoc_DocumentTool"
             ],
             "capability": "io",
-            "status": "planned",
-            "notes": "`importCAD` sniffs the file type and delegates to `importStep`."
+            "status": "validated",
+            "notes": "Caddy uses one importCAD(source, { type }) for every format."
         },
         {
             "python": "import_stl",
             "kind": "function",
-            "caddy": "importStl",
+            "caddy": "importCAD",
             "behavior": "Extract shape from an STL file and return it as a Face reference object.",
             "referenceTests": [
                 "tests/test_direct_api/test_face.py::TestFace::test_import_stl",
@@ -2876,8 +3081,8 @@
                 "gp_Trsf"
             ],
             "capability": "io",
-            "status": "planned",
-            "notes": ""
+            "status": "validated",
+            "notes": "Caddy uses one importCAD(source, { type }) for every format."
         },
         {
             "python": "import_svg",
@@ -2889,7 +3094,10 @@
                 "tests/test_importers.py::ImportSVG::test_import_svg_origin",
                 "tests/test_importers.py::ImportSVG::test_import_svg"
             ],
-            "native": ["TopoDS_Face", "TopoDS_Wire"],
+            "native": [
+                "TopoDS_Face",
+                "TopoDS_Wire"
+            ],
             "capability": "io",
             "status": "planned",
             "notes": ""
@@ -2941,7 +3149,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -2992,7 +3200,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3012,7 +3220,7 @@
                 "gp_Vec"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3025,9 +3233,13 @@
                 "tests/test_direct_api/test_location.py::TestLocation::test_mirror_location",
                 "tests/test_build_generic.py::MirrorTests::test_mirror_line"
             ],
-            "native": ["BRepBuilderAPI_Transform", "gp_Ax2", "gp_Trsf"],
+            "native": [
+                "BRepBuilderAPI_Transform",
+                "gp_Ax2",
+                "gp_Trsf"
+            ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": "Also exported as a free function `mirror(shapes, plane)`."
         },
         {
@@ -3054,16 +3266,18 @@
         {
             "python": "offset",
             "kind": "function",
-            "caddy": "Shape#offset",
+            "caddy": "offset",
             "behavior": "Offsets the given shapes by an amount: 1D curves offset within their plane, faces move along their normal, and solids become hollow or thickened with the chosen corner kind.",
             "referenceTests": [
                 "tests/test_drafting.py::ExtensionLineTestCase::test_vector_offset_magnitude_matches_scalar",
                 "tests/test_direct_api/test_mixin1_d.py::TestMixin1D::test_offset_2d_builder_failure",
                 "tests/test_build_generic.py::OffsetTests::test_box_offset_combinations"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge"
+            ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": "Also exported as a free function; 1D/2D/3D offsets dispatch to `Mixin1D#offset2D`, `Mixin2D#offset` and `Mixin3D#offset3D`."
         },
         {
@@ -3099,7 +3313,7 @@
         {
             "python": "project",
             "kind": "function",
-            "caddy": "Shape#project",
+            "caddy": "project",
             "behavior": "Projects points, edges, wires or faces onto a target shape or workplane along a direction.",
             "referenceTests": [
                 "tests/test_direct_api/test_mixin1_d.py::TestMixin1D::test_project",
@@ -3116,7 +3330,7 @@
                 "gp_Pnt"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": "Also exported as a free function `project(shapes, workplane?, target?, direction?)`."
         },
         {
@@ -3129,7 +3343,9 @@
                 "tests/test_build_part.py::TestProjectWorkplane::test_invalid_context",
                 "tests/test_build_part.py::TestProjectWorkplane::test_x_dir_perpendicular_to_projection_dir"
             ],
-            "native": ["BRepBuilderAPI_MakeFace"],
+            "native": [
+                "BRepBuilderAPI_MakeFace"
+            ],
             "capability": "operations",
             "status": "planned",
             "notes": ""
@@ -3144,9 +3360,12 @@
                 "tests/test_direct_api/test_geom_equal.py::TestEdgeGeomEqualCircle::test_different_circle_from_revolve",
                 "tests/test_direct_api/test_solid.py::TestSolid::test_revolve"
             ],
-            "native": ["BRepPrimAPI_MakeRevol", "TopoDS"],
+            "native": [
+                "BRepPrimAPI_MakeRevol",
+                "TopoDS"
+            ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3159,9 +3378,11 @@
                 "tests/test_materials.py::TestMaterialTextureTransforms::test_scale_rotation",
                 "tests/test_materials.py::TestMaterialTextureTransforms::test_scale_rotation_in_repr"
             ],
-            "native": ["gp_Trsf"],
+            "native": [
+                "gp_Trsf"
+            ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": "Also exported as a free function `scale(shapes, by, about?)`."
         },
         {
@@ -3174,9 +3395,11 @@
                 "tests/test_exporters.py::ExportersTestCase::test_back_section_svg",
                 "tests/test_exporters.py::ExportersTestCase::test_cam_section_svg"
             ],
-            "native": ["BRepBuilderAPI_MakeFace"],
+            "native": [
+                "BRepBuilderAPI_MakeFace"
+            ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3212,7 +3435,7 @@
         {
             "python": "split",
             "kind": "function",
-            "caddy": "Shape#split",
+            "caddy": "split",
             "behavior": "Bisects the given shapes with a plane, face or shell and keeps the top, bottom, both or the inside/outside pieces.",
             "referenceTests": [
                 "tests/test_direct_api/test_face.py::TestAxesOfSysmmetrySplitNone::test_split_returns_none",
@@ -3238,7 +3461,7 @@
                 "gp_Vec"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": "Also exported as a free function `split(shapes, bisectBy, keep)`."
         },
         {
@@ -3259,7 +3482,7 @@
                 "gp_Ax2"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3281,7 +3504,7 @@
                 "TopoDS"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3316,7 +3539,11 @@
                 "tests/test_topo_explore.py::TestTopoExplore::test_topo_explore_common_vertex",
                 "tests/test_direct_api/test_constrained_arcs.py::test_eggplant"
             ],
-            "native": ["TopExp_Explorer", "TopoDS", "TopoDS_Edge"],
+            "native": [
+                "TopExp_Explorer",
+                "TopoDS",
+                "TopoDS_Edge"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -3468,7 +3695,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -3483,7 +3710,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -3496,7 +3723,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3511,7 +3738,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3539,7 +3766,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3553,7 +3780,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3566,7 +3793,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3579,7 +3806,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3587,10 +3814,12 @@
             "kind": "method",
             "caddy": "Axis#isSkew",
             "behavior": "Returns true when the two axes are neither parallel nor intersecting.",
-            "referenceTests": ["tests/test_direct_api/test_axis.py::TestAxis::test_axis_is_skew"],
+            "referenceTests": [
+                "tests/test_direct_api/test_axis.py::TestAxis::test_axis_is_skew"
+            ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3603,9 +3832,11 @@
                 "tests/test_direct_api/test_plane.py::TestPlane::test_plane_init",
                 "tests/test_direct_api/test_shape.py::TestShape::test_empty_shape"
             ],
-            "native": ["gp_Ax1"],
+            "native": [
+                "gp_Ax1"
+            ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3620,7 +3851,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3635,7 +3866,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3650,7 +3881,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3676,7 +3907,9 @@
             "referenceTests": [
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_basic_bounding_box"
             ],
-            "native": ["Bnd_Box"],
+            "native": [
+                "Bnd_Box"
+            ],
             "capability": "geometry",
             "status": "planned",
             "notes": ""
@@ -3805,7 +4038,10 @@
             "referenceTests": [
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_basic_bounding_box"
             ],
-            "native": ["BRepBndLib", "Bnd_Box"],
+            "native": [
+                "BRepBndLib",
+                "Bnd_Box"
+            ],
             "capability": "geometry",
             "status": "excluded",
             "notes": "Constructs from a raw `TopoDS_Shape`; Caddy builds bounding boxes from its own Shape wrappers."
@@ -3918,9 +4154,11 @@
                 "tests/test_direct_api/test_compound.py::TestCompoundAlgebra::test_adding_1d_content_that_fuses_to_one_edge",
                 "tests/test_direct_api/test_compound.py::TestCompoundAlgebra::test_adding_1d_content_that_stays_apart"
             ],
-            "native": ["BRepAlgoAPI_Fuse"],
+            "native": [
+                "BRepAlgoAPI_Fuse"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -3935,7 +4173,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -3948,9 +4186,14 @@
                 "tests/test_direct_api/test_import_export.py::TestImportExport::test_step_round_trip_preserves_assembly_child_locations",
                 "tests/test_direct_api/test_shape.py::TestGlobalLocation::test_global_location_in_assembly"
             ],
-            "native": ["TopAbs_ShapeEnum", "TopoDS", "TopoDS_Iterator", "TopoDS_Shape"],
+            "native": [
+                "TopAbs_ShapeEnum",
+                "TopoDS",
+                "TopoDS_Iterator",
+                "TopoDS_Shape"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "tested",
             "notes": "Caddy's Compound implements the JS iterable protocol over its direct children."
         },
         {
@@ -3965,7 +4208,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -3978,9 +4221,11 @@
                 "tests/test_direct_api/test_compound.py::TestCompound::test_center",
                 "tests/test_direct_api/test_compound.py::TestCompound::test_triad"
             ],
-            "native": ["BRepAlgoAPI_Cut"],
+            "native": [
+                "BRepAlgoAPI_Cut"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -3993,9 +4238,14 @@
                 "tests/test_direct_api/test_mixin1_d.py::TestMixin1D::test_center",
                 "tests/test_direct_api/test_face.py::TestFace::test_center"
             ],
-            "native": ["GProp_GProps", "TopAbs_ShapeEnum", "TopoDS_Compound", "TopoDS_Shape"],
+            "native": [
+                "GProp_GProps",
+                "TopAbs_ShapeEnum",
+                "TopoDS_Compound",
+                "TopoDS_Shape"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4010,7 +4260,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4023,9 +4273,11 @@
                 "tests/test_direct_api/test_compound.py::TestCompoundAccessors::test_no_compounds_when_not_wrapping_one",
                 "tests/test_direct_api/test_shape_list.py::TestShapeList::test_compounds"
             ],
-            "native": ["TopoDS_Compound"],
+            "native": [
+                "TopoDS_Compound"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4038,7 +4290,10 @@
                 "tests/test_direct_api/test_compound.py::TestDoChildrenIntersect::test_including_the_parent",
                 "tests/test_direct_api/test_compound.py::TestDoChildrenIntersect::test_children_that_stay_apart"
             ],
-            "native": ["BRepPrimAPI_MakeBox", "TopoDS"],
+            "native": [
+                "BRepPrimAPI_MakeBox",
+                "TopoDS"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -4079,9 +4334,14 @@
             "referenceTests": [
                 "tests/test_direct_api/test_intersection.py::test_compound_intersection_with_located_vertex_children"
             ],
-            "native": ["TopAbs_ShapeEnum", "TopoDS", "TopoDS_Iterator", "TopoDS_Shape"],
+            "native": [
+                "TopAbs_ShapeEnum",
+                "TopoDS",
+                "TopoDS_Iterator",
+                "TopoDS_Shape"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4121,7 +4381,9 @@
             "kind": "method",
             "caddy": "Compound.makeTriad",
             "behavior": "The coordinate system triad (X, Y, Z axes).",
-            "referenceTests": ["tests/test_direct_api/test_compound.py::TestCompound::test_triad"],
+            "referenceTests": [
+                "tests/test_direct_api/test_compound.py::TestCompound::test_triad"
+            ],
             "native": [
                 "Array1_gp_Vec",
                 "BRepBuilderAPI_MakeEdge",
@@ -4195,7 +4457,9 @@
             "caddy": "Compound.resolveFont",
             "behavior": "Resolve a requested font to its name, path, and system font.",
             "referenceTests": [],
-            "native": ["Font_SystemFont"],
+            "native": [
+                "Font_SystemFont"
+            ],
             "capability": "text",
             "status": "planned",
             "notes": ""
@@ -4220,10 +4484,12 @@
             "kind": "method",
             "caddy": "Compound#unwrap",
             "behavior": "Strip unnecessary Compound wrappers.",
-            "referenceTests": ["tests/test_direct_api/test_compound.py::TestCompound::test_unwrap"],
+            "referenceTests": [
+                "tests/test_direct_api/test_compound.py::TestCompound::test_unwrap"
+            ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4238,7 +4504,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4269,7 +4535,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -4284,7 +4550,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -4299,7 +4565,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -4334,7 +4600,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4349,7 +4615,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4363,7 +4629,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4435,7 +4701,9 @@
             "kind": "method",
             "caddy": "Edge#findTangent",
             "behavior": "Find the parameter values of self where the tangent is equal to angle.",
-            "referenceTests": ["tests/test_direct_api/test_edge.py::TestEdge::test_find_tangent"],
+            "referenceTests": [
+                "tests/test_direct_api/test_edge.py::TestEdge::test_find_tangent"
+            ],
             "native": [
                 "Array1_gp_Vec",
                 "BRepBuilderAPI_MakeEdge",
@@ -4458,7 +4726,9 @@
                 "tests/test_direct_api/test_edge.py::TestEdgeParamAt::test_param_at_ellipse_is_not_linear_in_parameter",
                 "tests/test_direct_api/test_wire.py::TestWire::test_geom_adaptor"
             ],
-            "native": ["BRepAdaptor_Curve"],
+            "native": [
+                "BRepAdaptor_Curve"
+            ],
             "capability": "topology",
             "status": "excluded",
             "notes": "Returns a raw OCCT `Geom_*`/adaptor handle; Caddy exposes typed curve/surface queries instead."
@@ -4473,7 +4743,9 @@
                 "tests/test_direct_api/test_geom_equal.py::TestEdgeGeomEqualNumerical::test_very_small_edge",
                 "tests/test_direct_api/test_geom_equal.py::TestEdgeGeomEqualTolerance::test_tol_parameter_accepted"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -4506,7 +4778,7 @@
                 "Geom_BezierCurve"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "implemented",
             "notes": ""
         },
         {
@@ -4514,7 +4786,9 @@
             "kind": "method",
             "caddy": "Edge.makeBspline",
             "behavior": "Create an exact B-spline edge from control points and knot data.",
-            "referenceTests": ["tests/test_direct_api/test_edge.py::TestEdge::test_make_bspline"],
+            "referenceTests": [
+                "tests/test_direct_api/test_edge.py::TestEdge::test_make_bspline"
+            ],
             "native": [
                 "Array1_double",
                 "Array1_gp_Pnt",
@@ -4523,7 +4797,7 @@
                 "Geom_BSplineCurve"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "implemented",
             "notes": ""
         },
         {
@@ -4536,9 +4810,13 @@
                 "tests/test_direct_api/test_edge.py::TestEdge::test_close",
                 "tests/test_direct_api/test_edge.py::TestEdge::test_distribute_locations2"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge", "GC_MakeArcOfCircle", "gp_Circ"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "GC_MakeArcOfCircle",
+                "gp_Circ"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4625,9 +4903,14 @@
                 "tests/test_direct_api/test_cad_objects.py::TestCadObjects::test_edge_wrapper_make_ellipse2",
                 "tests/test_direct_api/test_edge.py::TestEdge::test_arc_center"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge", "GC_MakeArcOfEllipse", "gp_Ax1", "gp_Elips"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "GC_MakeArcOfEllipse",
+                "gp_Ax1",
+                "gp_Elips"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4652,7 +4935,7 @@
                 "gp_Pnt2d"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "implemented",
             "notes": ""
         },
         {
@@ -4665,7 +4948,12 @@
                 "tests/test_direct_api/test_geom_equal.py::TestEdgeGeomEqualHyperbola::test_different_location",
                 "tests/test_direct_api/test_geom_equal.py::TestEdgeGeomEqualHyperbola::test_different_x_radius"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge", "GC_MakeArcOfHyperbola", "gp_Ax1", "gp_Hypr"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "GC_MakeArcOfHyperbola",
+                "gp_Ax1",
+                "gp_Hypr"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -4680,9 +4968,11 @@
                 "tests/test_direct_api/test_edge.py::TestEdge::test_mid_way",
                 "tests/test_direct_api/test_edge.py::TestEdge::test_arc_center"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4694,9 +4984,11 @@
                 "tests/test_direct_api/test_edge.py::TestEdge::test_mid_way",
                 "tests/test_joints.py::TestRevoluteJoint::test_linear_revolute_joint"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4709,7 +5001,11 @@
                 "tests/test_direct_api/test_geom_equal.py::TestEdgeGeomEqualParabola::test_different_focal_length",
                 "tests/test_direct_api/test_geom_equal.py::TestEdgeGeomEqualParabola::test_different_location"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge", "GC_MakeArcOfParabola", "gp_Parab"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "GC_MakeArcOfParabola",
+                "gp_Parab"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -4733,7 +5029,7 @@
                 "HArray1_gp_Pnt"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -4746,9 +5042,13 @@
                 "tests/test_direct_api/test_edge.py::TestEdge::test_spline_approx",
                 "tests/test_exporters.py::ExportersValidationTestCase::test_svg_bspline_high_degree"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge", "GeomAPI_PointsToBSpline", "HArray1_gp_Pnt"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "GeomAPI_PointsToBSpline",
+                "HArray1_gp_Pnt"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4759,9 +5059,12 @@
             "referenceTests": [
                 "tests/test_direct_api/test_cad_objects.py::TestCadObjects::test_edge_wrapper_make_tangent_arc"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge", "GC_MakeArcOfCircle"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "GC_MakeArcOfCircle"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "implemented",
             "notes": ""
         },
         {
@@ -4774,9 +5077,12 @@
                 "tests/test_direct_api/test_face.py::TestFace::test_make_surface",
                 "tests/test_direct_api/test_wire.py::TestWire::test_param_at_point"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge", "GC_MakeArcOfCircle"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "GC_MakeArcOfCircle"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "implemented",
             "notes": ""
         },
         {
@@ -4789,9 +5095,11 @@
                 "tests/test_direct_api/test_edge.py::TestEdgeParamAt::test_param_at_arc_quarter_point",
                 "tests/test_direct_api/test_edge.py::TestEdgeParamAt::test_param_at_ellipse_is_not_linear_in_parameter"
             ],
-            "native": ["GCPnts_AbscissaPoint"],
+            "native": [
+                "GCPnts_AbscissaPoint"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4815,7 +5123,7 @@
                 "gp_Vec"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4843,9 +5151,14 @@
                 "tests/test_direct_api/test_edge.py::TestEdge::test_tangent_at",
                 "tests/test_direct_api/test_edge.py::TestEdge::test_reverse"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge", "BRep_Tool", "TopoDS", "TopoDS_Edge"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "BRep_Tool",
+                "TopoDS",
+                "TopoDS_Edge"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4867,7 +5180,7 @@
                 "gp_Vec"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4876,7 +5189,9 @@
             "caddy": "Edge#trimInfinite",
             "behavior": "Trim an infinite line edge to a finite length.",
             "referenceTests": [],
-            "native": ["BRepBuilderAPI_MakeEdge"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -4886,7 +5201,9 @@
             "kind": "method",
             "caddy": "Edge#trimToLength",
             "behavior": "Create a new edge starting at the given normalized parameter of a given length.",
-            "referenceTests": ["tests/test_direct_api/test_edge.py::TestEdge::test_trim_to_length"],
+            "referenceTests": [
+                "tests/test_direct_api/test_edge.py::TestEdge::test_trim_to_length"
+            ],
             "native": [
                 "BRepBuilderAPI_MakeEdge",
                 "BRep_Tool",
@@ -4895,7 +5212,7 @@
                 "Geom_TrimmedCurve"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4903,8 +5220,13 @@
             "kind": "method",
             "caddy": "Edge#trimToOther",
             "behavior": "Return the shortest Edge of self trimmed by other or None if they don't intersect.",
-            "referenceTests": ["tests/test_direct_api/test_edge.py::TestEdge::test_trim_to_other"],
-            "native": ["BRepBuilderAPI_MakeEdge", "BRep_Tool"],
+            "referenceTests": [
+                "tests/test_direct_api/test_edge.py::TestEdge::test_trim_to_other"
+            ],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "BRep_Tool"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -4984,9 +5306,15 @@
                 "tests/test_direct_api/test_mixin1_d.py::TestMixin1D::test_center",
                 "tests/test_direct_api/test_compound.py::TestCompound::test_center"
             ],
-            "native": ["BRepGProp", "BRepGProp_Face", "GProp_GProps", "gp_Pnt", "gp_Vec"],
+            "native": [
+                "BRepGProp",
+                "BRepGProp_Face",
+                "GProp_GProps",
+                "gp_Pnt",
+                "gp_Vec"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4997,7 +5325,12 @@
             "referenceTests": [
                 "tests/test_direct_api/test_face.py::TestFace::test_center_location"
             ],
-            "native": ["BRepGProp_Face", "TopoDS_Edge", "gp_Pnt", "gp_Vec"],
+            "native": [
+                "BRepGProp_Face",
+                "TopoDS_Edge",
+                "gp_Pnt",
+                "gp_Vec"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -5024,7 +5357,7 @@
                 "TopoDS_Shape"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5088,9 +5421,13 @@
                 "tests/test_direct_api/test_face.py::TestFace::test_fillet_2d_mixed_profile_case",
                 "tests/test_direct_api/test_face.py::TestFace::test_fillet_2d_mixed_profile_regression"
             ],
-            "native": ["BRepBuilderAPI_Transform", "TopLoc_Location", "TopoDS"],
+            "native": [
+                "BRepBuilderAPI_Transform",
+                "TopLoc_Location",
+                "TopoDS"
+            ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5103,7 +5440,10 @@
                 "tests/test_direct_api/test_edge.py::TestEdge::test_geom_adaptor",
                 "tests/test_direct_api/test_edge.py::TestEdgeParamAt::test_param_at_ellipse_is_not_linear_in_parameter"
             ],
-            "native": ["BRep_Tool", "Geom_Surface"],
+            "native": [
+                "BRep_Tool",
+                "Geom_Surface"
+            ],
             "capability": "topology",
             "status": "excluded",
             "notes": "Returns a raw OCCT `Geom_*`/adaptor handle; Caddy exposes typed curve/surface queries instead."
@@ -5113,7 +5453,9 @@
             "kind": "property",
             "caddy": "Face#geometry",
             "behavior": "Returns a short tag describing a planar face's shape ('square', 'rectangle', 'circle', ...) or None when it cannot be classified.",
-            "referenceTests": ["tests/test_direct_api/test_face.py::TestFace::test_geometry"],
+            "referenceTests": [
+                "tests/test_direct_api/test_face.py::TestFace::test_geometry"
+            ],
             "native": [],
             "capability": "topology",
             "status": "planned",
@@ -5131,7 +5473,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5170,9 +5512,13 @@
                 "tests/test_build_line.py::BuildLineTests::test_center_arc",
                 "tests/test_build_sketch.py::TestBuildOnPlanes::test_not_coplanar"
             ],
-            "native": ["BRepGProp_Face", "gp_Pnt", "gp_Vec"],
+            "native": [
+                "BRepGProp_Face",
+                "gp_Pnt",
+                "gp_Vec"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "implemented",
             "notes": ""
         },
         {
@@ -5192,7 +5538,7 @@
                 "gp_Pnt"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5205,9 +5551,14 @@
                 "tests/test_direct_api/test_face.py::TestFace::test_uv_face",
                 "tests/test_direct_api/test_face.py::TestFace::test_wrap_faces"
             ],
-            "native": ["BRep_Tool", "GeomLib_IsPlanarSurface", "gp_Ax3", "gp_Pln"],
+            "native": [
+                "BRep_Tool",
+                "GeomLib_IsPlanarSurface",
+                "gp_Ax3",
+                "gp_Pln"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5222,7 +5573,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5251,7 +5602,9 @@
             "kind": "method",
             "caddy": "Face.makeBezierSurface",
             "behavior": "Construct a Bézier surface from the provided 2d array of points.",
-            "referenceTests": ["tests/test_direct_api/test_face.py::TestFace::test_bezier_surface"],
+            "referenceTests": [
+                "tests/test_direct_api/test_face.py::TestFace::test_bezier_surface"
+            ],
             "native": [
                 "BRepBuilderAPI_MakeFace",
                 "Geom_BezierSurface",
@@ -5299,7 +5652,9 @@
                 "tests/test_direct_api/test_face.py::TestSurfaceHoles::test_make_holes_reports_a_failure",
                 "tests/test_direct_api/test_solid.py::TestSolid::test_extrude_taper_oblique"
             ],
-            "native": ["BRepBuilderAPI_MakeFace"],
+            "native": [
+                "BRepBuilderAPI_MakeFace"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -5314,9 +5669,11 @@
                 "tests/test_direct_api/test_cad_objects.py::TestCadObjects::test_face_wrapper_make_rect",
                 "tests/test_direct_api/test_face.py::TestFaceValidation::test_sew_faces_reports_an_unexpected_result"
             ],
-            "native": ["BRepBuilderAPI_MakeFace"],
+            "native": [
+                "BRepBuilderAPI_MakeFace"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5329,9 +5686,13 @@
                 "tests/test_direct_api/test_face.py::TestFace::test_make_surface_error_checking",
                 "tests/test_direct_api/test_face.py::TestFaceValidation::test_make_surface_rejects_an_invalid_result"
             ],
-            "native": ["BRepOffsetAPI_MakeFilling", "GeomAbs_C0", "gp_Pnt"],
+            "native": [
+                "BRepOffsetAPI_MakeFilling",
+                "GeomAbs_C0",
+                "gp_Pnt"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "implemented",
             "notes": ""
         },
         {
@@ -5364,7 +5725,9 @@
                 "tests/test_direct_api/test_face.py::TestFaceValidation::test_surface_from_curves_type_checks",
                 "tests/test_direct_api/test_edge.py::TestEdge::test_convexity_saddle"
             ],
-            "native": ["BRepFill"],
+            "native": [
+                "BRepFill"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -5415,9 +5778,14 @@
                 "tests/test_direct_api/test_face.py::TestFace::test_negate",
                 "tests/test_direct_api/test_face.py::TestFace::test_make_surface_from_curves"
             ],
-            "native": ["BRepGProp_Face", "GeomAPI_ProjectPointOnSurf", "gp_Pnt", "gp_Vec"],
+            "native": [
+                "BRepGProp_Face",
+                "GeomAPI_ProjectPointOnSurf",
+                "gp_Pnt",
+                "gp_Vec"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5430,9 +5798,11 @@
                 "tests/test_direct_api/test_face.py::TestFace::test_split_by_perimeter",
                 "tests/test_direct_api/test_face.py::TestFace::test_uv_face"
             ],
-            "native": ["BRepTools"],
+            "native": [
+                "BRepTools"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5445,9 +5815,13 @@
                 "tests/test_direct_api/test_mixin1_d.py::TestMixin1D::test_position_at",
                 "tests/test_direct_api/test_face.py::TestFace::test_make_gordon_surface"
             ],
-            "native": ["BRepGProp_Face", "gp_Pnt", "gp_Vec"],
+            "native": [
+                "BRepGProp_Face",
+                "gp_Pnt",
+                "gp_Vec"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5488,10 +5862,12 @@
             "kind": "property",
             "caddy": "Face#radii",
             "behavior": "Return the major and minor radii of a torus otherwise None.",
-            "referenceTests": ["tests/test_direct_api/test_face.py::TestFace::test_radii"],
+            "referenceTests": [
+                "tests/test_direct_api/test_face.py::TestFace::test_radii"
+            ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -5504,9 +5880,11 @@
                 "tests/test_direct_api/test_cad_objects.py::TestCadObjects::test_edge_wrapper_radius",
                 "tests/test_direct_api/test_face.py::TestFace::test_revolve"
             ],
-            "native": ["Geom_RectangularTrimmedSurface"],
+            "native": [
+                "Geom_RectangularTrimmedSurface"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5519,7 +5897,9 @@
                 "tests/test_direct_api/test_solid.py::TestSolid::test_revolve",
                 "tests/test_direct_api/test_face.py::TestFace::test_axis_of_rotation_property"
             ],
-            "native": ["BRepPrimAPI_MakeRevol"],
+            "native": [
+                "BRepPrimAPI_MakeRevol"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -5534,7 +5914,9 @@
                 "tests/test_direct_api/test_face.py::TestFace::test_split_by_perimeter_standalone_spherical_face_without_seam_crossing",
                 "tests/test_direct_api/test_face.py::TestFace::test_split_by_perimeter"
             ],
-            "native": ["ShapeAnalysis_Edge"],
+            "native": [
+                "ShapeAnalysis_Edge"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -5548,7 +5930,9 @@
                 "tests/test_direct_api/test_face.py::TestFaceProperties::test_semi_angle_of_other_surfaces",
                 "tests/test_direct_api/test_face.py::TestFaceProperties::test_semi_angle_of_a_cone"
             ],
-            "native": ["Geom_RectangularTrimmedSurface"],
+            "native": [
+                "Geom_RectangularTrimmedSurface"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -5587,7 +5971,9 @@
                 "tests/test_direct_api/test_shells.py::TestShells::test_sweep",
                 "tests/test_direct_api/test_solid.py::TestSolid::test_hollow_sweep"
             ],
-            "native": ["BRepOffsetAPI_MakePipeShell"],
+            "native": [
+                "BRepOffsetAPI_MakePipeShell"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -5597,7 +5983,9 @@
             "kind": "property",
             "caddy": "Face#uvFace",
             "behavior": "Create a planar face from a face's parametric-space boundary.",
-            "referenceTests": ["tests/test_direct_api/test_face.py::TestFace::test_uv_face"],
+            "referenceTests": [
+                "tests/test_direct_api/test_face.py::TestFace::test_uv_face"
+            ],
             "native": [
                 "BRepBuilderAPI_MakeEdge",
                 "BRepBuilderAPI_MakeFace",
@@ -5622,7 +6010,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5637,7 +6025,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -5652,7 +6040,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5660,8 +6048,15 @@
             "kind": "method",
             "caddy": "Face#withoutHoles",
             "behavior": "Remove all of the holes from this face.",
-            "referenceTests": ["tests/test_direct_api/test_face.py::TestFace::test_without_holes"],
-            "native": ["BRepTools_ReShape", "TopAbs_ShapeEnum", "TopoDS", "TopoDS_Shape"],
+            "referenceTests": [
+                "tests/test_direct_api/test_face.py::TestFace::test_without_holes"
+            ],
+            "native": [
+                "BRepTools_ReShape",
+                "TopAbs_ShapeEnum",
+                "TopoDS",
+                "TopoDS_Shape"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -5686,7 +6081,9 @@
             "kind": "method",
             "caddy": "Face#wrapFaces",
             "behavior": "Wrap a sequence of 2D faces onto a 3D surface, aligned along a guiding path.",
-            "referenceTests": ["tests/test_direct_api/test_face.py::TestFace::test_wrap_faces"],
+            "referenceTests": [
+                "tests/test_direct_api/test_face.py::TestFace::test_wrap_faces"
+            ],
             "native": [],
             "capability": "topology",
             "status": "planned",
@@ -5719,7 +6116,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -5732,7 +6129,9 @@
                 "tests/test_direct_api/test_shape.py::TestGlobalLocation::test_global_location_in_assembly",
                 "tests/test_importers.py::ImportSVGValidation::test_unexpected_shape_type"
             ],
-            "native": ["gp_EulerSequence"],
+            "native": [
+                "gp_EulerSequence"
+            ],
             "capability": "geometry",
             "status": "planned",
             "notes": ""
@@ -5749,7 +6148,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "tested",
             "notes": "`Location * Shape` moves the shape (Caddy `Shape#moved`); `Location * Location` composes the two (Caddy `Location#transform`)."
         },
         {
@@ -5779,7 +6178,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5808,7 +6207,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5823,7 +6222,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5838,7 +6237,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5853,7 +6252,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5866,7 +6265,9 @@
                 "tests/test_direct_api/test_color.py::test_rgba_wrapped",
                 "tests/test_direct_api/test_clean_method.py::TestCleanMethod::test_clean_with_none_wrapped"
             ],
-            "native": ["TopLoc_Location"],
+            "native": [
+                "TopLoc_Location"
+            ],
             "capability": "geometry",
             "status": "excluded",
             "notes": "Raw OCCT handle accessor; Caddy keeps the native handle private to `@roonieone/occt-native`."
@@ -5883,7 +6284,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5894,7 +6295,7 @@
             "referenceTests": [],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5909,7 +6310,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5940,7 +6341,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -5953,9 +6354,14 @@
                 "tests/test_direct_api/test_edge.py::TestEdge::test_reverse",
                 "tests/test_direct_api/test_edge.py::TestEdge::test_trim"
             ],
-            "native": ["BRepGProp_Face", "TopoDS_Edge", "gp_Pnt", "gp_Vec"],
+            "native": [
+                "BRepGProp_Face",
+                "TopoDS_Edge",
+                "gp_Pnt",
+                "gp_Vec"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "tested",
             "notes": "Shared by Edge and Wire; `@` is build123d's position-along-curve operator."
         },
         {
@@ -5970,7 +6376,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "tested",
             "notes": "Shared by Edge and Wire; `%` is build123d's tangent-along-curve operator."
         },
         {
@@ -5998,7 +6404,7 @@
                 "gp_Vec"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "tested",
             "notes": "Shared by Edge and Wire; `^` is build123d's location-along-curve operator."
         },
         {
@@ -6020,7 +6426,7 @@
                 "gp_Vec"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6031,7 +6437,9 @@
             "referenceTests": [
                 "tests/test_direct_api/test_mixin1_d.py::TestMixin1D::test_common_plane"
             ],
-            "native": ["BRepLib_FindSurface"],
+            "native": [
+                "BRepLib_FindSurface"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -6078,7 +6486,9 @@
                 "tests/test_direct_api/test_mixin1_d.py::TestCurvatureComb::test_empty_curve",
                 "tests/test_direct_api/test_mixin1_d.py::TestCurvatureComb::test_line_near_zero_teeth_and_count"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -6092,9 +6502,13 @@
                 "tests/test_direct_api/test_mixin1_d.py::TestMixin1D::test_derivative_at",
                 "tests/test_blendcurve.py::test_c1_c2_tangent_matches_with_scalars"
             ],
-            "native": ["BRepAdaptor_CompCurve", "BRepAdaptor_Curve", "GCPnts_AbscissaPoint"],
+            "native": [
+                "BRepAdaptor_CompCurve",
+                "BRepAdaptor_Curve",
+                "GCPnts_AbscissaPoint"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6109,7 +6523,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6137,9 +6551,11 @@
                 "tests/test_direct_api/test_mixin1_d.py::TestMixin1D::test_offset_2d",
                 "tests/test_direct_api/test_constrained_arcs.py::test_pnt_center_1"
             ],
-            "native": ["BRep_Tool"],
+            "native": [
+                "BRep_Tool"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6150,9 +6566,11 @@
             "referenceTests": [
                 "tests/test_direct_api/test_mixin1_d.py::TestMixin1D::test_is_forward"
             ],
-            "native": ["TopAbs_Orientation"],
+            "native": [
+                "TopAbs_Orientation"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6180,9 +6598,12 @@
                 "tests/test_direct_api/test_mixin1_d.py::TestMixin1D::test_tangent_at_by_length",
                 "tests/test_direct_api/test_wire.py::TestWire::test_trim"
             ],
-            "native": ["BRepGProp", "GProp_GProps"],
+            "native": [
+                "BRepGProp",
+                "GProp_GProps"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6206,7 +6627,7 @@
                 "gp_Vec"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6257,10 +6678,15 @@
             "kind": "method",
             "caddy": "Mixin1D#normal",
             "behavior": "Returns the normal vector of the plane containing the curve; only defined for planar curves.",
-            "referenceTests": ["tests/test_direct_api/test_mixin1_d.py::TestMixin1D::test_normal"],
-            "native": ["BRepLib_FindSurface", "Geom_Plane"],
+            "referenceTests": [
+                "tests/test_direct_api/test_mixin1_d.py::TestMixin1D::test_normal"
+            ],
+            "native": [
+                "BRepLib_FindSurface",
+                "Geom_Plane"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6287,7 +6713,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6319,9 +6745,11 @@
                 "tests/test_direct_api/test_edge.py::TestEdge::test_position_at",
                 "tests/test_direct_api/test_edge.py::TestEdge::test_param_at_point"
             ],
-            "native": ["TopoDS_Edge"],
+            "native": [
+                "TopoDS_Edge"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6348,7 +6776,7 @@
                 "gp_Vec"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6408,9 +6836,12 @@
                 "tests/test_direct_api/test_face.py::TestFace::test_radius_property",
                 "tests/test_direct_api/test_mixin1_d.py::TestMixin1D::test_offset_2d"
             ],
-            "native": ["BRepAdaptor_CompCurve", "GeomAbs_Circle"],
+            "native": [
+                "BRepAdaptor_CompCurve",
+                "GeomAbs_Circle"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6425,7 +6856,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6449,9 +6880,13 @@
                 "tests/test_direct_api/test_edge.py::TestEdge::test_tangent_at",
                 "tests/test_direct_api/test_wire.py::TestWire::test_tangent_at_reversed_edges"
             ],
-            "native": ["BRepAdaptor_CompCurve", "BRepAdaptor_Curve", "GCPnts_AbscissaPoint"],
+            "native": [
+                "BRepAdaptor_CompCurve",
+                "BRepAdaptor_Curve",
+                "GCPnts_AbscissaPoint"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6466,7 +6901,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6479,9 +6914,13 @@
                 "tests/test_direct_api/test_face.py::TestShellValidation::test_negate_rejects_an_empty_face",
                 "tests/test_direct_api/test_face.py::TestFace::test_axes_of_symmetry"
             ],
-            "native": ["TopAbs_ShapeEnum", "TopoDS", "TopoDS_Shape"],
+            "native": [
+                "TopAbs_ShapeEnum",
+                "TopoDS",
+                "TopoDS_Shape"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "implemented",
             "notes": ""
         },
         {
@@ -6547,7 +6986,10 @@
                 "tests/test_direct_api/test_face.py::TestFace::test_project_to_face_with_compound_boolean_result",
                 "tests/test_direct_api/test_face.py::TestFace::test_split_by_perimeter"
             ],
-            "native": ["TopLoc_Location", "gp_Trsf"],
+            "native": [
+                "TopLoc_Location",
+                "gp_Trsf"
+            ],
             "capability": "operations",
             "status": "planned",
             "notes": ""
@@ -6613,7 +7055,9 @@
                 "tests/test_direct_api/test_intersection.py::TestShellTangentTouchCoverage::test_shell_self_tangent_touch_multiple_faces",
                 "tests/test_direct_api/test_intersection.py::TestShellTangentTouchCoverage::test_shell_shell_tangent_touch_multiple_faces"
             ],
-            "native": ["BRepExtrema_DistShapeShape"],
+            "native": [
+                "BRepExtrema_DistShapeShape"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -6628,9 +7072,13 @@
                 "tests/test_direct_api/test_mixin1_d.py::TestMixin1D::test_center",
                 "tests/test_direct_api/test_compound.py::TestCompound::test_center"
             ],
-            "native": ["GProp_GProps", "TopAbs_ShapeEnum", "TopoDS_Shape"],
+            "native": [
+                "GProp_GProps",
+                "TopAbs_ShapeEnum",
+                "TopoDS_Shape"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6655,7 +7103,7 @@
                 "TopoDS_Shape"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6663,8 +7111,15 @@
             "kind": "method",
             "caddy": "Mixin3D#dprism",
             "behavior": "Make a prismatic feature (additive or subtractive).",
-            "referenceTests": ["tests/test_direct_api/test_mixin3_d.py::TestMixin3D::test_dprism"],
-            "native": ["BRepFeat_MakeDPrism", "TopoDS_Face", "TopoDS_Shape", "TopoDS_Solid"],
+            "referenceTests": [
+                "tests/test_direct_api/test_mixin3_d.py::TestMixin3D::test_dprism"
+            ],
+            "native": [
+                "BRepFeat_MakeDPrism",
+                "TopoDS_Face",
+                "TopoDS_Shape",
+                "TopoDS_Solid"
+            ],
             "capability": "operations",
             "status": "planned",
             "notes": ""
@@ -6704,7 +7159,7 @@
                 "TopoDS_Shape"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6735,7 +7190,9 @@
             "kind": "method",
             "caddy": "Mixin3D#hollow",
             "behavior": "Return the outer shelled solid of self.",
-            "referenceTests": ["tests/test_direct_api/test_mixin3_d.py::TestMixin3D::test_hollow"],
+            "referenceTests": [
+                "tests/test_direct_api/test_mixin3_d.py::TestMixin3D::test_hollow"
+            ],
             "native": [
                 "BRepBuilderAPI_MakeSolid",
                 "BRepOffsetAPI_MakeThickSolid",
@@ -6757,9 +7214,12 @@
                 "tests/test_direct_api/test_face.py::TestFace::test_is_inside",
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_spatial_predicates"
             ],
-            "native": ["BRepClass3d_SolidClassifier", "gp_Pnt"],
+            "native": [
+                "BRepClass3d_SolidClassifier",
+                "gp_Pnt"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6772,7 +7232,9 @@
                 "tests/test_direct_api/test_shape.py::TestShape::test_max_fillet",
                 "tests/test_direct_api/test_shape.py::TestShape::test_max_fillet_invalid_shape_raises_error"
             ],
-            "native": ["BRepFilletAPI_MakeFillet"],
+            "native": [
+                "BRepFilletAPI_MakeFillet"
+            ],
             "capability": "operations",
             "status": "planned",
             "notes": ""
@@ -6782,7 +7244,9 @@
             "kind": "method",
             "caddy": "Mixin3D#offset3D",
             "behavior": "Returns a hollow/offset solid: the shape's walls are offset by the given thickness with the requested corner kind, optionally removing the listed faces.",
-            "referenceTests": ["tests/test_direct_api/test_solid.py::TestSolid::test_offset_3d"],
+            "referenceTests": [
+                "tests/test_direct_api/test_solid.py::TestSolid::test_offset_3d"
+            ],
             "native": [
                 "BRepOffsetAPI_MakeThickSolid",
                 "GeomAbs_Intersection",
@@ -6790,7 +7254,7 @@
                 "List_TopoDS_Shape"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6845,7 +7309,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -6860,7 +7324,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -6875,7 +7339,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -6888,9 +7352,11 @@
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_lower_dimensional_predicates",
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_empty_box_predicates"
             ],
-            "native": ["gp_Lin"],
+            "native": [
+                "gp_Lin"
+            ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6901,9 +7367,13 @@
             "referenceTests": [
                 "tests/test_direct_api/test_vector.py::TestVector::test_vector_transform"
             ],
-            "native": ["gp_Ax3", "gp_GTrsf", "gp_Trsf"],
+            "native": [
+                "gp_Ax3",
+                "gp_GTrsf",
+                "gp_Trsf"
+            ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6911,10 +7381,12 @@
             "kind": "method",
             "caddy": "Plane#fromLocalCoords",
             "behavior": "Reposition the object relative from this plane.",
-            "referenceTests": ["tests/test_direct_api/test_shape.py::TestShape::test_locate_bb"],
+            "referenceTests": [
+                "tests/test_direct_api/test_shape.py::TestShape::test_locate_bb"
+            ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6962,7 +7434,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6971,9 +7443,11 @@
             "caddy": "Plane#locationBetween",
             "behavior": "Return a location representing the translation from self to other.",
             "referenceTests": [],
-            "native": ["gp_Trsf"],
+            "native": [
+                "gp_Trsf"
+            ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7003,7 +7477,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7018,7 +7492,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7033,7 +7507,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7048,7 +7522,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7059,9 +7533,13 @@
             "referenceTests": [
                 "tests/test_direct_api/test_vector.py::TestVector::test_vector_transform"
             ],
-            "native": ["gp_Ax3", "gp_GTrsf", "gp_Trsf"],
+            "native": [
+                "gp_Ax3",
+                "gp_GTrsf",
+                "gp_Trsf"
+            ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7074,9 +7552,14 @@
                 "tests/test_direct_api/test_location.py::TestLocation::test_intersection",
                 "tests/test_direct_api/test_mixin1_d.py::TestMixin1D::test_project"
             ],
-            "native": ["gp_Ax3", "gp_Pln", "gp_Quaternion", "gp_Trsf"],
+            "native": [
+                "gp_Ax3",
+                "gp_Pln",
+                "gp_Quaternion",
+                "gp_Trsf"
+            ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7089,9 +7572,12 @@
                 "tests/test_direct_api/test_plane.py::TestPlane::test_shift_origin_axis",
                 "tests/test_direct_api/test_plane.py::TestPlane::test_shift_origin_vector"
             ],
-            "native": ["BRep_Tool", "TopoDS_Vertex"],
+            "native": [
+                "BRep_Tool",
+                "TopoDS_Vertex"
+            ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7100,7 +7586,9 @@
             "caddy": null,
             "behavior": "Return gp_Ax2 version of the plane.",
             "referenceTests": [],
-            "native": ["gp_Ax2"],
+            "native": [
+                "gp_Ax2"
+            ],
             "capability": "geometry",
             "status": "excluded",
             "notes": "OCP interop helper (returns `gp_Ax2`); Caddy converts to native types internally."
@@ -7111,7 +7599,9 @@
             "caddy": null,
             "behavior": "Return gp_Ax3 version of the plane.",
             "referenceTests": [],
-            "native": ["gp_Ax3"],
+            "native": [
+                "gp_Ax3"
+            ],
             "capability": "geometry",
             "status": "excluded",
             "notes": "OCP interop helper (returns `gp_Ax3`); Caddy converts to native types internally."
@@ -7128,7 +7618,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7141,7 +7631,9 @@
                 "tests/test_direct_api/test_clean_method.py::TestCleanMethod::test_clean_with_none_wrapped",
                 "tests/test_direct_api/test_plane.py::TestPlane::test_not_left_handed"
             ],
-            "native": ["gp_Pln"],
+            "native": [
+                "gp_Pln"
+            ],
             "capability": "geometry",
             "status": "excluded",
             "notes": "Raw OCCT handle accessor; Caddy keeps the native handle private to `@roonieone/occt-native`."
@@ -7158,7 +7650,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7173,7 +7665,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7188,7 +7680,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7201,9 +7693,12 @@
                 "tests/test_direct_api/test_shape.py::TestShape::test_boolean_zero_fuse_multi_args",
                 "tests/test_direct_api/test_shape.py::TestShape::test_boolean_zero_fuse_multi_tools"
             ],
-            "native": ["BOPAlgo_GlueEnum", "BRepAlgoAPI_Fuse"],
+            "native": [
+                "BOPAlgo_GlueEnum",
+                "BRepAlgoAPI_Fuse"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "tested",
             "notes": "Algebraic API's primary boolean; `Shape#union` must accept a single shape or a list."
         },
         {
@@ -7218,7 +7713,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "tested",
             "notes": "Algebraic API's primary boolean; `Shape#intersect` must accept a single shape or a list."
         },
         {
@@ -7233,7 +7728,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -7246,9 +7741,11 @@
                 "tests/test_direct_api/test_shape.py::TestShape::test_boolean_zero_cut",
                 "tests/test_algebra.py::AlgebraTests::test_curve_operators"
             ],
-            "native": ["BRepAlgoAPI_Cut"],
+            "native": [
+                "BRepAlgoAPI_Cut"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "tested",
             "notes": "Algebraic API's primary boolean; `Shape#subtract` must accept a single shape or a list."
         },
         {
@@ -7261,9 +7758,12 @@
                 "tests/test_direct_api/test_face.py::TestFace::test_split_by_perimeter",
                 "tests/test_direct_api/test_face.py::TestFace::test_without_holes"
             ],
-            "native": ["BRepGProp", "GProp_GProps"],
+            "native": [
+                "BRepGProp",
+                "GProp_GProps"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7291,9 +7791,13 @@
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_bounding_box_repr",
                 "tests/test_direct_api/test_solid.py::TestSolid::test_from_bounding_box"
             ],
-            "native": ["BRepBndLib", "BRepTools", "Bnd_Box"],
+            "native": [
+                "BRepBndLib",
+                "BRepTools",
+                "Bnd_Box"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7306,7 +7810,11 @@
                 "tests/test_direct_api/test_cad_objects.py::TestCadObjects::test_vertices",
                 "tests/test_direct_api/test_shape.py::TestShapeCast::test_every_topology_type_round_trips"
             ],
-            "native": ["TopAbs_ShapeEnum", "TopoDS", "TopoDS_Shape"],
+            "native": [
+                "TopAbs_ShapeEnum",
+                "TopoDS",
+                "TopoDS_Shape"
+            ],
             "capability": "topology",
             "status": "excluded",
             "notes": "Python wrapper-class dispatch for raw TopoDS objects; Caddy resolves wrapper types in the native layer."
@@ -7328,7 +7836,7 @@
                 "TopoDS_Shape"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7339,9 +7847,11 @@
             "referenceTests": [
                 "tests/test_direct_api/test_shape.py::TestShape::test_closest_points"
             ],
-            "native": ["BRepExtrema_DistShapeShape"],
+            "native": [
+                "BRepExtrema_DistShapeShape"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7356,7 +7866,7 @@
             ],
             "native": [],
             "capability": "io",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7369,7 +7879,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7384,7 +7894,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7399,7 +7909,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7421,8 +7931,14 @@
             "kind": "method",
             "caddy": "Shape#computeVolume",
             "behavior": "Calculates the volume of an object.",
-            "referenceTests": ["tests/test_direct_api/test_shape.py::TestShape::test_empty_shape"],
-            "native": ["GProp_GProps", "TopAbs_ShapeEnum", "TopoDS_Shape"],
+            "referenceTests": [
+                "tests/test_direct_api/test_shape.py::TestShape::test_empty_shape"
+            ],
+            "native": [
+                "GProp_GProps",
+                "TopAbs_ShapeEnum",
+                "TopoDS_Shape"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -7465,9 +7981,11 @@
                 "tests/test_direct_api/test_shape.py::TestShape::test_clean_error",
                 "tests/test_direct_api/test_shape.py::TestShape::test_manifold"
             ],
-            "native": ["BRepAlgoAPI_Cut"],
+            "native": [
+                "BRepAlgoAPI_Cut"
+            ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7479,9 +7997,11 @@
                 "tests/test_direct_api/test_shape.py::TestShape::test_distance",
                 "tests/test_direct_api/test_shape.py::TestShape::test_empty_shape"
             ],
-            "native": ["BRepExtrema_DistShapeShape"],
+            "native": [
+                "BRepExtrema_DistShapeShape"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7494,9 +8014,11 @@
                 "tests/test_direct_api/test_shape.py::TestShape::test_empty_shape",
                 "tests/test_direct_api/test_constrained_lines.py::test_curve_and_point_tangent"
             ],
-            "native": ["BRepExtrema_DistShapeShape"],
+            "native": [
+                "BRepExtrema_DistShapeShape"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7509,9 +8031,11 @@
                 "tests/test_direct_api/test_shape.py::TestShape::test_empty_shape",
                 "tests/test_build_line.py::BuildLineTests::test_double_tangent_arc"
             ],
-            "native": ["BRepExtrema_DistShapeShape"],
+            "native": [
+                "BRepExtrema_DistShapeShape"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "implemented",
             "notes": ""
         },
         {
@@ -7523,9 +8047,11 @@
                 "tests/test_direct_api/test_shape.py::TestShape::test_distances",
                 "tests/test_direct_api/test_shape.py::TestShape::test_empty_shape"
             ],
-            "native": ["BRepExtrema_DistShapeShape"],
+            "native": [
+                "BRepExtrema_DistShapeShape"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7540,7 +8066,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7553,9 +8079,11 @@
                 "tests/test_direct_api/test_mixin1_d.py::TestMixin1D::test_edges_topo_parent",
                 "tests/test_direct_api/test_shape_list.py::TestShapeList::test_edges"
             ],
-            "native": ["BRep_Tool"],
+            "native": [
+                "BRep_Tool"
+            ],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7563,8 +8091,14 @@
             "kind": "method",
             "caddy": null,
             "behavior": "Return all of the TopoDS sub entities of the given type.",
-            "referenceTests": ["tests/test_direct_api/test_shape.py::TestShape::test_empty_shape"],
-            "native": ["TopExp_Explorer", "TopoDS", "TopoDS_Shape"],
+            "referenceTests": [
+                "tests/test_direct_api/test_shape.py::TestShape::test_empty_shape"
+            ],
+            "native": [
+                "TopExp_Explorer",
+                "TopoDS",
+                "TopoDS_Shape"
+            ],
             "capability": "topology",
             "status": "excluded",
             "notes": "Returns raw TopoDS sub-entities; Caddy exposes typed `edges()`/`faces()`/... instead."
@@ -7596,7 +8130,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7611,7 +8145,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7623,9 +8157,12 @@
                 "tests/test_direct_api/test_shape.py::TestShape::test_faces_intersected_by_axis",
                 "tests/test_direct_api/test_shape.py::TestShape::test_empty_shape"
             ],
-            "native": ["BRepIntCurveSurface_Inter", "gce_MakeLin"],
+            "native": [
+                "BRepIntCurveSurface_Inter",
+                "gce_MakeLin"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7633,10 +8170,16 @@
             "kind": "method",
             "caddy": "Shape#fix",
             "behavior": "Fix - try to fix shape if not valid.",
-            "referenceTests": ["tests/test_direct_api/test_shape.py::TestShape::test_empty_shape"],
-            "native": ["ShapeFix_Shape", "TopoDS", "TopoDS_Shape"],
+            "referenceTests": [
+                "tests/test_direct_api/test_shape.py::TestShape::test_empty_shape"
+            ],
+            "native": [
+                "ShapeFix_Shape",
+                "TopoDS",
+                "TopoDS_Shape"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7649,9 +8192,12 @@
                 "tests/test_direct_api/test_shape.py::TestShape::test_fuse",
                 "tests/test_direct_api/test_compound.py::TestCompound::test_fuse"
             ],
-            "native": ["BOPAlgo_GlueEnum", "BRepAlgoAPI_Fuse"],
+            "native": [
+                "BOPAlgo_GlueEnum",
+                "BRepAlgoAPI_Fuse"
+            ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7673,7 +8219,7 @@
                 "TopoDS_Shape"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7707,9 +8253,14 @@
                 "tests/test_direct_api/test_compound.py::TestCompound::test_get_top_level_shapes",
                 "tests/test_build_sketch.py::TestBuildSketchObjects::test_text_singleline"
             ],
-            "native": ["TopoDS", "TopoDS_Compound", "TopoDS_Iterator", "TopoDS_Shape"],
+            "native": [
+                "TopoDS",
+                "TopoDS_Compound",
+                "TopoDS_Iterator",
+                "TopoDS_Shape"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7739,7 +8290,7 @@
             ],
             "native": [],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7753,7 +8304,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7776,7 +8327,7 @@
                 "TopoDS_Vertex"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7787,7 +8338,7 @@
             "referenceTests": [],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "implemented",
             "notes": ""
         },
         {
@@ -7802,7 +8353,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7815,9 +8366,11 @@
                 "tests/test_direct_api/test_shape.py::TestShape::test_boolean_zero_cut",
                 "tests/test_direct_api/test_shape.py::TestShape::test_empty_shape"
             ],
-            "native": ["BRepCheck_Analyzer"],
+            "native": [
+                "BRepCheck_Analyzer"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7830,7 +8383,9 @@
                 "tests/test_direct_api/test_shape.py::TestShape::test_inherit_color",
                 "tests/test_direct_api/test_shape.py::TestShape::test_closest_points"
             ],
-            "native": ["TopLoc_Location"],
+            "native": [
+                "TopLoc_Location"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -7845,9 +8400,11 @@
                 "tests/test_direct_api/test_shape.py::TestShape::test_empty_shape",
                 "tests/test_direct_api/test_plane.py::TestPlane::test_plane_init"
             ],
-            "native": ["TopLoc_Location"],
+            "native": [
+                "TopLoc_Location"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7862,7 +8419,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7903,9 +8460,12 @@
                 "tests/test_direct_api/test_group_by.py::TestGroupBy::test_non_roundable_property",
                 "tests/test_direct_api/test_mass_properties.py::TestMassProperties::test_cube"
             ],
-            "native": ["BRepGProp", "GProp_GProps"],
+            "native": [
+                "BRepGProp",
+                "GProp_GProps"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7917,7 +8477,10 @@
                 "tests/test_direct_api/test_shape.py::TestShape::test_empty_shape",
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_clean_boundbox"
             ],
-            "native": ["BRepMesh_IncrementalMesh", "BRepTools"],
+            "native": [
+                "BRepMesh_IncrementalMesh",
+                "BRepTools"
+            ],
             "capability": "io",
             "status": "planned",
             "notes": ""
@@ -7932,9 +8495,12 @@
                 "tests/test_direct_api/test_location.py::TestLocation::test_mirror_location",
                 "tests/test_direct_api/test_shape.py::TestShape::test_empty_shape"
             ],
-            "native": ["gp_Ax2", "gp_Trsf"],
+            "native": [
+                "gp_Ax2",
+                "gp_Trsf"
+            ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7947,7 +8513,9 @@
                 "tests/test_direct_api/test_plane.py::TestPlane::test_move_plane",
                 "tests/test_direct_api/test_shape.py::TestGlobalLocation::test_global_location_in_assembly"
             ],
-            "native": ["TopLoc_Location"],
+            "native": [
+                "TopLoc_Location"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -7962,9 +8530,11 @@
                 "tests/test_direct_api/test_shape.py::TestShape::test_empty_shape",
                 "tests/test_direct_api/test_intersection.py::test_compound_intersection_after_moving_parent"
             ],
-            "native": ["TopLoc_Location"],
+            "native": [
+                "TopLoc_Location"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7979,7 +8549,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7991,7 +8561,10 @@
                 "tests/test_direct_api/test_solid.py::TestSolid::test_from_bounding_box",
                 "tests/test_direct_api/test_oriented_bound_box.py::TestOrientedBoundBox::test_plane"
             ],
-            "native": ["BRepBndLib", "Bnd_OBB"],
+            "native": [
+                "BRepBndLib",
+                "Bnd_OBB"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -8008,7 +8581,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8021,9 +8594,12 @@
                 "tests/test_direct_api/test_mass_properties.py::TestMassProperties::test_cube",
                 "tests/test_direct_api/test_mass_properties.py::TestMassProperties::test_cylinder"
             ],
-            "native": ["BRepGProp", "GProp_GProps"],
+            "native": [
+                "BRepGProp",
+                "GProp_GProps"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8034,7 +8610,9 @@
             "referenceTests": [
                 "tests/test_direct_api/test_projection.py::TestProjection::test_text_projection"
             ],
-            "native": ["TopoDS_Compound"],
+            "native": [
+                "TopoDS_Compound"
+            ],
             "capability": "operations",
             "status": "planned",
             "notes": ""
@@ -8049,9 +8627,12 @@
                 "tests/test_direct_api/test_mass_properties.py::TestMassProperties::test_cylinder",
                 "tests/test_direct_api/test_mass_properties.py::TestMassProperties::test_cube"
             ],
-            "native": ["BRepGProp", "GProp_GProps"],
+            "native": [
+                "BRepGProp",
+                "GProp_GProps"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8082,7 +8663,9 @@
             "caddy": null,
             "behavior": "Register a wrapper class for a TopAbs type without importing it here.",
             "referenceTests": [],
-            "native": ["TopAbs_ShapeEnum"],
+            "native": [
+                "TopAbs_ShapeEnum"
+            ],
             "capability": "topology",
             "status": "excluded",
             "notes": "Python import-cycle workaround (class registry)."
@@ -8097,9 +8680,12 @@
                 "tests/test_direct_api/test_vector.py::TestVector::test_vector_rotate",
                 "tests/test_direct_api/test_shape.py::TestShape::test_empty_shape"
             ],
-            "native": ["TopLoc_Location", "gp_Trsf"],
+            "native": [
+                "TopLoc_Location",
+                "gp_Trsf"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8112,9 +8698,12 @@
                 "tests/test_materials.py::TestMaterialTextureTransforms::test_scale_rotation",
                 "tests/test_materials.py::TestMaterialByName::test_each_assignment_is_a_fresh_instance"
             ],
-            "native": ["BRepBuilderAPI_GTransform", "gp_Trsf"],
+            "native": [
+                "BRepBuilderAPI_GTransform",
+                "gp_Trsf"
+            ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8122,10 +8711,15 @@
             "kind": "property",
             "caddy": "Shape#shapeType",
             "behavior": "Return the shape type string for this class.",
-            "referenceTests": ["tests/test_direct_api/test_shape.py::TestShape::test_shape_type"],
-            "native": ["TopAbs_ShapeEnum", "TopoDS_Shape"],
+            "referenceTests": [
+                "tests/test_direct_api/test_shape.py::TestShape::test_shape_type"
+            ],
+            "native": [
+                "TopAbs_ShapeEnum",
+                "TopoDS_Shape"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8140,7 +8734,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8155,7 +8749,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8168,7 +8762,12 @@
                 "tests/test_direct_api/test_assembly.py::TestAssembly::test_show_topology_shape_location",
                 "tests/test_direct_api/test_assembly.py::TestAssembly::test_show_topology_compound"
             ],
-            "native": ["TopAbs_ShapeEnum", "TopoDS_Compound", "TopoDS_Iterator", "TopoDS_Shape"],
+            "native": [
+                "TopAbs_ShapeEnum",
+                "TopoDS_Compound",
+                "TopoDS_Iterator",
+                "TopoDS_Shape"
+            ],
             "capability": "topology",
             "status": "excluded",
             "notes": "Prints an ASCII topology tree for interactive/Jupyter use."
@@ -8185,7 +8784,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8200,7 +8799,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8247,9 +8846,12 @@
                 "tests/test_direct_api/test_mass_properties.py::TestEmptyShapeMassProperties::test_static_moments",
                 "tests/test_direct_api/test_mass_properties.py::TestMassProperties::test_sphere"
             ],
-            "native": ["BRepGProp", "GProp_GProps"],
+            "native": [
+                "BRepGProp",
+                "GProp_GProps"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8261,7 +8863,11 @@
                 "tests/test_direct_api/test_shape.py::TestShape::test_tessellate",
                 "tests/test_direct_api/test_shape.py::TestShape::test_empty_shape"
             ],
-            "native": ["BRep_Tool", "TopAbs_Orientation", "TopLoc_Location"],
+            "native": [
+                "BRep_Tool",
+                "TopAbs_Orientation",
+                "TopLoc_Location"
+            ],
             "capability": "io",
             "status": "planned",
             "notes": ""
@@ -8296,7 +8902,10 @@
                 "tests/test_direct_api/test_shape.py::TestShape::test_empty_shape",
                 "tests/test_exporters.py::ExportersValidationTestCase::test_svg_bspline_high_degree"
             ],
-            "native": ["ShapeCustom", "ShapeCustom_RestrictionParameters"],
+            "native": [
+                "ShapeCustom",
+                "ShapeCustom_RestrictionParameters"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -8312,7 +8921,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "implemented",
             "notes": ""
         },
         {
@@ -8327,7 +8936,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "implemented",
             "notes": ""
         },
         {
@@ -8350,10 +8959,17 @@
             "kind": "method",
             "caddy": "Shape#transformGeometry",
             "behavior": "Returns a copy of the shape with a general affine Matrix applied, which may convert lines and circles into splines.",
-            "referenceTests": ["tests/test_direct_api/test_shape.py::TestShape::test_empty_shape"],
-            "native": ["BRepBuilderAPI_GTransform", "TopAbs_ShapeEnum", "TopoDS", "TopoDS_Shape"],
+            "referenceTests": [
+                "tests/test_direct_api/test_shape.py::TestShape::test_empty_shape"
+            ],
+            "native": [
+                "BRepBuilderAPI_GTransform",
+                "TopAbs_ShapeEnum",
+                "TopoDS",
+                "TopoDS_Shape"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8366,9 +8982,14 @@
                 "tests/test_direct_api/test_shape.py::TestTransformShape::test_original_is_left_alone",
                 "tests/test_direct_api/test_shape.py::TestTransformShape::test_rigid_transform_keeps_type_and_size"
             ],
-            "native": ["BRepBuilderAPI_Transform", "TopAbs_ShapeEnum", "TopoDS", "TopoDS_Shape"],
+            "native": [
+                "BRepBuilderAPI_Transform",
+                "TopAbs_ShapeEnum",
+                "TopoDS",
+                "TopoDS_Shape"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8376,10 +8997,17 @@
             "kind": "method",
             "caddy": "Shape#transformed",
             "behavior": "Returns a copy of the shape rotated by three Euler angles in degrees and then translated by the given offset.",
-            "referenceTests": ["tests/test_direct_api/test_shape.py::TestShape::test_transformed"],
-            "native": ["gp_Ax1", "gp_Dir", "gp_Pnt", "gp_Trsf"],
+            "referenceTests": [
+                "tests/test_direct_api/test_shape.py::TestShape::test_transformed"
+            ],
+            "native": [
+                "gp_Ax1",
+                "gp_Dir",
+                "gp_Pnt",
+                "gp_Trsf"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8392,9 +9020,12 @@
                 "tests/test_direct_api/test_cad_objects.py::TestCadObjects::test_translate",
                 "tests/test_direct_api/test_plane.py::TestPlane::test_plane_mul_shape"
             ],
-            "native": ["TopLoc_Location", "gp_Trsf"],
+            "native": [
+                "TopLoc_Location",
+                "gp_Trsf"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8409,7 +9040,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8424,7 +9055,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8439,7 +9070,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8454,7 +9085,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8467,7 +9098,9 @@
                 "tests/test_direct_api/test_shape.py::TestShape::test_rotate",
                 "tests/test_direct_api/test_shape.py::TestShape::test_translate"
             ],
-            "native": ["TopoDS"],
+            "native": [
+                "TopoDS"
+            ],
             "capability": "topology",
             "status": "excluded",
             "notes": "Raw OCCT handle accessor; Caddy keeps the native handle private to `@roonieone/occt-native`."
@@ -8484,7 +9117,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -8499,7 +9132,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -8514,7 +9147,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -8529,7 +9162,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -8543,7 +9176,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "tested",
             "notes": "build123d's `<<` groups by the key then keeps the smallest group; `sortBy(...).first` is the single-element analogue."
         },
         {
@@ -8558,7 +9191,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -8572,7 +9205,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "tested",
             "notes": "build123d's `>>` groups by the key then keeps the largest group; `sortBy(...).last` is the single-element analogue."
         },
         {
@@ -8587,7 +9220,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -8602,7 +9235,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8617,7 +9250,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8632,7 +9265,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8647,7 +9280,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8662,7 +9295,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8675,9 +9308,13 @@
                 "tests/test_direct_api/test_intersection.py::TestShapeListExpand::test_expand_nested_compound",
                 "tests/test_direct_api/test_intersection.py::TestShapeListExpand::test_expand_shell_to_faces"
             ],
-            "native": ["TopoDS_Compound", "TopoDS_Shell", "TopoDS_Wire"],
+            "native": [
+                "TopoDS_Compound",
+                "TopoDS_Shell",
+                "TopoDS_Wire"
+            ],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8692,7 +9329,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8707,7 +9344,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8736,7 +9373,7 @@
                 "gp_XYZ"
             ],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8751,7 +9388,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8766,7 +9403,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8779,9 +9416,12 @@
                 "tests/test_direct_api/test_shape_list.py::TestShapeList::test_group_by_str_repr",
                 "tests/test_direct_api/test_shape_list.py::TestShapeList::test_group_by_property"
             ],
-            "native": ["TopoDS_Edge", "TopoDS_Wire"],
+            "native": [
+                "TopoDS_Edge",
+                "TopoDS_Wire"
+            ],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8796,7 +9436,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8811,7 +9451,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8826,7 +9466,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8841,7 +9481,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8856,7 +9496,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8869,9 +9509,12 @@
                 "tests/test_direct_api/test_shape_list.py::TestShapeList::test_sort_by_invalid",
                 "tests/test_direct_api/test_shape_list.py::TestShapeList::test_sort_by_lambda"
             ],
-            "native": ["TopoDS_Edge", "TopoDS_Wire"],
+            "native": [
+                "TopoDS_Edge",
+                "TopoDS_Wire"
+            ],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8884,9 +9527,11 @@
                 "tests/test_direct_api/test_shape_list.py::TestShapeList::test_distance_equal",
                 "tests/test_direct_api/test_shape_list.py::TestShapeList::test_distance_reverse"
             ],
-            "native": ["BRepExtrema_DistShapeShape"],
+            "native": [
+                "BRepExtrema_DistShapeShape"
+            ],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8901,7 +9546,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8916,7 +9561,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8931,7 +9576,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8946,7 +9591,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8959,9 +9604,12 @@
                 "tests/test_direct_api/test_mixin1_d.py::TestMixin1D::test_center",
                 "tests/test_direct_api/test_compound.py::TestCompound::test_center"
             ],
-            "native": ["BRepGProp", "GProp_GProps"],
+            "native": [
+                "BRepGProp",
+                "GProp_GProps"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9066,7 +9714,10 @@
                 "tests/test_direct_api/test_solid.py::TestSolid::test_revolve",
                 "tests/test_direct_api/test_face.py::TestFace::test_axis_of_rotation_property"
             ],
-            "native": ["BRepPrimAPI_MakeRevol", "TopoDS"],
+            "native": [
+                "BRepPrimAPI_MakeRevol",
+                "TopoDS"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -9081,7 +9732,10 @@
                 "tests/test_direct_api/test_face.py::TestFace::test_sweep",
                 "tests/test_direct_api/test_solid.py::TestSolid::test_hollow_sweep"
             ],
-            "native": ["BRepOffsetAPI_MakePipeShell", "TopoDS"],
+            "native": [
+                "BRepOffsetAPI_MakePipeShell",
+                "TopoDS"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -9096,25 +9750,32 @@
                 "tests/test_direct_api/test_shells.py::TestShells::test_nonmanifold_shell_volume",
                 "tests/test_direct_api/test_compound.py::TestCompound::test_volume"
             ],
-            "native": ["GProp_GProps", "ShapeFix_Solid", "TopAbs_ShapeEnum", "TopoDS_Shape"],
+            "native": [
+                "GProp_GProps",
+                "ShapeFix_Solid",
+                "TopAbs_ShapeEnum",
+                "TopoDS_Shape"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
             "python": "Solid.draft",
             "kind": "method",
-            "caddy": "Solid#draft",
+            "caddy": "draft",
             "behavior": "Apply a draft angle to the given faces of the solid.",
             "referenceTests": [
                 "tests/test_direct_api/test_solid.py::TestSolidDraft::test_adddone_failure_raises_draftangleerror",
                 "tests/test_direct_api/test_solid.py::TestSolidDraft::test_build_failure_raises_draftangleerror",
                 "tests/test_direct_api/test_solid.py::TestSolidDraft::test_successful_draft"
             ],
-            "native": ["BRepOffsetAPI_DraftAngle"],
+            "native": [
+                "BRepOffsetAPI_DraftAngle"
+            ],
             "capability": "operations",
-            "status": "planned",
-            "notes": ""
+            "status": "validated",
+            "notes": "Exposed as the free operation draft(faces, neutralPlane, angle)."
         },
         {
             "python": "Solid.extrude",
@@ -9141,7 +9802,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9239,7 +9900,10 @@
             "referenceTests": [
                 "tests/test_direct_api/test_solid.py::TestSolid::test_from_bounding_box"
             ],
-            "native": ["BRepPrimAPI_MakeBox", "TopoDS"],
+            "native": [
+                "BRepPrimAPI_MakeBox",
+                "TopoDS"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -9254,7 +9918,10 @@
                 "tests/test_direct_api/test_solid.py::TestSolid::test_extrude_until",
                 "tests/test_direct_api/test_solid.py::TestSolid::test_make_solid"
             ],
-            "native": ["BRepPrimAPI_MakeBox", "TopoDS"],
+            "native": [
+                "BRepPrimAPI_MakeBox",
+                "TopoDS"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -9269,7 +9936,10 @@
                 "tests/test_direct_api/test_functions.py::TestFunctions::test_delta",
                 "tests/test_direct_api/test_shape.py::TestShape::test_locate_bb"
             ],
-            "native": ["BRepPrimAPI_MakeCone", "TopoDS"],
+            "native": [
+                "BRepPrimAPI_MakeCone",
+                "TopoDS"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -9284,7 +9954,10 @@
                 "tests/test_direct_api/test_bound_box.py::TestBoundBox::test_basic_bounding_box",
                 "tests/test_direct_api/test_history.py::TestShapeHistory::test_boolean_records_untouched_modified_removed_and_generated"
             ],
-            "native": ["BRepPrimAPI_MakeCylinder", "TopoDS"],
+            "native": [
+                "BRepPrimAPI_MakeCylinder",
+                "TopoDS"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -9320,7 +9993,10 @@
                 "tests/test_direct_api/test_shape.py::TestShape::test_solid",
                 "tests/test_direct_api/test_face.py::TestFace::test_split_by_perimeter"
             ],
-            "native": ["BRepPrimAPI_MakeSphere", "TopoDS"],
+            "native": [
+                "BRepPrimAPI_MakeSphere",
+                "TopoDS"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -9330,8 +10006,13 @@
             "kind": "method",
             "caddy": "Solid.makeTorus",
             "behavior": "Make a torus with a given radii and angles.",
-            "referenceTests": ["tests/test_direct_api/test_face.py::TestFace::test_import_stl"],
-            "native": ["BRepPrimAPI_MakeTorus", "TopoDS"],
+            "referenceTests": [
+                "tests/test_direct_api/test_face.py::TestFace::test_import_stl"
+            ],
+            "native": [
+                "BRepPrimAPI_MakeTorus",
+                "TopoDS"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -9342,7 +10023,10 @@
             "caddy": "Solid.makeWedge",
             "behavior": "Builds a wedge-shaped solid (a box with an offset, possibly degenerate, top face).",
             "referenceTests": [],
-            "native": ["BRepPrimAPI_MakeWedge", "TopoDS"],
+            "native": [
+                "BRepPrimAPI_MakeWedge",
+                "TopoDS"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -9372,7 +10056,10 @@
                 "tests/test_direct_api/test_face.py::TestFace::test_revolve",
                 "tests/test_direct_api/test_face.py::TestFace::test_axis_of_rotation_property"
             ],
-            "native": ["BRepPrimAPI_MakeRevol", "TopoDS"],
+            "native": [
+                "BRepPrimAPI_MakeRevol",
+                "TopoDS"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -9403,8 +10090,13 @@
             "kind": "method",
             "caddy": "Solid.sweepMulti",
             "behavior": "Sweeps a sequence of profiles along a path, optionally using a Frenet or binormal frame, producing a multi-section solid.",
-            "referenceTests": ["tests/test_direct_api/test_solid.py::TestSolid::test_sweep_multi"],
-            "native": ["BRepOffsetAPI_MakePipeShell", "TopoDS"],
+            "referenceTests": [
+                "tests/test_direct_api/test_solid.py::TestSolid::test_sweep_multi"
+            ],
+            "native": [
+                "BRepOffsetAPI_MakePipeShell",
+                "TopoDS"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -9412,7 +10104,7 @@
         {
             "python": "Solid.thicken",
             "kind": "method",
-            "caddy": "Solid.thicken",
+            "caddy": "thicken",
             "behavior": "Builds a solid by offsetting a Face or Shell by the given thickness along its normal.",
             "referenceTests": [
                 "tests/test_direct_api/test_face.py::TestFace::test_thicken",
@@ -9426,8 +10118,8 @@
                 "TopoDS"
             ],
             "capability": "operations",
-            "status": "planned",
-            "notes": ""
+            "status": "validated",
+            "notes": "Exposed as the free operation thicken(face, depth, options)."
         },
         {
             "python": "Solid.touch",
@@ -9460,9 +10152,11 @@
                 "tests/test_direct_api/test_solid.py::TestSolid::test_from_bounding_box",
                 "tests/test_direct_api/test_face.py::TestFace::test_face_volume"
             ],
-            "native": ["GProp_GProps"],
+            "native": [
+                "GProp_GProps"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9477,7 +10171,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9492,7 +10186,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9507,7 +10201,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9522,7 +10216,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -9535,9 +10229,11 @@
                 "tests/test_direct_api/test_vector.py::TestVector::test_vector_add",
                 "tests/test_direct_api/test_vertex.py::TestVertex::test_vertex_add"
             ],
-            "native": ["gp_Vec"],
+            "native": [
+                "gp_Vec"
+            ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -9567,7 +10263,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -9595,9 +10291,11 @@
                 "tests/test_direct_api/test_location.py::TestLocation::test_location",
                 "tests/test_direct_api/test_vector.py::TestVector::test_vector_sets"
             ],
-            "native": ["gp_Vec"],
+            "native": [
+                "gp_Vec"
+            ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -9612,7 +10310,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -9625,9 +10323,11 @@
                 "tests/test_direct_api/test_vector.py::TestVector::test_vector_rotate",
                 "tests/test_direct_api/test_vector.py::TestVector::test_vector_special_methods"
             ],
-            "native": ["gp_Vec"],
+            "native": [
+                "gp_Vec"
+            ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -9642,7 +10342,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -9655,7 +10355,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9670,7 +10370,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9683,9 +10383,11 @@
                 "tests/test_direct_api/test_plane.py::TestPlane::test_plane_neg",
                 "tests/test_direct_api/test_location.py::TestLocation::test_mirror_location"
             ],
-            "native": ["gp_Vec"],
+            "native": [
+                "gp_Vec"
+            ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9698,7 +10400,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9711,9 +10413,11 @@
                 "tests/test_direct_api/test_oriented_bound_box.py::TestOrientedBoundBox::test_plane",
                 "tests/test_direct_api/test_location.py::TestLocation::test_mirror_location"
             ],
-            "native": ["gp_Vec"],
+            "native": [
+                "gp_Vec"
+            ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9725,9 +10429,11 @@
                 "tests/test_direct_api/test_vector.py::TestVector::test_vector_project",
                 "tests/test_direct_api/test_mixin1_d.py::TestMixin1D::test_location_at_corrected_frenet"
             ],
-            "native": ["gp_Vec"],
+            "native": [
+                "gp_Vec"
+            ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9738,9 +10444,11 @@
             "referenceTests": [
                 "tests/test_direct_api/test_vector.py::TestVector::test_get_signed_angle"
             ],
-            "native": ["gp_Vec"],
+            "native": [
+                "gp_Vec"
+            ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9770,7 +10478,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9783,7 +10491,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9798,7 +10506,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9811,7 +10519,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9824,7 +10532,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9839,7 +10547,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9852,9 +10560,12 @@
                 "tests/test_direct_api/test_shape.py::TestShape::test_rotate",
                 "tests/test_direct_api/test_face.py::TestFace::test_axes_of_symmetry"
             ],
-            "native": ["gp_Trsf", "gp_Vec"],
+            "native": [
+                "gp_Trsf",
+                "gp_Vec"
+            ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9867,7 +10578,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9878,7 +10589,7 @@
             "referenceTests": [],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9887,7 +10598,9 @@
             "caddy": null,
             "behavior": "Convert to OCCT gp_Dir object.",
             "referenceTests": [],
-            "native": ["gp_Dir"],
+            "native": [
+                "gp_Dir"
+            ],
             "capability": "geometry",
             "status": "excluded",
             "notes": "OCP interop helper (returns `gp_Dir`); Caddy converts to native types internally."
@@ -9898,7 +10611,9 @@
             "caddy": null,
             "behavior": "Convert to OCCT gp_Pnt object.",
             "referenceTests": [],
-            "native": ["gp_Pnt"],
+            "native": [
+                "gp_Pnt"
+            ],
             "capability": "geometry",
             "status": "excluded",
             "notes": "OCP interop helper (returns `gp_Pnt`); Caddy converts to native types internally."
@@ -9911,9 +10626,12 @@
             "referenceTests": [
                 "tests/test_direct_api/test_vector.py::TestVector::test_vector_transform"
             ],
-            "native": ["gp_Trsf", "gp_Vec"],
+            "native": [
+                "gp_Trsf",
+                "gp_Vec"
+            ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9926,7 +10644,9 @@
                 "tests/test_direct_api/test_clean_method.py::TestCleanMethod::test_clean_with_none_wrapped",
                 "tests/test_direct_api/test_history.py::TestShapeHistory::test_algorithm_history_from_a_fillet"
             ],
-            "native": ["gp_Vec"],
+            "native": [
+                "gp_Vec"
+            ],
             "capability": "geometry",
             "status": "excluded",
             "notes": "Raw OCCT handle accessor; Caddy keeps the native handle private to `@roonieone/occt-native`."
@@ -9941,9 +10661,11 @@
                 "tests/test_direct_api/test_vertex.py::TestVertex::test_vertex_init_error",
                 "tests/test_direct_api/test_vertex.py::TestVertexConvexity::test_the_reflex_corner_of_an_ell"
             ],
-            "native": ["BRep_Tool"],
+            "native": [
+                "BRep_Tool"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9956,9 +10678,11 @@
                 "tests/test_build_common.py::TestShapeList::test_filter_by",
                 "tests/test_build_common.py::TestShapeList::test_filter_by_position"
             ],
-            "native": ["BRep_Tool"],
+            "native": [
+                "BRep_Tool"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9971,9 +10695,11 @@
                 "tests/test_persistence.py::TestPersistence::test_serialize_location",
                 "tests/test_direct_api/test_oriented_bound_box.py::TestOrientedBoundBox::test_size_and_diagonal"
             ],
-            "native": ["BRep_Tool"],
+            "native": [
+                "BRep_Tool"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9988,7 +10714,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -10003,7 +10729,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -10016,7 +10742,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "implemented",
             "notes": ""
         },
         {
@@ -10031,7 +10757,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -10046,7 +10772,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10121,7 +10847,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10136,7 +10862,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10151,7 +10877,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10166,7 +10892,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10203,7 +10929,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10224,7 +10950,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10242,7 +10968,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10255,9 +10981,11 @@
                 "tests/test_direct_api/test_mixin1_d.py::TestMixin1D::test_edges_topo_parent",
                 "tests/test_direct_api/test_shape_list.py::TestShapeList::test_edges"
             ],
-            "native": ["BRepTools_WireExplorer"],
+            "native": [
+                "BRepTools_WireExplorer"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10300,7 +11028,7 @@
                 "TopoDS_Shape"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10332,7 +11060,9 @@
                 "tests/test_direct_api/test_edge.py::TestEdge::test_geom_adaptor",
                 "tests/test_direct_api/test_edge.py::TestEdgeParamAt::test_param_at_ellipse_is_not_linear_in_parameter"
             ],
-            "native": ["BRepAdaptor_CompCurve"],
+            "native": [
+                "BRepAdaptor_CompCurve"
+            ],
             "capability": "topology",
             "status": "excluded",
             "notes": "Returns a raw OCCT `Geom_*`/adaptor handle; Caddy exposes typed curve/surface queries instead."
@@ -10362,9 +11092,13 @@
                 "tests/test_direct_api/test_cad_objects.py::TestCadObjects::test_edge_wrapper_make_circle",
                 "tests/test_direct_api/test_face.py::TestFace::test_make_from_wires"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge", "GC_MakeArcOfCircle", "gp_Circ"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "GC_MakeArcOfCircle",
+                "gp_Circ"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10375,9 +11109,12 @@
             "referenceTests": [
                 "tests/test_direct_api/test_wire.py::TestWire::test_make_convex_hull"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge", "BRepBuilderAPI_MakeWire"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "BRepBuilderAPI_MakeWire"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10390,9 +11127,14 @@
                 "tests/test_direct_api/test_cad_objects.py::TestCadObjects::test_edge_wrapper_make_ellipse2",
                 "tests/test_direct_api/test_wire.py::TestWire::test_ellipse_arc"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge", "GC_MakeArcOfEllipse", "gp_Ax1", "gp_Elips"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "GC_MakeArcOfEllipse",
+                "gp_Ax1",
+                "gp_Elips"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10405,9 +11147,11 @@
                 "tests/test_direct_api/test_face.py::TestFace::test_center",
                 "tests/test_direct_api/test_mixin1_d.py::TestMixin1D::test_offset_2d"
             ],
-            "native": ["BRepBuilderAPI_MakePolygon"],
+            "native": [
+                "BRepBuilderAPI_MakePolygon"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10420,9 +11164,11 @@
                 "tests/test_direct_api/test_wire.py::TestWireFilletHelpers::test_analyze_wire_fillet_corner_missing_vertex",
                 "tests/test_direct_api/test_wire.py::TestWireFilletHelpers::test_analyze_wire_fillet_corner_vertex_not_degree_two"
             ],
-            "native": ["BRepBuilderAPI_MakePolygon"],
+            "native": [
+                "BRepBuilderAPI_MakePolygon"
+            ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10441,7 +11187,9 @@
             "kind": "method",
             "caddy": "Wire#orderEdges",
             "behavior": "Return the edges in self ordered by wire direction and orientation.",
-            "referenceTests": ["tests/test_direct_api/test_wire.py::TestWire::test_order_edges"],
+            "referenceTests": [
+                "tests/test_direct_api/test_wire.py::TestWire::test_order_edges"
+            ],
             "native": [],
             "capability": "topology",
             "status": "planned",
@@ -10466,7 +11214,7 @@
                 "gp_Vec"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10496,7 +11244,7 @@
                 "TopoDS_Vertex"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10531,7 +11279,10 @@
                 "tests/test_direct_api/test_wire.py::TestWireValidation::test_stitch_empty_wire",
                 "tests/test_direct_api/test_wire.py::TestWire::test_stitch"
             ],
-            "native": ["BRepBuilderAPI_MakeWire", "TopoDS"],
+            "native": [
+                "BRepBuilderAPI_MakeWire",
+                "TopoDS"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
@@ -10546,7 +11297,10 @@
                 "tests/test_direct_api/test_edge.py::TestEdge::test_trim",
                 "tests/test_direct_api/test_edge.py::TestEdge::test_trim_invalid_parameter"
             ],
-            "native": ["BRepBuilderAPI_MakeEdge", "BRep_Tool"],
+            "native": [
+                "BRepBuilderAPI_MakeEdge",
+                "BRep_Tool"
+            ],
             "capability": "topology",
             "status": "planned",
             "notes": ""
