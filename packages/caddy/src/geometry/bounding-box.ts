@@ -265,16 +265,16 @@ export function toAlignOffset(
     let max = Vector.from(maxPoint);
     let middle = center === undefined ? min.add(max).divide(2) : Vector.from(center);
 
-    if (align === null || align === Align.NONE) {
+    if (align === null || align === Align.None) {
         return new Vector();
     }
-    if (align === Align.MIN) {
+    if (align === Align.Min) {
         return min.negate();
     }
-    if (align === Align.MAX) {
+    if (align === Align.Max) {
         return max.negate();
     }
-    if (align === Align.CENTER) {
+    if (align === Align.Center) {
         return middle.negate();
     }
 
@@ -283,11 +283,11 @@ export function toAlignOffset(
     let centers = middle.toTuple();
     let offsets = align.map((alignment, index) => {
         switch (alignment) {
-            case Align.MIN:
+            case Align.Min:
                 return -(minimums[index] ?? 0);
-            case Align.CENTER:
+            case Align.Center:
                 return -(centers[index] ?? 0);
-            case Align.MAX:
+            case Align.Max:
                 return -(maximums[index] ?? 0);
             default:
                 return 0;

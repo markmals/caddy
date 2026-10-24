@@ -1,9 +1,9 @@
 /** Alignment of an object about one axis (build123d `Align`). */
 export const Align = {
-    MIN: "MIN",
-    CENTER: "CENTER",
-    MAX: "MAX",
-    NONE: "NONE",
+    Min: "MIN",
+    Center: "CENTER",
+    Max: "MAX",
+    None: "NONE",
 } as const;
 
 export type Align = (typeof Align)[keyof typeof Align];

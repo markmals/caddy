@@ -1,0 +1,610 @@
+import type * as occt from "@roonieone/occt-native";
+
+import { measure, query, shapes, ShapeType, topology } from "@roonieone/occt-native";
+
+import type { Color } from "../geometry/color.ts";
+import type { VectorLike } from "../geometry/vector.ts";
+import type { Compound } from "./compound.ts";
+import type { Edge } from "./edge.ts";
+import type { GeomType, ShapeTypeName } from "./enums.ts";
+import type { Face } from "./face.ts";
+import type { Shell } from "./shell.ts";
+import type { Solid } from "./solid.ts";
+import type { Vertex } from "./vertex.ts";
+import type { Wire } from "./wire.ts";
+
+import { GeometryError, InvalidShapeError } from "../errors.ts";
+import { Axis } from "../geometry/axis.ts";
+import { BoundingBox } from "../geometry/bounding-box.ts";
+import { DEG2RAD } from "../geometry/constants.ts";
+import { Location } from "../geometry/location.ts";
+import { Plane } from "../geometry/plane.ts";
+import { Transform } from "../geometry/transform.ts";
+import { Vector } from "../geometry/vector.ts";
+import {
+    additionOperands,
+    booleanCut,
+    booleanFuse,
+    clean,
+    intersectShapes,
+    subtractionOperands,
+} from "./boolean.ts";
+import { fromVec3, locationFromMatrix, matrixOf, toVec3 } from "./conversions.ts";
+import { CenterOf } from "./enums.ts";
+import { principalInertia } from "./inertia.ts";
+import { intersectionOperand } from "./intersection-operand.ts";
+import { native } from "./kernel.ts";
+import { topLevelNativeShapes } from "./native-topology.ts";
+import { castShape } from "./registry.ts";
+import { exactlyOne, ShapeList } from "./shape-list.ts";
+
+/** Attributes every shape carries besides its geometry. */
+export interface ShapeOptions {
+    readonly label?: string;
+    readonly color?: Color;
+}
+
+/** Options for {@link Shape#fuse} (build123d `fuse(glue=, tol=)`). */
+export interface FuseOptions {
+    /** Glue touching shapes (BOPAlgo_GlueShift): faster for shapes that only share faces. */
+    readonly glue?: boolean;
+    /** Fuzzy tolerance merging nearly coincident geometry. */
+    readonly tol?: number;
+}
+
+/** Either side of an algebraic operation: one shape or several. */
+export type ShapeOperand = Shape | Iterable<Shape>;
+
+const SHAPE_TYPE_NAMES: Record<occt.ShapeType, ShapeTypeName> = {
+    [ShapeType.Compound]: "Compound",
+    [ShapeType.CompSolid]: "CompSolid",
+    [ShapeType.Solid]: "Solid",
+    [ShapeType.Shell]: "Shell",
+    [ShapeType.Face]: "Face",
+    [ShapeType.Wire]: "Wire",
+    [ShapeType.Edge]: "Edge",
+    [ShapeType.Vertex]: "Vertex",
+    [ShapeType.Shape]: "Compound",
+};
+
+/**
+ * Base class of every topological shape (build123d `Shape`).
+ *
+ * A shape wraps one native OCCT shape and is immutable: every operation returns a new shape. The
+ * native memory is released when the shape is garbage collected, or immediately with
+ * `using shape = ...` / `shape[Symbol.dispose]()`.
+ */
+export abstract class Shape {
+    /** The native OCCT shape. */
+    readonly wrapped: occt.Shape;
+    /** User-assigned name, carried into exports. */
+    label: string;
+    /** Display colour, carried into exports; `undefined` when unset. */
+    color: Color | undefined;
+    /**
+     * The shapes this one was extracted through, outermost first: an edge taken from a face of a
+     * solid records `[solid, face]`.
+     */
+    topoPath: readonly Shape[] = [];
+
+    /**
+     * Rank used by booleans to choose the result class: Vertex 0, Edge 1, Wire 1.5, Face 2,
+     * Shell 2.5, Solid 3, Compound (and its composites) 4.
+     */
+    static readonly order: number = Number.NaN;
+
+    constructor(wrapped: occt.Shape, options: ShapeOptions = {}) {
+        this.wrapped = wrapped;
+        this.label = options.label ?? "";
+        this.color = options.color;
+    }
+
+    /** Wrap a native shape in the class matching its type. */
+    static cast(nativeShape: occt.Shape): Shape {
+        return castShape(nativeShape);
+    }
+
+    /** Volume-weighted mass centre or the mean of bounding-box centres for several shapes. */
+    static combinedCenter(objects: Iterable<Shape>, centerOf: CenterOf = CenterOf.Mass): Vector {
+        let shapes = [...objects];
+        if (shapes.length === 0) {
+            throw new InvalidShapeError("Cannot calculate a combined center without shapes");
+        }
+        if (centerOf === CenterOf.Geometry) {
+            throw new InvalidShapeError("CenterOf.GEOMETRY not implemented");
+        }
+        let weighted = new Vector();
+        let total = 0;
+        for (let shape of shapes) {
+            let mass = centerOf === CenterOf.Mass ? shape.volume : 1;
+            let center =
+                centerOf === CenterOf.Mass
+                    ? shape.center(CenterOf.Mass)
+                    : shape.boundingBox().center();
+            weighted = weighted.add(center.multiply(mass));
+            total += mass;
+        }
+        return weighted.divide(total);
+    }
+
+    /** Topological dimension: 0 for vertices up to 3 for solids; undefined when mixed. */
+    abstract get dimension(): number | undefined;
+
+    /** Centre of the shape; the default kind of centre depends on the class. */
+    abstract center(centerOf?: CenterOf): Vector;
+
+    /** Volume enclosed by the shape; zero for vertices, curves and faces. */
+    abstract get volume(): number;
+
+    /** The outermost shape this one was extracted from (build123d `topo_parent`). */
+    get topoParent(): Shape | undefined {
+        return this.topoPath[0];
+    }
+
+    /** The shape this one was directly extracted from (build123d `topo_owner`). */
+    get topoOwner(): Shape | undefined {
+        return this.topoPath.at(-1);
+    }
+
+    /** build123d's name of the native shape type. */
+    get shapeType(): ShapeTypeName {
+        return SHAPE_TYPE_NAMES[shapes.shapeType(this.wrapped)];
+    }
+
+    /** Geometry kind of an edge or face; `GeomType.Other` for every other shape. */
+    get geomType(): GeomType {
+        return "OTHER";
+    }
+
+    /** True once the native shape has been disposed. */
+    get isNull(): boolean {
+        return shapes.isDisposed(this.wrapped);
+    }
+
+    /** OCCT BRepCheck_Analyzer verdict on the shape and all its sub-shapes. */
+    get isValid(): boolean {
+        return native("Validity check", () => measure.isValid(this.wrapped));
+    }
+
+    /** Whether every nondegenerate edge of each top-level shape has exactly two adjacent faces. */
+    get isManifold(): boolean {
+        let children = topLevelNativeShapes(this.wrapped);
+        if (children.length === 0) return false;
+        for (let child of children) {
+            for (let edge of topology.subShapes(child, ShapeType.Edge)) {
+                if (
+                    !topology.isDegeneratedEdge(edge) &&
+                    topology.ancestors(child, edge, ShapeType.Face).length !== 2
+                ) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /** The shape's placement. */
+    get location(): Location {
+        return locationFromMatrix(shapes.location(this.wrapped));
+    }
+
+    get position(): Vector {
+        return this.location.position;
+    }
+
+    /** Intrinsic XYZ Euler angles of the placement, in degrees. */
+    get orientation(): Vector {
+        return this.location.orientation;
+    }
+
+    /** Total area of the shape's faces. */
+    get area(): number {
+        return native("Area", () => measure.massProperties(this.wrapped, "surface").mass);
+    }
+
+    /** Inertia about the centre of mass, as a 3×3 matrix. */
+    get matrixOfInertia(): number[][] {
+        let tensor = native(
+            "Inertia",
+            () => measure.massProperties(this.wrapped, "volume").inertia,
+        );
+        return [tensor.slice(0, 3), tensor.slice(3, 6), tensor.slice(6, 9)];
+    }
+
+    /** First mass moments about the YZ, XZ and XY planes. */
+    get staticMoments(): [number, number, number] {
+        let properties = native("Static moments", () =>
+            measure.massProperties(this.wrapped, "volume"),
+        );
+        let [x, y, z] = properties.centerOfMass;
+        return [properties.mass * x, properties.mass * y, properties.mass * z];
+    }
+
+    /** Principal inertia axes and their moments, ordered from largest moment to smallest. */
+    get principalProperties(): [Vector, number][] {
+        let tensor = native(
+            "Inertia",
+            () => measure.massProperties(this.wrapped, "volume").inertia,
+        );
+        return principalInertia(tensor);
+    }
+
+    /** Radius of gyration about `axis`, including its offset from the centre of mass. */
+    radiusOfGyration(axis: Axis): number {
+        let { inertia, centerOfMass, mass } = native("Inertia", () =>
+            measure.massProperties(this.wrapped, "volume"),
+        );
+        let direction = axis.direction;
+        let [x, y, z] = direction.toTuple();
+        let centralMoment =
+            x * (inertia[0]! * x + inertia[1]! * y + inertia[2]! * z) +
+            y * (inertia[3]! * x + inertia[4]! * y + inertia[5]! * z) +
+            z * (inertia[6]! * x + inertia[7]! * y + inertia[8]! * z);
+        let displacement = Vector.from(centerOfMass).sub(axis.position).cross(direction);
+        return Math.sqrt(centralMoment / mass + displacement.dot(displacement));
+    }
+
+    /**
+     * Axis-aligned bounds. build123d accepts a `tolerance` but never applies it, so it is accepted
+     * here for parity and ignored the same way. An empty shape yields an all-zero box.
+     */
+    boundingBox(tolerance?: number, optimal = true): BoundingBox {
+        void tolerance;
+        let bounds = native("Bounding box", () => measure.boundingBox(this.wrapped, optimal));
+        if (bounds === undefined) {
+            return new BoundingBox([0, 0, 0], [0, 0, 0]);
+        }
+        return new BoundingBox(bounds.min, bounds.max);
+    }
+
+    // ---- Exploration ----
+
+    vertices(): ShapeList<Vertex> {
+        return this.subShapes<Vertex>(ShapeType.Vertex);
+    }
+
+    /** Edges of the shape, without degenerate ones such as a sphere's pole seams. */
+    edges(): ShapeList<Edge> {
+        return new ShapeList(
+            this.subShapes<Edge>(ShapeType.Edge).filter(
+                edge => !topology.isDegeneratedEdge(edge.wrapped),
+            ),
+        );
+    }
+
+    wires(): ShapeList<Wire> {
+        return this.subShapes<Wire>(ShapeType.Wire);
+    }
+
+    faces(): ShapeList<Face> {
+        return this.subShapes<Face>(ShapeType.Face);
+    }
+
+    /** Faces pierced by an infinite axis, sorted by distance to the axis origin. */
+    facesIntersectedByAxis(axis: Axis, tolerance = 1e-4): ShapeList<Face> {
+        let frame = { origin: toVec3(axis.position), direction: toVec3(axis.direction) };
+        let faces = native("Axis-face intersections", () =>
+            query.facesIntersectedByAxis(this.wrapped, frame, tolerance),
+        );
+        return new ShapeList(
+            faces.map(wrapped => {
+                let face = castShape(wrapped) as Face;
+                face.topoPath = [...this.topoPath, this];
+                return face;
+            }),
+        );
+    }
+
+    shells(): ShapeList<Shell> {
+        return this.subShapes<Shell>(ShapeType.Shell);
+    }
+
+    solids(): ShapeList<Solid> {
+        return this.subShapes<Solid>(ShapeType.Solid);
+    }
+
+    /** Compounds within the shape; only compounds have any. */
+    compounds(): ShapeList<Compound> {
+        return new ShapeList<Compound>();
+    }
+
+    /** The single vertex of the shape; throws unless there is exactly one. */
+    vertex(): Vertex {
+        return exactlyOne(this.vertices(), "vertex");
+    }
+
+    edge(): Edge {
+        return exactlyOne(this.edges(), "edge");
+    }
+
+    wire(): Wire {
+        return exactlyOne(this.wires(), "wire");
+    }
+
+    face(): Face {
+        return exactlyOne(this.faces(), "face");
+    }
+
+    shell(): Shell {
+        return exactlyOne(this.shells(), "shell");
+    }
+
+    solid(): Solid {
+        return exactlyOne(this.solids(), "solid");
+    }
+
+    compound(): Compound {
+        return exactlyOne(this.compounds(), "compound");
+    }
+
+    /** The non-compound shapes at the top of this one, looking through nested compounds. */
+    getTopLevelShapes(): ShapeList<Shape> {
+        return new ShapeList(topLevelNativeShapes(this.wrapped).map(castShape));
+    }
+
+    /** Distinct sub-shapes of `type`, recording this shape in their `topoPath`. */
+    protected subShapes<T extends Shape>(type: occt.ShapeType): ShapeList<T> {
+        let found = topology.subShapes(this.wrapped, type).map(castShape) as T[];
+        for (let shape of found) {
+            shape.topoPath = [...this.topoPath, this];
+        }
+        return new ShapeList(found);
+    }
+
+    // ---- Identity ----
+
+    /** Same TShape and location; orientation may differ (OCCT IsSame). */
+    isSame(other: Shape): boolean {
+        return shapes.isSame(this.wrapped, other.wrapped);
+    }
+
+    /** Same TShape, location and orientation (OCCT IsEqual). */
+    isEqual(other: Shape): boolean {
+        return shapes.isEqual(this.wrapped, other.wrapped);
+    }
+
+    /** build123d's `==`: {@link isSame}. */
+    equals(other: Shape): boolean {
+        return this.isSame(other);
+    }
+
+    /** Hash consistent with {@link isSame}. */
+    hashCode(): number {
+        return shapes.hash(this.wrapped);
+    }
+
+    // ---- Placement ----
+
+    /**
+     * A copy moved by `location` relative to its current placement, sharing the geometry
+     * (build123d `Shape.moved`; `Location * shape`).
+     */
+    moved(location: Location | Plane): this {
+        let relative = location instanceof Plane ? location.location : location;
+        return this.withWrapped(shapes.moved(this.wrapped, matrixOf(relative.transform)));
+    }
+
+    /** An independent copy placed absolutely at `location` (build123d `Shape.located`). */
+    located(location: Location): this {
+        let copy = native("Copy", () => shapes.copy(this.wrapped));
+        return this.withWrapped(shapes.located(copy, matrixOf(location.transform)));
+    }
+
+    /**
+     * build123d's `location * shape`: a copy moved by a location or plane, or one copy per
+     * location when given several.
+     */
+    transform(location: Location | Plane): this;
+    transform(locations: Iterable<Location | Plane>): this[];
+    transform(location: Location | Plane | Iterable<Location | Plane>): this | this[] {
+        if (location instanceof Location || location instanceof Plane) {
+            return this.moved(location);
+        }
+        return Array.from(location, each => this.moved(each));
+    }
+
+    /** A copy translated by `vector`; with `transform` the geometry itself is rebuilt. */
+    translate(vector: VectorLike, transform = false): this {
+        let translation = Transform.fromTranslation(Vector.from(vector));
+        return transform ? this.applyTransform(translation) : this.moved(new Location(translation));
+    }
+
+    /** A copy rotated `angle` degrees about `axis`; with `transform` the geometry is rebuilt. */
+    rotate(axis: Axis, angle: number, transform = false): this {
+        let rotation = Transform.fromAxisRotation(axis.position, axis.direction, angle * DEG2RAD);
+        return transform ? this.applyTransform(rotation) : this.moved(new Location(rotation));
+    }
+
+    /**
+     * A copy scaled about `about` (default: the shape's location). A uniform factor keeps the
+     * geometry types; three factors stretch per axis and may turn curves into splines.
+     */
+    scale(factor: number | readonly [number, number, number], about?: VectorLike): this {
+        let center = about === undefined ? this.location.position : Vector.from(about);
+        if (typeof factor === "number") {
+            return this.applyTransform(Transform.fromScale(center, factor));
+        }
+        let [x, y, z] = factor;
+        return this.transformGeometry([
+            [x, 0, 0, center.x * (1 - x)],
+            [0, y, 0, center.y * (1 - y)],
+            [0, 0, z, center.z * (1 - z)],
+        ]);
+    }
+
+    /** A copy mirrored about `mirrorPlane` (default `Plane.XY`). */
+    mirror(mirrorPlane: Plane = Plane.XY): this {
+        return this.applyTransform(Transform.fromPlaneMirror(mirrorPlane.origin, mirrorPlane.zDir));
+    }
+
+    /**
+     * A copy with `transform` applied to its geometry, keeping every geometry type
+     * (build123d `transform_shape`; BRepBuilderAPI_Transform without copying).
+     */
+    transformShape(transform: Transform): this {
+        let matrix = matrixOf(transform);
+        return this.withWrapped(
+            native("Transform", () => shapes.transformed(this.wrapped, matrix)),
+        );
+    }
+
+    /**
+     * A copy with a general affine matrix (rows of `[a, b, c, translation]`) applied, allowing
+     * stretch and shear; lines and circles may become splines (build123d `transform_geometry`).
+     */
+    transformGeometry(rows: Transform | readonly (readonly number[])[]): this {
+        let matrix = rows instanceof Transform ? matrixOf(rows) : rows.flat();
+        if (matrix.length !== 12) {
+            throw new GeometryError("A geometry transform needs three rows of four numbers");
+        }
+        return this.withWrapped(
+            native("General transform", () =>
+                shapes.generalTransformed(this.wrapped, matrix, true),
+            ),
+        );
+    }
+
+    /**
+     * A copy rotated by `rotate` degrees about X, then Y, then Z (world axes through the origin,
+     * applied Z first as build123d composes them) and then translated by `offset`.
+     */
+    transformed(rotate: VectorLike = [0, 0, 0], offset: VectorLike = [0, 0, 0]): this {
+        let angles = Vector.from(rotate).multiply(DEG2RAD);
+        let origin = new Vector();
+        let composed = Transform.fromTranslation(Vector.from(offset))
+            .multiply(Transform.fromAxisRotation(origin, new Vector(1, 0, 0), angles.x))
+            .multiply(Transform.fromAxisRotation(origin, new Vector(0, 1, 0), angles.y))
+            .multiply(Transform.fromAxisRotation(origin, new Vector(0, 0, 1), angles.z));
+        return this.applyTransform(composed);
+    }
+
+    /** A copy of the geometry with `transform` applied (build123d `_apply_transform`). */
+    protected applyTransform(transform: Transform): this {
+        let matrix = matrixOf(transform);
+        return this.withWrapped(
+            native("Transform", () => shapes.transformed(this.wrapped, matrix, true)),
+        );
+    }
+
+    /**
+     * A shape of this class around `wrapped`, carrying this shape's attributes. Subclasses with
+     * extra state override it.
+     */
+    protected withWrapped(wrapped: occt.Shape): this {
+        let constructor = this.constructor as new (
+            wrapped: occt.Shape,
+            options?: ShapeOptions,
+        ) => this;
+        let options: ShapeOptions =
+            this.color === undefined
+                ? { label: this.label }
+                : { label: this.label, color: this.color };
+        return new constructor(wrapped, options);
+    }
+
+    // ---- Measurement ----
+
+    /** Minimal distance to another shape or a point. */
+    distanceTo(other: Shape | VectorLike): number {
+        return this.distanceToWithClosestPoints(other)[0];
+    }
+
+    /** The closest points on this shape and on `other`. */
+    closestPoints(other: Shape | VectorLike): [Vector, Vector] {
+        let [, mine, theirs] = this.distanceToWithClosestPoints(other);
+        return [mine, theirs];
+    }
+
+    /** Minimal distance plus the closest points on this shape and on `other`. */
+    distanceToWithClosestPoints(other: Shape | VectorLike): [number, Vector, Vector] {
+        let result = native("Distance", () =>
+            other instanceof Shape
+                ? query.distance(this.wrapped, other.wrapped)
+                : query.distanceToPoint(this.wrapped, toVec3(Vector.from(other))),
+        );
+        return [result.distance, fromVec3(result.pointOnFirst), fromVec3(result.pointOnSecond)];
+    }
+
+    /** Minimal distance to another shape (build123d `distance`). */
+    distance(other: Shape): number {
+        return this.distanceTo(other);
+    }
+
+    /** Minimal distances to each of `others`, in order. */
+    distances(...others: Shape[]): number[] {
+        return others.map(other => this.distanceTo(other));
+    }
+
+    // ---- Booleans ----
+
+    /**
+     * build123d's `+`: fuse with every top-level shape of the operands. Operands of another
+     * dimension are rejected; nothing to add returns this shape.
+     */
+    union(...others: ShapeOperand[]): Shape {
+        let summands = additionOperands(this, others);
+        return summands.length === 0 ? this : this.fuse(summands);
+    }
+
+    /** build123d's `-`: cut every top-level shape of the operands out of this one. */
+    subtract(...others: ShapeOperand[]): Shape {
+        let subtrahends = subtractionOperands(this, others);
+        return subtrahends.length === 0 ? this : this.cut(subtrahends);
+    }
+
+    /**
+     * build123d's `&`: the common part of this shape and every operand (each operand narrows
+     * the result further), cleaned; `undefined` when nothing is shared.
+     */
+    intersect(...others: (ShapeOperand | Axis | Plane)[]): Shape | undefined {
+        return intersectShapes(
+            this,
+            others.map(other =>
+                other instanceof Axis || other instanceof Plane
+                    ? intersectionOperand(this, other)
+                    : other,
+            ),
+        );
+    }
+
+    /** Fuse with `toFuse` (build123d `fuse`); the result may be of another class. */
+    fuse(toFuse: ShapeOperand, options: FuseOptions = {}): Shape {
+        return booleanFuse(this, toFuse instanceof Shape ? [toFuse] : [...toFuse], options);
+    }
+
+    /** Cut `toCut` out of this shape (build123d `cut`); the result may be of another class. */
+    cut(toCut: ShapeOperand): Shape {
+        return booleanCut(this, toCut instanceof Shape ? [toCut] : [...toCut]);
+    }
+
+    /**
+     * Single-shape intersection, specialised per class (build123d `_intersect`); `intersect`
+     * chains it over its operands. The base shape intersects with nothing.
+     */
+    intersectWith(other: Shape, tolerance: number): Shape[] | undefined {
+        void other;
+        void tolerance;
+        return undefined;
+    }
+
+    /** Merge faces and edges lying on the same geometry, dropping internal edges. */
+    clean(): this {
+        return this.withWrapped(clean(this.wrapped));
+    }
+
+    /** Attempt ShapeFix_Shape repair on a deep copy, returning this shape if already valid. */
+    fix(): this {
+        if (this.isValid) return this;
+        let copy = native("Copy", () => shapes.copy(this.wrapped));
+        return this.withWrapped(native("Fix shape", () => query.fixShape(copy)));
+    }
+
+    /** Release the native shape now; any later use throws. */
+    [Symbol.dispose](): void {
+        shapes.dispose(this.wrapped);
+    }
+
+    toString(): string {
+        return `${this.constructor.name}(${this.label === "" ? "" : `label=${this.label}`})`;
+    }
+}

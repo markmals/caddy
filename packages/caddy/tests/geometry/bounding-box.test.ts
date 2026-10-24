@@ -78,18 +78,18 @@ describe("BoundingBox", () => {
 
     it("computes alignment offsets per axis", () => {
         let box = new BoundingBox([-1, -2, -3], [4, 5, 6]);
-        expect(box.toAlignOffset(Align.MIN).toTuple()).toEqual([1, 2, 3]);
-        expect(box.toAlignOffset(Align.MAX).toTuple()).toEqual([-4, -5, -6]);
-        expect(box.toAlignOffset(Align.NONE).toTuple()).toEqual([0, 0, 0]);
+        expect(box.toAlignOffset(Align.Min).toTuple()).toEqual([1, 2, 3]);
+        expect(box.toAlignOffset(Align.Max).toTuple()).toEqual([-4, -5, -6]);
+        expect(box.toAlignOffset(Align.None).toTuple()).toEqual([0, 0, 0]);
         expect(box.toAlignOffset(null).toTuple()).toEqual([0, 0, 0]);
-        expect(box.toAlignOffset([Align.MIN, null, Align.MAX]).toTuple()).toEqual([1, 0, -6]);
-        expect(box.toAlignOffset([Align.MAX, Align.MIN]).toTuple()).toEqual([-4, 2, 0]);
+        expect(box.toAlignOffset([Align.Min, null, Align.Max]).toTuple()).toEqual([1, 0, -6]);
+        expect(box.toAlignOffset([Align.Max, Align.Min]).toTuple()).toEqual([-4, 2, 0]);
     });
 
     it("accepts an explicit centre in the free alignment helper", () => {
-        expect(toAlignOffset([0, 0, 0], [2, 2, 2], Align.CENTER).toTuple()).toEqual([-1, -1, -1]);
+        expect(toAlignOffset([0, 0, 0], [2, 2, 2], Align.Center).toTuple()).toEqual([-1, -1, -1]);
         expect(
-            toAlignOffset([0, 0, 0], [2, 2, 2], Align.CENTER, [0.5, 0.5, 0.5]).toTuple(),
+            toAlignOffset([0, 0, 0], [2, 2, 2], Align.Center, [0.5, 0.5, 0.5]).toTuple(),
         ).toEqual([-0.5, -0.5, -0.5]);
     });
 });

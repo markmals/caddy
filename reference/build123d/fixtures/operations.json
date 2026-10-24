@@ -1,0 +1,1541 @@
+{
+  "cases": {
+    "chamfer/method": {
+      "shape": {
+        "area": 357.94112549695427,
+        "bounding_box": {
+          "max": [
+            5.0,
+            4.0,
+            3.0
+          ],
+          "min": [
+            -5.0,
+            -4.0,
+            -3.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            5.0000001,
+            4.0000001,
+            3.0000001
+          ],
+          "min": [
+            -5.0000001,
+            -4.0000001,
+            -3.0000001
+          ]
+        },
+        "center_of_mass": [
+          6.073014835556412e-17,
+          -1.4945309946877108e-16,
+          7.574377276843546e-18
+        ],
+        "class_name": "Solid",
+        "counts": {
+          "edges": 24,
+          "faces": 10,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 16,
+          "wires": 10
+        },
+        "edge_geom_types": {
+          "LINE": 24
+        },
+        "face_geom_types": {
+          "PLANE": 10
+        },
+        "is_valid": true,
+        "shape_type": "SOLID",
+        "volume": 467.99999999999994
+      }
+    },
+    "chamfer/solid": {
+      "shape": {
+        "area": 357.94112549695427,
+        "bounding_box": {
+          "max": [
+            5.0,
+            4.0,
+            3.0
+          ],
+          "min": [
+            -5.0,
+            -4.0,
+            -3.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            5.0000001,
+            4.0000001,
+            3.0000001
+          ],
+          "min": [
+            -5.0000001,
+            -4.0000001,
+            -3.0000001
+          ]
+        },
+        "center_of_mass": [
+          6.073014835556412e-17,
+          -1.4945309946877108e-16,
+          7.574377276843546e-18
+        ],
+        "class_name": "Part",
+        "counts": {
+          "edges": 24,
+          "faces": 10,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 16,
+          "wires": 10
+        },
+        "edge_geom_types": {
+          "LINE": 24
+        },
+        "face_geom_types": {
+          "PLANE": 10
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 467.99999999999994
+      }
+    },
+    "draft/solid": {
+      "shape": {
+        "area": 368.8343044659031,
+        "bounding_box": {
+          "max": [
+            5.0,
+            4.0,
+            6.0
+          ],
+          "min": [
+            -5.0,
+            -4.0,
+            -5.491994839559344e-17
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            5.0000001,
+            4.0000001,
+            6.0000001
+          ],
+          "min": [
+            -5.0000001,
+            -4.0000001,
+            -1.0000000005491994e-07
+          ]
+        },
+        "center_of_mass": [
+          -0.13005390832937222,
+          7.410962213924737e-17,
+          2.9730459487665146
+        ],
+        "class_name": "Part",
+        "counts": {
+          "edges": 12,
+          "faces": 6,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 8,
+          "wires": 6
+        },
+        "edge_geom_types": {
+          "LINE": 12
+        },
+        "face_geom_types": {
+          "PLANE": 6
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 467.401632452267
+      }
+    },
+    "extrude/both": {
+      "shape": {
+        "area": 236.0,
+        "bounding_box": {
+          "max": [
+            4.0,
+            2.5,
+            3.0
+          ],
+          "min": [
+            -4.0,
+            -2.5,
+            -3.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            4.0000001,
+            2.5000001,
+            3.0000001
+          ],
+          "min": [
+            -4.0000001,
+            -2.5000001,
+            -3.0000001
+          ]
+        },
+        "center_of_mass": [
+          2.079018071232256e-17,
+          0.0,
+          9.714451465470119e-18
+        ],
+        "class_name": "Part",
+        "counts": {
+          "edges": 12,
+          "faces": 6,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 8,
+          "wires": 6
+        },
+        "edge_geom_types": {
+          "LINE": 12
+        },
+        "face_geom_types": {
+          "PLANE": 6
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 240.0
+      }
+    },
+    "extrude/face": {
+      "shape": {
+        "area": 236.0,
+        "bounding_box": {
+          "max": [
+            4.0,
+            2.5,
+            6.0
+          ],
+          "min": [
+            -4.0,
+            -2.5,
+            0.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            4.0000001,
+            2.5000001,
+            6.0000001
+          ],
+          "min": [
+            -4.0000001,
+            -2.5000001,
+            -1e-07
+          ]
+        },
+        "center_of_mass": [
+          2.0934168722152347e-17,
+          2.3129646346357427e-18,
+          3.0
+        ],
+        "class_name": "Part",
+        "counts": {
+          "edges": 12,
+          "faces": 6,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 8,
+          "wires": 6
+        },
+        "edge_geom_types": {
+          "LINE": 12
+        },
+        "face_geom_types": {
+          "PLANE": 6
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 240.0
+      }
+    },
+    "extrude/face-method": {
+      "shape": {
+        "area": 236.0,
+        "bounding_box": {
+          "max": [
+            4.0,
+            2.5,
+            6.0
+          ],
+          "min": [
+            -4.0,
+            -2.5,
+            0.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            4.0000001,
+            2.5000001,
+            6.0000001
+          ],
+          "min": [
+            -4.0000001,
+            -2.5000001,
+            -1e-07
+          ]
+        },
+        "center_of_mass": [
+          2.0934168722152347e-17,
+          2.3129646346357427e-18,
+          3.0
+        ],
+        "class_name": "Part",
+        "counts": {
+          "edges": 12,
+          "faces": 6,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 8,
+          "wires": 6
+        },
+        "edge_geom_types": {
+          "LINE": 12
+        },
+        "face_geom_types": {
+          "PLANE": 6
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 240.0
+      }
+    },
+    "extrude/sketch-method": {
+      "shape": {
+        "area": 236.0,
+        "bounding_box": {
+          "max": [
+            4.0,
+            2.5,
+            6.0
+          ],
+          "min": [
+            -4.0,
+            -2.5,
+            0.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            4.0000001,
+            2.5000001,
+            6.0000001
+          ],
+          "min": [
+            -4.0000001,
+            -2.5000001,
+            -1e-07
+          ]
+        },
+        "center_of_mass": [
+          2.0934168722152347e-17,
+          2.3129646346357427e-18,
+          3.0
+        ],
+        "class_name": "Part",
+        "counts": {
+          "edges": 12,
+          "faces": 6,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 8,
+          "wires": 6
+        },
+        "edge_geom_types": {
+          "LINE": 12
+        },
+        "face_geom_types": {
+          "PLANE": 6
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 240.0
+      }
+    },
+    "extrude/solid-method": {
+      "shape": {
+        "area": 236.0,
+        "bounding_box": {
+          "max": [
+            4.0,
+            2.5,
+            6.0
+          ],
+          "min": [
+            -4.0,
+            -2.5,
+            0.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            4.0000001,
+            2.5000001,
+            6.0000001
+          ],
+          "min": [
+            -4.0000001,
+            -2.5000001,
+            -1e-07
+          ]
+        },
+        "center_of_mass": [
+          2.0934168722152347e-17,
+          2.3129646346357427e-18,
+          3.0
+        ],
+        "class_name": "Solid",
+        "counts": {
+          "edges": 12,
+          "faces": 6,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 8,
+          "wires": 6
+        },
+        "edge_geom_types": {
+          "LINE": 12
+        },
+        "face_geom_types": {
+          "PLANE": 6
+        },
+        "is_valid": true,
+        "shape_type": "SOLID",
+        "volume": 240.0
+      }
+    },
+    "extrude/taper": {
+      "shape": {
+        "area": 239.4603505404571,
+        "bounding_box": {
+          "max": [
+            5.0,
+            3.0,
+            5.0
+          ],
+          "min": [
+            -5.0,
+            -3.0,
+            0.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            5.0000001,
+            3.0000001,
+            5.0000001
+          ],
+          "min": [
+            -5.0000001,
+            -3.0000001,
+            -1e-07
+          ]
+        },
+        "center_of_mass": [
+          4.072795157547338e-17,
+          6.471507647341137e-17,
+          2.2771230068838
+        ],
+        "class_name": "Part",
+        "counts": {
+          "edges": 12,
+          "faces": 6,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 8,
+          "wires": 6
+        },
+        "edge_geom_types": {
+          "LINE": 12
+        },
+        "face_geom_types": {
+          "PLANE": 6
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 234.6510750709079
+      }
+    },
+    "extrude/until-last": {
+      "shape": {
+        "area": 234.0,
+        "bounding_box": {
+          "max": [
+            2.0,
+            1.5,
+            5.0
+          ],
+          "min": [
+            -2.0,
+            -1.5,
+            -10.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            2.00000015,
+            1.50000015,
+            5.00000015
+          ],
+          "min": [
+            -2.00000015,
+            -1.50000015,
+            -10.00000015
+          ]
+        },
+        "center_of_mass": [
+          0.0,
+          6.309923742016505e-18,
+          -2.5
+        ],
+        "class_name": "Part",
+        "counts": {
+          "edges": 12,
+          "faces": 6,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 8,
+          "wires": 6
+        },
+        "edge_geom_types": {
+          "LINE": 12
+        },
+        "face_geom_types": {
+          "PLANE": 6
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 180.0
+      }
+    },
+    "extrude/until-next": {
+      "shape": {
+        "area": 94.0,
+        "bounding_box": {
+          "max": [
+            2.0,
+            1.5,
+            -5.0
+          ],
+          "min": [
+            -2.0,
+            -1.5,
+            -10.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            2.00000015,
+            1.50000015,
+            -4.99999985
+          ],
+          "min": [
+            -2.00000015,
+            -1.50000015,
+            -10.00000015
+          ]
+        },
+        "center_of_mass": [
+          0.0,
+          6.309923742016505e-18,
+          -7.5
+        ],
+        "class_name": "Part",
+        "counts": {
+          "edges": 12,
+          "faces": 6,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 8,
+          "wires": 6
+        },
+        "edge_geom_types": {
+          "LINE": 12
+        },
+        "face_geom_types": {
+          "PLANE": 6
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 60.0
+      }
+    },
+    "extrude/until-previous": {
+      "shape": {
+        "area": 94.0,
+        "bounding_box": {
+          "max": [
+            2.0,
+            1.5,
+            10.0
+          ],
+          "min": [
+            -2.0,
+            -1.5,
+            5.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            2.00000015,
+            1.50000015,
+            10.00000015
+          ],
+          "min": [
+            -2.00000015,
+            -1.50000015,
+            4.99999985
+          ]
+        },
+        "center_of_mass": [
+          0.0,
+          6.309923742016505e-18,
+          7.5
+        ],
+        "class_name": "Part",
+        "counts": {
+          "edges": 12,
+          "faces": 6,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 8,
+          "wires": 6
+        },
+        "edge_geom_types": {
+          "LINE": 12
+        },
+        "face_geom_types": {
+          "PLANE": 6
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 60.0
+      }
+    },
+    "fillet/method": {
+      "shape": {
+        "area": 363.9822971502571,
+        "bounding_box": {
+          "max": [
+            5.0,
+            4.0,
+            3.0
+          ],
+          "min": [
+            -5.0,
+            -4.0,
+            -3.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            5.0000001,
+            4.0000001,
+            3.0000001
+          ],
+          "min": [
+            -5.0000001,
+            -4.0000001,
+            -3.0000001
+          ]
+        },
+        "center_of_mass": [
+          1.1970827002352821e-16,
+          -1.262548160404399e-17,
+          8.334415206691557e-17
+        ],
+        "class_name": "Solid",
+        "counts": {
+          "edges": 24,
+          "faces": 10,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 16,
+          "wires": 10
+        },
+        "edge_geom_types": {
+          "CIRCLE": 8,
+          "LINE": 16
+        },
+        "face_geom_types": {
+          "CYLINDER": 4,
+          "PLANE": 6
+        },
+        "is_valid": true,
+        "shape_type": "SOLID",
+        "volume": 474.8495559215387
+      }
+    },
+    "fillet/solid": {
+      "shape": {
+        "area": 363.9822971502571,
+        "bounding_box": {
+          "max": [
+            5.0,
+            4.0,
+            3.0
+          ],
+          "min": [
+            -5.0,
+            -4.0,
+            -3.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            5.0000001,
+            4.0000001,
+            3.0000001
+          ],
+          "min": [
+            -5.0000001,
+            -4.0000001,
+            -3.0000001
+          ]
+        },
+        "center_of_mass": [
+          1.1970827002352821e-16,
+          -1.262548160404399e-17,
+          8.334415206691557e-17
+        ],
+        "class_name": "Part",
+        "counts": {
+          "edges": 24,
+          "faces": 10,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 16,
+          "wires": 10
+        },
+        "edge_geom_types": {
+          "CIRCLE": 8,
+          "LINE": 16
+        },
+        "face_geom_types": {
+          "CYLINDER": 4,
+          "PLANE": 6
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 474.8495559215387
+      }
+    },
+    "loft/ruled": {
+      "shape": {
+        "area": 334.893915034589,
+        "bounding_box": {
+          "max": [
+            5.0000001,
+            4.0000001,
+            8.0000001
+          ],
+          "min": [
+            -5.0000001,
+            -4.0000001,
+            -1e-07
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            5.0000001,
+            4.0000001,
+            8.0000001
+          ],
+          "min": [
+            -5.0000001,
+            -4.0000001,
+            -1e-07
+          ]
+        },
+        "center_of_mass": [
+          4.567274094371483e-17,
+          1.485298370782304e-16,
+          3.243243243243243
+        ],
+        "class_name": "Part",
+        "counts": {
+          "edges": 12,
+          "faces": 6,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 8,
+          "wires": 6
+        },
+        "edge_geom_types": {
+          "BSPLINE": 4,
+          "LINE": 8
+        },
+        "face_geom_types": {
+          "BSPLINE": 4,
+          "PLANE": 2
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 394.6666666666667
+      }
+    },
+    "loft/smooth": {
+      "shape": {
+        "area": 325.59190823387036,
+        "bounding_box": {
+          "max": [
+            4.5000001,
+            4.5000001,
+            8.0000001
+          ],
+          "min": [
+            -4.5000001,
+            -4.5000001,
+            -1e-07
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            4.5000001,
+            4.5000001,
+            8.0000001
+          ],
+          "min": [
+            -4.5000001,
+            -4.5000001,
+            -1e-07
+          ]
+        },
+        "center_of_mass": [
+          1.5544112486228627e-16,
+          -3.0951328220391484e-16,
+          3.0891541230592594
+        ],
+        "class_name": "Part",
+        "counts": {
+          "edges": 12,
+          "faces": 6,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 8,
+          "wires": 6
+        },
+        "edge_geom_types": {
+          "BSPLINE": 12
+        },
+        "face_geom_types": {
+          "BSPLINE": 4,
+          "PLANE": 2
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 390.26520677596045
+      }
+    },
+    "mirror/plane": {
+      "shape": {
+        "area": 52.0,
+        "bounding_box": {
+          "max": [
+            5.0,
+            -1.0,
+            2.5
+          ],
+          "min": [
+            1.0,
+            -3.0,
+            -0.5
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            5.0000001,
+            -0.9999999,
+            2.5000001
+          ],
+          "min": [
+            0.9999999,
+            -3.0000001,
+            -0.5000001
+          ]
+        },
+        "center_of_mass": [
+          3.0,
+          -2.0,
+          1.0
+        ],
+        "class_name": "Part",
+        "counts": {
+          "edges": 12,
+          "faces": 6,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 8,
+          "wires": 6
+        },
+        "edge_geom_types": {
+          "LINE": 12
+        },
+        "face_geom_types": {
+          "PLANE": 6
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 24.0
+      }
+    },
+    "offset/method": {
+      "shape": {
+        "area": 333.6637061487077,
+        "bounding_box": {
+          "max": [
+            5.0,
+            4.0,
+            3.0
+          ],
+          "min": [
+            -5.0,
+            -4.0,
+            -3.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            5.0000001,
+            4.0000001,
+            3.0000001
+          ],
+          "min": [
+            -5.0000001,
+            -4.0000001,
+            -3.0000001
+          ]
+        },
+        "center_of_mass": [
+          -1.891105258786574e-15,
+          6.168742944054063e-17,
+          -1.336925189980782e-17
+        ],
+        "class_name": "Solid",
+        "counts": {
+          "edges": 48,
+          "faces": 26,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 24,
+          "wires": 26
+        },
+        "edge_geom_types": {
+          "CIRCLE": 24,
+          "LINE": 24
+        },
+        "face_geom_types": {
+          "CYLINDER": 12,
+          "PLANE": 6,
+          "SPHERE": 8
+        },
+        "is_valid": true,
+        "shape_type": "SOLID",
+        "volume": 460.73745799051596
+      }
+    },
+    "offset/opening": {
+      "shape": {
+        "area": 277.12000000000006,
+        "bounding_box": {
+          "max": [
+            4.0,
+            3.0,
+            2.0
+          ],
+          "min": [
+            -4.0,
+            -3.0,
+            -2.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            4.0000001,
+            3.0000001,
+            2.0000001
+          ],
+          "min": [
+            -4.0000001,
+            -3.0000001,
+            -2.0000001
+          ]
+        },
+        "center_of_mass": [
+          7.075001386754253e-17,
+          8.172378184564105e-17,
+          -0.3537688442211057
+        ],
+        "class_name": "Part",
+        "counts": {
+          "edges": 24,
+          "faces": 11,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 16,
+          "wires": 12
+        },
+        "edge_geom_types": {
+          "LINE": 24
+        },
+        "face_geom_types": {
+          "PLANE": 11
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 101.88799999999999
+      }
+    },
+    "offset/solid": {
+      "shape": {
+        "area": 333.6637061487077,
+        "bounding_box": {
+          "max": [
+            5.0,
+            4.0,
+            3.0
+          ],
+          "min": [
+            -5.0,
+            -4.0,
+            -3.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            5.0000001,
+            4.0000001,
+            3.0000001
+          ],
+          "min": [
+            -5.0000001,
+            -4.0000001,
+            -3.0000001
+          ]
+        },
+        "center_of_mass": [
+          -1.8450806532274204e-15,
+          9.253114416081094e-17,
+          0.0
+        ],
+        "class_name": "Part",
+        "counts": {
+          "edges": 48,
+          "faces": 26,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 24,
+          "wires": 26
+        },
+        "edge_geom_types": {
+          "CIRCLE": 24,
+          "LINE": 24
+        },
+        "face_geom_types": {
+          "CYLINDER": 12,
+          "PLANE": 6,
+          "SPHERE": 8
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 460.737457990516
+      }
+    },
+    "project/face-plane": {
+      "shape": {
+        "area": 12.0,
+        "bounding_box": {
+          "max": [
+            2.0,
+            1.5,
+            0.0
+          ],
+          "min": [
+            -2.0,
+            -1.5,
+            0.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            2.00000015,
+            1.50000015,
+            1.5e-07
+          ],
+          "min": [
+            -2.00000015,
+            -1.50000015,
+            -1.5e-07
+          ]
+        },
+        "center_of_mass": [
+          3.209238430557093e-17,
+          0.0,
+          0.0
+        ],
+        "class_name": "Sketch",
+        "counts": {
+          "edges": 4,
+          "faces": 1,
+          "shells": 0,
+          "solids": 0,
+          "vertices": 4,
+          "wires": 1
+        },
+        "edge_geom_types": {
+          "LINE": 4
+        },
+        "face_geom_types": {
+          "PLANE": 1
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 0.0
+      }
+    },
+    "project/point-plane": {
+      "point": [
+        1.0,
+        2.0,
+        0.0
+      ]
+    },
+    "revolve/face": {
+      "shape": {
+        "area": 177.93804002589988,
+        "bounding_box": {
+          "max": [
+            5.0,
+            5.0,
+            4.0
+          ],
+          "min": [
+            -5.0,
+            0.0,
+            0.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            5.0000001,
+            5.0000001,
+            4.0000001
+          ],
+          "min": [
+            -5.0000001,
+            -1.0000000000000002e-07,
+            -1.0000000000000002e-07
+          ]
+        },
+        "center_of_mass": [
+          -6.435201261975475e-17,
+          2.3645877259367305,
+          2.0
+        ],
+        "class_name": "Part",
+        "counts": {
+          "edges": 12,
+          "faces": 6,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 8,
+          "wires": 6
+        },
+        "edge_geom_types": {
+          "CIRCLE": 4,
+          "LINE": 8
+        },
+        "face_geom_types": {
+          "CYLINDER": 2,
+          "PLANE": 4
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 131.94689145077132
+      }
+    },
+    "scale/nonuniform": {
+      "shape": {
+        "area": 97.0,
+        "bounding_box": {
+          "max": [
+            4.0000001,
+            2.2500001,
+            0.5000001
+          ],
+          "min": [
+            -4.0000001,
+            -2.2500001,
+            -0.5000001
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            4.0000002,
+            2.2500002,
+            0.5000002
+          ],
+          "min": [
+            -4.0000002,
+            -2.2500002,
+            -0.5000002
+          ]
+        },
+        "center_of_mass": [
+          4.684092869067725e-17,
+          1.850371707708594e-17,
+          1.2335811384723961e-17
+        ],
+        "class_name": "Part",
+        "counts": {
+          "edges": 12,
+          "faces": 6,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 8,
+          "wires": 6
+        },
+        "edge_geom_types": {
+          "BSPLINE": 12
+        },
+        "face_geom_types": {
+          "BSPLINE": 6
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 36.0
+      }
+    },
+    "scale/uniform": {
+      "shape": {
+        "area": 117.0,
+        "bounding_box": {
+          "max": [
+            2.5,
+            2.25,
+            1.5
+          ],
+          "min": [
+            -3.5,
+            -2.25,
+            -1.5
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            2.50000015,
+            2.25000015,
+            1.50000015
+          ],
+          "min": [
+            -3.50000015,
+            -2.25000015,
+            -1.50000015
+          ]
+        },
+        "center_of_mass": [
+          -0.5,
+          -1.850371707708594e-17,
+          2.1930331350620375e-17
+        ],
+        "class_name": "Part",
+        "counts": {
+          "edges": 12,
+          "faces": 6,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 8,
+          "wires": 6
+        },
+        "edge_geom_types": {
+          "LINE": 12
+        },
+        "face_geom_types": {
+          "PLANE": 6
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 81.0
+      }
+    },
+    "section/plane": {
+      "shape": {
+        "area": 48.0,
+        "bounding_box": {
+          "max": [
+            4.0,
+            3.0,
+            0.0
+          ],
+          "min": [
+            -4.0,
+            -3.0,
+            0.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            4.00000015,
+            3.00000015,
+            1.5e-07
+          ],
+          "min": [
+            -4.00000015,
+            -3.00000015,
+            -1.5e-07
+          ]
+        },
+        "center_of_mass": [
+          6.418476861114186e-17,
+          0.0,
+          0.0
+        ],
+        "class_name": "Sketch",
+        "counts": {
+          "edges": 4,
+          "faces": 1,
+          "shells": 0,
+          "solids": 0,
+          "vertices": 4,
+          "wires": 1
+        },
+        "edge_geom_types": {
+          "LINE": 4
+        },
+        "face_geom_types": {
+          "PLANE": 1
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 0.0
+      }
+    },
+    "split/bottom": {
+      "shape": {
+        "area": 152.0,
+        "bounding_box": {
+          "max": [
+            4.0,
+            3.0,
+            0.0
+          ],
+          "min": [
+            -4.0,
+            -3.0,
+            -2.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            4.00000015,
+            3.00000015,
+            1.5e-07
+          ],
+          "min": [
+            -4.00000015,
+            -3.00000015,
+            -2.00000015
+          ]
+        },
+        "center_of_mass": [
+          0.0,
+          2.4286128663675302e-17,
+          -1.0
+        ],
+        "class_name": "Part",
+        "counts": {
+          "edges": 12,
+          "faces": 6,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 8,
+          "wires": 6
+        },
+        "edge_geom_types": {
+          "LINE": 12
+        },
+        "face_geom_types": {
+          "PLANE": 6
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 95.99999999999999
+      }
+    },
+    "split/top": {
+      "shape": {
+        "area": 152.0,
+        "bounding_box": {
+          "max": [
+            4.0,
+            3.0,
+            2.0
+          ],
+          "min": [
+            -4.0,
+            -3.0,
+            0.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            4.00000015,
+            3.00000015,
+            2.00000015
+          ],
+          "min": [
+            -4.00000015,
+            -3.00000015,
+            -1.5e-07
+          ]
+        },
+        "center_of_mass": [
+          0.0,
+          1.0408340855860844e-17,
+          1.0000000000000002
+        ],
+        "class_name": "Part",
+        "counts": {
+          "edges": 12,
+          "faces": 6,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 8,
+          "wires": 6
+        },
+        "edge_geom_types": {
+          "LINE": 12
+        },
+        "face_geom_types": {
+          "PLANE": 6
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 95.99999999999999
+      }
+    },
+    "sweep/face": {
+      "shape": {
+        "area": 164.0,
+        "bounding_box": {
+          "max": [
+            2.0,
+            1.5,
+            10.0
+          ],
+          "min": [
+            -2.0,
+            -1.5,
+            0.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            2.0000001,
+            1.5000001,
+            10.0000001
+          ],
+          "min": [
+            -2.0000001,
+            -1.5000001,
+            -1e-07
+          ]
+        },
+        "center_of_mass": [
+          2.3273509395053707e-18,
+          -6.245004513516506e-18,
+          5.0
+        ],
+        "class_name": "Part",
+        "counts": {
+          "edges": 12,
+          "faces": 6,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 8,
+          "wires": 6
+        },
+        "edge_geom_types": {
+          "LINE": 12
+        },
+        "face_geom_types": {
+          "PLANE": 6
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 120.0
+      }
+    },
+    "thicken/face": {
+      "shape": {
+        "area": 124.0,
+        "bounding_box": {
+          "max": [
+            4.0,
+            3.0,
+            1.0
+          ],
+          "min": [
+            -4.0,
+            -3.0,
+            0.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            4.0000001,
+            3.0000001,
+            1.0000001
+          ],
+          "min": [
+            -4.0000001,
+            -3.0000001,
+            -1e-07
+          ]
+        },
+        "center_of_mass": [
+          7.632783294297952e-17,
+          0.0,
+          0.5
+        ],
+        "class_name": "Part",
+        "counts": {
+          "edges": 12,
+          "faces": 6,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 8,
+          "wires": 6
+        },
+        "edge_geom_types": {
+          "LINE": 12
+        },
+        "face_geom_types": {
+          "PLANE": 6
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 47.99999999999999
+      }
+    }
+  },
+  "reference": {
+    "build123d": "0.13.0",
+    "occt": "8.0.1",
+    "ocp": "8.0.1.1.0",
+    "python": "3.13.17"
+  },
+  "suite": "operations"
+}

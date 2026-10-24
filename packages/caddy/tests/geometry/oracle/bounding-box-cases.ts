@@ -85,49 +85,49 @@ export const boundingBoxCases: OracleCases = {
 
     "bounding-box/align-offset": expected => {
         let box = new BoundingBox([-1, -2, -3], [4, 5, 6]);
-        expectVectorClose(expected, "min", box.toAlignOffset(Align.MIN).toTuple(), EXACT_TOLERANCE);
+        expectVectorClose(expected, "min", box.toAlignOffset(Align.Min).toTuple(), EXACT_TOLERANCE);
         expectVectorClose(
             expected,
             "center",
-            box.toAlignOffset(Align.CENTER).toTuple(),
+            box.toAlignOffset(Align.Center).toTuple(),
             EXACT_TOLERANCE,
         );
-        expectVectorClose(expected, "max", box.toAlignOffset(Align.MAX).toTuple(), EXACT_TOLERANCE);
+        expectVectorClose(expected, "max", box.toAlignOffset(Align.Max).toTuple(), EXACT_TOLERANCE);
         expectVectorClose(
             expected,
             "none",
-            box.toAlignOffset(Align.NONE).toTuple(),
+            box.toAlignOffset(Align.None).toTuple(),
             EXACT_TOLERANCE,
         );
         expectVectorClose(expected, "null", box.toAlignOffset(null).toTuple(), EXACT_TOLERANCE);
         expectVectorClose(
             expected,
             "mixed",
-            box.toAlignOffset([Align.MIN, Align.CENTER, Align.MAX]).toTuple(),
+            box.toAlignOffset([Align.Min, Align.Center, Align.Max]).toTuple(),
             EXACT_TOLERANCE,
         );
         expectVectorClose(
             expected,
             "with_null",
-            box.toAlignOffset([Align.MIN, null, Align.MAX]).toTuple(),
+            box.toAlignOffset([Align.Min, null, Align.Max]).toTuple(),
             EXACT_TOLERANCE,
         );
         expectVectorClose(
             expected,
             "two_dimensional",
-            box.toAlignOffset([Align.MAX, Align.MIN]).toTuple(),
+            box.toAlignOffset([Align.Max, Align.Min]).toTuple(),
             EXACT_TOLERANCE,
         );
         expectVectorClose(
             expected,
             "free_function",
-            toAlignOffset([0, 0, 0], [2, 4, 6], [Align.CENTER, Align.MIN, null]).toTuple(),
+            toAlignOffset([0, 0, 0], [2, 4, 6], [Align.Center, Align.Min, null]).toTuple(),
             EXACT_TOLERANCE,
         );
         expectVectorClose(
             expected,
             "free_function_center",
-            toAlignOffset([0, 0, 0], [2, 4, 6], Align.CENTER, [1, 1, 1]).toTuple(),
+            toAlignOffset([0, 0, 0], [2, 4, 6], Align.Center, [1, 1, 1]).toTuple(),
             EXACT_TOLERANCE,
         );
     },

@@ -1,5 +1,6 @@
 export { Axis } from "./axis.ts";
 export { BoundingBox, toAlignOffset } from "./bounding-box.ts";
+export { Color } from "./color.ts";
 export { DEG2RAD, GEOM_TOLERANCE, RAD2DEG, TOLERANCE } from "./constants.ts";
 export { Align, Extrinsic, Intrinsic } from "./enums.ts";
 export type { Align2DLike, Align3DLike, EulerOrdering } from "./enums.ts";

@@ -1,0 +1,227 @@
+{
+  "cases": {
+    "brep/round-trip": {
+      "shape": {
+        "area": 429.6991118430774,
+        "bounding_box": {
+          "max": [
+            6.0,
+            4.0,
+            2.5
+          ],
+          "min": [
+            -6.0,
+            -4.0,
+            -2.5
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            6.0000001,
+            4.0000001,
+            2.5000001
+          ],
+          "min": [
+            -6.0000001,
+            -4.0000001,
+            -2.5000001
+          ]
+        },
+        "center_of_mass": [
+          1.0219515670007091e-16,
+          1.8366035163549741e-16,
+          -6.4006454079026146e-18
+        ],
+        "class_name": "Compound",
+        "counts": {
+          "edges": 15,
+          "faces": 7,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 10,
+          "wires": 9
+        },
+        "edge_geom_types": {
+          "CIRCLE": 2,
+          "LINE": 13
+        },
+        "face_geom_types": {
+          "CYLINDER": 1,
+          "PLANE": 6
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 417.168146928204
+      },
+      "source": "reference/build123d/fixtures/io/brep-round-trip-1.brep"
+    },
+    "step/round-trip": {
+      "color": [
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "imported_color": [
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "imported_label": "bracket",
+      "label": "bracket",
+      "shape": {
+        "area": 429.6991118430816,
+        "bounding_box": {
+          "max": [
+            6.0,
+            4.0,
+            2.5
+          ],
+          "min": [
+            -6.0,
+            -4.0,
+            -2.5
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            6.0000001,
+            4.0000001,
+            2.5000001
+          ],
+          "min": [
+            -6.0000001,
+            -4.0000001,
+            -2.5000001
+          ]
+        },
+        "center_of_mass": [
+          -8.618458215039356e-15,
+          1.8754294431936233e-16,
+          -1.405197549937935e-17
+        ],
+        "class_name": "Solid",
+        "counts": {
+          "edges": 15,
+          "faces": 7,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 10,
+          "wires": 9
+        },
+        "edge_geom_types": {
+          "CIRCLE": 2,
+          "LINE": 13
+        },
+        "face_geom_types": {
+          "CYLINDER": 1,
+          "PLANE": 6
+        },
+        "is_valid": true,
+        "shape_type": "SOLID",
+        "volume": 417.1681469282019
+      },
+      "source": "reference/build123d/fixtures/io/step-round-trip-1.brep"
+    },
+    "step/unnamed-solid": {
+      "imported_color": null,
+      "shape": {
+        "area": 93.99999999999999,
+        "bounding_box": {
+          "max": [
+            1.5,
+            2.0,
+            2.5
+          ],
+          "min": [
+            -1.5,
+            -2.0,
+            -2.5
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            1.5000001,
+            2.0000001,
+            2.5000001
+          ],
+          "min": [
+            -1.5000001,
+            -2.0000001,
+            -2.5000001
+          ]
+        },
+        "center_of_mass": [
+          3.135459740950923e-17,
+          1.1102230246251566e-17,
+          -5.921189464667501e-17
+        ],
+        "class_name": "Solid",
+        "counts": {
+          "edges": 12,
+          "faces": 6,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 8,
+          "wires": 6
+        },
+        "edge_geom_types": {
+          "LINE": 12
+        },
+        "face_geom_types": {
+          "PLANE": 6
+        },
+        "is_valid": true,
+        "shape_type": "SOLID",
+        "volume": 60.0
+      },
+      "source": "reference/build123d/fixtures/io/step-unnamed-solid-1.brep"
+    },
+    "stl/round-trip": {
+      "angular_tolerance": 0.1,
+      "area": 429.70301677140816,
+      "bounding_box": {
+        "max": [
+          6.0000001,
+          4.0000001,
+          2.5000001
+        ],
+        "min": [
+          -6.0000001,
+          -4.0000001,
+          -2.5000001
+        ]
+      },
+      "class_name": "Face",
+      "source": "reference/build123d/fixtures/io/stl-round-trip-1.brep",
+      "tolerance": 0.001
+    },
+    "tessellate/box": {
+      "angular_tolerance": 0.1,
+      "bounding_box": {
+        "max": [
+          1.0,
+          1.5,
+          2.0
+        ],
+        "min": [
+          -1.0,
+          -1.5,
+          -2.0
+        ]
+      },
+      "source": "reference/build123d/fixtures/io/tessellate-box-1.brep",
+      "tolerance": 0.001,
+      "triangle_count": 12,
+      "vertex_count": 24
+    }
+  },
+  "reference": {
+    "build123d": "0.13.0",
+    "occt": "8.0.1",
+    "ocp": "8.0.1.1.0",
+    "python": "3.13.17"
+  },
+  "suite": "io"
+}
