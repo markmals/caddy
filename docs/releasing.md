@@ -5,6 +5,8 @@ A release publishes one version of `@roonieone/caddy`, `@roonieone/occt-native` 
 - `mise run release:pack` packs every platform package assembled in `packages/occt-native/npm/`, then `occt-native` with exactly those platforms pinned as `optionalDependencies`, then `caddy`, into `.release/`. All of them must carry the same version.
 - `mise run release:publish` publishes `.release/` with platform packages first, so nothing published ever depends on a missing version. A prerelease goes out under its identifier as the dist-tag (`1.0.0-alpha.1` → `alpha`), anything else under `latest`. Versions already on npm are skipped, so an interrupted run can be repeated.
 
+npm processes each published version before serving it, which took from one to eight minutes for `1.0.0-alpha.0`. Until then the version returns 404, and a brand-new package shows only a `0.0.0-stage` placeholder. That is not a failed publish: wait before rerunning `release:publish`, which would otherwise try the same version again.
+
 ## From CI (trusted publishing)
 
 1. Set the new version in `packages/caddy/package.json` and `packages/occt-native/package.json` and commit it as `release: <version>`.
