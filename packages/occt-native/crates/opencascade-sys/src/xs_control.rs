@@ -7,10 +7,13 @@ mod inner {
     unsafe extern "C++" {
         include!("opencascade-sys/include/generated/xs_control.hxx");
 
+        type Handle_XSControl_Controller;
         type Handle_XSControl_WorkSession;
+        type XSControl_Controller;
         type XSControl_Reader;
         type XSControl_WorkSession;
         type XSControl_Writer;
+        type Handle_Interface_InterfaceModel = crate::interface::Handle_Interface_InterfaceModel;
         type Handle_Standard_Transient = crate::standard::Handle_Standard_Transient;
         type Handle_Standard_Type = crate::standard::Handle_Standard_Type;
         type Handle_TCollection_HAsciiString = crate::t_collection::Handle_TCollection_HAsciiString;
@@ -76,6 +79,8 @@ mod inner {
 
         fn XSControl_WorkSession_FileExtension(self_: &XSControl_WorkSession) -> Result<UniquePtr<Handle_TCollection_HAsciiString>>;
 
+        fn XSControl_WorkSession_FileModel(self_: &XSControl_WorkSession, num: i32) -> Result<UniquePtr<Handle_Interface_InterfaceModel>>;
+
         fn XSControl_WorkSession_FileName(self_: &XSControl_WorkSession, num: i32) -> Result<String>;
 
         fn XSControl_WorkSession_FilePrefix(self_: &XSControl_WorkSession) -> Result<UniquePtr<Handle_TCollection_HAsciiString>>;
@@ -124,6 +129,8 @@ mod inner {
 
         fn MaxSendingCount(self: &XSControl_WorkSession) -> Result<i32>;
 
+        fn Model(self: &XSControl_WorkSession) -> Result<&Handle_Interface_InterfaceModel>;
+
         fn XSControl_WorkSession_Name(self_: &XSControl_WorkSession, item: &Handle_Standard_Transient) -> Result<UniquePtr<Handle_TCollection_HAsciiString>>;
 
         fn XSControl_WorkSession_NameIdent(self_: &XSControl_WorkSession, name: &str) -> Result<i32>;
@@ -138,11 +145,15 @@ mod inner {
 
         fn NbStartingEntities(self: &XSControl_WorkSession) -> Result<i32>;
 
+        fn XSControl_WorkSession_NewModel(self_: Pin<&mut XSControl_WorkSession>) -> Result<UniquePtr<Handle_Interface_InterfaceModel>>;
+
         fn XSControl_WorkSession_NewParamFromStatic(self_: Pin<&mut XSControl_WorkSession>, statname: &str, name: &str) -> Result<UniquePtr<Handle_Standard_Transient>>;
 
         fn XSControl_WorkSession_NewTextParam(self_: Pin<&mut XSControl_WorkSession>, name: &str) -> Result<UniquePtr<Handle_TCollection_HAsciiString>>;
 
         fn XSControl_WorkSession_NextIdentForLabel(self_: &XSControl_WorkSession, label: &str, id: i32, mode: i32) -> Result<i32>;
+
+        fn NormAdaptor(self: &XSControl_WorkSession) -> Result<&Handle_XSControl_Controller>;
 
         fn XSControl_WorkSession_NumberFromLabel(self_: &XSControl_WorkSession, val: &str, afternum: i32) -> Result<i32>;
 
@@ -178,6 +189,8 @@ mod inner {
 
         fn SetActive(self: Pin<&mut XSControl_WorkSession>, item: &Handle_Standard_Transient, mode: bool) -> Result<bool>;
 
+        fn SetController(self: Pin<&mut XSControl_WorkSession>, ctl: &Handle_XSControl_Controller) -> Result<()>;
+
         fn XSControl_WorkSession_SetDefaultFileRoot(self_: Pin<&mut XSControl_WorkSession>, name: &str) -> Result<bool>;
 
         fn SetErrorHandle(self: Pin<&mut XSControl_WorkSession>, to_handle: bool) -> Result<()>;
@@ -189,6 +202,8 @@ mod inner {
         fn XSControl_WorkSession_SetLoadedFile(self_: Pin<&mut XSControl_WorkSession>, file_name: &str) -> Result<()>;
 
         fn SetModeStat(self: Pin<&mut XSControl_WorkSession>, mode: bool) -> Result<()>;
+
+        fn SetModel(self: Pin<&mut XSControl_WorkSession>, model: &Handle_Interface_InterfaceModel, clearpointed: bool) -> Result<()>;
 
         fn XSControl_WorkSession_SetTextValue(self_: Pin<&mut XSControl_WorkSession>, par: &Handle_TCollection_HAsciiString, val: &str) -> Result<bool>;
 
@@ -241,6 +256,8 @@ mod inner {
 
         fn ClearShapes(self: Pin<&mut XSControl_Reader>) -> Result<()>;
 
+        fn XSControl_Reader_Model(self_: &XSControl_Reader) -> Result<UniquePtr<Handle_Interface_InterfaceModel>>;
+
         fn NbRootsForTransfer(self: Pin<&mut XSControl_Reader>) -> Result<i32>;
 
         fn NbShapes(self: &XSControl_Reader) -> Result<i32>;
@@ -280,6 +297,8 @@ mod inner {
 
         fn XSControl_Writer_new_hworksession_bool(w_s: &Handle_XSControl_WorkSession, scratch: bool) -> Result<UniquePtr<XSControl_Writer>>;
 
+        fn XSControl_Writer_Model(self_: Pin<&mut XSControl_Writer>, newone: bool) -> Result<UniquePtr<Handle_Interface_InterfaceModel>>;
+
         fn PrintStatsTransfer(self: &XSControl_Writer, what: i32, mode: i32) -> Result<()>;
 
         fn XSControl_Writer_SetNorm(self_: Pin<&mut XSControl_Writer>, norm: &str) -> Result<bool>;
@@ -291,8 +310,78 @@ mod inner {
         fn XSControl_Writer_WS(self_: &XSControl_Writer) -> Result<UniquePtr<Handle_XSControl_WorkSession>>;
 
         fn XSControl_Writer_WriteFile(self_: Pin<&mut XSControl_Writer>, filename: &str) -> Result<IFSelect_ReturnStatus>;
+
+        fn XSControl_Controller_AddSessionItem(self_: Pin<&mut XSControl_Controller>, item: &Handle_Standard_Transient, name: &str, to_apply: bool) -> Result<()>;
+
+        fn AutoRecord(self: &XSControl_Controller) -> Result<()>;
+
+        fn Customise(self: Pin<&mut XSControl_Controller>, w_s: Pin<&mut Handle_XSControl_WorkSession>) -> Result<()>;
+
+        fn DecrementRefCounter(self: Pin<&mut XSControl_Controller>) -> Result<i32>;
+
+        fn Delete(self: &XSControl_Controller) -> Result<()>;
+
+        fn DynamicType(self: &XSControl_Controller) -> Result<&Handle_Standard_Type>;
+
+        fn GetRefCount(self: &XSControl_Controller) -> Result<i32>;
+
+        fn IncrementRefCounter(self: Pin<&mut XSControl_Controller>) -> Result<()>;
+
+        #[cxx_name = "IsInstance"]
+        fn IsInstance_htype(self: &XSControl_Controller, type_: &Handle_Standard_Type) -> Result<bool>;
+
+        fn XSControl_Controller_IsInstance_str(self_: &XSControl_Controller, type_name: &str) -> Result<bool>;
+
+        #[cxx_name = "IsKind"]
+        fn IsKind_htype(self: &XSControl_Controller, type_: &Handle_Standard_Type) -> Result<bool>;
+
+        fn XSControl_Controller_IsKind_str(self_: &XSControl_Controller, type_name: &str) -> Result<bool>;
+
+        fn IsModeWrite(self: &XSControl_Controller, modetrans: i32, shape: bool) -> Result<bool>;
+
+        fn ModeWriteBounds(self: &XSControl_Controller, modemin: &mut i32, modemax: &mut i32, shape: bool) -> Result<bool>;
+
+        fn XSControl_Controller_ModeWriteHelp(self_: &XSControl_Controller, modetrans: i32, shape: bool) -> Result<String>;
+
+        fn XSControl_Controller_Name(self_: &XSControl_Controller, rsc: bool) -> Result<String>;
+
+        fn XSControl_Controller_NewModel(self_: &XSControl_Controller) -> Result<UniquePtr<Handle_Interface_InterfaceModel>>;
+
+        fn RecognizeWriteShape(self: &XSControl_Controller, shape: &TopoDS_Shape, modetrans: i32) -> Result<bool>;
+
+        fn RecognizeWriteTransient(self: &XSControl_Controller, obj: &Handle_Standard_Transient, modetrans: i32) -> Result<bool>;
+
+        fn XSControl_Controller_Record(self_: &XSControl_Controller, name: &str) -> Result<()>;
+
+        fn XSControl_Controller_Recorded(name: &str) -> Result<UniquePtr<Handle_XSControl_Controller>>;
+
+        fn XSControl_Controller_SessionItem(self_: &XSControl_Controller, name: &str) -> Result<UniquePtr<Handle_Standard_Transient>>;
+
+        fn SetModeWrite(self: Pin<&mut XSControl_Controller>, modemin: i32, modemax: i32, shape: bool) -> Result<()>;
+
+        fn XSControl_Controller_SetModeWriteHelp(self_: Pin<&mut XSControl_Controller>, modetrans: i32, help: &str, shape: bool) -> Result<()>;
+
+        fn XSControl_Controller_SetNames(self_: Pin<&mut XSControl_Controller>, long_name: &str, short_name: &str) -> Result<()>;
+
+        fn XSControl_Controller_get_type_descriptor() -> Result<UniquePtr<Handle_Standard_Type>>;
+
+        fn XSControl_Controller_get_type_name() -> Result<String>;
+
+        fn XSControl_Controller_as_Standard_Transient(self_: &XSControl_Controller) -> &Standard_Transient;
+        fn XSControl_Controller_as_Standard_Transient_mut(self_: Pin<&mut XSControl_Controller>) -> Pin<&mut Standard_Transient>;
+
+        fn Handle_XSControl_Controller_to_Standard_Transient(handle: &Handle_XSControl_Controller) -> UniquePtr<Handle_Standard_Transient>;
+        /// Null when `handle` does not refer to a `XSControl_Controller`.
+        fn Handle_XSControl_Controller_from_Standard_Transient(handle: &Handle_Standard_Transient) -> UniquePtr<Handle_XSControl_Controller>;
+
+        fn Handle_XSControl_Controller_null() -> UniquePtr<Handle_XSControl_Controller>;
+        fn Handle_XSControl_Controller_is_null(handle: &Handle_XSControl_Controller) -> bool;
+        fn Handle_XSControl_Controller_clone(handle: &Handle_XSControl_Controller) -> UniquePtr<Handle_XSControl_Controller>;
+        fn Handle_XSControl_Controller_get(handle: &Handle_XSControl_Controller) -> Result<&XSControl_Controller>;
+        fn Handle_XSControl_Controller_get_mut(handle: Pin<&mut Handle_XSControl_Controller>) -> Result<Pin<&mut XSControl_Controller>>;
     }
 
+    impl UniquePtr<Handle_XSControl_Controller> {}
     impl UniquePtr<Handle_XSControl_WorkSession> {}
     impl UniquePtr<XSControl_Reader> {}
     impl UniquePtr<XSControl_Writer> {}

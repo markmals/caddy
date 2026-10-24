@@ -3,6 +3,7 @@
 #include "../bindings_common.hxx"
 #include "handles.hxx"
 
+#include <Interface_InterfaceModel.hxx>
 #include <Interface_Static.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
@@ -106,3 +107,49 @@ inline bool Handle_Interface_Static_is_null(const Handle_Interface_Static& handl
 inline std::unique_ptr<Handle_Interface_Static> Handle_Interface_Static_clone(const Handle_Interface_Static& handle) { return std::make_unique<Handle_Interface_Static>(handle); }
 inline const Interface_Static& Handle_Interface_Static_get(const Handle_Interface_Static& handle) { return occt_bindings::handle_get(handle); }
 inline Interface_Static& Handle_Interface_Static_get_mut(Handle_Interface_Static& handle) { return occt_bindings::handle_get(handle); }
+
+inline rust::String Interface_InterfaceModel_ClassName(rust::Str typnam) { const char* text = Interface_InterfaceModel::ClassName(std::string(typnam).c_str()); return rust::String(text != nullptr ? text : ""); }
+
+inline void Interface_InterfaceModel_DumpHeader(const Interface_InterfaceModel& self_, OcctStream& s, int32_t level) { self_.DumpHeader(s, level); }
+
+inline bool Interface_InterfaceModel_HasTemplate(rust::Str name) { return Interface_InterfaceModel::HasTemplate(std::string(name).c_str()); }
+
+inline bool Interface_InterfaceModel_IsInstance_str(const Interface_InterfaceModel& self_, rust::Str type_name) { return self_.IsInstance(std::string(type_name).c_str()); }
+
+inline bool Interface_InterfaceModel_IsKind_str(const Interface_InterfaceModel& self_, rust::Str type_name) { return self_.IsKind(std::string(type_name).c_str()); }
+
+inline std::unique_ptr<Handle_Interface_InterfaceModel> Interface_InterfaceModel_NewEmptyModel(const Interface_InterfaceModel& self_) { return std::make_unique<Handle_Interface_InterfaceModel>(self_.NewEmptyModel()); }
+
+inline int32_t Interface_InterfaceModel_NextNumberForLabel(const Interface_InterfaceModel& self_, rust::Str label, int32_t lastnum, bool exact) { return self_.NextNumberForLabel(std::string(label).c_str(), lastnum, exact); }
+
+inline void Interface_InterfaceModel_Print(const Interface_InterfaceModel& self_, const Handle_Standard_Transient& ent, OcctStream& s, int32_t mode) { self_.Print(ent, s, mode); }
+
+inline void Interface_InterfaceModel_PrintLabel(const Interface_InterfaceModel& self_, const Handle_Standard_Transient& ent, OcctStream& s) { self_.PrintLabel(ent, s); }
+
+inline void Interface_InterfaceModel_PrintToLog(const Interface_InterfaceModel& self_, const Handle_Standard_Transient& ent, OcctStream& s) { self_.PrintToLog(ent, s); }
+
+inline bool Interface_InterfaceModel_SetTemplate(rust::Str name, const Handle_Interface_InterfaceModel& model) { return Interface_InterfaceModel::SetTemplate(std::string(name).c_str(), model); }
+
+inline std::unique_ptr<Handle_TCollection_HAsciiString> Interface_InterfaceModel_StringLabel(const Interface_InterfaceModel& self_, const Handle_Standard_Transient& ent) { return std::make_unique<Handle_TCollection_HAsciiString>(self_.StringLabel(ent)); }
+
+inline std::unique_ptr<Handle_Interface_InterfaceModel> Interface_InterfaceModel_Template(rust::Str name) { return std::make_unique<Handle_Interface_InterfaceModel>(Interface_InterfaceModel::Template(std::string(name).c_str())); }
+
+inline std::unique_ptr<Handle_Standard_Type> Interface_InterfaceModel_Type(const Interface_InterfaceModel& self_, const Handle_Standard_Transient& ent, int32_t num) { return std::make_unique<Handle_Standard_Type>(self_.Type(ent, num)); }
+
+inline rust::String Interface_InterfaceModel_TypeName(const Interface_InterfaceModel& self_, const Handle_Standard_Transient& ent, bool complete) { const char* text = self_.TypeName(ent, complete); return rust::String(text != nullptr ? text : ""); }
+
+inline std::unique_ptr<Handle_Standard_Type> Interface_InterfaceModel_get_type_descriptor() { return std::make_unique<Handle_Standard_Type>(Interface_InterfaceModel::get_type_descriptor()); }
+
+inline rust::String Interface_InterfaceModel_get_type_name() { const char* text = Interface_InterfaceModel::get_type_name(); return rust::String(text != nullptr ? text : ""); }
+
+inline const Standard_Transient& Interface_InterfaceModel_as_Standard_Transient(const Interface_InterfaceModel& self_) { return self_; }
+inline Standard_Transient& Interface_InterfaceModel_as_Standard_Transient_mut(Interface_InterfaceModel& self_) { return self_; }
+
+inline std::unique_ptr<Handle_Standard_Transient> Handle_Interface_InterfaceModel_to_Standard_Transient(const Handle_Interface_InterfaceModel& handle) { return std::make_unique<Handle_Standard_Transient>(handle); }
+inline std::unique_ptr<Handle_Interface_InterfaceModel> Handle_Interface_InterfaceModel_from_Standard_Transient(const Handle_Standard_Transient& handle) { return std::make_unique<Handle_Interface_InterfaceModel>(Handle_Interface_InterfaceModel::DownCast(handle)); }
+
+inline std::unique_ptr<Handle_Interface_InterfaceModel> Handle_Interface_InterfaceModel_null() { return std::make_unique<Handle_Interface_InterfaceModel>(); }
+inline bool Handle_Interface_InterfaceModel_is_null(const Handle_Interface_InterfaceModel& handle) { return handle.IsNull(); }
+inline std::unique_ptr<Handle_Interface_InterfaceModel> Handle_Interface_InterfaceModel_clone(const Handle_Interface_InterfaceModel& handle) { return std::make_unique<Handle_Interface_InterfaceModel>(handle); }
+inline const Interface_InterfaceModel& Handle_Interface_InterfaceModel_get(const Handle_Interface_InterfaceModel& handle) { return occt_bindings::handle_get(handle); }
+inline Interface_InterfaceModel& Handle_Interface_InterfaceModel_get_mut(Handle_Interface_InterfaceModel& handle) { return occt_bindings::handle_get(handle); }

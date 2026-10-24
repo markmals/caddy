@@ -7,7 +7,9 @@ mod inner {
     unsafe extern "C++" {
         include!("opencascade-sys/include/generated/interface.hxx");
 
+        type Handle_Interface_InterfaceModel;
         type Handle_Interface_Static;
+        type Interface_InterfaceModel;
         type Interface_Static;
         type Handle_Standard_Transient = crate::standard::Handle_Standard_Transient;
         type Handle_Standard_Type = crate::standard::Handle_Standard_Type;
@@ -178,7 +180,123 @@ mod inner {
         fn Handle_Interface_Static_clone(handle: &Handle_Interface_Static) -> UniquePtr<Handle_Interface_Static>;
         fn Handle_Interface_Static_get(handle: &Handle_Interface_Static) -> Result<&Interface_Static>;
         fn Handle_Interface_Static_get_mut(handle: Pin<&mut Handle_Interface_Static>) -> Result<Pin<&mut Interface_Static>>;
+
+        fn AddEntity(self: Pin<&mut Interface_InterfaceModel>, anentity: &Handle_Standard_Transient) -> Result<()>;
+
+        fn AddWithRefs(self: Pin<&mut Interface_InterfaceModel>, anent: &Handle_Standard_Transient, level: i32, listall: bool) -> Result<()>;
+
+        fn CategoryNumber(self: &Interface_InterfaceModel, num: i32) -> Result<i32>;
+
+        fn ChangeOrder(self: Pin<&mut Interface_InterfaceModel>, oldnum: i32, newnum: i32, count: i32) -> Result<()>;
+
+        fn Interface_InterfaceModel_ClassName(typnam: &str) -> Result<String>;
+
+        fn Clear(self: Pin<&mut Interface_InterfaceModel>) -> Result<()>;
+
+        fn ClearEntities(self: Pin<&mut Interface_InterfaceModel>) -> Result<()>;
+
+        fn ClearHeader(self: Pin<&mut Interface_InterfaceModel>) -> Result<()>;
+
+        fn ClearLabels(self: Pin<&mut Interface_InterfaceModel>) -> Result<()>;
+
+        fn ClearReportEntity(self: Pin<&mut Interface_InterfaceModel>, num: i32) -> Result<bool>;
+
+        fn Contains(self: &Interface_InterfaceModel, anentity: &Handle_Standard_Transient) -> Result<bool>;
+
+        fn DecrementRefCounter(self: Pin<&mut Interface_InterfaceModel>) -> Result<i32>;
+
+        fn Delete(self: &Interface_InterfaceModel) -> Result<()>;
+
+        fn Destroy(self: Pin<&mut Interface_InterfaceModel>) -> Result<()>;
+
+        fn DispatchStatus(self: Pin<&mut Interface_InterfaceModel>) -> Result<&mut bool>;
+
+        fn Interface_InterfaceModel_DumpHeader(self_: &Interface_InterfaceModel, s: Pin<&mut OcctStream>, level: i32) -> Result<()>;
+
+        fn DynamicType(self: &Interface_InterfaceModel) -> Result<&Handle_Standard_Type>;
+
+        fn GetFromAnother(self: Pin<&mut Interface_InterfaceModel>, other: &Handle_Interface_InterfaceModel) -> Result<()>;
+
+        fn GetRefCount(self: &Interface_InterfaceModel) -> Result<i32>;
+
+        fn HasSemanticChecks(self: &Interface_InterfaceModel) -> Result<bool>;
+
+        fn Interface_InterfaceModel_HasTemplate(name: &str) -> Result<bool>;
+
+        fn IncrementRefCounter(self: Pin<&mut Interface_InterfaceModel>) -> Result<()>;
+
+        fn IsErrorEntity(self: &Interface_InterfaceModel, num: i32) -> Result<bool>;
+
+        #[cxx_name = "IsInstance"]
+        fn IsInstance_htype(self: &Interface_InterfaceModel, type_: &Handle_Standard_Type) -> Result<bool>;
+
+        fn Interface_InterfaceModel_IsInstance_str(self_: &Interface_InterfaceModel, type_name: &str) -> Result<bool>;
+
+        #[cxx_name = "IsKind"]
+        fn IsKind_htype(self: &Interface_InterfaceModel, type_: &Handle_Standard_Type) -> Result<bool>;
+
+        fn Interface_InterfaceModel_IsKind_str(self_: &Interface_InterfaceModel, type_name: &str) -> Result<bool>;
+
+        fn IsRedefinedContent(self: &Interface_InterfaceModel, num: i32) -> Result<bool>;
+
+        fn IsReportEntity(self: &Interface_InterfaceModel, num: i32, semantic: bool) -> Result<bool>;
+
+        fn IsUnknownEntity(self: &Interface_InterfaceModel, num: i32) -> Result<bool>;
+
+        fn NbEntities(self: &Interface_InterfaceModel) -> Result<i32>;
+
+        fn NbTypes(self: &Interface_InterfaceModel, ent: &Handle_Standard_Transient) -> Result<i32>;
+
+        fn Interface_InterfaceModel_NewEmptyModel(self_: &Interface_InterfaceModel) -> Result<UniquePtr<Handle_Interface_InterfaceModel>>;
+
+        fn Interface_InterfaceModel_NextNumberForLabel(self_: &Interface_InterfaceModel, label: &str, lastnum: i32, exact: bool) -> Result<i32>;
+
+        fn Number(self: &Interface_InterfaceModel, anentity: &Handle_Standard_Transient) -> Result<i32>;
+
+        fn Interface_InterfaceModel_Print(self_: &Interface_InterfaceModel, ent: &Handle_Standard_Transient, s: Pin<&mut OcctStream>, mode: i32) -> Result<()>;
+
+        fn Interface_InterfaceModel_PrintLabel(self_: &Interface_InterfaceModel, ent: &Handle_Standard_Transient, s: Pin<&mut OcctStream>) -> Result<()>;
+
+        fn Interface_InterfaceModel_PrintToLog(self_: &Interface_InterfaceModel, ent: &Handle_Standard_Transient, s: Pin<&mut OcctStream>) -> Result<()>;
+
+        fn ReplaceEntity(self: Pin<&mut Interface_InterfaceModel>, nument: i32, anent: &Handle_Standard_Transient) -> Result<()>;
+
+        fn Reservate(self: Pin<&mut Interface_InterfaceModel>, nbent: i32) -> Result<()>;
+
+        fn ReverseOrders(self: Pin<&mut Interface_InterfaceModel>, after: i32) -> Result<()>;
+
+        fn SetCategoryNumber(self: Pin<&mut Interface_InterfaceModel>, num: i32, val: i32) -> Result<bool>;
+
+        fn Interface_InterfaceModel_SetTemplate(name: &str, model: &Handle_Interface_InterfaceModel) -> Result<bool>;
+
+        fn Interface_InterfaceModel_StringLabel(self_: &Interface_InterfaceModel, ent: &Handle_Standard_Transient) -> Result<UniquePtr<Handle_TCollection_HAsciiString>>;
+
+        fn Interface_InterfaceModel_Template(name: &str) -> Result<UniquePtr<Handle_Interface_InterfaceModel>>;
+
+        fn Interface_InterfaceModel_Type(self_: &Interface_InterfaceModel, ent: &Handle_Standard_Transient, num: i32) -> Result<UniquePtr<Handle_Standard_Type>>;
+
+        fn Interface_InterfaceModel_TypeName(self_: &Interface_InterfaceModel, ent: &Handle_Standard_Transient, complete: bool) -> Result<String>;
+
+        fn Value(self: &Interface_InterfaceModel, num: i32) -> Result<&Handle_Standard_Transient>;
+
+        fn Interface_InterfaceModel_get_type_descriptor() -> Result<UniquePtr<Handle_Standard_Type>>;
+
+        fn Interface_InterfaceModel_get_type_name() -> Result<String>;
+
+        fn Interface_InterfaceModel_as_Standard_Transient(self_: &Interface_InterfaceModel) -> &Standard_Transient;
+        fn Interface_InterfaceModel_as_Standard_Transient_mut(self_: Pin<&mut Interface_InterfaceModel>) -> Pin<&mut Standard_Transient>;
+
+        fn Handle_Interface_InterfaceModel_to_Standard_Transient(handle: &Handle_Interface_InterfaceModel) -> UniquePtr<Handle_Standard_Transient>;
+        /// Null when `handle` does not refer to a `Interface_InterfaceModel`.
+        fn Handle_Interface_InterfaceModel_from_Standard_Transient(handle: &Handle_Standard_Transient) -> UniquePtr<Handle_Interface_InterfaceModel>;
+
+        fn Handle_Interface_InterfaceModel_null() -> UniquePtr<Handle_Interface_InterfaceModel>;
+        fn Handle_Interface_InterfaceModel_is_null(handle: &Handle_Interface_InterfaceModel) -> bool;
+        fn Handle_Interface_InterfaceModel_clone(handle: &Handle_Interface_InterfaceModel) -> UniquePtr<Handle_Interface_InterfaceModel>;
+        fn Handle_Interface_InterfaceModel_get(handle: &Handle_Interface_InterfaceModel) -> Result<&Interface_InterfaceModel>;
+        fn Handle_Interface_InterfaceModel_get_mut(handle: Pin<&mut Handle_Interface_InterfaceModel>) -> Result<Pin<&mut Interface_InterfaceModel>>;
     }
 
+    impl UniquePtr<Handle_Interface_InterfaceModel> {}
     impl UniquePtr<Handle_Interface_Static> {}
 }

@@ -18,6 +18,7 @@
 #include <BRepOffsetAPI_MakeThickSolid.hxx>
 #include <BRepOffsetAPI_NormalProjection.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
+#include <BRepOffset_MakeOffset.hxx>
 #include <BRepOffset_Mode.hxx>
 #include <BRepPrimAPI_MakeSweep.hxx>
 #include <GeomAbs_JoinType.hxx>

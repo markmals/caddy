@@ -21,14 +21,22 @@ mod inner {
         include!("opencascade-sys/include/generated/step_control.hxx");
 
         type STEPControl_StepModelType;
+        type Handle_STEPControl_Controller;
+        type STEPControl_Controller;
         type STEPControl_Reader;
         type STEPControl_Writer;
+        type Handle_Interface_InterfaceModel = crate::interface::Handle_Interface_InterfaceModel;
         type Handle_Standard_Transient = crate::standard::Handle_Standard_Transient;
+        type Handle_Standard_Type = crate::standard::Handle_Standard_Type;
+        type Handle_StepData_StepModel = crate::step_data::Handle_StepData_StepModel;
+        type Handle_XSControl_Controller = crate::xs_control::Handle_XSControl_Controller;
         type Handle_XSControl_WorkSession = crate::xs_control::Handle_XSControl_WorkSession;
         type IFSelect_ReturnStatus = crate::if_select::IFSelect_ReturnStatus;
         type Message_ProgressRange = crate::message::Message_ProgressRange;
         type OcctStream = crate::occt_stream::OcctStream;
+        type Standard_Transient = crate::standard::Standard_Transient;
         type TopoDS_Shape = crate::topo_ds::TopoDS_Shape;
+        type XSControl_Controller = crate::xs_control::XSControl_Controller;
         type XSControl_Reader = crate::xs_control::XSControl_Reader;
 
         fn STEPControl_Reader_new() -> Result<UniquePtr<STEPControl_Reader>>;
@@ -36,6 +44,8 @@ mod inner {
         fn STEPControl_Reader_new_hworksession_bool(w_s: &Handle_XSControl_WorkSession, scratch: bool) -> Result<UniquePtr<STEPControl_Reader>>;
 
         fn ClearShapes(self: Pin<&mut STEPControl_Reader>) -> Result<()>;
+
+        fn STEPControl_Reader_Model(self_: &STEPControl_Reader) -> Result<UniquePtr<Handle_Interface_InterfaceModel>>;
 
         fn NbRootsForTransfer(self: Pin<&mut STEPControl_Reader>) -> Result<i32>;
 
@@ -62,6 +72,8 @@ mod inner {
 
         fn STEPControl_Reader_Shape(self_: &STEPControl_Reader, num: i32) -> Result<UniquePtr<TopoDS_Shape>>;
 
+        fn STEPControl_Reader_StepModel(self_: &STEPControl_Reader) -> Result<UniquePtr<Handle_StepData_StepModel>>;
+
         fn SystemLengthUnit(self: &STEPControl_Reader) -> Result<f64>;
 
         fn TransferEntity(self: Pin<&mut STEPControl_Reader>, start: &Handle_Standard_Transient, progress: &Message_ProgressRange) -> Result<bool>;
@@ -85,6 +97,8 @@ mod inner {
 
         fn CleanDuplicateEntities(self: Pin<&mut STEPControl_Writer>) -> Result<()>;
 
+        fn STEPControl_Writer_Model(self_: Pin<&mut STEPControl_Writer>, newone: bool) -> Result<UniquePtr<Handle_StepData_StepModel>>;
+
         fn PrintStatsTransfer(self: &STEPControl_Writer, what: i32, mode: i32) -> Result<()>;
 
         fn SetTolerance(self: Pin<&mut STEPControl_Writer>, tol: f64) -> Result<()>;
@@ -100,8 +114,90 @@ mod inner {
         fn STEPControl_Writer_Write(self_: Pin<&mut STEPControl_Writer>, file_name: &str) -> Result<IFSelect_ReturnStatus>;
 
         fn STEPControl_Writer_WriteStream(self_: Pin<&mut STEPControl_Writer>, o_stream: Pin<&mut OcctStream>) -> Result<IFSelect_ReturnStatus>;
+
+        fn STEPControl_Controller_new() -> Result<UniquePtr<Handle_STEPControl_Controller>>;
+
+        fn STEPControl_Controller_AddSessionItem(self_: Pin<&mut STEPControl_Controller>, item: &Handle_Standard_Transient, name: &str, to_apply: bool) -> Result<()>;
+
+        fn AutoRecord(self: &STEPControl_Controller) -> Result<()>;
+
+        fn Customise(self: Pin<&mut STEPControl_Controller>, w_s: Pin<&mut Handle_XSControl_WorkSession>) -> Result<()>;
+
+        fn DecrementRefCounter(self: Pin<&mut STEPControl_Controller>) -> Result<i32>;
+
+        fn Delete(self: &STEPControl_Controller) -> Result<()>;
+
+        fn DynamicType(self: &STEPControl_Controller) -> Result<&Handle_Standard_Type>;
+
+        fn GetRefCount(self: &STEPControl_Controller) -> Result<i32>;
+
+        fn IncrementRefCounter(self: Pin<&mut STEPControl_Controller>) -> Result<()>;
+
+        #[Self = "STEPControl_Controller"]
+        fn Init() -> Result<bool>;
+
+        #[cxx_name = "IsInstance"]
+        fn IsInstance_htype(self: &STEPControl_Controller, type_: &Handle_Standard_Type) -> Result<bool>;
+
+        fn STEPControl_Controller_IsInstance_str(self_: &STEPControl_Controller, type_name: &str) -> Result<bool>;
+
+        #[cxx_name = "IsKind"]
+        fn IsKind_htype(self: &STEPControl_Controller, type_: &Handle_Standard_Type) -> Result<bool>;
+
+        fn STEPControl_Controller_IsKind_str(self_: &STEPControl_Controller, type_name: &str) -> Result<bool>;
+
+        fn IsModeWrite(self: &STEPControl_Controller, modetrans: i32, shape: bool) -> Result<bool>;
+
+        fn ModeWriteBounds(self: &STEPControl_Controller, modemin: &mut i32, modemax: &mut i32, shape: bool) -> Result<bool>;
+
+        fn STEPControl_Controller_ModeWriteHelp(self_: &STEPControl_Controller, modetrans: i32, shape: bool) -> Result<String>;
+
+        fn STEPControl_Controller_Name(self_: &STEPControl_Controller, rsc: bool) -> Result<String>;
+
+        fn STEPControl_Controller_NewModel(self_: &STEPControl_Controller) -> Result<UniquePtr<Handle_Interface_InterfaceModel>>;
+
+        fn RecognizeWriteShape(self: &STEPControl_Controller, shape: &TopoDS_Shape, modetrans: i32) -> Result<bool>;
+
+        fn RecognizeWriteTransient(self: &STEPControl_Controller, obj: &Handle_Standard_Transient, modetrans: i32) -> Result<bool>;
+
+        fn STEPControl_Controller_Record(self_: &STEPControl_Controller, name: &str) -> Result<()>;
+
+        fn STEPControl_Controller_Recorded(name: &str) -> Result<UniquePtr<Handle_XSControl_Controller>>;
+
+        fn STEPControl_Controller_SessionItem(self_: &STEPControl_Controller, name: &str) -> Result<UniquePtr<Handle_Standard_Transient>>;
+
+        fn SetModeWrite(self: Pin<&mut STEPControl_Controller>, modemin: i32, modemax: i32, shape: bool) -> Result<()>;
+
+        fn STEPControl_Controller_SetModeWriteHelp(self_: Pin<&mut STEPControl_Controller>, modetrans: i32, help: &str, shape: bool) -> Result<()>;
+
+        fn STEPControl_Controller_SetNames(self_: Pin<&mut STEPControl_Controller>, long_name: &str, short_name: &str) -> Result<()>;
+
+        fn STEPControl_Controller_get_type_descriptor() -> Result<UniquePtr<Handle_Standard_Type>>;
+
+        fn STEPControl_Controller_get_type_name() -> Result<String>;
+
+        fn STEPControl_Controller_as_XSControl_Controller(self_: &STEPControl_Controller) -> &XSControl_Controller;
+        fn STEPControl_Controller_as_XSControl_Controller_mut(self_: Pin<&mut STEPControl_Controller>) -> Pin<&mut XSControl_Controller>;
+
+        fn Handle_STEPControl_Controller_to_XSControl_Controller(handle: &Handle_STEPControl_Controller) -> UniquePtr<Handle_XSControl_Controller>;
+        /// Null when `handle` does not refer to a `STEPControl_Controller`.
+        fn Handle_STEPControl_Controller_from_XSControl_Controller(handle: &Handle_XSControl_Controller) -> UniquePtr<Handle_STEPControl_Controller>;
+
+        fn STEPControl_Controller_as_Standard_Transient(self_: &STEPControl_Controller) -> &Standard_Transient;
+        fn STEPControl_Controller_as_Standard_Transient_mut(self_: Pin<&mut STEPControl_Controller>) -> Pin<&mut Standard_Transient>;
+
+        fn Handle_STEPControl_Controller_to_Standard_Transient(handle: &Handle_STEPControl_Controller) -> UniquePtr<Handle_Standard_Transient>;
+        /// Null when `handle` does not refer to a `STEPControl_Controller`.
+        fn Handle_STEPControl_Controller_from_Standard_Transient(handle: &Handle_Standard_Transient) -> UniquePtr<Handle_STEPControl_Controller>;
+
+        fn Handle_STEPControl_Controller_null() -> UniquePtr<Handle_STEPControl_Controller>;
+        fn Handle_STEPControl_Controller_is_null(handle: &Handle_STEPControl_Controller) -> bool;
+        fn Handle_STEPControl_Controller_clone(handle: &Handle_STEPControl_Controller) -> UniquePtr<Handle_STEPControl_Controller>;
+        fn Handle_STEPControl_Controller_get(handle: &Handle_STEPControl_Controller) -> Result<&STEPControl_Controller>;
+        fn Handle_STEPControl_Controller_get_mut(handle: Pin<&mut Handle_STEPControl_Controller>) -> Result<Pin<&mut STEPControl_Controller>>;
     }
 
+    impl UniquePtr<Handle_STEPControl_Controller> {}
     impl UniquePtr<STEPControl_Reader> {}
     impl UniquePtr<STEPControl_Writer> {}
 }

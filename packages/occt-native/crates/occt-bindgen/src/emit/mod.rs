@@ -166,6 +166,10 @@ fn lib_source<'a>(modules: impl Iterator<Item = &'a String>, occt_version: &str)
          //!\n\
          //! One module per OCCT package. Every function that can reach OCCT returns\n\
          //! `Result`, so C++ exceptions surface as `cxx::Exception` instead of aborting.\n\
+         //!\n\
+         //! A `&str` parameter that OCCT declares as a `const char*` defaulting to a null\n\
+         //! pointer is optional: passing `\"\"` passes `nullptr`, which is how OCCT spells\n\
+         //! \"absent\" (for example `STEPCAFControl_Writer::Transfer`'s multi-file prefix).\n\
          #![allow(non_snake_case, non_camel_case_types, non_upper_case_globals)]\n\
          #![allow(clippy::all)]\n\n"
     );

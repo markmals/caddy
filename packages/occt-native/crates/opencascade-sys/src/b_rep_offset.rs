@@ -43,6 +43,54 @@ mod inner {
         type BRepOffset_Mode;
         type BRepOffset_Error;
         type BRepOffset_Status;
+        type BRepOffset_MakeOffset;
+        type GeomAbs_JoinType = crate::geom_abs::GeomAbs_JoinType;
+        type Message_ProgressRange = crate::message::Message_ProgressRange;
+        type TopTools_IndexedMapOfShape = crate::top_tools::TopTools_IndexedMapOfShape;
+        type TopTools_ListOfShape = crate::top_tools::TopTools_ListOfShape;
+        type TopoDS_Face = crate::topo_ds::TopoDS_Face;
+        type TopoDS_Shape = crate::topo_ds::TopoDS_Shape;
+
+        fn BRepOffset_MakeOffset_new() -> Result<UniquePtr<BRepOffset_MakeOffset>>;
+
+        fn BRepOffset_MakeOffset_new_shape_real2_mode_bool2_jointype_bool2_progressrange(s: &TopoDS_Shape, offset: f64, tol: f64, mode: BRepOffset_Mode, intersection: bool, self_inter: bool, join: GeomAbs_JoinType, thickening: bool, remove_int_edges: bool, range: &Message_ProgressRange) -> Result<UniquePtr<BRepOffset_MakeOffset>>;
+
+        fn AddFace(self: Pin<&mut BRepOffset_MakeOffset>, f: &TopoDS_Face) -> Result<()>;
+
+        fn AllowLinearization(self: Pin<&mut BRepOffset_MakeOffset>, is_allowed: bool) -> Result<()>;
+
+        fn CheckInputData(self: Pin<&mut BRepOffset_MakeOffset>, range: &Message_ProgressRange) -> Result<bool>;
+
+        fn Clear(self: Pin<&mut BRepOffset_MakeOffset>) -> Result<()>;
+
+        fn ClosingFaces(self: &BRepOffset_MakeOffset) -> Result<&TopTools_IndexedMapOfShape>;
+
+        fn Error(self: &BRepOffset_MakeOffset) -> Result<BRepOffset_Error>;
+
+        fn Generated(self: Pin<&mut BRepOffset_MakeOffset>, s: &TopoDS_Shape) -> Result<&TopTools_ListOfShape>;
+
+        fn GetBadShape(self: &BRepOffset_MakeOffset) -> Result<&TopoDS_Shape>;
+
+        fn GetJoinType(self: &BRepOffset_MakeOffset) -> Result<GeomAbs_JoinType>;
+
+        fn InitShape(self: &BRepOffset_MakeOffset) -> Result<&TopoDS_Shape>;
+
+        fn Initialize(self: Pin<&mut BRepOffset_MakeOffset>, s: &TopoDS_Shape, offset: f64, tol: f64, mode: BRepOffset_Mode, intersection: bool, self_inter: bool, join: GeomAbs_JoinType, thickening: bool, remove_int_edges: bool) -> Result<()>;
+
+        fn IsDeleted(self: Pin<&mut BRepOffset_MakeOffset>, s: &TopoDS_Shape) -> Result<bool>;
+
+        fn IsDone(self: &BRepOffset_MakeOffset) -> Result<bool>;
+
+        fn MakeOffsetShape(self: Pin<&mut BRepOffset_MakeOffset>, range: &Message_ProgressRange) -> Result<()>;
+
+        fn MakeThickSolid(self: Pin<&mut BRepOffset_MakeOffset>, range: &Message_ProgressRange) -> Result<()>;
+
+        fn Modified(self: Pin<&mut BRepOffset_MakeOffset>, s: &TopoDS_Shape) -> Result<&TopTools_ListOfShape>;
+
+        fn SetOffsetOnFace(self: Pin<&mut BRepOffset_MakeOffset>, f: &TopoDS_Face, off: f64) -> Result<()>;
+
+        fn Shape(self: &BRepOffset_MakeOffset) -> Result<&TopoDS_Shape>;
     }
 
+    impl UniquePtr<BRepOffset_MakeOffset> {}
 }

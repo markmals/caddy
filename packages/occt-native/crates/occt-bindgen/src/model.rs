@@ -49,6 +49,9 @@ pub struct TypeUse {
 pub struct Param {
     pub name: String,
     pub ty: TypeUse,
+    /// `const char*` parameter the C++ declaration defaults to a null pointer: OCCT reads that
+    /// as "absent", and the binding maps an empty Rust string onto it.
+    pub optional_text: bool,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

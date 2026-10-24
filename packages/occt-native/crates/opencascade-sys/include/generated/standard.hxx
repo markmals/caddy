@@ -3,6 +3,7 @@
 #include "../bindings_common.hxx"
 #include "handles.hxx"
 
+#include <Standard_GUID.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
@@ -49,3 +50,15 @@ inline bool Handle_Standard_Type_is_null(const Handle_Standard_Type& handle) { r
 inline std::unique_ptr<Handle_Standard_Type> Handle_Standard_Type_clone(const Handle_Standard_Type& handle) { return std::make_unique<Handle_Standard_Type>(handle); }
 inline const Standard_Type& Handle_Standard_Type_get(const Handle_Standard_Type& handle) { return occt_bindings::handle_get(handle); }
 inline Standard_Type& Handle_Standard_Type_get_mut(Handle_Standard_Type& handle) { return occt_bindings::handle_get(handle); }
+
+inline std::unique_ptr<Standard_GUID> Standard_GUID_new() { return std::make_unique<Standard_GUID>(); }
+
+inline std::unique_ptr<Standard_GUID> Standard_GUID_new_str(rust::Str a_guid) { return std::make_unique<Standard_GUID>(std::string(a_guid).c_str()); }
+
+inline bool Standard_GUID_CheckGUIDFormat(rust::Str a_guid) { return Standard_GUID::CheckGUIDFormat(std::string(a_guid).c_str()); }
+
+inline void Standard_GUID_ShallowDump(const Standard_GUID& self_, OcctStream& a_stream) { self_.ShallowDump(a_stream); }
+
+inline bool Standard_GUID_eq(const Standard_GUID& self_, const Standard_GUID& uid) { return self_.operator==(uid); }
+
+inline std::unique_ptr<Standard_GUID> Standard_GUID_clone(const Standard_GUID& self_) { return std::make_unique<Standard_GUID>(self_); }

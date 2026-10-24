@@ -2,11 +2,16 @@
 //!
 //! One module per OCCT package. Every function that can reach OCCT returns
 //! `Result`, so C++ exceptions surface as `cxx::Exception` instead of aborting.
+//!
+//! A `&str` parameter that OCCT declares as a `const char*` defaulting to a null
+//! pointer is optional: passing `""` passes `nullptr`, which is how OCCT spells
+//! "absent" (for example `STEPCAFControl_Writer::Transfer`'s multi-file prefix).
 #![allow(non_snake_case, non_camel_case_types, non_upper_case_globals)]
 #![allow(clippy::all)]
 
 pub mod adaptor2d;
 pub mod adaptor3d;
+pub mod api_header_section;
 pub mod approx;
 pub mod b_rep;
 pub mod b_rep_adaptor;
@@ -47,6 +52,7 @@ pub mod geom_abs;
 pub mod geom_adaptor;
 pub mod geom_api;
 pub mod geom_convert;
+pub mod geom_fill;
 pub mod geom_lib;
 pub mod geom_proj_lib;
 pub mod gp;
@@ -60,6 +66,7 @@ pub mod message;
 pub mod occt_stream;
 pub mod poly;
 pub mod precision;
+pub mod quantity;
 pub mod rw_stl;
 pub mod shape_analysis;
 pub mod shape_custom;
@@ -67,14 +74,21 @@ pub mod shape_fix;
 pub mod shape_upgrade;
 pub mod standard;
 pub mod step_control;
+pub mod step_data;
+pub mod stepcaf_control;
 pub mod stl_api;
 pub mod t_col_geom;
 pub mod t_col_std;
 pub mod t_colgp;
 pub mod t_collection;
+pub mod t_data_std;
+pub mod t_doc_std;
+pub mod tdf;
 pub mod top_abs;
 pub mod top_exp;
 pub mod top_loc;
 pub mod top_tools;
 pub mod topo_ds;
+pub mod xcaf_app;
+pub mod xcaf_doc;
 pub mod xs_control;

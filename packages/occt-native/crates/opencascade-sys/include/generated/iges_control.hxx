@@ -4,17 +4,23 @@
 #include "handles.hxx"
 
 #include <IFSelect_ReturnStatus.hxx>
+#include <IGESControl_Controller.hxx>
 #include <IGESControl_Reader.hxx>
 #include <IGESControl_Writer.hxx>
+#include <Interface_InterfaceModel.hxx>
 #include <Message_ProgressRange.hxx>
 #include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>
+#include <XSControl_Controller.hxx>
 #include <XSControl_Reader.hxx>
 #include <XSControl_WorkSession.hxx>
 
 inline std::unique_ptr<IGESControl_Reader> IGESControl_Reader_new() { return std::make_unique<IGESControl_Reader>(); }
 
 inline std::unique_ptr<IGESControl_Reader> IGESControl_Reader_new_hworksession_bool(const Handle_XSControl_WorkSession& w_s, bool scratch) { return std::make_unique<IGESControl_Reader>(w_s, scratch); }
+
+inline std::unique_ptr<Handle_Interface_InterfaceModel> IGESControl_Reader_Model(const IGESControl_Reader& self_) { return std::make_unique<Handle_Interface_InterfaceModel>(self_.Model()); }
 
 inline std::unique_ptr<TopoDS_Shape> IGESControl_Reader_OneShape(const IGESControl_Reader& self_) { return std::make_unique<TopoDS_Shape>(self_.OneShape()); }
 
@@ -42,3 +48,49 @@ inline std::unique_ptr<IGESControl_Writer> IGESControl_Writer_new_str_int(rust::
 inline bool IGESControl_Writer_Write_stream_bool(IGESControl_Writer& self_, OcctStream& s, bool fnes) { return self_.Write(s, fnes); }
 
 inline bool IGESControl_Writer_Write_str_bool(IGESControl_Writer& self_, rust::Str file, bool fnes) { return self_.Write(std::string(file).c_str(), fnes); }
+
+inline std::unique_ptr<Handle_IGESControl_Controller> IGESControl_Controller_new_bool(bool modefnes) { return std::make_unique<Handle_IGESControl_Controller>(new IGESControl_Controller(modefnes)); }
+
+inline void IGESControl_Controller_AddSessionItem(IGESControl_Controller& self_, const Handle_Standard_Transient& item, rust::Str name, bool to_apply) { self_.AddSessionItem(item, std::string(name).c_str(), to_apply); }
+
+inline bool IGESControl_Controller_IsInstance_str(const IGESControl_Controller& self_, rust::Str type_name) { return self_.IsInstance(std::string(type_name).c_str()); }
+
+inline bool IGESControl_Controller_IsKind_str(const IGESControl_Controller& self_, rust::Str type_name) { return self_.IsKind(std::string(type_name).c_str()); }
+
+inline rust::String IGESControl_Controller_ModeWriteHelp(const IGESControl_Controller& self_, int32_t modetrans, bool shape) { const char* text = self_.ModeWriteHelp(modetrans, shape); return rust::String(text != nullptr ? text : ""); }
+
+inline rust::String IGESControl_Controller_Name(const IGESControl_Controller& self_, bool rsc) { const char* text = self_.Name(rsc); return rust::String(text != nullptr ? text : ""); }
+
+inline std::unique_ptr<Handle_Interface_InterfaceModel> IGESControl_Controller_NewModel(const IGESControl_Controller& self_) { return std::make_unique<Handle_Interface_InterfaceModel>(self_.NewModel()); }
+
+inline void IGESControl_Controller_Record(const IGESControl_Controller& self_, rust::Str name) { self_.Record(std::string(name).c_str()); }
+
+inline std::unique_ptr<Handle_XSControl_Controller> IGESControl_Controller_Recorded(rust::Str name) { return std::make_unique<Handle_XSControl_Controller>(IGESControl_Controller::Recorded(std::string(name).c_str())); }
+
+inline std::unique_ptr<Handle_Standard_Transient> IGESControl_Controller_SessionItem(const IGESControl_Controller& self_, rust::Str name) { return std::make_unique<Handle_Standard_Transient>(self_.SessionItem(std::string(name).c_str())); }
+
+inline void IGESControl_Controller_SetModeWriteHelp(IGESControl_Controller& self_, int32_t modetrans, rust::Str help, bool shape) { self_.SetModeWriteHelp(modetrans, std::string(help).c_str(), shape); }
+
+inline void IGESControl_Controller_SetNames(IGESControl_Controller& self_, rust::Str long_name, rust::Str short_name) { self_.SetNames(std::string(long_name).c_str(), std::string(short_name).c_str()); }
+
+inline std::unique_ptr<Handle_Standard_Type> IGESControl_Controller_get_type_descriptor() { return std::make_unique<Handle_Standard_Type>(IGESControl_Controller::get_type_descriptor()); }
+
+inline rust::String IGESControl_Controller_get_type_name() { const char* text = IGESControl_Controller::get_type_name(); return rust::String(text != nullptr ? text : ""); }
+
+inline const XSControl_Controller& IGESControl_Controller_as_XSControl_Controller(const IGESControl_Controller& self_) { return self_; }
+inline XSControl_Controller& IGESControl_Controller_as_XSControl_Controller_mut(IGESControl_Controller& self_) { return self_; }
+
+inline std::unique_ptr<Handle_XSControl_Controller> Handle_IGESControl_Controller_to_XSControl_Controller(const Handle_IGESControl_Controller& handle) { return std::make_unique<Handle_XSControl_Controller>(handle); }
+inline std::unique_ptr<Handle_IGESControl_Controller> Handle_IGESControl_Controller_from_XSControl_Controller(const Handle_XSControl_Controller& handle) { return std::make_unique<Handle_IGESControl_Controller>(Handle_IGESControl_Controller::DownCast(handle)); }
+
+inline const Standard_Transient& IGESControl_Controller_as_Standard_Transient(const IGESControl_Controller& self_) { return self_; }
+inline Standard_Transient& IGESControl_Controller_as_Standard_Transient_mut(IGESControl_Controller& self_) { return self_; }
+
+inline std::unique_ptr<Handle_Standard_Transient> Handle_IGESControl_Controller_to_Standard_Transient(const Handle_IGESControl_Controller& handle) { return std::make_unique<Handle_Standard_Transient>(handle); }
+inline std::unique_ptr<Handle_IGESControl_Controller> Handle_IGESControl_Controller_from_Standard_Transient(const Handle_Standard_Transient& handle) { return std::make_unique<Handle_IGESControl_Controller>(Handle_IGESControl_Controller::DownCast(handle)); }
+
+inline std::unique_ptr<Handle_IGESControl_Controller> Handle_IGESControl_Controller_null() { return std::make_unique<Handle_IGESControl_Controller>(); }
+inline bool Handle_IGESControl_Controller_is_null(const Handle_IGESControl_Controller& handle) { return handle.IsNull(); }
+inline std::unique_ptr<Handle_IGESControl_Controller> Handle_IGESControl_Controller_clone(const Handle_IGESControl_Controller& handle) { return std::make_unique<Handle_IGESControl_Controller>(handle); }
+inline const IGESControl_Controller& Handle_IGESControl_Controller_get(const Handle_IGESControl_Controller& handle) { return occt_bindings::handle_get(handle); }
+inline IGESControl_Controller& Handle_IGESControl_Controller_get_mut(Handle_IGESControl_Controller& handle) { return occt_bindings::handle_get(handle); }

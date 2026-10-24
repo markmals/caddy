@@ -4,18 +4,25 @@
 #include "handles.hxx"
 
 #include <IFSelect_ReturnStatus.hxx>
+#include <Interface_InterfaceModel.hxx>
 #include <Message_ProgressRange.hxx>
+#include <STEPControl_Controller.hxx>
 #include <STEPControl_Reader.hxx>
 #include <STEPControl_StepModelType.hxx>
 #include <STEPControl_Writer.hxx>
 #include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <StepData_StepModel.hxx>
 #include <TopoDS_Shape.hxx>
+#include <XSControl_Controller.hxx>
 #include <XSControl_Reader.hxx>
 #include <XSControl_WorkSession.hxx>
 
 inline std::unique_ptr<STEPControl_Reader> STEPControl_Reader_new() { return std::make_unique<STEPControl_Reader>(); }
 
 inline std::unique_ptr<STEPControl_Reader> STEPControl_Reader_new_hworksession_bool(const Handle_XSControl_WorkSession& w_s, bool scratch) { return std::make_unique<STEPControl_Reader>(w_s, scratch); }
+
+inline std::unique_ptr<Handle_Interface_InterfaceModel> STEPControl_Reader_Model(const STEPControl_Reader& self_) { return std::make_unique<Handle_Interface_InterfaceModel>(self_.Model()); }
 
 inline std::unique_ptr<TopoDS_Shape> STEPControl_Reader_OneShape(const STEPControl_Reader& self_) { return std::make_unique<TopoDS_Shape>(self_.OneShape()); }
 
@@ -31,6 +38,8 @@ inline bool STEPControl_Reader_SetNorm(STEPControl_Reader& self_, rust::Str norm
 
 inline std::unique_ptr<TopoDS_Shape> STEPControl_Reader_Shape(const STEPControl_Reader& self_, int32_t num) { return std::make_unique<TopoDS_Shape>(self_.Shape(num)); }
 
+inline std::unique_ptr<Handle_StepData_StepModel> STEPControl_Reader_StepModel(const STEPControl_Reader& self_) { return std::make_unique<Handle_StepData_StepModel>(self_.StepModel()); }
+
 inline std::unique_ptr<Handle_XSControl_WorkSession> STEPControl_Reader_WS(const STEPControl_Reader& self_) { return std::make_unique<Handle_XSControl_WorkSession>(self_.WS()); }
 
 inline const XSControl_Reader& STEPControl_Reader_as_XSControl_Reader(const STEPControl_Reader& self_) { return self_; }
@@ -40,8 +49,56 @@ inline std::unique_ptr<STEPControl_Writer> STEPControl_Writer_new() { return std
 
 inline std::unique_ptr<STEPControl_Writer> STEPControl_Writer_new_hworksession_bool(const Handle_XSControl_WorkSession& w_s, bool scratch) { return std::make_unique<STEPControl_Writer>(w_s, scratch); }
 
+inline std::unique_ptr<Handle_StepData_StepModel> STEPControl_Writer_Model(STEPControl_Writer& self_, bool newone) { return std::make_unique<Handle_StepData_StepModel>(self_.Model(newone)); }
+
 inline std::unique_ptr<Handle_XSControl_WorkSession> STEPControl_Writer_WS(const STEPControl_Writer& self_) { return std::make_unique<Handle_XSControl_WorkSession>(self_.WS()); }
 
 inline IFSelect_ReturnStatus STEPControl_Writer_Write(STEPControl_Writer& self_, rust::Str file_name) { return self_.Write(std::string(file_name).c_str()); }
 
 inline IFSelect_ReturnStatus STEPControl_Writer_WriteStream(STEPControl_Writer& self_, OcctStream& o_stream) { return self_.WriteStream(o_stream); }
+
+inline std::unique_ptr<Handle_STEPControl_Controller> STEPControl_Controller_new() { return std::make_unique<Handle_STEPControl_Controller>(new STEPControl_Controller()); }
+
+inline void STEPControl_Controller_AddSessionItem(STEPControl_Controller& self_, const Handle_Standard_Transient& item, rust::Str name, bool to_apply) { self_.AddSessionItem(item, std::string(name).c_str(), to_apply); }
+
+inline bool STEPControl_Controller_IsInstance_str(const STEPControl_Controller& self_, rust::Str type_name) { return self_.IsInstance(std::string(type_name).c_str()); }
+
+inline bool STEPControl_Controller_IsKind_str(const STEPControl_Controller& self_, rust::Str type_name) { return self_.IsKind(std::string(type_name).c_str()); }
+
+inline rust::String STEPControl_Controller_ModeWriteHelp(const STEPControl_Controller& self_, int32_t modetrans, bool shape) { const char* text = self_.ModeWriteHelp(modetrans, shape); return rust::String(text != nullptr ? text : ""); }
+
+inline rust::String STEPControl_Controller_Name(const STEPControl_Controller& self_, bool rsc) { const char* text = self_.Name(rsc); return rust::String(text != nullptr ? text : ""); }
+
+inline std::unique_ptr<Handle_Interface_InterfaceModel> STEPControl_Controller_NewModel(const STEPControl_Controller& self_) { return std::make_unique<Handle_Interface_InterfaceModel>(self_.NewModel()); }
+
+inline void STEPControl_Controller_Record(const STEPControl_Controller& self_, rust::Str name) { self_.Record(std::string(name).c_str()); }
+
+inline std::unique_ptr<Handle_XSControl_Controller> STEPControl_Controller_Recorded(rust::Str name) { return std::make_unique<Handle_XSControl_Controller>(STEPControl_Controller::Recorded(std::string(name).c_str())); }
+
+inline std::unique_ptr<Handle_Standard_Transient> STEPControl_Controller_SessionItem(const STEPControl_Controller& self_, rust::Str name) { return std::make_unique<Handle_Standard_Transient>(self_.SessionItem(std::string(name).c_str())); }
+
+inline void STEPControl_Controller_SetModeWriteHelp(STEPControl_Controller& self_, int32_t modetrans, rust::Str help, bool shape) { self_.SetModeWriteHelp(modetrans, std::string(help).c_str(), shape); }
+
+inline void STEPControl_Controller_SetNames(STEPControl_Controller& self_, rust::Str long_name, rust::Str short_name) { self_.SetNames(std::string(long_name).c_str(), std::string(short_name).c_str()); }
+
+inline std::unique_ptr<Handle_Standard_Type> STEPControl_Controller_get_type_descriptor() { return std::make_unique<Handle_Standard_Type>(STEPControl_Controller::get_type_descriptor()); }
+
+inline rust::String STEPControl_Controller_get_type_name() { const char* text = STEPControl_Controller::get_type_name(); return rust::String(text != nullptr ? text : ""); }
+
+inline const XSControl_Controller& STEPControl_Controller_as_XSControl_Controller(const STEPControl_Controller& self_) { return self_; }
+inline XSControl_Controller& STEPControl_Controller_as_XSControl_Controller_mut(STEPControl_Controller& self_) { return self_; }
+
+inline std::unique_ptr<Handle_XSControl_Controller> Handle_STEPControl_Controller_to_XSControl_Controller(const Handle_STEPControl_Controller& handle) { return std::make_unique<Handle_XSControl_Controller>(handle); }
+inline std::unique_ptr<Handle_STEPControl_Controller> Handle_STEPControl_Controller_from_XSControl_Controller(const Handle_XSControl_Controller& handle) { return std::make_unique<Handle_STEPControl_Controller>(Handle_STEPControl_Controller::DownCast(handle)); }
+
+inline const Standard_Transient& STEPControl_Controller_as_Standard_Transient(const STEPControl_Controller& self_) { return self_; }
+inline Standard_Transient& STEPControl_Controller_as_Standard_Transient_mut(STEPControl_Controller& self_) { return self_; }
+
+inline std::unique_ptr<Handle_Standard_Transient> Handle_STEPControl_Controller_to_Standard_Transient(const Handle_STEPControl_Controller& handle) { return std::make_unique<Handle_Standard_Transient>(handle); }
+inline std::unique_ptr<Handle_STEPControl_Controller> Handle_STEPControl_Controller_from_Standard_Transient(const Handle_Standard_Transient& handle) { return std::make_unique<Handle_STEPControl_Controller>(Handle_STEPControl_Controller::DownCast(handle)); }
+
+inline std::unique_ptr<Handle_STEPControl_Controller> Handle_STEPControl_Controller_null() { return std::make_unique<Handle_STEPControl_Controller>(); }
+inline bool Handle_STEPControl_Controller_is_null(const Handle_STEPControl_Controller& handle) { return handle.IsNull(); }
+inline std::unique_ptr<Handle_STEPControl_Controller> Handle_STEPControl_Controller_clone(const Handle_STEPControl_Controller& handle) { return std::make_unique<Handle_STEPControl_Controller>(handle); }
+inline const STEPControl_Controller& Handle_STEPControl_Controller_get(const Handle_STEPControl_Controller& handle) { return occt_bindings::handle_get(handle); }
+inline STEPControl_Controller& Handle_STEPControl_Controller_get_mut(Handle_STEPControl_Controller& handle) { return occt_bindings::handle_get(handle); }

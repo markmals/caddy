@@ -144,6 +144,9 @@ classes = [
     "GeomConvert_BSplineCurveToBezierCurve",
     "GeomLib_IsPlanarSurface",
     "GeomProjLib",
+    "GeomFill_TrihedronLaw",
+    "GeomFill_Frenet",
+    "GeomFill_CorrectedFrenet",
     "Adaptor3d_Curve",
     "Adaptor3d_Surface",
     "Adaptor2d_Curve2d",
@@ -198,6 +201,7 @@ classes = [
     "BRepFilletAPI_MakeFillet",
     "BRepFilletAPI_MakeChamfer",
     "BRepFilletAPI_MakeFillet2d",
+    "BRepOffset_MakeOffset",
     "BRepOffsetAPI_MakeOffsetShape",
     "BRepOffsetAPI_MakeThickSolid",
     "BRepOffsetAPI_MakeOffset",
@@ -254,6 +258,30 @@ classes = [
     "StlAPI_Reader",
     "RWStl",
     "Interface_Static",
+    "Interface_InterfaceModel",
+    "StepData_StepModel",
+    "APIHeaderSection_MakeHeader",
+    "STEPCAFControl_Reader",
+    "STEPCAFControl_Writer",
+    "STEPCAFControl_Controller",
+    "STEPControl_Controller",
+    "IGESControl_Controller",
+    "XSControl_Controller",
+
+    # XDE: names, colours and assembly structure carried by STEP
+    "TDocStd_Document",
+    "TDocStd_Application",
+    "TDF_Label",
+    "TDF_Attribute",
+    "TDataStd_Name",
+    "TDataStd_GenericEmpty",
+    "Standard_GUID",
+    "XCAFApp_Application",
+    "XCAFDoc_DocumentTool",
+    "XCAFDoc_ShapeTool",
+    "XCAFDoc_ColorTool",
+    "Quantity_Color",
+    "Quantity_ColorRGBA",
 ]
 
 enums = [
@@ -294,6 +322,7 @@ enums = [
     "BRepOffset_Status",
     "ChFiDS_ErrorStatus",
     "GccEnt_Position",
+    "XCAFDoc_ColorType",
 ]
 
 clone = [
@@ -346,6 +375,10 @@ clone = [
     "gp_GTrsf2d",
     "gp_Elips2d",
     "gp_Mat2d",
+    "TDF_Label",
+    "Standard_GUID",
+    "Quantity_Color",
+    "Quantity_ColorRGBA",
 ]
 
 [collections]
@@ -369,5 +402,6 @@ TColStd_Array1OfInteger = "array1"
 TColStd_Array2OfReal = "array2"
 TColStd_HArray1OfBoolean = "array1"
 TColGeom_SequenceOfCurve = "sequence"
+TDF_LabelSequence = "sequence"
 
 [exclude]

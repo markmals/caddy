@@ -22,6 +22,7 @@ mod inner {
         type BRepBuilderAPI_PipeError = crate::b_rep_builder_api::BRepBuilderAPI_PipeError;
         type BRepBuilderAPI_TransitionMode = crate::b_rep_builder_api::BRepBuilderAPI_TransitionMode;
         type BRepFill_TypeOfContact = crate::b_rep_fill::BRepFill_TypeOfContact;
+        type BRepOffset_MakeOffset = crate::b_rep_offset::BRepOffset_MakeOffset;
         type BRepOffset_Mode = crate::b_rep_offset::BRepOffset_Mode;
         type BRepPrimAPI_MakeSweep = crate::b_rep_prim_api::BRepPrimAPI_MakeSweep;
         type GeomAbs_JoinType = crate::geom_abs::GeomAbs_JoinType;
@@ -53,6 +54,8 @@ mod inner {
 
         fn IsDone(self: &BRepOffsetAPI_MakeOffsetShape) -> Result<bool>;
 
+        fn MakeOffset(self: &BRepOffsetAPI_MakeOffsetShape) -> Result<&BRepOffset_MakeOffset>;
+
         fn Modified(self: Pin<&mut BRepOffsetAPI_MakeOffsetShape>, s: &TopoDS_Shape) -> Result<&TopTools_ListOfShape>;
 
         fn PerformByJoin(self: Pin<&mut BRepOffsetAPI_MakeOffsetShape>, s: &TopoDS_Shape, offset: f64, tol: f64, mode: BRepOffset_Mode, intersection: bool, self_inter: bool, join: GeomAbs_JoinType, remove_int_edges: bool, range: &Message_ProgressRange) -> Result<()>;
@@ -77,6 +80,8 @@ mod inner {
         fn IsDeleted(self: Pin<&mut BRepOffsetAPI_MakeThickSolid>, s: &TopoDS_Shape) -> Result<bool>;
 
         fn IsDone(self: &BRepOffsetAPI_MakeThickSolid) -> Result<bool>;
+
+        fn MakeOffset(self: &BRepOffsetAPI_MakeThickSolid) -> Result<&BRepOffset_MakeOffset>;
 
         fn MakeThickSolidByJoin(self: Pin<&mut BRepOffsetAPI_MakeThickSolid>, s: &TopoDS_Shape, closing_faces: &TopTools_ListOfShape, offset: f64, tol: f64, mode: BRepOffset_Mode, intersection: bool, self_inter: bool, join: GeomAbs_JoinType, remove_int_edges: bool, range: &Message_ProgressRange) -> Result<()>;
 

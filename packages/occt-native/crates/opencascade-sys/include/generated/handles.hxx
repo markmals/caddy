@@ -25,6 +25,9 @@
 #include <Geom2d_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
+#include <GeomFill_CorrectedFrenet.hxx>
+#include <GeomFill_Frenet.hxx>
+#include <GeomFill_TrihedronLaw.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_BezierCurve.hxx>
@@ -53,6 +56,8 @@
 #include <Geom_SweptSurface.hxx>
 #include <Geom_ToroidalSurface.hxx>
 #include <Geom_TrimmedCurve.hxx>
+#include <IGESControl_Controller.hxx>
+#include <Interface_InterfaceModel.hxx>
 #include <Interface_Static.hxx>
 #include <Law_Constant.hxx>
 #include <Law_Function.hxx>
@@ -61,6 +66,8 @@
 #include <Message_Printer.hxx>
 #include <Message_PrinterOStream.hxx>
 #include <Poly_Triangulation.hxx>
+#include <STEPCAFControl_Controller.hxx>
+#include <STEPControl_Controller.hxx>
 #include <ShapeAnalysis_Surface.hxx>
 #include <ShapeFix_Face.hxx>
 #include <ShapeFix_Root.hxx>
@@ -71,13 +78,24 @@
 #include <ShapeUpgrade_UnifySameDomain.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
+#include <StepData_StepModel.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDataStd_GenericEmpty.hxx>
+#include <TDataStd_Name.hxx>
+#include <TDocStd_Application.hxx>
+#include <TDocStd_Document.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
+#include <XCAFApp_Application.hxx>
+#include <XCAFDoc_ColorTool.hxx>
+#include <XCAFDoc_DocumentTool.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
+#include <XSControl_Controller.hxx>
 #include <XSControl_WorkSession.hxx>
 
 typedef opencascade::handle<Message_Messenger> Handle_Message_Messenger;
@@ -129,6 +147,9 @@ typedef opencascade::handle<Geom2d_Circle> Handle_Geom2d_Circle;
 typedef opencascade::handle<Geom2d_Ellipse> Handle_Geom2d_Ellipse;
 typedef opencascade::handle<Geom2d_TrimmedCurve> Handle_Geom2d_TrimmedCurve;
 typedef opencascade::handle<Geom2d_BSplineCurve> Handle_Geom2d_BSplineCurve;
+typedef opencascade::handle<GeomFill_TrihedronLaw> Handle_GeomFill_TrihedronLaw;
+typedef opencascade::handle<GeomFill_Frenet> Handle_GeomFill_Frenet;
+typedef opencascade::handle<GeomFill_CorrectedFrenet> Handle_GeomFill_CorrectedFrenet;
 typedef opencascade::handle<Adaptor3d_Curve> Handle_Adaptor3d_Curve;
 typedef opencascade::handle<Adaptor3d_Surface> Handle_Adaptor3d_Surface;
 typedef opencascade::handle<Adaptor2d_Curve2d> Handle_Adaptor2d_Curve2d;
@@ -152,6 +173,21 @@ typedef opencascade::handle<BRepMesh_DiscretRoot> Handle_BRepMesh_DiscretRoot;
 typedef opencascade::handle<BRepMesh_IncrementalMesh> Handle_BRepMesh_IncrementalMesh;
 typedef opencascade::handle<Poly_Triangulation> Handle_Poly_Triangulation;
 typedef opencascade::handle<Interface_Static> Handle_Interface_Static;
+typedef opencascade::handle<Interface_InterfaceModel> Handle_Interface_InterfaceModel;
+typedef opencascade::handle<StepData_StepModel> Handle_StepData_StepModel;
+typedef opencascade::handle<STEPCAFControl_Controller> Handle_STEPCAFControl_Controller;
+typedef opencascade::handle<STEPControl_Controller> Handle_STEPControl_Controller;
+typedef opencascade::handle<IGESControl_Controller> Handle_IGESControl_Controller;
+typedef opencascade::handle<XSControl_Controller> Handle_XSControl_Controller;
+typedef opencascade::handle<TDocStd_Document> Handle_TDocStd_Document;
+typedef opencascade::handle<TDocStd_Application> Handle_TDocStd_Application;
+typedef opencascade::handle<TDF_Attribute> Handle_TDF_Attribute;
+typedef opencascade::handle<TDataStd_Name> Handle_TDataStd_Name;
+typedef opencascade::handle<TDataStd_GenericEmpty> Handle_TDataStd_GenericEmpty;
+typedef opencascade::handle<XCAFApp_Application> Handle_XCAFApp_Application;
+typedef opencascade::handle<XCAFDoc_DocumentTool> Handle_XCAFDoc_DocumentTool;
+typedef opencascade::handle<XCAFDoc_ShapeTool> Handle_XCAFDoc_ShapeTool;
+typedef opencascade::handle<XCAFDoc_ColorTool> Handle_XCAFDoc_ColorTool;
 typedef opencascade::handle<TColStd_HArray1OfBoolean> Handle_TColStd_HArray1OfBoolean;
 typedef opencascade::handle<TColStd_HArray1OfReal> Handle_TColStd_HArray1OfReal;
 typedef opencascade::handle<TColgp_HArray1OfPnt> Handle_TColgp_HArray1OfPnt;

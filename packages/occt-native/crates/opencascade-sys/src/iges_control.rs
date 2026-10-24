@@ -7,14 +7,21 @@ mod inner {
     unsafe extern "C++" {
         include!("opencascade-sys/include/generated/iges_control.hxx");
 
+        type Handle_IGESControl_Controller;
+        type IGESControl_Controller;
         type IGESControl_Reader;
         type IGESControl_Writer;
+        type Handle_Interface_InterfaceModel = crate::interface::Handle_Interface_InterfaceModel;
         type Handle_Standard_Transient = crate::standard::Handle_Standard_Transient;
+        type Handle_Standard_Type = crate::standard::Handle_Standard_Type;
+        type Handle_XSControl_Controller = crate::xs_control::Handle_XSControl_Controller;
         type Handle_XSControl_WorkSession = crate::xs_control::Handle_XSControl_WorkSession;
         type IFSelect_ReturnStatus = crate::if_select::IFSelect_ReturnStatus;
         type Message_ProgressRange = crate::message::Message_ProgressRange;
         type OcctStream = crate::occt_stream::OcctStream;
+        type Standard_Transient = crate::standard::Standard_Transient;
         type TopoDS_Shape = crate::topo_ds::TopoDS_Shape;
+        type XSControl_Controller = crate::xs_control::XSControl_Controller;
         type XSControl_Reader = crate::xs_control::XSControl_Reader;
 
         fn IGESControl_Reader_new() -> Result<UniquePtr<IGESControl_Reader>>;
@@ -24,6 +31,8 @@ mod inner {
         fn ClearShapes(self: Pin<&mut IGESControl_Reader>) -> Result<()>;
 
         fn GetReadVisible(self: &IGESControl_Reader) -> Result<bool>;
+
+        fn IGESControl_Reader_Model(self_: &IGESControl_Reader) -> Result<UniquePtr<Handle_Interface_InterfaceModel>>;
 
         fn NbRootsForTransfer(self: Pin<&mut IGESControl_Reader>) -> Result<i32>;
 
@@ -76,8 +85,90 @@ mod inner {
         fn IGESControl_Writer_Write_stream_bool(self_: Pin<&mut IGESControl_Writer>, s: Pin<&mut OcctStream>, fnes: bool) -> Result<bool>;
 
         fn IGESControl_Writer_Write_str_bool(self_: Pin<&mut IGESControl_Writer>, file: &str, fnes: bool) -> Result<bool>;
+
+        fn IGESControl_Controller_new_bool(modefnes: bool) -> Result<UniquePtr<Handle_IGESControl_Controller>>;
+
+        fn IGESControl_Controller_AddSessionItem(self_: Pin<&mut IGESControl_Controller>, item: &Handle_Standard_Transient, name: &str, to_apply: bool) -> Result<()>;
+
+        fn AutoRecord(self: &IGESControl_Controller) -> Result<()>;
+
+        fn Customise(self: Pin<&mut IGESControl_Controller>, w_s: Pin<&mut Handle_XSControl_WorkSession>) -> Result<()>;
+
+        fn DecrementRefCounter(self: Pin<&mut IGESControl_Controller>) -> Result<i32>;
+
+        fn Delete(self: &IGESControl_Controller) -> Result<()>;
+
+        fn DynamicType(self: &IGESControl_Controller) -> Result<&Handle_Standard_Type>;
+
+        fn GetRefCount(self: &IGESControl_Controller) -> Result<i32>;
+
+        fn IncrementRefCounter(self: Pin<&mut IGESControl_Controller>) -> Result<()>;
+
+        #[Self = "IGESControl_Controller"]
+        fn Init() -> Result<bool>;
+
+        #[cxx_name = "IsInstance"]
+        fn IsInstance_htype(self: &IGESControl_Controller, type_: &Handle_Standard_Type) -> Result<bool>;
+
+        fn IGESControl_Controller_IsInstance_str(self_: &IGESControl_Controller, type_name: &str) -> Result<bool>;
+
+        #[cxx_name = "IsKind"]
+        fn IsKind_htype(self: &IGESControl_Controller, type_: &Handle_Standard_Type) -> Result<bool>;
+
+        fn IGESControl_Controller_IsKind_str(self_: &IGESControl_Controller, type_name: &str) -> Result<bool>;
+
+        fn IsModeWrite(self: &IGESControl_Controller, modetrans: i32, shape: bool) -> Result<bool>;
+
+        fn ModeWriteBounds(self: &IGESControl_Controller, modemin: &mut i32, modemax: &mut i32, shape: bool) -> Result<bool>;
+
+        fn IGESControl_Controller_ModeWriteHelp(self_: &IGESControl_Controller, modetrans: i32, shape: bool) -> Result<String>;
+
+        fn IGESControl_Controller_Name(self_: &IGESControl_Controller, rsc: bool) -> Result<String>;
+
+        fn IGESControl_Controller_NewModel(self_: &IGESControl_Controller) -> Result<UniquePtr<Handle_Interface_InterfaceModel>>;
+
+        fn RecognizeWriteShape(self: &IGESControl_Controller, shape: &TopoDS_Shape, modetrans: i32) -> Result<bool>;
+
+        fn RecognizeWriteTransient(self: &IGESControl_Controller, obj: &Handle_Standard_Transient, modetrans: i32) -> Result<bool>;
+
+        fn IGESControl_Controller_Record(self_: &IGESControl_Controller, name: &str) -> Result<()>;
+
+        fn IGESControl_Controller_Recorded(name: &str) -> Result<UniquePtr<Handle_XSControl_Controller>>;
+
+        fn IGESControl_Controller_SessionItem(self_: &IGESControl_Controller, name: &str) -> Result<UniquePtr<Handle_Standard_Transient>>;
+
+        fn SetModeWrite(self: Pin<&mut IGESControl_Controller>, modemin: i32, modemax: i32, shape: bool) -> Result<()>;
+
+        fn IGESControl_Controller_SetModeWriteHelp(self_: Pin<&mut IGESControl_Controller>, modetrans: i32, help: &str, shape: bool) -> Result<()>;
+
+        fn IGESControl_Controller_SetNames(self_: Pin<&mut IGESControl_Controller>, long_name: &str, short_name: &str) -> Result<()>;
+
+        fn IGESControl_Controller_get_type_descriptor() -> Result<UniquePtr<Handle_Standard_Type>>;
+
+        fn IGESControl_Controller_get_type_name() -> Result<String>;
+
+        fn IGESControl_Controller_as_XSControl_Controller(self_: &IGESControl_Controller) -> &XSControl_Controller;
+        fn IGESControl_Controller_as_XSControl_Controller_mut(self_: Pin<&mut IGESControl_Controller>) -> Pin<&mut XSControl_Controller>;
+
+        fn Handle_IGESControl_Controller_to_XSControl_Controller(handle: &Handle_IGESControl_Controller) -> UniquePtr<Handle_XSControl_Controller>;
+        /// Null when `handle` does not refer to a `IGESControl_Controller`.
+        fn Handle_IGESControl_Controller_from_XSControl_Controller(handle: &Handle_XSControl_Controller) -> UniquePtr<Handle_IGESControl_Controller>;
+
+        fn IGESControl_Controller_as_Standard_Transient(self_: &IGESControl_Controller) -> &Standard_Transient;
+        fn IGESControl_Controller_as_Standard_Transient_mut(self_: Pin<&mut IGESControl_Controller>) -> Pin<&mut Standard_Transient>;
+
+        fn Handle_IGESControl_Controller_to_Standard_Transient(handle: &Handle_IGESControl_Controller) -> UniquePtr<Handle_Standard_Transient>;
+        /// Null when `handle` does not refer to a `IGESControl_Controller`.
+        fn Handle_IGESControl_Controller_from_Standard_Transient(handle: &Handle_Standard_Transient) -> UniquePtr<Handle_IGESControl_Controller>;
+
+        fn Handle_IGESControl_Controller_null() -> UniquePtr<Handle_IGESControl_Controller>;
+        fn Handle_IGESControl_Controller_is_null(handle: &Handle_IGESControl_Controller) -> bool;
+        fn Handle_IGESControl_Controller_clone(handle: &Handle_IGESControl_Controller) -> UniquePtr<Handle_IGESControl_Controller>;
+        fn Handle_IGESControl_Controller_get(handle: &Handle_IGESControl_Controller) -> Result<&IGESControl_Controller>;
+        fn Handle_IGESControl_Controller_get_mut(handle: Pin<&mut Handle_IGESControl_Controller>) -> Result<Pin<&mut IGESControl_Controller>>;
     }
 
+    impl UniquePtr<Handle_IGESControl_Controller> {}
     impl UniquePtr<IGESControl_Reader> {}
     impl UniquePtr<IGESControl_Writer> {}
 }

@@ -9,6 +9,7 @@ mod inner {
 
         type Handle_Standard_Transient;
         type Handle_Standard_Type;
+        type Standard_GUID;
         type Standard_Transient;
         type Standard_Type;
         type OcctStream = crate::occt_stream::OcctStream;
@@ -96,8 +97,27 @@ mod inner {
         fn Handle_Standard_Type_clone(handle: &Handle_Standard_Type) -> UniquePtr<Handle_Standard_Type>;
         fn Handle_Standard_Type_get(handle: &Handle_Standard_Type) -> Result<&Standard_Type>;
         fn Handle_Standard_Type_get_mut(handle: Pin<&mut Handle_Standard_Type>) -> Result<Pin<&mut Standard_Type>>;
+
+        fn Standard_GUID_new() -> Result<UniquePtr<Standard_GUID>>;
+
+        fn Standard_GUID_new_str(a_guid: &str) -> Result<UniquePtr<Standard_GUID>>;
+
+        fn Assign(self: Pin<&mut Standard_GUID>, uid: &Standard_GUID) -> Result<()>;
+
+        fn Standard_GUID_CheckGUIDFormat(a_guid: &str) -> Result<bool>;
+
+        fn IsNotSame(self: &Standard_GUID, uid: &Standard_GUID) -> Result<bool>;
+
+        fn IsSame(self: &Standard_GUID, uid: &Standard_GUID) -> Result<bool>;
+
+        fn Standard_GUID_ShallowDump(self_: &Standard_GUID, a_stream: Pin<&mut OcctStream>) -> Result<()>;
+
+        fn Standard_GUID_eq(self_: &Standard_GUID, uid: &Standard_GUID) -> Result<bool>;
+
+        fn Standard_GUID_clone(self_: &Standard_GUID) -> UniquePtr<Standard_GUID>;
     }
 
     impl UniquePtr<Handle_Standard_Transient> {}
     impl UniquePtr<Handle_Standard_Type> {}
+    impl UniquePtr<Standard_GUID> {}
 }

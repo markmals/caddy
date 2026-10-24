@@ -149,6 +149,11 @@ fn shim_params(function: &Function, item: &mut Item) -> Result<Shim, String> {
             (Ty::Enum(e), Pass::Value | Pass::ConstRef) => {
                 (e.clone(), format!("{e} {name}"), name.clone())
             }
+            (Ty::Str, Pass::Value | Pass::ConstRef) if param.optional_text => (
+                "&str".into(),
+                format!("rust::Str {name}"),
+                format!("{name}.empty() ? nullptr : std::string({name}).c_str()"),
+            ),
             (Ty::Str, Pass::Value | Pass::ConstRef) => {
                 ("&str".into(), format!("rust::Str {name}"), format!("std::string({name}).c_str()"))
             }

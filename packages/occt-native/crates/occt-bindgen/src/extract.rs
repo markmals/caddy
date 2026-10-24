@@ -170,9 +170,10 @@ impl<'tu> Extractor<'tu> {
 
     fn extract_class(&mut self, name: &str) -> Result<Class, String> {
         if !self.declarations.contains_key(name)
-            && let Some(namespaces) = self.namespaces.get(name).cloned() {
-                return self.extract_namespace(name, &namespaces);
-            }
+            && let Some(namespaces) = self.namespaces.get(name).cloned()
+        {
+            return self.extract_namespace(name, &namespaces);
+        }
         let entity = self.entity(name)?;
         let is_abstract = entity.is_abstract_record();
         let ancestors = ancestor_names(entity)
@@ -405,7 +406,8 @@ impl<'tu> Extractor<'tu> {
                 }
             };
             let name = param_name(argument.get_name().as_deref(), index, &mut taken);
-            params.push(Param { name, ty });
+            let optional_text = ty.ty == Ty::Str && defaults_to_null(argument);
+            params.push(Param { name, ty, optional_text });
         }
         let ret = match kind {
             FnKind::Constructor => None,
@@ -507,12 +509,22 @@ fn public_hierarchy(entity: Entity) -> Vec<Entity> {
             }
             let base = child.get_type().and_then(|ty| ty.get_declaration());
             if let Some(base) = base.and_then(|b| b.get_definition())
-                && base.get_kind() != EntityKind::ClassTemplate {
-                    queue.push_back(base);
-                }
+                && base.get_kind() != EntityKind::ClassTemplate
+            {
+                queue.push_back(base);
+            }
         }
     }
     order
+}
+
+/// True when the parameter's C++ default argument is a null pointer.
+fn defaults_to_null(argument: Entity) -> bool {
+    let Some(range) = argument.get_range() else { return false };
+    let tokens: Vec<String> = range.tokenize().iter().map(|token| token.get_spelling()).collect();
+    tokens
+        .windows(2)
+        .any(|pair| pair[0] == "=" && matches!(pair[1].as_str(), "nullptr" | "NULL" | "0"))
 }
 
 fn ancestor_names(entity: Entity) -> Vec<String> {

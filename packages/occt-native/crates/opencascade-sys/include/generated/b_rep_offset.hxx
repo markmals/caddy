@@ -4,5 +4,16 @@
 #include "handles.hxx"
 
 #include <BRepOffset_Error.hxx>
+#include <BRepOffset_MakeOffset.hxx>
 #include <BRepOffset_Mode.hxx>
 #include <BRepOffset_Status.hxx>
+#include <GeomAbs_JoinType.hxx>
+#include <Message_ProgressRange.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+
+inline std::unique_ptr<BRepOffset_MakeOffset> BRepOffset_MakeOffset_new() { return std::make_unique<BRepOffset_MakeOffset>(); }
+
+inline std::unique_ptr<BRepOffset_MakeOffset> BRepOffset_MakeOffset_new_shape_real2_mode_bool2_jointype_bool2_progressrange(const TopoDS_Shape& s, double offset, double tol, BRepOffset_Mode mode, bool intersection, bool self_inter, GeomAbs_JoinType join, bool thickening, bool remove_int_edges, const Message_ProgressRange& range) { return std::make_unique<BRepOffset_MakeOffset>(s, offset, tol, mode, intersection, self_inter, join, thickening, remove_int_edges, range); }

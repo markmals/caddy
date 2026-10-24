@@ -101,9 +101,10 @@ impl TypeTable {
                 .get_canonical_type();
             let target_spelling = strip_const(&target.get_display_name()).to_owned();
             if let Some(name) = self.collections.get(&target_spelling)
-                && self.handle_collections.contains(name) {
-                    return Ok(Ty::Handle(name.clone()));
-                }
+                && self.handle_collections.contains(name)
+            {
+                return Ok(Ty::Handle(name.clone()));
+            }
             let name = declaration_name(target)?;
             return if self.transient.contains(&name) {
                 Ok(Ty::Handle(name))
