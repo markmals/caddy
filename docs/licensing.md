@@ -239,8 +239,9 @@ Pending owner approval.
 | `@roonieone/caddy` | `Apache-2.0` | Derivative of build123d (Apache-2.0). Same license keeps attribution/patent terms coherent, avoids relicensing questions, and matches the ecosystem it is ported from. |
 | `@roonieone/occt-native` | `LGPL-2.1-only` | Contains/derives from `opencascade-sys` (LGPL-2.1) compiled statically into the addon, and ships OCCT. Our source is public, so LGPL costs us nothing and discharges §4 by simply shipping the source. |
 | `@roonieone/occt-native-<platform>-<arch>` | `LGPL-2.1-only` | Same work, binary form. Carries the OCCT license, the exception, and the corresponding-source pointers. |
+| `occt-bindgen` (crate inside `@roonieone/occt-native`) | `LGPL-2.1-only` | Build-time generator, shipped as source so users can regenerate the bridge. It emits the `opencascade-sys` bridge in the upstream fork's style, so its templates end up inside LGPL source; an Apache-2.0 generator would put Apache-only text into LGPL-2.1-only output (see [compatibility](#apache-20--lgpl-21-only-compatibility)). |
 
-Set `"license"` in each `package.json` to the SPDX expression above, and `license = "LGPL-2.1-only"` in the addon's `Cargo.toml`.
+Set `"license"` in each `package.json` to the SPDX expression above, and `license = "LGPL-2.1-only"` in every crate's `Cargo.toml` (`occt-neon`, `opencascade-sys`, `occt-bindgen`).
 
 ### Why not license the addon permissively?
 
