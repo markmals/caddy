@@ -52,3 +52,12 @@ depends = [
     "//reference/build123d:compat:check",
     "//examples:all",
 ]
+
+[tasks."release:pack"]
+description = "Pack a release into .release/ from the platform packages in packages/occt-native/npm"
+depends = ["//packages/occt-native:pack", "//packages/caddy:pack"]
+run = "node scripts/release/pack.ts"
+
+[tasks."release:publish"]
+description = "Publish .release/ to npm, platform packages first; already-published versions are skipped"
+run = "node scripts/release/publish.ts"

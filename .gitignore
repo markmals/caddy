@@ -42,3 +42,6 @@ exports/
 
 # Staged native addon builds
 native/
+
+# Release tarballs (mise run release:pack)
+/.release/
