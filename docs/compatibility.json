@@ -374,7 +374,7 @@
             ],
             "native": [],
             "capability": "misc",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -647,7 +647,7 @@
                 "TopoDS_Shape"
             ],
             "capability": "topology",
-            "status": "implemented",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -923,7 +923,7 @@
             "referenceTests": [],
             "native": [],
             "capability": "misc",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1030,7 +1030,7 @@
             ],
             "native": [],
             "capability": "misc",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1041,7 +1041,7 @@
             "referenceTests": [],
             "native": [],
             "capability": "misc",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1085,7 +1085,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": "Usable outside a builder: iterate to get the Locations of the rectangular array."
         },
         {
@@ -1138,7 +1138,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": "Usable outside a builder: iterate to get the Locations of the hexagonal array."
         },
         {
@@ -1191,7 +1191,7 @@
             ],
             "native": [],
             "capability": "misc",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1266,7 +1266,7 @@
             ],
             "native": [],
             "capability": "misc",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1310,7 +1310,7 @@
             ],
             "native": [],
             "capability": "misc",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1407,7 +1407,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": "Usable outside a builder: iterating the object yields the Locations, which is how the algebraic API applies arrays."
         },
         {
@@ -1422,7 +1422,7 @@
             ],
             "native": [],
             "capability": "misc",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1433,7 +1433,7 @@
             "referenceTests": [],
             "native": [],
             "capability": "misc",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1446,7 +1446,7 @@
             ],
             "native": [],
             "capability": "misc",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1464,7 +1464,7 @@
                 "gp_Trsf"
             ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1478,7 +1478,7 @@
             ],
             "native": [],
             "capability": "io",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1498,7 +1498,7 @@
                 "TopExp_Explorer"
             ],
             "capability": "io",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1545,7 +1545,7 @@
                 "Bnd_OBB"
             ],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1657,7 +1657,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": "Usable outside a builder: iterate to get the Locations of the polar array."
         },
         {
@@ -1850,7 +1850,7 @@
                 "gp_Trsf"
             ],
             "capability": "geometry",
-            "status": "tested",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -2169,7 +2169,7 @@
             "referenceTests": [],
             "native": [],
             "capability": "misc",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -2382,7 +2382,7 @@
             "referenceTests": [],
             "native": [],
             "capability": "misc",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -2395,7 +2395,7 @@
             ],
             "native": [],
             "capability": "misc",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -2460,7 +2460,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "implemented",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -2623,7 +2623,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -2711,7 +2711,7 @@
                 "TopoDS_Shape"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3022,7 +3022,7 @@
             ],
             "native": [],
             "capability": "io",
-            "status": "planned",
+            "status": "implemented",
             "notes": ""
         },
         {
@@ -3099,7 +3099,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "io",
-            "status": "planned",
+            "status": "implemented",
             "notes": ""
         },
         {
@@ -3260,7 +3260,7 @@
                 "TopoDS_Shape"
             ],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3307,7 +3307,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3527,7 +3527,7 @@
                 "TopoDS_Vertex"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3545,7 +3545,7 @@
                 "TopoDS_Edge"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3575,7 +3575,7 @@
                 "TopoDS_Vertex"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3680,7 +3680,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -3753,7 +3753,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4027,7 +4027,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4072,7 +4072,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4295,7 +4295,7 @@
                 "TopoDS"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4579,7 +4579,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -4643,7 +4643,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4671,7 +4671,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4693,7 +4693,7 @@
                 "TopLoc_Location"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4713,7 +4713,7 @@
                 "HArray1_gp_Pnt"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5064,7 +5064,7 @@
                 "GC_MakeArcOfCircle"
             ],
             "capability": "topology",
-            "status": "implemented",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5242,7 +5242,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5274,7 +5274,7 @@
                 "gp_Vec"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5293,7 +5293,7 @@
                 "gp_Ax1"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5332,7 +5332,7 @@
                 "gp_Vec"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5408,7 +5408,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5458,7 +5458,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5594,7 +5594,7 @@
                 "gp_Vec"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5613,7 +5613,7 @@
                 "Precision"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5656,7 +5656,7 @@
                 "BRepBuilderAPI_MakeFace"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5712,7 +5712,7 @@
                 "Precision"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5729,7 +5729,7 @@
                 "BRepFill"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5750,7 +5750,7 @@
                 "gp_Pnt"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5901,7 +5901,7 @@
                 "BRepPrimAPI_MakeRevol"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5934,7 +5934,7 @@
                 "Geom_RectangularTrimmedSurface"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5958,7 +5958,7 @@
                 "TopoDS_Solid"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5975,7 +5975,7 @@
                 "BRepOffsetAPI_MakePipeShell"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5995,7 +5995,7 @@
                 "TopoDS"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6058,7 +6058,7 @@
                 "TopoDS_Shape"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6101,7 +6101,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -6122,7 +6122,7 @@
         {
             "python": "Location.__iter__",
             "kind": "method",
-            "caddy": "Location#toArray",
+            "caddy": "Location",
             "behavior": "Iterates the position Vector then the XYZ Euler-angle Vector, which is how a Location is unpacked.",
             "referenceTests": [
                 "tests/test_direct_api/test_import_export.py::TestImportExport::test_step_round_trip_preserves_assembly_child_locations",
@@ -6133,8 +6133,8 @@
                 "gp_EulerSequence"
             ],
             "capability": "geometry",
-            "status": "planned",
-            "notes": ""
+            "status": "tested",
+            "notes": "Locations are iterable: [...location] yields the position, then the orientation."
         },
         {
             "python": "Location.__mul__",
@@ -6154,7 +6154,7 @@
         {
             "python": "Location.__neg__",
             "kind": "method",
-            "caddy": "Location#flip",
+            "caddy": "Location#negate",
             "behavior": "Flip the orientation without changing the position operator -.",
             "referenceTests": [
                 "tests/test_direct_api/test_location.py::TestLocation::test_neg",
@@ -6163,7 +6163,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -6193,7 +6193,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6490,7 +6490,7 @@
                 "BRepBuilderAPI_MakeEdge"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6655,7 +6655,7 @@
                 "gp_Vec"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6732,7 +6732,7 @@
                 "gp_Vec"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6867,7 +6867,7 @@
             "referenceTests": [],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6920,7 +6920,7 @@
                 "TopoDS_Shape"
             ],
             "capability": "topology",
-            "status": "implemented",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -6958,7 +6958,7 @@
                 "gp_Vec"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7182,7 +7182,7 @@
                 "gp_Vec"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7294,7 +7294,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -7419,7 +7419,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7462,7 +7462,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7778,7 +7778,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7940,7 +7940,7 @@
                 "TopoDS_Shape"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8275,7 +8275,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8387,8 +8387,8 @@
                 "TopLoc_Location"
             ],
             "capability": "topology",
-            "status": "planned",
-            "notes": ""
+            "status": "excluded",
+            "notes": "Mutates the shape in place; Caddy shapes are immutable, so located()/moved() return the relocated copy instead."
         },
         {
             "python": "Shape.located",
@@ -8517,8 +8517,8 @@
                 "TopLoc_Location"
             ],
             "capability": "topology",
-            "status": "planned",
-            "notes": ""
+            "status": "excluded",
+            "notes": "Mutates the shape in place; Caddy shapes are immutable, so located()/moved() return the relocated copy instead."
         },
         {
             "python": "Shape.moved",
@@ -8566,7 +8566,7 @@
                 "Bnd_OBB"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8907,7 +8907,7 @@
                 "ShapeCustom_RestrictionParameters"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9637,7 +9637,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9665,7 +9665,7 @@
                 "gp_Vec"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9686,7 +9686,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9719,7 +9719,7 @@
                 "TopoDS"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9737,7 +9737,7 @@
                 "TopoDS"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9837,7 +9837,7 @@
                 "gp_Pnt2d"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9859,7 +9859,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9889,7 +9889,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9905,7 +9905,7 @@
                 "TopoDS"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9923,7 +9923,7 @@
                 "TopoDS"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9941,7 +9941,7 @@
                 "TopoDS"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9959,7 +9959,7 @@
                 "TopoDS"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9980,7 +9980,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -9998,7 +9998,7 @@
                 "TopoDS"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10014,7 +10014,7 @@
                 "TopoDS"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10028,7 +10028,7 @@
                 "TopoDS"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10061,7 +10061,7 @@
                 "TopoDS"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10082,7 +10082,7 @@
                 "gp_Ax2"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10098,7 +10098,7 @@
                 "TopoDS"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10248,7 +10248,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -10269,7 +10269,7 @@
         {
             "python": "Vector.__iter__",
             "kind": "method",
-            "caddy": "Vector#toArray",
+            "caddy": "Vector#toTuple",
             "behavior": "Iterates the X, Y and Z components in order, which is how a Vector is unpacked into a tuple.",
             "referenceTests": [
                 "tests/test_direct_api/test_vector.py::TestVector::test_vector_iter",
@@ -10278,8 +10278,8 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
-            "notes": ""
+            "status": "tested",
+            "notes": "Vectors are iterable ([...vector]); toTuple() returns the components."
         },
         {
             "python": "Vector.__mul__",
@@ -10463,7 +10463,7 @@
             ],
             "native": [],
             "capability": "geometry",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10802,7 +10802,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -11000,7 +11000,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -11047,7 +11047,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -11079,7 +11079,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -11179,7 +11179,7 @@
             "referenceTests": [],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -11192,7 +11192,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -11284,7 +11284,7 @@
                 "TopoDS"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -11302,7 +11302,7 @@
                 "BRep_Tool"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         }
     ]
