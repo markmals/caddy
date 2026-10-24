@@ -2,6 +2,7 @@ import { oracleSuite } from "../../../../reference/build123d/oracle.ts";
 import { Align, Pos } from "../../src/geometry/index.ts";
 import {
     Box,
+    ConvexPolyhedron,
     Cone,
     CounterBoreHole,
     CounterSinkHole,
@@ -45,6 +46,19 @@ oracleSuite("parts", {
     "wedge/default": expected => expectShapeMetrics(expected, new Wedge(10, 8, 6, 2, 1, 8, 5)),
     "hole/depth": expected => expectShapeMetrics(expected, new Hole(3, 9)),
     "counterbore/depth": expected => expectShapeMetrics(expected, new CounterBoreHole(2, 4, 3, 10)),
-    "countersink/depth": expected =>
-        expectShapeMetrics(expected, new CounterSinkHole(2, 4, 10, 82)),
+    "countersink/depth": expected => expectShapeMetrics(expected, new CounterSinkHole(2, 4, 10)),
+    "convexpolyhedron/tetrahedron": expected =>
+        expectShapeMetrics(
+            expected,
+            new ConvexPolyhedron([
+                [0, 0, 0],
+                [10, 0, 0],
+                [0, 8, 0],
+                [0, 0, 6],
+            ]),
+        ),
+    "convexpolyhedron/boxes": expected => {
+        let hull = new Box(30, 20, 20).union(new Box(20, 30, 20)).union(new Box(20, 20, 30));
+        expectShapeMetrics(expected, new ConvexPolyhedron(hull.vertices()));
+    },
 });

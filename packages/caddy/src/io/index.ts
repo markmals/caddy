@@ -10,3 +10,4 @@ export type {
     StepOptions,
     StlOptions,
 } from "./types.ts";
+export * from "./export2d/index.ts";

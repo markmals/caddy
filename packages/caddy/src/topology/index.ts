@@ -1,7 +1,13 @@
 // Importing this module registers every shape class with `Shape.cast`; import shapes from here
 // (or the package root) rather than from the individual class modules.
 export { Shape } from "./shape.ts";
-export type { FuseOptions, ShapeOperand, ShapeOptions } from "./shape.ts";
+export type {
+    FuseOptions,
+    IntersectOptions,
+    ShapeOperand,
+    ShapeOptions,
+    TouchOptions,
+} from "./shape.ts";
 export { Vertex } from "./vertex.ts";
 export { Mixin1D } from "./mixin1d.ts";
 export type { CurvePosition } from "./mixin1d.ts";
@@ -21,5 +27,5 @@ export type { FilterOptions, GroupOptions, SortCriterion } from "./shape-list.ts
 export { GroupBy } from "./group-by.ts";
 export type { GroupKey } from "./group-by.ts";
 export type { CurveLike, ShapeFilter } from "./selectors.ts";
-export { CenterOf, FrameMethod, GeomType, Keep, PositionMode, SortBy } from "./enums.ts";
+export { CenterOf, Convexity, FrameMethod, GeomType, Keep, PositionMode, SortBy } from "./enums.ts";
 export type { ShapeTypeName } from "./enums.ts";

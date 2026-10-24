@@ -25,6 +25,7 @@ from build123d import (
     PositionMode,
     Shape,
     ShapeList,
+    Shell,
     Solid,
     SortBy,
     Vector,
@@ -1038,4 +1039,312 @@ def explore_faces_intersected_by_axis() -> dict:
         "centers": _centers(faces),
         "count": len(faces),
         "empty_count": len(solid.faces_intersected_by_axis(Axis((20, 20, 0), (0, 0, 1)))),
+    }
+
+
+# ---- convexity ----
+
+
+def _convexity_names(shapes: Iterable[Shape]) -> list[str]:
+    return [shape.convexity.name for shape in shapes]
+
+
+def _pocket() -> Solid:
+    """A box with a rectangular pocket milled into its top face."""
+    return _box() - Pos(3, 2, 2) * Solid.make_box(4, 2, 2)
+
+
+@case("convexity/box-edges")
+def convexity_box_edges() -> dict:
+    solid = _box()
+    edges = solid.edges().sort_by(Axis.Z)
+    return {
+        "kinds": _convexity_names(edges),
+        "interior": [edge.is_interior for edge in edges],
+    }
+
+
+@case("convexity/pocket-edges")
+def convexity_pocket_edges() -> dict:
+    solid = _pocket()
+    edges = solid.edges()
+    return {
+        "convex": len([e for e in edges if e.convexity.name == "CONVEX"]),
+        "concave": len([e for e in edges if e.convexity.name == "CONCAVE"]),
+        "concave_centers": _centers(
+            ShapeList(e for e in edges if e.convexity.name == "CONCAVE").sort_by(Axis.X)
+        ),
+    }
+
+
+@case("convexity/cylinder-edges")
+def convexity_cylinder_edges() -> dict:
+    """The seam of the cylindrical face is smooth; the rim edges are convex creases."""
+    solid = _cylinder()
+    return {
+        "kinds": sorted(_convexity_names(solid.edges())),
+        "seam_count": len(solid.faces().filter_by(GeomType.CYLINDER)[0].seams),
+    }
+
+
+@case("convexity/faces")
+def convexity_faces() -> dict:
+    cylinder = _cylinder()
+    pocket = _pocket()
+    return {
+        "box_face": _box().faces()[0].convexity.name,
+        "cylinder_side": cylinder.faces().filter_by(GeomType.CYLINDER)[0].convexity.name,
+        "sphere": _sphere().faces()[0].convexity.name,
+        "hole_side": (
+            (_box() - Pos(5, 3, 0) * Solid.make_cylinder(1, 4))
+            .faces()
+            .filter_by(GeomType.CYLINDER)[0]
+            .convexity.name
+        ),
+        "pocket_bottom": pocket.faces().sort_by(Axis.Z)[0].convexity.name,
+        "cylinder_circular": [
+            cylinder.faces().filter_by(GeomType.CYLINDER)[0].is_circular_convex,
+            cylinder.faces().filter_by(GeomType.CYLINDER)[0].is_circular_concave,
+        ],
+    }
+
+
+@case("convexity/vertices")
+def convexity_vertices() -> dict:
+    """A vertex read through a face is a corner of it; read off a solid it is a crease meeting."""
+    face = _box().faces().sort_by(Axis.Z)[0]
+    pocket = _pocket()
+    return {
+        "face_corners": sorted(_convexity_names(face.vertices())),
+        "solid_corners": sorted(_convexity_names(_box().vertices())),
+        "pocket_corners": sorted(_convexity_names(pocket.vertices())),
+    }
+
+
+@case("face/seams")
+def face_seams() -> dict:
+    cylinder_face = _cylinder().faces().filter_by(GeomType.CYLINDER)[0]
+    return {
+        "cylinder": len(cylinder_face.seams),
+        "cylinder_lengths": [edge.length for edge in cylinder_face.seams],
+        "box": len(_box().faces()[0].seams),
+    }
+
+
+# ---- boundary contacts ----
+
+
+def _touch_summary(contacts: ShapeList) -> dict:
+    return {
+        "classes": sorted(type(contact).__name__ for contact in contacts),
+        "count": len(contacts),
+        "centers": sorted(_centers(contacts)),
+    }
+
+
+@case("touch/solid-face")
+def touch_solid_face() -> dict:
+    """Two boxes sharing a whole face contact along that face."""
+    first = _box()
+    second = Pos(10, 0, 0) * _box()
+    contacts = first.touch(second)
+    return {
+        **_touch_summary(contacts),
+        "areas": sorted(face.area for face in contacts.filter_by(lambda s: isinstance(s, Face))),
+    }
+
+
+@case("touch/solid-edge")
+def touch_solid_edge() -> dict:
+    """Boxes offset in two axes meet along one edge only."""
+    contacts = _box().touch(Pos(10, 6, 0) * _box())
+    return _touch_summary(contacts)
+
+
+@case("touch/solid-vertex")
+def touch_solid_vertex() -> dict:
+    """Boxes offset in all three axes meet at a single corner."""
+    contacts = _box().touch(Pos(10, 6, 4) * _box())
+    return _touch_summary(contacts)
+
+
+@case("touch/solid-none")
+def touch_solid_none() -> dict:
+    return {"count": len(_box().touch(Pos(20, 0, 0) * _box()))}
+
+
+@case("touch/face-corner")
+def touch_face_corner() -> dict:
+    """Two coplanar rectangles meeting at one corner touch there."""
+    first = Face.make_rect(4, 4)
+    second = Pos(4, 4, 0) * Face.make_rect(4, 4)
+    return _touch_summary(first.touch(second))
+
+
+@case("touch/intersect-include-touched")
+def touch_intersect_include_touched() -> dict:
+    first = _box()
+    second = Pos(10, 0, 0) * _box()
+    plain = first.intersect(second)
+    touched = first.intersect(second, include_touched=True)
+    return {
+        "plain_is_none": plain is None,
+        "touched_classes": sorted(type(shape).__name__ for shape in (touched or [])),
+        "touched_area": sum(
+            shape.area for shape in (touched or []) if isinstance(shape, Face)
+        ),
+    }
+
+
+# ---- constructors ----
+
+
+@case("construct/face-from-plane")
+def construct_face_from_plane() -> dict:
+    face = Face(Plane.XZ)
+    return {
+        "geom_type": face.geom_type.name,
+        "normal": vec(face.normal_at()),
+        "infinite": face.bounding_box().diagonal > 1e6,
+    }
+
+
+@case("construct/shell-from-faces")
+def construct_shell_from_faces() -> dict:
+    solid = _box()
+    shell = Shell(solid.faces())
+    return {
+        "class": type(shell).__name__,
+        "area": shell.area,
+        "face_count": len(shell.faces()),
+        "is_manifold": shell.is_manifold,
+        "single_face_class": type(Shell(solid.faces()[0])).__name__,
+        "single_face_area": Shell(solid.faces()[0]).area,
+    }
+
+
+@case("construct/solid-from-shell")
+def construct_solid_from_shell() -> dict:
+    solid = Solid(Shell(_box().faces()))
+    return {
+        "class": type(solid).__name__,
+        "volume": solid.volume,
+        "center": vec(solid.center()),
+        "is_valid": solid.is_valid,
+    }
+
+
+@case("edge/reversed")
+def edge_reversed() -> dict:
+    edge = Edge.make_circle(4, start_angle=0, end_angle=90)
+    flipped = edge.reversed()
+    rebuilt = edge.reversed(reconstruct=True)
+    return {
+        "start": vec(edge @ 0),
+        "flipped_start": vec(flipped @ 0),
+        "flipped_end": vec(flipped @ 1),
+        "flipped_forward": flipped.is_forward,
+        "rebuilt_start": vec(rebuilt @ 0),
+        "rebuilt_end": vec(rebuilt @ 1),
+        "rebuilt_forward": rebuilt.is_forward,
+        "rebuilt_length": rebuilt.length,
+    }
+
+
+@case("edge/geom-equal")
+def edge_geom_equal() -> dict:
+    line = Edge.make_line((0, 0, 0), (10, 0, 0))
+    same_line = Edge.make_line((0, 0, 0), (10, 0, 0))
+    other_line = Edge.make_line((0, 0, 0), (10, 1, 0))
+    circle = Edge.make_circle(4)
+    same_circle = Edge.make_circle(4)
+    bigger_circle = Edge.make_circle(5)
+    tilted_circle = Edge.make_circle(4, Plane.XZ)
+    spline = Edge.make_spline([(0, 0, 0), (5, 2, 0), (10, 0, 0)])
+    same_spline = Edge.make_spline([(0, 0, 0), (5, 2, 0), (10, 0, 0)])
+    other_spline = Edge.make_spline([(0, 0, 0), (5, 3, 0), (10, 0, 0)])
+    return {
+        "line_same": line.geom_equal(same_line),
+        "line_other": line.geom_equal(other_line),
+        "line_vs_circle": line.geom_equal(circle),
+        "circle_same": circle.geom_equal(same_circle),
+        "circle_bigger": circle.geom_equal(bigger_circle),
+        "circle_tilted": circle.geom_equal(tilted_circle),
+        "spline_same": spline.geom_equal(same_spline),
+        "spline_other": spline.geom_equal(other_spline),
+    }
+
+
+@case("edge/infinite")
+def edge_infinite() -> dict:
+    """Only an edge built from an Axis is unbounded; OCCT refuses points past 1e100."""
+    finite = Edge.make_line((0, 0, 0), (10, 0, 0))
+    infinite = Edge(Axis((1, 2, 0), (1, 0, 0)))
+    trimmed = infinite.trim_infinite(5)
+    return {
+        "finite": finite.is_infinite,
+        "infinite": infinite.is_infinite,
+        "trimmed_length": trimmed.length,
+        "trimmed_start": vec(trimmed @ 0),
+        "trimmed_end": vec(trimmed @ 1),
+        "finite_unchanged": finite.trim_infinite(5) is finite,
+    }
+
+
+# ---- composite boolean results ----
+
+
+@case("composite/split-and-disjoint")
+def composite_split_and_disjoint() -> dict:
+    """A boolean that leaves disconnected pieces returns a plain Compound, not the composite."""
+    from build123d import Part, Rectangle, Sketch
+
+    split_part = Part([Solid.make_box(10, 2, 2)]) - Pos(4.5, -1, -1) * Solid.make_box(1, 5, 5)
+    disjoint_sum = Part([Solid.make_box(1, 1, 1)]) + Pos(5, 0, 0) * Solid.make_box(1, 1, 1)
+    joined_sum = Part([Solid.make_box(1, 1, 1)]) + Pos(0.5, 0, 0) * Solid.make_box(1, 1, 1)
+    split_sketch = Sketch(Rectangle(10, 2).faces()) - Pos(4.5, 0, 0) * Rectangle(1, 5)
+    return {
+        "split_part_class": type(split_part).__name__,
+        "split_part_solids": len(split_part.solids()),
+        "disjoint_sum_class": type(disjoint_sum).__name__,
+        "disjoint_sum_solids": len(disjoint_sum.solids()),
+        "joined_sum_class": type(joined_sum).__name__,
+        "joined_sum_solids": len(joined_sum.solids()),
+        "split_sketch_class": type(split_sketch).__name__,
+        "split_sketch_faces": len(split_sketch.faces()),
+    }
+
+
+# ---- common plane ----
+
+
+@case("wire/common-plane")
+def wire_common_plane() -> dict:
+    flat = [
+        Edge.make_line((0, 0, 0), (10, 0, 0)),
+        Edge.make_line((10, 0, 0), (10, 5, 0)),
+        Edge.make_line((0, 5, 0), (0, 0, 0)),
+    ]
+    tilted = Edge.make_line((0, 0, 0), (0, 5, 5))
+    coaxial = Edge.make_line((20, 0, 0), (30, 0, 0))
+    arc = Edge.make_circle(4, Plane.XZ)
+    common = flat[0].common_plane(*flat[1:])
+    skew = flat[0].common_plane(tilted, flat[1])
+    colinear = flat[0].common_plane(coaxial)
+    curved = arc.common_plane(Edge.make_line((-4, 0, 0), (4, 0, 0)))
+    # Crossing lines sample four points whose every triple spans the same area, so which
+    # triple defines the plane - and with it the sign of its normal - is arbitrary. Only the
+    # plane itself is meaningful, so the normal is compared without its sign.
+    crossing = Edge.make_line((0, 0, 0), (10, 0, 0)).common_plane(
+        Edge.make_line((5, -5, 0), (5, 5, 0))
+    )
+    return {
+        "common_origin": vec(common.origin) if common is not None else None,
+        "common_normal": vec(common.z_dir) if common is not None else None,
+        "skew_is_none": skew is None,
+        "colinear_normal_dot_z": abs(colinear.z_dir.dot(Vector(0, 0, 1))),
+        "curved_normal": vec(curved.z_dir),
+        "self_only_normal": vec(flat[0].common_plane().z_dir),
+        "crossing_origin": vec(crossing.origin),
+        "crossing_normal_dot_z": abs(crossing.z_dir.dot(Vector(0, 0, 1))),
     }

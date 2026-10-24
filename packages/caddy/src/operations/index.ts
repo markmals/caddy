@@ -1,11 +1,16 @@
+export { makeBrakeFormed } from "./brake-formed.ts";
+export type { BrakeFormedOptions } from "./brake-formed.ts";
 export { Until } from "./extrude-until.ts";
 export { chamfer, fillet } from "./fillets.ts";
 export { draft, offset, thicken } from "./offset.ts";
 export type { OffsetOptions } from "./offset.ts";
 export { extrude, loft, revolve } from "./solids.ts";
-export type { ExtrudeOptions } from "./solids.ts";
+export type { ExtrudeOptions, LoftOptions, RevolveOptions } from "./solids.ts";
 export { project } from "./project.ts";
+export { projectFaces } from "./project-faces.ts";
+export { projectWorkplane } from "./project-workplane.ts";
 export { section, split } from "./split.ts";
-export { sweep, SweepTransition } from "./sweep.ts";
+export type { SectionOptions, SplitOptions } from "./split.ts";
+export { sweep, Transition } from "./sweep.ts";
 export type { SweepOptions } from "./sweep.ts";
 export { mirror, scale } from "./transform.ts";

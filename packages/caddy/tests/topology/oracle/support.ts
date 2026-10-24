@@ -79,6 +79,32 @@ export function expectNames(expected: FixtureCase, key: string, actual: readonly
     expect(fixtureValue(expected, key), `${expected.name}.${key}`).toEqual(actual);
 }
 
+/** A single name: a class name, shape type, geometry type or convexity. */
+export function expectName(expected: FixtureCase, key: string, actual: string): void {
+    expect(actual, `${expected.name}.${key}`).toBe(fixtureString(expected, key));
+}
+
+/** An exact count. */
+export function expectCount(expected: FixtureCase, key: string, actual: number): void {
+    expect(actual, `${expected.name}.${key}`).toBe(fixtureNumber(expected, key));
+}
+
+/** A list of booleans, as a flag-per-element serializer writes it. */
+export function expectFlagList(
+    expected: FixtureCase,
+    key: string,
+    actual: readonly boolean[],
+): void {
+    expect(actual, `${expected.name}.${key}`).toEqual(fixtureValue(expected, key));
+}
+
+/** Points in the order Python's `sorted()` puts their `[x, y, z]` lists in. */
+export function sortedPoints(points: readonly Vector[]): Vector[] {
+    return [...points].sort(
+        (first, second) => first.x - second.x || first.y - second.y || first.z - second.z,
+    );
+}
+
 /** The six sub-shape counts of the `_counts` serializer. */
 export function expectCounts(expected: FixtureCase, key: string, shape: Shape): void {
     let counts = fixtureRecord(expected, key);

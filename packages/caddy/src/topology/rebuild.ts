@@ -21,5 +21,9 @@ export function rebuilt<T extends Shape>(original: T, base: ShapeBase, wrapped: 
             : { label: original.label, color: original.color };
     let copy = Reflect.construct(base, [wrapped, options], original.constructor as ShapeBase) as T;
     let carried = Object.entries(original).filter(([key]) => !Object.hasOwn(copy, key));
-    return Object.assign(copy, Object.fromEntries(carried));
+    Object.assign(copy, Object.fromEntries(carried));
+    for (let joint of original.joints.values()) {
+        joint.rebind(copy);
+    }
+    return copy;
 }

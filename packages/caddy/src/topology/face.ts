@@ -6,17 +6,20 @@ import type { VectorLike } from "../geometry/vector.ts";
 import type { ExtrudeOptions } from "../operations/solids.ts";
 import type { Part } from "./composite.ts";
 import type { Edge } from "./edge.ts";
-import type { ShapeOptions } from "./shape.ts";
+import type { Shape, ShapeOptions } from "./shape.ts";
 import type { Vertex } from "./vertex.ts";
 
 import { makeFaceRect, makeSurface } from "../curves/face-makers.ts";
 import { chamferFace2D, filletFace2D } from "../curves/fillet-chamfer-2d.ts";
+import { frameOf } from "../curves/frame.ts";
 import { InvalidShapeError } from "../errors.ts";
 import { Plane } from "../geometry/plane.ts";
 import { Vector } from "../geometry/vector.ts";
+import { projectFaceToShape } from "../operations/project-faces.ts";
 import { extrude } from "../operations/solids.ts";
 import { fromVec3, toVec3 } from "./conversions.ts";
-import { CenterOf, GeomType } from "./enums.ts";
+import { surfaceConvexity } from "./convexity.ts";
+import { CenterOf, Convexity, GeomType } from "./enums.ts";
 import { native } from "./kernel.ts";
 import { Mixin2D } from "./mixin2d.ts";
 import { registerShapeConstructor } from "./registry.ts";
@@ -49,19 +52,30 @@ export class Face extends Mixin2D {
 
     /** Wrap a native face. */
     constructor(wrapped: occt.Shape, options?: ShapeOptions);
+    /** The unbounded planar face of `plane` (build123d `Face(Plane)`). */
+    constructor(plane: Plane, options?: ShapeOptions);
     /** A planar face bounded by a closed outer wire, with closed inner wires as holes. */
     constructor(outerWire: Wire, innerWires?: Iterable<Wire>, options?: ShapeOptions);
     constructor(
-        source: occt.Shape | Wire,
+        source: occt.Shape | Plane | Wire,
         second: Iterable<Wire> | ShapeOptions = [],
         third: ShapeOptions = {},
     ) {
         if (source instanceof Wire) {
             let inner = Symbol.iterator in second ? [...(second as Iterable<Wire>)] : [];
             super(faceFromWires(source, inner), third);
-        } else {
-            super(source, Symbol.iterator in second ? {} : (second as ShapeOptions));
+            return;
         }
+        let options = Symbol.iterator in second ? {} : (second as ShapeOptions);
+        if (source instanceof Plane) {
+            super(
+                native("Plane face construction", () => construct.makePlaneFace(frameOf(source))),
+                options,
+            );
+            this.createdOn = source;
+            return;
+        }
+        super(source, options);
     }
 
     override get geomType(): GeomType {
@@ -80,6 +94,33 @@ export class Face extends Mixin2D {
             return undefined;
         }
         return new Plane({ origin: frame.origin, xDir: frame.xDirection, zDir: frame.zDirection });
+    }
+
+    /**
+     * How the material behind this face sits against it (build123d `Face.convexity`): read from
+     * the surface's principal curvatures against its outward normal, sampled over the face.
+     */
+    override get convexity(): Convexity {
+        return surfaceConvexity(this, TOLERANCE);
+    }
+
+    /** Whether this face curves away from the material behind it. */
+    get isCircularConvex(): boolean {
+        return this.convexity === Convexity.Convex;
+    }
+
+    /** Whether this face curves into the material behind it. */
+    get isCircularConcave(): boolean {
+        return this.convexity === Convexity.Concave;
+    }
+
+    /** The edges this face meets itself along, as a cylinder does at its seam. */
+    get seams(): ShapeList<Edge> {
+        return new ShapeList(
+            this.edges().filter(edge =>
+                native("Seam check", () => query.isSeamEdge(edge.wrapped, this.wrapped)),
+            ),
+        );
     }
 
     /**
@@ -216,6 +257,15 @@ export class Face extends Mixin2D {
         reference?: Edge,
     ): Face {
         return chamferFace2D(this, distance, distance2, vertices, reference);
+    }
+
+    /**
+     * Project this face onto the surfaces of `target` along `direction` (build123d
+     * `Face.project_to_shape`). Faces come back for a face target and shells for anything
+     * thicker, ordered away from this face; a shell holding one face is returned as that face.
+     */
+    projectToShape(target: Shape, direction: VectorLike): ShapeList<Shape> {
+        return projectFaceToShape(this, target, direction);
     }
 
     protected override withWrapped(wrapped: occt.Shape): this {

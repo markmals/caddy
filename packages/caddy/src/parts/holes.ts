@@ -10,8 +10,11 @@ import { BasePartObject } from "./base.ts";
 /** build123d's `Plane(origin=(0, 0, 0), z_dir=(0, 0, -1))`: X points along -X, so seams face -X. */
 const DOWN = new Plane({ origin: [0, 0, 0], zDir: [0, 0, -1] });
 
-function requiredDepth(depth: number | undefined): number {
-    if (depth === undefined) throw new GeometryError("No depth provided outside a part builder");
+/**
+ * build123d's `depth=None` means "through the builder's part"; with no builder that raises, so the
+ * algebraic API takes depth as a required argument.
+ */
+function requiredDepth(depth: number): number {
     if (!Number.isFinite(depth) || depth <= 0)
         throw new GeometryError("Hole depth must be positive");
     return depth;
@@ -25,7 +28,7 @@ export class Hole extends BasePartObject {
     readonly radius: number;
     readonly holeDepth: number;
 
-    constructor(radius: number, depth?: number) {
+    constructor(radius: number, depth: number) {
         let doubledDepth = requiredDepth(depth) * 2;
         super(() => holeCylinder(radius, doubledDepth));
         this.radius = radius;
@@ -43,7 +46,7 @@ export class CounterBoreHole extends BasePartObject {
         radius: number,
         counterBoreRadius: number,
         counterBoreDepth: number,
-        depth?: number,
+        depth: number,
     ) {
         let holeDepth = requiredDepth(depth);
         super(
@@ -64,13 +67,24 @@ export class CounterBoreHole extends BasePartObject {
     }
 }
 
+export interface CounterSinkOptions {
+    /** Included angle of the countersink cone in degrees; defaults to 82. */
+    readonly counterSinkAngle?: number;
+}
+
 export class CounterSinkHole extends BasePartObject {
     readonly radius: number;
     readonly counterSinkRadius: number;
     readonly counterSinkAngle: number;
     readonly holeDepth: number;
 
-    constructor(radius: number, counterSinkRadius: number, depth?: number, counterSinkAngle = 82) {
+    constructor(
+        radius: number,
+        counterSinkRadius: number,
+        depth: number,
+        options: CounterSinkOptions = {},
+    ) {
+        let { counterSinkAngle = 82 } = options;
         let holeDepth = requiredDepth(depth);
         if (
             !Number.isFinite(counterSinkAngle) ||

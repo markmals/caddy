@@ -64,6 +64,43 @@ export function makeEllipse(xRadius: number, yRadius: number, options: ArcOption
     );
 }
 
+/** Parabola with its vertex at the plane's origin, opening along the plane's X axis. */
+export function makeParabola(focalLength: number, options: ArcOptions = {}): Edge {
+    let plane = options.plane ?? Plane.XY;
+    let startAngle = options.startAngle ?? 0;
+    let endAngle = options.endAngle ?? 90;
+    let counterClockwise =
+        (options.angularDirection ?? Direction.CounterClockwise) === Direction.CounterClockwise;
+    return castEdge("Edge.makeParabola", () =>
+        construct.makeParabolaEdge(
+            frameOf(plane),
+            focalLength,
+            startAngle * DEG2RAD,
+            endAngle * DEG2RAD,
+            counterClockwise,
+        ),
+    );
+}
+
+/** Hyperbola branch centred on the plane's origin, opening along the plane's X axis. */
+export function makeHyperbola(xRadius: number, yRadius: number, options: ArcOptions = {}): Edge {
+    let plane = options.plane ?? Plane.XY;
+    let startAngle = options.startAngle ?? 360;
+    let endAngle = options.endAngle ?? 360;
+    let counterClockwise =
+        (options.angularDirection ?? Direction.CounterClockwise) === Direction.CounterClockwise;
+    return castEdge("Edge.makeHyperbola", () =>
+        construct.makeHyperbolaEdge(
+            frameOf(plane),
+            xRadius,
+            yRadius,
+            startAngle * DEG2RAD,
+            endAngle * DEG2RAD,
+            counterClockwise,
+        ),
+    );
+}
+
 /** The circular arc running from `start` through `middle` to `end`. */
 export function makeThreePointArc(start: VectorLike, middle: VectorLike, end: VectorLike): Edge {
     let points = [start, middle, end].map(point => Vector.from(point).toTuple());

@@ -2,12 +2,14 @@
 
 import type { VectorLike } from "../../geometry/vector.ts";
 import type { Wire } from "../../topology/wire.ts";
+import type { ArcLimit } from "../arc-limit.ts";
 import type { LengthMode } from "../enums.ts";
 
 import { GeometryError } from "../../errors.ts";
 import { Axis } from "../../geometry/axis.ts";
 import { DEG2RAD, TOLERANCE } from "../../geometry/constants.ts";
 import { Vector } from "../../geometry/vector.ts";
+import { isArcLimit, rayLimitPoint } from "../arc-limit.ts";
 import { BaseEdgeObject, BaseLineObject } from "../base-object.ts";
 import { makeLine } from "../edge-makers.ts";
 import { LengthMode as Mode } from "../enums.ts";
@@ -53,11 +55,22 @@ export interface PolarLineOptions {
     readonly lengthMode?: LengthMode;
 }
 
-/** A straight edge of a given length leaving `start` at an angle or along a direction. */
+/**
+ * A straight edge leaving `start` at an angle or along a direction, either of a given length or
+ * running until it first meets the object given instead of a length.
+ */
 export class PolarLine extends BaseEdgeObject {
-    constructor(start: VectorLike, length: number, options: PolarLineOptions = {}) {
+    constructor(start: VectorLike, length: number | ArcLimit, options: PolarLineOptions = {}) {
         let from = Vector.from(start);
         let { angle, direction } = polarDirection(options);
+        if (isArcLimit(length)) {
+            let contact = rayLimitPoint(from, direction, length);
+            if (contact === undefined) {
+                throw new GeometryError("Polar line doesn't intersect its length limit");
+            }
+            super(makeLine(from, contact).wrapped);
+            return;
+        }
         let reach = polarLength(length, angle, options.lengthMode ?? Mode.Diagonal);
         super(makeLine(from, from.add(direction.multiply(reach))).wrapped);
     }

@@ -4,6 +4,7 @@ from build123d import (
     Align,
     Box,
     Cone,
+    ConvexPolyhedron,
     CounterBoreHole,
     CounterSinkHole,
     Cylinder,
@@ -89,3 +90,15 @@ def counterbore_depth():
 @case("countersink/depth")
 def countersink_depth():
     return {"shape": shape_metrics(CounterSinkHole(2, 4, depth=10, counter_sink_angle=82))}
+
+
+@case("convexpolyhedron/tetrahedron")
+def convexpolyhedron_tetrahedron():
+    points = [(0, 0, 0), (10, 0, 0), (0, 8, 0), (0, 0, 6)]
+    return {"shape": shape_metrics(ConvexPolyhedron(points))}
+
+
+@case("convexpolyhedron/boxes")
+def convexpolyhedron_boxes():
+    hull = Box(30, 20, 20) + Box(20, 30, 20) + Box(20, 20, 30)
+    return {"shape": shape_metrics(ConvexPolyhedron(hull.vertices()))}

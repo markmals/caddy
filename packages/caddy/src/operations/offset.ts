@@ -2,7 +2,7 @@ import { features } from "@roonieone/occt-native";
 
 import type { VectorLike } from "../geometry/index.ts";
 
-import { GeometryError, InvalidShapeError, NativeKernelError } from "../errors.ts";
+import { DraftAngleError, GeometryError, InvalidShapeError, NativeKernelError } from "../errors.ts";
 import { Plane, Vector } from "../geometry/index.ts";
 import { Kind } from "../sketch/enums.ts";
 import { Compound, Face, Part, Shape, Solid } from "../topology/index.ts";
@@ -126,20 +126,40 @@ export function draft(
         throw new InvalidShapeError("All drafted faces must belong to one solid parent");
     }
     if (!Number.isFinite(angle)) throw new GeometryError("Draft angle must be finite");
-    try {
-        let frame = {
-            origin: neutralPlane.origin.toTuple(),
-            zDirection: neutralPlane.zDir.toTuple(),
-            xDirection: neutralPlane.xDir.toTuple(),
-        };
-        let result = features.draft(
+    let outcome = native(() =>
+        features.draft(
             solid.wrapped,
             selection.map(face => face.wrapped),
-            frame,
+            {
+                origin: neutralPlane.origin.toTuple(),
+                zDirection: neutralPlane.zDir.toTuple(),
+                xDirection: neutralPlane.xDir.toTuple(),
+            },
             (angle * Math.PI) / 180,
-        );
-        return new Part([Shape.cast(result)]);
+        ),
+    );
+    if (outcome.shape === null) throw draftFailure(outcome, selection);
+    return new Part([Shape.cast(outcome.shape)]);
+}
+
+function native<T>(call: () => T): T {
+    try {
+        return call();
     } catch (cause) {
         throw new NativeKernelError("Draft failed", { cause });
     }
+}
+
+function draftFailure(outcome: features.DraftOutcome, selection: readonly Face[]): DraftAngleError {
+    let face = selection[outcome.failedFace];
+    let problematicShape =
+        outcome.problematic === null ? undefined : Shape.cast(outcome.problematic);
+    let message =
+        face === undefined
+            ? "Draft build failed on the given solid"
+            : "Draft could not be added to a face";
+    return new DraftAngleError(message, {
+        ...(face === undefined ? {} : { face }),
+        ...(problematicShape === undefined ? {} : { problematicShape }),
+    });
 }

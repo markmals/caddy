@@ -266,6 +266,110 @@
         "volume": 209.43951023931953
       }
     },
+    "convexpolyhedron/boxes": {
+      "shape": {
+        "area": 4270.261355604603,
+        "bounding_box": {
+          "max": [
+            15.0,
+            15.0,
+            15.0
+          ],
+          "min": [
+            -15.0,
+            -15.0,
+            -15.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            15.0000001,
+            15.0000001,
+            15.0000001
+          ],
+          "min": [
+            -15.0000001,
+            -15.0000001,
+            -15.0000001
+          ]
+        },
+        "center_of_mass": [
+          3.9258764105306264e-17,
+          -3.9258764105306264e-17,
+          1.3863251074686275e-16
+        ],
+        "class_name": "ConvexPolyhedron",
+        "counts": {
+          "edges": 48,
+          "faces": 26,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 24,
+          "wires": 26
+        },
+        "edge_geom_types": {
+          "LINE": 48
+        },
+        "face_geom_types": {
+          "PLANE": 26
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 23166.66666666666
+      }
+    },
+    "convexpolyhedron/tetrahedron": {
+      "shape": {
+        "area": 149.46169849544816,
+        "bounding_box": {
+          "max": [
+            10.0,
+            8.0,
+            6.0
+          ],
+          "min": [
+            0.0,
+            -1.320589028907526e-16,
+            0.0
+          ]
+        },
+        "bounding_box_coarse": {
+          "max": [
+            10.0000001,
+            8.0000001,
+            6.0000001
+          ],
+          "min": [
+            -1e-07,
+            -1.000000001320589e-07,
+            -1e-07
+          ]
+        },
+        "center_of_mass": [
+          2.5,
+          2.0000000000000004,
+          1.5000000000000007
+        ],
+        "class_name": "ConvexPolyhedron",
+        "counts": {
+          "edges": 6,
+          "faces": 4,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 4,
+          "wires": 4
+        },
+        "edge_geom_types": {
+          "LINE": 6
+        },
+        "face_geom_types": {
+          "PLANE": 4
+        },
+        "is_valid": true,
+        "shape_type": "COMPOUND",
+        "volume": 80.0
+      }
+    },
     "counterbore/depth": {
       "shape": {
         "area": 515.221195188726,

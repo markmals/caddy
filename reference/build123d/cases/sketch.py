@@ -10,6 +10,7 @@ from typing import Any
 
 from build123d import (
     Align,
+    CenterArc,
     Circle,
     Edge,
     Ellipse,
@@ -31,6 +32,7 @@ from build123d import (
     fillet,
     make_face,
     make_hull,
+    trace,
 )
 
 from oracle import case, shape_metrics, vec
@@ -342,3 +344,29 @@ def chamfer_2d_asymmetric():
     base = Rectangle(8, 5)
     corners = base.vertices().filter_by(lambda v: v.X > 0)
     return sketch(chamfer(corners, 1, length2=2))
+
+
+# ---------------------------------------------------------------------------
+# trace: curves swept into faces
+# ---------------------------------------------------------------------------
+
+
+@case("trace/line")
+def trace_line():
+    return sketch(trace(Line((0, 0), (10, 0)), 1))
+
+
+@case("trace/polyline")
+def trace_polyline():
+    return sketch(trace(Polyline((0, 0), (10, 10), (20, 10)), 4))
+
+
+@case("trace/two-lines")
+def trace_two_lines():
+    lines = [Line((0, 0), (6, 0)), Line((0, 4), (6, 4))]
+    return sketch(trace(lines, 1.5))
+
+
+@case("trace/arc")
+def trace_arc():
+    return sketch(trace(CenterArc((0, 0), 5, 0, 120), 2))

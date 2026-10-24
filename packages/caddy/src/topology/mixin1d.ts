@@ -10,22 +10,42 @@ import {
 } from "@roonieone/occt-native";
 
 import type { Offset2DOptions } from "../curves/offset-2d.ts";
+import type { Plane } from "../geometry/plane.ts";
 import type { VectorLike } from "../geometry/vector.ts";
+import type { ProjectToShapeOptions } from "../operations/project-to-shape.ts";
 import type { Edge } from "./edge.ts";
-import type { ShapeOperand } from "./shape.ts";
+import type { Face } from "./face.ts";
+import type { ShapeList } from "./shape-list.ts";
+import type { IntersectOptions, ShapeOperand } from "./shape.ts";
 import type { Wire } from "./wire.ts";
 
 import { offset2D } from "../curves/offset-2d.ts";
 import { InvalidShapeError } from "../errors.ts";
 import { Location } from "../geometry/location.ts";
 import { Vector } from "../geometry/vector.ts";
+import {
+    projectEdgeToShape,
+    projectLineOntoFace,
+    projectWireToShape,
+} from "../operations/project-to-shape.ts";
 import { booleanPieces, expandShapes } from "./boolean.ts";
+import { commonPlane } from "./common-plane.ts";
 import { fromVec3, locationFromMatrix, toVec3 } from "./conversions.ts";
-import { CenterOf, FrameMethod, PositionMode } from "./enums.ts";
+import { connectedFaces, dihedralConvexity } from "./convexity.ts";
+import { CenterOf, Convexity, FrameMethod, PositionMode } from "./enums.ts";
 import { native } from "./kernel.ts";
 import { nativeDimension, topLevelNativeShapes } from "./native-topology.ts";
 import { castShape } from "./registry.ts";
 import { Shape } from "./shape.ts";
+
+/** build123d's `TOLERANCE`: how far a line may deviate from a shared plane. */
+const COMMON_PLANE_TOLERANCE = 1e-6;
+
+/** Options of {@link Mixin1D#commonPlane}. */
+export interface CommonPlaneOptions {
+    /** How far the lines may deviate from the plane; defaults to 1e-6. */
+    readonly tolerance?: number;
+}
 
 /** Where a position along an edge or wire lands: an edge, its curve parameter and direction. */
 export interface CurvePosition {
@@ -59,6 +79,55 @@ export abstract class Mixin1D extends Shape {
     /** Whether the shape runs along its curve (forward orientation) rather than against it. */
     get isForward(): boolean {
         return shapes.orientation(this.wrapped) === Orientation.Forward;
+    }
+
+    /**
+     * How the shape this edge was selected from sits around it (build123d `Mixin1D.convexity`):
+     * the dihedral angle of the crease between the two faces meeting along it, sampled over its
+     * length. A seam edge, with the same face on both sides, is `Smooth`.
+     */
+    override get convexity(): Convexity {
+        let faces = connectedFaces(this);
+        if (faces.length === 1) {
+            let seam = native("Seam check", () =>
+                query.isSeamEdge(this.wrapped, faces[0]!.wrapped),
+            );
+            if (seam) return Convexity.Smooth;
+            throw new InvalidShapeError(
+                "This edge lies on one face only, so there is no crease to classify - convexity needs an edge shared by two faces",
+            );
+        }
+        if (faces.length !== 2) {
+            throw new InvalidShapeError(
+                `${faces.length} faces meet at this edge - convexity needs exactly two`,
+            );
+        }
+        return dihedralConvexity(this as unknown as Edge, faces[0]!, faces[1]!);
+    }
+
+    /**
+     * The plane containing this shape and every line given, or `undefined` when they do not
+     * share one (build123d `Mixin1D.common_plane`). Coaxial lines lie in infinitely many
+     * planes; one of them is returned.
+     */
+    commonPlane(
+        ...args: [...lines: (Mixin1D | undefined)[], options: CommonPlaneOptions]
+    ): Plane | undefined;
+    commonPlane(...lines: (Mixin1D | undefined)[]): Plane | undefined;
+    commonPlane(...args: (Mixin1D | undefined | CommonPlaneOptions)[]): Plane | undefined {
+        let last = args.at(-1);
+        let options =
+            last === undefined || last instanceof Shape ? undefined : (last as CommonPlaneOptions);
+        let lines = (options === undefined ? args : args.slice(0, -1)) as (Mixin1D | undefined)[];
+        return commonPlane(
+            [this, ...lines].filter(line => line !== undefined),
+            options?.tolerance ?? COMMON_PLANE_TOLERANCE,
+        );
+    }
+
+    /** Whether this is a concave edge of the shape it was selected from. */
+    get isInterior(): boolean {
+        return this.convexity === Convexity.Concave;
     }
 
     get length(): number {
@@ -188,7 +257,8 @@ export abstract class Mixin1D extends Shape {
     }
 
     /** Common finds collinear overlaps; Section adds crossing vertices. */
-    override intersectWith(other: Shape, tolerance = 1e-6): Shape[] | undefined {
+    override intersectWith(other: Shape, options: IntersectOptions = {}): Shape[] | undefined {
+        let tolerance = options.tolerance ?? 1e-6;
         let results: Shape[];
         switch (other.shapeType) {
             case "Edge":
@@ -204,7 +274,7 @@ export abstract class Mixin1D extends Shape {
                 results = this.distanceTo(other) <= tolerance ? [other] : [];
                 break;
             default:
-                results = other.intersectWith(this, tolerance) ?? [];
+                results = other.intersectWith(this, options) ?? [];
         }
         return results.length > 0 ? results : undefined;
     }
@@ -220,6 +290,33 @@ export abstract class Mixin1D extends Shape {
     /** Offsets this planar line sideways by `distance` (build123d `offset_2d`). */
     offset2D(distance: number, options?: Offset2DOptions): Edge | Wire {
         return offset2D(this as unknown as Edge | Wire, distance, options);
+    }
+
+    /**
+     * Project this line onto `face` along `direction` (build123d `Mixin1D.project`). By default
+     * only the curve closest to the original comes back.
+     */
+    project(
+        face: Face,
+        direction: VectorLike,
+        options: { readonly closest?: boolean } = {},
+    ): Edge | Wire | ShapeList<Edge | Wire> {
+        return projectLineOntoFace(this as unknown as Edge | Wire, face, direction, options);
+    }
+
+    /**
+     * Project this line onto the surfaces of `target`, along a direction or through a centre
+     * (build123d `Edge.project_to_shape` / `Wire.project_to_shape`). An edge yields the edges of
+     * the projected wires; a wire yields the wires themselves.
+     */
+    projectToShape(
+        target: Shape,
+        options: ProjectToShapeOptions,
+    ): ShapeList<Edge> | ShapeList<Wire> {
+        let line = this as unknown as Edge | Wire;
+        return line.shapeType === "Edge"
+            ? projectEdgeToShape(line as Edge, target, options)
+            : projectWireToShape(line as Wire, target, options);
     }
 }
 

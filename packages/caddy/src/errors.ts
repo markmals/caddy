@@ -1,3 +1,5 @@
+import type { Face, Shape } from "./topology/index.ts";
+
 /**
  * Error hierarchy for Caddy. Every error thrown by the library derives from {@link CaddyError}
  * so callers can distinguish Caddy failures from programming errors.
@@ -26,3 +28,23 @@ export class ExportError extends CaddyError {}
 
 /** The native OCCT addon reported a failure or could not be loaded. */
 export class NativeKernelError extends CaddyError {}
+
+/** Details of a draft the kernel refused. */
+export interface DraftAngleErrorOptions extends ErrorOptions {
+    /** The face OCCT could not draft, when it failed on a particular one. */
+    readonly face?: Face;
+    /** The sub-shape OCCT blamed for the failure, when it named one. */
+    readonly problematicShape?: Shape;
+}
+
+/** A draft angle could not be applied to the selected faces (build123d `DraftAngleError`). */
+export class DraftAngleError extends CaddyError {
+    readonly face: Face | undefined;
+    readonly problematicShape: Shape | undefined;
+
+    constructor(message: string, options: DraftAngleErrorOptions = {}) {
+        super(message, options);
+        this.face = options.face;
+        this.problematicShape = options.problematicShape;
+    }
+}

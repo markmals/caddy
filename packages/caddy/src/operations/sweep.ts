@@ -10,13 +10,25 @@ import { Face } from "../topology/face.ts";
 import { Shape } from "../topology/shape.ts";
 import { Wire } from "../topology/wire.ts";
 
-export const SweepTransition = { Transformed: 0, RightCorner: 1, RoundCorner: 2 } as const;
-export type SweepTransition = (typeof SweepTransition)[keyof typeof SweepTransition];
+/** How a sweep carries the profile through a corner in the path (build123d `Transition`). */
+export const Transition = {
+    Right: "RIGHT",
+    Round: "ROUND",
+    Transformed: "TRANSFORMED",
+} as const;
+
+export type Transition = (typeof Transition)[keyof typeof Transition];
+
+const TRANSITION_MODES: Record<Transition, 0 | 1 | 2> = {
+    [Transition.Transformed]: 0,
+    [Transition.Right]: 1,
+    [Transition.Round]: 2,
+};
 
 export interface SweepOptions {
     readonly multisection?: boolean;
     readonly isFrenet?: boolean;
-    readonly transition?: SweepTransition;
+    readonly transition?: Transition;
     readonly normal?: VectorLike;
     readonly binormal?: Wire;
     readonly clean?: boolean;
@@ -36,7 +48,7 @@ export function sweep(
     let sweepOptions = {
         solid: true,
         frenet: options.isFrenet ?? false,
-        transition: options.transition ?? SweepTransition.Transformed,
+        transition: TRANSITION_MODES[options.transition ?? Transition.Transformed],
         ...(frame === undefined
             ? {}
             : {

@@ -13,6 +13,7 @@ import {
 } from "../../../../reference/build123d/tolerances.ts";
 import {
     Align,
+    CenterArc,
     chamfer2D,
     Circle,
     Edge,
@@ -34,6 +35,7 @@ import {
     Superellipse,
     Trapezoid,
     Triangle,
+    trace,
 } from "../../src/index.ts";
 import { expectShapeMetrics } from "../shape-metrics.ts";
 
@@ -265,4 +267,21 @@ oracleSuite("sketch", {
         let corners = base.vertices().filter(vertex => vertex.x > 0);
         expectSketch(expected, chamfer2D(corners, 1, { length2: 2 }));
     },
+
+    "trace/line": expected => expectSketch(expected, trace(new Line([0, 0], [10, 0]), 1)),
+    "trace/polyline": expected =>
+        expectSketch(
+            expected,
+            trace(
+                new Polyline([
+                    [0, 0],
+                    [10, 10],
+                    [20, 10],
+                ]),
+                4,
+            ),
+        ),
+    "trace/two-lines": expected =>
+        expectSketch(expected, trace([new Line([0, 0], [6, 0]), new Line([0, 4], [6, 4])], 1.5)),
+    "trace/arc": expected => expectSketch(expected, trace(new CenterArc([0, 0], 5, 0, 120), 2)),
 });

@@ -14,6 +14,10 @@ export * from "./sketch/index.ts";
 export * from "./operations/index.ts";
 export * from "./parts/index.ts";
 export * from "./io/index.ts";
+export * from "./joints/index.ts";
+export * from "./pack/index.ts";
+export * from "./mesh/index.ts";
+export * from "./drafting/index.ts";
 // `export` cannot be a binding name, so the implementation is `exportCAD` and this publishes
 // build123d's spelling alongside it.
 export { exportCAD as export } from "./io/export.ts";

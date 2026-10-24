@@ -17,4 +17,6 @@ export type { TriangleOptions } from "./objects/triangle.ts";
 export { chamfer2D, fillet2D } from "./operations/fillet-chamfer.ts";
 export type { Chamfer2DOptions } from "./operations/fillet-chamfer.ts";
 export { makeFace, makeHull } from "./operations/make-face.ts";
+export { trace } from "./operations/trace.ts";
+export type { TraceSource } from "./operations/trace.ts";
 export type { CurveSource } from "./operations/make-face.ts";

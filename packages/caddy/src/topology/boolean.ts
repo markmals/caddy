@@ -8,7 +8,7 @@ import type * as occt from "@roonieone/occt-native";
 
 import { booleans, ShapeType, shapes, topology } from "@roonieone/occt-native";
 
-import type { FuseOptions, Shape, ShapeOperand } from "./shape.ts";
+import type { FuseOptions, IntersectOptions, Shape, ShapeOperand } from "./shape.ts";
 
 import { BooleanOperationError, InvalidShapeError } from "../errors.ts";
 import { native } from "./kernel.ts";
@@ -146,12 +146,17 @@ export function booleanOperation(
 }
 
 /**
- * build123d's `copy_attributes_to`: `target` takes `source`'s label and colour where it has
- * none of its own.
+ * build123d's `copy_attributes_to`: `target` takes `source`'s label, colour and joints where it
+ * has none of its own.
  */
 export function inheritAttributes<T extends Shape>(target: T, source: Shape): T {
     target.label ||= source.label;
     target.color ??= source.color;
+    if (target.joints.size === 0) {
+        for (let joint of source.joints.values()) {
+            joint.rebind(target);
+        }
+    }
     return target;
 }
 
@@ -232,16 +237,20 @@ export function subtractionOperands(self: Shape, operands: readonly ShapeOperand
 export function intersectShapes(
     self: Shape,
     operands: readonly ShapeOperand[],
-    tolerance = 1e-6,
+    options: IntersectOptions = {},
 ): Shape | undefined {
     let others = operandShapes(operands);
     if (others.length === 0) {
         return undefined;
     }
+    let tolerance = options.tolerance ?? 1e-6;
+    let includeTouched = options.includeTouched ?? false;
     let common: Shape[] = [self];
     for (let other of others) {
         let next = uniqueShapes(
-            common.flatMap(shape => expandShapes(shape.intersectWith(other, tolerance) ?? [])),
+            common.flatMap(shape =>
+                expandShapes(shape.intersectWith(other, { tolerance, includeTouched }) ?? []),
+            ),
         );
         if (next.length === 0) {
             return undefined;

@@ -67,6 +67,22 @@ export const FrameMethod = {
 } as const;
 export type FrameMethod = (typeof FrameMethod)[keyof typeof FrameMethod];
 
+/**
+ * How the material of a shape sits around one of its elements (build123d `Convexity`): a
+ * property of the element and the shape it was selected from, not of the element alone.
+ */
+export const Convexity = {
+    /** The material closes around the element by less than half a turn: a box's outer edge. */
+    Convex: "CONVEX",
+    /** By more than half a turn: the inner corner of a pocket, a hole. */
+    Concave: "CONCAVE",
+    /** The boundary passes through without bending: a planar face, a fillet seam. */
+    Smooth: "SMOOTH",
+    /** Both senses are present along the element. */
+    Saddle: "SADDLE",
+} as const;
+export type Convexity = (typeof Convexity)[keyof typeof Convexity];
+
 /** build123d's names for the OCCT shape types, as `Shape#shapeType` reports them. */
 export type ShapeTypeName =
     | "Vertex"

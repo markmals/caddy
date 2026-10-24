@@ -4,7 +4,9 @@ import { construct, ShapeType, topology } from "@roonieone/occt-native";
 
 import type { Transform } from "../geometry/transform.ts";
 import type { VectorLike } from "../geometry/vector.ts";
-import type { ShapeOptions } from "./shape.ts";
+import type { Convexity } from "./enums.ts";
+import type { Face } from "./face.ts";
+import type { IntersectOptions, ShapeOptions } from "./shape.ts";
 
 import { InvalidShapeError } from "../errors.ts";
 import { Axis } from "../geometry/axis.ts";
@@ -16,6 +18,7 @@ import { native } from "./kernel.ts";
 import { registerShapeConstructor } from "./registry.ts";
 import { ShapeList } from "./shape-list.ts";
 import { Shape } from "./shape.ts";
+import { cornerConvexity, creaseConvexity } from "./vertex-convexity.ts";
 
 function isNativeShape(value: unknown): value is occt.Shape {
     return (
@@ -60,6 +63,16 @@ export class Vertex extends Shape {
 
     get volume(): number {
         return 0;
+    }
+
+    /**
+     * How the shape this vertex was selected from sits around it (build123d
+     * `Vertex.convexity`): a corner of the face it was taken through, or the creases meeting at
+     * it when it came straight off a solid or shell.
+     */
+    override get convexity(): Convexity {
+        let face = [...this.topoPath].reverse().find(step => step.shapeType === "Face");
+        return face === undefined ? creaseConvexity(this) : cornerConvexity(this, face as Face);
     }
 
     /** The vertex's point, including its location. */
@@ -125,8 +138,9 @@ export class Vertex extends Shape {
      */
     override intersectWith(
         other: Shape | VectorLike | Location | Axis | Plane,
-        tolerance = 1e-6,
+        options: IntersectOptions = {},
     ): Shape[] | undefined {
+        let tolerance = options.tolerance ?? 1e-6;
         if (other instanceof Axis) {
             return axisContains(other, this.#point()) ? [this] : undefined;
         }
@@ -142,7 +156,7 @@ export class Vertex extends Shape {
         if (target instanceof Vertex) {
             return this.distanceTo(target) <= tolerance ? [this] : undefined;
         }
-        return target.intersectWith(this, tolerance);
+        return target.intersectWith(this, options);
     }
 
     override toString(): string {

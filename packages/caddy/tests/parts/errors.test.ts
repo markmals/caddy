@@ -2,7 +2,7 @@ import { OcctErrorCode, isOcctError } from "@roonieone/occt-native";
 import { expect, test } from "vite-plus/test";
 
 import { GeometryError, NativeKernelError } from "../../src/errors.ts";
-import { Box, Hole } from "../../src/parts/index.ts";
+import { Box, ConvexPolyhedron, Hole } from "../../src/parts/index.ts";
 
 test("a primitive reports a native constructor failure with its original cause", () => {
     try {
@@ -18,6 +18,19 @@ test("a primitive reports a native constructor failure with its original cause",
 });
 
 test("algebraic holes need an explicit depth outside a builder", () => {
-    expect(() => new Hole(2)).toThrow(GeometryError);
+    expect(() => new Hole(2, Number.NaN)).toThrow(GeometryError);
     expect(() => new Hole(2, 0)).toThrow(GeometryError);
+});
+
+test("a convex polyhedron needs points that enclose a volume", () => {
+    expect(
+        () =>
+            new ConvexPolyhedron([
+                [0, 0, 0],
+                [1, 0, 0],
+                [0, 1, 0],
+                [1, 1, 0],
+            ]),
+    ).toThrow(GeometryError);
+    expect(() => new ConvexPolyhedron([])).toThrow(GeometryError);
 });

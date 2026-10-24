@@ -6,6 +6,7 @@ import type { Until } from "./extrude-until.ts";
 import { GeometryError, NativeKernelError } from "../errors.ts";
 import { Axis, Vector } from "../geometry/index.ts";
 import { Part, Sketch } from "../topology/composite.ts";
+import { Compound } from "../topology/compound.ts";
 import { Face } from "../topology/face.ts";
 import { Shape } from "../topology/shape.ts";
 import { Vertex } from "../topology/vertex.ts";
@@ -34,8 +35,12 @@ function extrudeFace(face: Face, direction: Vector, taper: number): Shape {
         : extrudeTaper(face, direction, taper);
 }
 
+/**
+ * Extrude a face, or every face of a sketch or compound, into a Part (build123d `extrude`). A
+ * sketch boolean that splits returns a plain Compound, which build123d also extrudes face by face.
+ */
 export function extrude(
-    toExtrude: Face | Sketch,
+    toExtrude: Face | Compound,
     amount?: number,
     options: ExtrudeOptions = {},
 ): Part {
@@ -81,12 +86,19 @@ export function extrude(
     return makePart(solids, options.clean ?? true);
 }
 
+export interface RevolveOptions {
+    /** Axis the profiles turn about; defaults to `Axis.Z`. */
+    readonly axis?: Axis;
+    /** Sweep in degrees, signed; defaults to a full turn. */
+    readonly revolutionArc?: number;
+    readonly clean?: boolean;
+}
+
 export function revolve(
     profiles: Face | Sketch | readonly Face[],
-    axis: Axis = Axis.Z,
-    revolutionArc = 360,
-    clean = true,
+    options: RevolveOptions = {},
 ): Part {
+    let { axis = Axis.Z, revolutionArc = 360, clean = true } = options;
     if (!Number.isFinite(revolutionArc)) throw new GeometryError("Revolution arc must be finite");
     let faces =
         profiles instanceof Face
@@ -127,11 +139,17 @@ function outerSections(sections: readonly (Face | Sketch | Vertex)[]): (Vertex |
     return result;
 }
 
+export interface LoftOptions {
+    /** Join the sections with straight ruled surfaces instead of a smooth skin. */
+    readonly ruled?: boolean;
+    readonly clean?: boolean;
+}
+
 export function loft(
     sections: readonly (Face | Sketch | Vertex)[],
-    ruled = false,
-    clean = true,
+    options: LoftOptions = {},
 ): Part {
+    let { ruled = false, clean = true } = options;
     if (sections.length < 2 || sections.slice(1, -1).some(section => section instanceof Vertex)) {
         throw new GeometryError("Loft needs at least two sections; vertices may only be endpoints");
     }

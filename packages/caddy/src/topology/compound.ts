@@ -4,7 +4,7 @@ import { measure, ShapeType, shapes, topology } from "@roonieone/occt-native";
 
 import type { Axis } from "../geometry/axis.ts";
 import type { Plane } from "../geometry/plane.ts";
-import type { ShapeOperand, ShapeOptions } from "./shape.ts";
+import type { IntersectOptions, ShapeOperand, ShapeOptions, TouchOptions } from "./shape.ts";
 
 import { InvalidShapeError } from "../errors.ts";
 import { Vector } from "../geometry/vector.ts";
@@ -102,8 +102,15 @@ export class Compound extends Mixin3D implements Iterable<Shape> {
         return fromVec3(properties.centerOfMass);
     }
 
-    /** The children's shape type when they all share one, otherwise Compound. */
+    /**
+     * The type the centre of mass integrates over: a compound takes its children's common type,
+     * while a composite wrapping a single face, shell or solid takes that shape's own type.
+     */
     #unwrappedShapeType(): occt.ShapeType {
+        let own = shapes.shapeType(this.wrapped);
+        if (own !== ShapeType.Compound) {
+            return own;
+        }
         let types = new Set(
             topology.childShapes(this.wrapped).map(child => shapes.shapeType(child)),
         );
@@ -175,11 +182,17 @@ export class Compound extends Mixin3D implements Iterable<Shape> {
     }
 
     /** build123d `Compound.__and__`: as `Shape#intersect`, but empty rather than `undefined`. */
-    override intersect(...others: (ShapeOperand | Axis | Plane)[]): Compound {
+    override intersect(...others: (ShapeOperand | Axis | Plane)[]): Compound;
+    override intersect(
+        ...args: [...others: (ShapeOperand | Axis | Plane)[], options: IntersectOptions]
+    ): Compound;
+    override intersect(...args: (ShapeOperand | Axis | Plane | IntersectOptions)[]): Compound {
         if (this.length === 0) {
             throw new InvalidShapeError("Cannot intersect shape with empty compound");
         }
-        let intersection = super.intersect(...others);
+        let intersection = super.intersect(
+            ...(args as [...(ShapeOperand | Axis | Plane)[], IntersectOptions]),
+        );
         return intersection === undefined ? new Compound() : this.#asComposite(intersection);
     }
 
@@ -193,17 +206,24 @@ export class Compound extends Mixin3D implements Iterable<Shape> {
      * build123d `Compound._intersect`: every child intersected with `other` (or each of its
      * children, when it is a compound), without duplicates.
      */
-    override intersectWith(other: Shape, tolerance = 1e-6): Shape[] | undefined {
+    override intersectWith(other: Shape, options: IntersectOptions = {}): Shape[] | undefined {
         let mine = [...this];
         if (mine.length === 0) {
             return undefined;
         }
         let theirs = other instanceof Compound ? [...other] : [other];
         let results = mine.flatMap(element =>
-            theirs.flatMap(operand => element.intersectWith(operand, tolerance) ?? []),
+            theirs.flatMap(operand => element.intersectWith(operand, options) ?? []),
         );
         let unique = uniqueShapes(results);
         return unique.length > 0 ? unique : undefined;
+    }
+
+    /** build123d `Compound.touch`: the contacts of every element, without duplicates. */
+    override touch(other: Shape, options: TouchOptions = {}): ShapeList<Shape> {
+        return new ShapeList<Shape>(
+            uniqueShapes([...this].flatMap(element => [...element.touch(other, options)])),
+        );
     }
 }
 

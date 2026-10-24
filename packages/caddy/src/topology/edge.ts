@@ -1,6 +1,6 @@
 import type * as occt from "@roonieone/occt-native";
 
-import { query, ShapeType, shapes } from "@roonieone/occt-native";
+import { construct, query, ShapeType, shapes } from "@roonieone/occt-native";
 
 import type { ArcOptions } from "../curves/edge-makers.ts";
 import type {
@@ -9,8 +9,10 @@ import type {
     SplineApproxOptions,
     SplineOptions,
 } from "../curves/spline-makers.ts";
+import type { Plane } from "../geometry/plane.ts";
 import type { VectorLike } from "../geometry/vector.ts";
 import type { CurvePosition } from "./mixin1d.ts";
+import type { Shape } from "./shape.ts";
 import type { ShapeOptions } from "./shape.ts";
 
 import {
@@ -20,7 +22,7 @@ import {
     makeTangentArc,
     makeThreePointArc,
 } from "../curves/edge-makers.ts";
-import { trimEdge, trimEdgeToLength } from "../curves/edge-trim.ts";
+import { trimEdge, trimEdgeToLength, trimEdgeToOther } from "../curves/edge-trim.ts";
 import {
     makeBezier,
     makeBspline,
@@ -172,9 +174,75 @@ export class Edge extends Mixin1D {
         throw new InvalidShapeError("Unable to find parameter, Edge is too complex");
     }
 
-    /** A copy with the opposite orientation (build123d `reversed()`). */
-    reversed(): Edge {
-        return this.withWrapped(native("Reverse", () => shapes.reversed(this.wrapped)));
+    /**
+     * A copy with the opposite orientation (build123d `reversed()`). With `reconstruct` the
+     * curve itself is rebuilt reversed instead of only flipping the edge's orientation flag.
+     */
+    reversed(options: { readonly reconstruct?: boolean } = {}): Edge {
+        if (options.reconstruct !== true) {
+            return this.withWrapped(native("Reverse", () => shapes.reversed(this.wrapped)));
+        }
+        let [first, last] = [this.paramAt(0), this.paramAt(1)];
+        return this.withWrapped(
+            native("Reverse curve", () => construct.reverseEdgeCurve(this.wrapped, first, last)),
+        );
+    }
+
+    /** Whether this is an infinite line (build123d's test: a line longer than 1e100). */
+    get isInfinite(): boolean {
+        return this.geomType === GeomType.Line && this.length > 1e100;
+    }
+
+    /**
+     * An infinite line trimmed to `halfLength` either side of its centre, as OCCT's booleans
+     * need; any other edge is returned unchanged (build123d `Edge.trim_infinite`).
+     */
+    trimInfinite(halfLength: number): Edge {
+        if (!this.isInfinite) return this;
+        let origin = this.center();
+        let direction = this.positionAt(1).sub(this.positionAt(0)).normalized();
+        return makeLine(
+            origin.sub(direction.multiply(halfLength)),
+            origin.add(direction.multiply(halfLength)),
+        );
+    }
+
+    /**
+     * Whether two edges have the same geometry, rather than being the same topological edge
+     * (build123d `Edge.geom_equal`). Lines are compared by their ends, circles and ellipses by
+     * their radii, centre and axis; every other kind by sampled points, which build123d only
+     * falls back to for curves it cannot read structurally.
+     */
+    geomEqual(
+        other: Edge,
+        options: { readonly tolerance?: number; readonly samples?: number } = {},
+    ): boolean {
+        let tolerance = options.tolerance ?? TOLERANCE;
+        if (this.geomType !== other.geomType) return false;
+        if (
+            !this.positionAt(0).equals(other.positionAt(0)) ||
+            !this.positionAt(1).equals(other.positionAt(1))
+        ) {
+            return false;
+        }
+        if (this.geomType === GeomType.Line) return true;
+
+        let mine = query.curveConic(this.wrapped);
+        let theirs = query.curveConic(other.wrapped);
+        if (mine !== undefined && theirs !== undefined) {
+            return (
+                Math.abs(mine.radius - theirs.radius) < tolerance &&
+                Math.abs(mine.minorRadius - theirs.minorRadius) < tolerance &&
+                fromVec3(mine.center).equals(fromVec3(theirs.center)) &&
+                fromVec3(mine.axis).equals(fromVec3(theirs.axis))
+            );
+        }
+        let samples = options.samples ?? 5;
+        for (let sample = 1; sample <= samples; sample++) {
+            let position = sample / (samples + 1);
+            if (!this.positionAt(position).equals(other.positionAt(position))) return false;
+        }
+        return true;
     }
 
     /** A straight edge between two points. */
@@ -253,6 +321,14 @@ export class Edge extends Mixin1D {
     /** The section of the given arc length starting at a normalized position. */
     trimToLength(start: number, length: number): Edge {
         return trimEdgeToLength(this, start, length);
+    }
+
+    /**
+     * The shortest section from this edge's start that reaches `other`, or `undefined` when they
+     * never meet (build123d `Edge.trim_to_other`).
+     */
+    trimToOther(other: Shape | Axis | Plane): Edge | undefined {
+        return trimEdgeToOther(this, other);
     }
 }
 /** Python's float `%`: C `fmod`, moved into the divisor's sign. */

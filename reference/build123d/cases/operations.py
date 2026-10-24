@@ -7,12 +7,17 @@ from build123d import (
     Cylinder,
     Edge,
     Face,
-    Until,
+    FilletPolyline,
     Keep,
+    Kind,
+    Location,
     Plane,
     Pos,
     Rectangle,
     Solid,
+    Sphere,
+    Transition,
+    Until,
     Vertex,
     Wire,
     chamfer,
@@ -20,9 +25,11 @@ from build123d import (
     extrude,
     fillet,
     loft,
+    make_brake_formed,
     mirror,
     offset,
     project,
+    project_workplane,
     revolve,
     scale,
     section,
@@ -30,7 +37,7 @@ from build123d import (
     sweep,
     thicken,
 )
-from oracle import case, shape_metrics, vec
+from oracle import case, plane, shape_metrics, vec
 
 
 @case("extrude/face")
@@ -200,3 +207,159 @@ def project_face_plane():
 @case("project/point-plane")
 def project_point_plane():
     return {"point": vec(project(Vertex(1, 2, 5), workplane=Plane.XY)[0])}
+
+
+@case("sweep/multisection")
+def sweep_multisection():
+    path = Edge.make_line((0, 0, 0), (0, 0, 10))
+    lower = Rectangle(6, 4).faces()[0]
+    upper = (Pos(0, 0, 10) * Rectangle(3, 2)).faces()[0]
+    return {"shape": shape_metrics(sweep([lower, upper], path, multisection=True))}
+
+
+@case("sweep/transition-right")
+def sweep_transition_right():
+    path = Wire.make_polygon([(0, 0, 0), (0, 0, 8), (6, 0, 8)], close=False)
+    swept = sweep(Rectangle(2, 2), path, transition=Transition.RIGHT)
+    return {"shape": shape_metrics(swept)}
+
+
+@case("extrude/until-target-face")
+def extrude_until_target_face():
+    profile = (Pos(0, 0, -10) * Rectangle(3, 3)).faces()[0]
+    target = Box(12, 12, 6)
+    return {"shape": shape_metrics(extrude(profile, until=Until.NEXT, target=target))}
+
+
+@case("offset/face")
+def offset_face():
+    return {"shape": shape_metrics(offset(Rectangle(8, 6).faces()[0], amount=0.75))}
+
+
+@case("offset/method-face-normal")
+def offset_method_face_normal():
+    face = Rectangle(8, 6).faces()[0]
+    return {"shape": shape_metrics(face.offset(2.5))}
+
+
+@case("hollow/watertight")
+def hollow_watertight():
+    return {"shape": shape_metrics(Box(1, 1, 1).solid().hollow([], thickness=-0.1))}
+
+
+@case("hollow/openings")
+def hollow_openings():
+    box = Box(1, 1, 1).solid()
+    return {
+        "shape": shape_metrics(
+            box.hollow(box.faces().filter_by(Axis.Z), thickness=0.1, kind=Kind.INTERSECTION)
+        )
+    }
+
+
+@case("maxfillet/box")
+def maxfillet_box():
+    solid = Box(10, 8, 2).solid()
+    return {"radius": solid.max_fillet(solid.edges())}
+
+
+@case("dprism/thru-all")
+def dprism_thru_all():
+    profile = Face.make_rect(0.5, 0.5)
+    solid = Box(1, 1, 1, align=(Align.CENTER, Align.CENTER, Align.MIN)).solid()
+    return {"shape": shape_metrics(solid.dprism(None, [profile], additive=False))}
+
+
+@case("dprism/depth")
+def dprism_depth():
+    profile = Face.make_rect(0.5, 0.5)
+    solid = Box(1, 1, 1, align=(Align.CENTER, Align.CENTER, Align.MIN)).solid()
+    return {
+        "shape": shape_metrics(
+            solid.dprism(None, [profile], depth=0.5, thru_all=False, additive=False)
+        )
+    }
+
+
+@case("dprism/wire-bounds")
+def dprism_wire_bounds():
+    outline = Face.make_rect(0.5, 0.5).outer_wire()
+    solid = Box(1, 1, 1, align=(Align.CENTER, Align.CENTER, Align.MIN)).solid()
+    return {"shape": shape_metrics(solid.dprism(None, [outline], additive=False))}
+
+
+@case("split/method-top")
+def split_method_top():
+    pieces = Box(8, 6, 4).solid().split(Plane.XY, keep=Keep.TOP)
+    return {"shape": shape_metrics(pieces)}
+
+
+@case("split/method-both")
+def split_method_both():
+    top, bottom = Box(8, 6, 4).solid().split(Plane.XY, keep=Keep.BOTH)
+    return {"top": {"shape": shape_metrics(top)}, "bottom": {"shape": shape_metrics(bottom)}}
+
+
+@case("split/by-perimeter-inside")
+def split_by_perimeter_inside():
+    sphere = Sphere(10).solid()
+    surface = sphere.faces()[0]
+    perimeter = Wire.make_circle(3, Plane((0, 0, 10)))
+    projected = perimeter.project_to_shape(sphere, (0, 0, -1))[0]
+    inside = surface.split_by_perimeter(projected, Keep.INSIDE)
+    return {"shape": shape_metrics(inside)}
+
+
+@case("project/wire-to-shape")
+def project_wire_to_shape():
+    target = Cylinder(5, 10, align=(Align.CENTER, Align.CENTER, Align.MIN)).solid()
+    square = Rectangle(4, 4).faces()[0].outer_wire().moved(Location((0, 0, 12)))
+    return {"shape": shape_metrics(square.project_to_shape(target, (0, 0, -1))[0])}
+
+
+@case("project/edge-to-shape")
+def project_edge_to_shape():
+    target = Cylinder(5, 10, align=(Align.CENTER, Align.CENTER, Align.MIN)).solid()
+    line = Edge.make_line((-4, 0, 12), (4, 0, 12))
+    return {"shape": shape_metrics(line.project_to_shape(target, (0, 0, -1))[0])}
+
+
+@case("project/line-onto-face")
+def project_line_onto_face():
+    face = Face.make_rect(20, 20, Plane.XY)
+    line = Edge.make_line((-4, -2, 5), (4, 3, 5))
+    return {"shape": shape_metrics(line.project(face, (0, 0, -1)))}
+
+
+@case("project/workplane")
+def project_workplane_case():
+    return {"plane": plane(project_workplane((1, 2, 3), (1, 0, 0), (0, 0, 1), 10))}
+
+
+@case("brakeformed/constant-width")
+def brakeformed_constant_width():
+    outline = FilletPolyline((0, 0), (5, 6), (10, 1), radius=1)
+    return {"shape": shape_metrics(make_brake_formed(0.5, 1, line=outline))}
+
+
+@case("brakeformed/station-widths")
+def brakeformed_station_widths():
+    outline = FilletPolyline((0, 0), (5, 6), (10, 1), radius=1)
+    return {"shape": shape_metrics(make_brake_formed(0.5, [1, 2, 3, 4], line=outline))}
+
+
+@case("project/faces-along-path")
+def project_faces_along_path():
+    target = Cylinder(10, 20).solid()
+    path = Wire.make_circle(10, Plane((0, 0, 0)))
+    squares = [(Pos(x, 0, 0) * Rectangle(2, 2)).faces()[0] for x in (0, 3, 6)]
+    projected = target.project_faces(squares, path)
+    return {f"face{i}": {"shape": shape_metrics(face)} for i, face in enumerate(projected)}
+
+
+@case("project/face-to-shape")
+def project_face_to_shape():
+    target = Cylinder(10, 20).solid()
+    patch = (Pos(0, 0, 14) * Rectangle(6, 4)).faces()[0]
+    projected = patch.project_to_shape(target, (0, 0, -1))
+    return {f"face{i}": {"shape": shape_metrics(face)} for i, face in enumerate(projected)}

@@ -1,5 +1,5 @@
-/** Rounding and cutting the corners of planar faces and closed wires
- * (build123d `Face.fillet_2d`, `Face.chamfer_2d`, `Wire.chamfer_2d`). */
+/** Rounding and cutting the corners of planar faces and wires
+ * (build123d `Face.fillet_2d`, `Face.chamfer_2d`, `Wire.fillet_2d`, `Wire.chamfer_2d`). */
 
 import { ShapeType, construct, query, shapes, topology } from "@roonieone/occt-native";
 
@@ -12,6 +12,7 @@ import { GeometryError } from "../errors.ts";
 import { native } from "../topology/kernel.ts";
 import { Shape } from "../topology/shape.ts";
 import { castFace, castWire } from "./cast.ts";
+import { filletWireCorner } from "./fillet-wire-corner.ts";
 
 /** The two edges meeting at `vertex`, with `reference` first when one is given. */
 function cornerEdges(face: Face, vertex: Vertex, reference?: Edge): [Edge, Edge] {
@@ -72,9 +73,17 @@ function requireClosed(wire: Wire, operation: string): void {
     }
 }
 
-/** The outer wire of the face the wire bounds, with its corners rounded. */
+/**
+ * The wire with its listed corners rounded: a closed wire is filleted as the face it bounds,
+ * while an open one is rebuilt corner by corner with the tangent-arc solver.
+ */
 export function filletWire2D(wire: Wire, radius: number, vertices: Iterable<Vertex>): Wire {
-    requireClosed(wire, "2D fillet");
+    if (!query.isClosed(wire.wrapped)) {
+        return [...vertices].reduce(
+            (filleted, vertex) => filletWireCorner(filleted, vertex.center(), radius),
+            wire,
+        );
+    }
     let filleted = filletFace2D(faceOf(wire), radius, vertices);
     return castWire("Fillet 2D", () => query.outerWire(filleted.wrapped));
 }

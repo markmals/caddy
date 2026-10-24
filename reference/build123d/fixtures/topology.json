@@ -326,6 +326,174 @@
         "volume": 120.0
       }
     },
+    "composite/split-and-disjoint": {
+      "disjoint_sum_class": "Compound",
+      "disjoint_sum_solids": 2,
+      "joined_sum_class": "Part",
+      "joined_sum_solids": 1,
+      "split_part_class": "Compound",
+      "split_part_solids": 2,
+      "split_sketch_class": "Sketch",
+      "split_sketch_faces": 1
+    },
+    "construct/face-from-plane": {
+      "geom_type": "PLANE",
+      "infinite": true,
+      "normal": [
+        0.0,
+        -1.0,
+        0.0
+      ]
+    },
+    "construct/shell-from-faces": {
+      "area": 248.0,
+      "class": "Shell",
+      "face_count": 6,
+      "is_manifold": true,
+      "single_face_area": 24.0,
+      "single_face_class": "Shell"
+    },
+    "construct/solid-from-shell": {
+      "center": [
+        5.0,
+        3.0,
+        2.0
+      ],
+      "class": "Solid",
+      "is_valid": true,
+      "volume": 240.0
+    },
+    "convexity/box-edges": {
+      "interior": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "kinds": [
+        "CONVEX",
+        "CONVEX",
+        "CONVEX",
+        "CONVEX",
+        "CONVEX",
+        "CONVEX",
+        "CONVEX",
+        "CONVEX",
+        "CONVEX",
+        "CONVEX",
+        "CONVEX",
+        "CONVEX"
+      ]
+    },
+    "convexity/cylinder-edges": {
+      "kinds": [
+        "CONVEX",
+        "CONVEX",
+        "SMOOTH"
+      ],
+      "seam_count": 1
+    },
+    "convexity/faces": {
+      "box_face": "SMOOTH",
+      "cylinder_circular": [
+        true,
+        false
+      ],
+      "cylinder_side": "CONVEX",
+      "hole_side": "CONCAVE",
+      "pocket_bottom": "SMOOTH",
+      "sphere": "CONVEX"
+    },
+    "convexity/pocket-edges": {
+      "concave": 8,
+      "concave_centers": [
+        [
+          3.0,
+          2.0,
+          3.0
+        ],
+        [
+          3.0,
+          4.0,
+          3.0
+        ],
+        [
+          3.0,
+          3.0,
+          2.0
+        ],
+        [
+          5.0,
+          2.0,
+          2.0
+        ],
+        [
+          5.0,
+          4.0,
+          2.0
+        ],
+        [
+          7.0,
+          2.0,
+          3.0
+        ],
+        [
+          7.0,
+          4.0,
+          3.0
+        ],
+        [
+          7.0,
+          3.0,
+          2.0
+        ]
+      ],
+      "convex": 16
+    },
+    "convexity/vertices": {
+      "face_corners": [
+        "CONVEX",
+        "CONVEX",
+        "CONVEX",
+        "CONVEX"
+      ],
+      "pocket_corners": [
+        "CONCAVE",
+        "CONCAVE",
+        "CONCAVE",
+        "CONCAVE",
+        "CONVEX",
+        "CONVEX",
+        "CONVEX",
+        "CONVEX",
+        "CONVEX",
+        "CONVEX",
+        "CONVEX",
+        "CONVEX",
+        "SADDLE",
+        "SADDLE",
+        "SADDLE",
+        "SADDLE"
+      ],
+      "solid_corners": [
+        "CONVEX",
+        "CONVEX",
+        "CONVEX",
+        "CONVEX",
+        "CONVEX",
+        "CONVEX",
+        "CONVEX",
+        "CONVEX"
+      ]
+    },
     "edge/arc": {
       "arc_center": [
         0.0,
@@ -410,6 +578,32 @@
         5.0,
         -3.061616997868383e-16,
         -0.0
+      ]
+    },
+    "edge/geom-equal": {
+      "circle_bigger": false,
+      "circle_same": true,
+      "circle_tilted": false,
+      "line_other": false,
+      "line_same": true,
+      "line_vs_circle": false,
+      "spline_other": false,
+      "spline_same": true
+    },
+    "edge/infinite": {
+      "finite": false,
+      "finite_unchanged": true,
+      "infinite": true,
+      "trimmed_end": [
+        6.0,
+        2.0,
+        0.0
+      ],
+      "trimmed_length": 10.0,
+      "trimmed_start": [
+        -4.0,
+        2.0,
+        0.0
       ]
     },
     "edge/line": {
@@ -571,6 +765,36 @@
           0.0
         ]
       }
+    },
+    "edge/reversed": {
+      "flipped_end": [
+        4.0,
+        0.0,
+        0.0
+      ],
+      "flipped_forward": false,
+      "flipped_start": [
+        2.4492935982947064e-16,
+        4.0,
+        0.0
+      ],
+      "rebuilt_end": [
+        4.0,
+        9.797174393178826e-16,
+        0.0
+      ],
+      "rebuilt_forward": true,
+      "rebuilt_length": 6.283185307179586,
+      "rebuilt_start": [
+        -7.347880794884119e-16,
+        4.0,
+        0.0
+      ],
+      "start": [
+        4.0,
+        0.0,
+        0.0
+      ]
     },
     "explore/boolean": {
       "class_name": "Solid",
@@ -1117,6 +1341,13 @@
         2.5,
         4.5,
         4.0
+      ]
+    },
+    "face/seams": {
+      "box": 0,
+      "cylinder": 1,
+      "cylinder_lengths": [
+        8.0
       ]
     },
     "face/with-hole": {
@@ -2647,6 +2878,71 @@
         240.0
       ]
     },
+    "touch/face-corner": {
+      "centers": [
+        [
+          2.0,
+          2.0,
+          0.0
+        ]
+      ],
+      "classes": [
+        "Vertex"
+      ],
+      "count": 1
+    },
+    "touch/intersect-include-touched": {
+      "plain_is_none": true,
+      "touched_area": 24.0,
+      "touched_classes": [
+        "Face"
+      ]
+    },
+    "touch/solid-edge": {
+      "centers": [
+        [
+          10.0,
+          6.0,
+          2.0
+        ]
+      ],
+      "classes": [
+        "Edge"
+      ],
+      "count": 1
+    },
+    "touch/solid-face": {
+      "areas": [
+        24.0
+      ],
+      "centers": [
+        [
+          10.0,
+          3.0,
+          2.0
+        ]
+      ],
+      "classes": [
+        "Face"
+      ],
+      "count": 1
+    },
+    "touch/solid-none": {
+      "count": 0
+    },
+    "touch/solid-vertex": {
+      "centers": [
+        [
+          10.0,
+          6.0,
+          4.0
+        ]
+      ],
+      "classes": [
+        "Vertex"
+      ],
+      "count": 1
+    },
     "transform/located": {
       "location": {
         "matrix": [
@@ -3849,6 +4145,36 @@
         6.123233995736766e-17,
         0.0
       ]
+    },
+    "wire/common-plane": {
+      "colinear_normal_dot_z": 1.0,
+      "common_normal": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "common_origin": [
+        5.0,
+        1.6666666666666665,
+        0.0
+      ],
+      "crossing_normal_dot_z": 1.0,
+      "crossing_origin": [
+        5.0,
+        0.0,
+        0.0
+      ],
+      "curved_normal": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "self_only_normal": [
+        -0.0,
+        0.0,
+        1.0
+      ],
+      "skew_is_none": true
     },
     "wire/location-at": {
       "corrected": {

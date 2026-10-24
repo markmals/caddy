@@ -3,7 +3,10 @@
 
 import { Orientation, construct, query, shapes } from "@roonieone/occt-native";
 
+import type { Axis } from "../geometry/axis.ts";
+import type { Plane } from "../geometry/plane.ts";
 import type { Edge } from "../topology/edge.ts";
+import type { Shape } from "../topology/shape.ts";
 
 import { GeometryError } from "../errors.ts";
 import { TOLERANCE } from "../geometry/constants.ts";
@@ -51,4 +54,21 @@ export function trimEdgeToLength(edge: Edge, start: number, length: number): Edg
     return castEdge("Edge.trimToLength", () =>
         construct.trimEdgeByParam(edge.wrapped, startParam, endParam),
     );
+}
+
+/**
+ * The shortest piece of `edge`, measured from its start, that reaches an intersection with
+ * `other`; `undefined` when they never meet (build123d `Edge.trim_to_other`).
+ */
+export function trimEdgeToOther(edge: Edge, other: Shape | Axis | Plane): Edge | undefined {
+    let intersection = edge.intersect(other);
+    if (intersection === undefined) {
+        return undefined;
+    }
+    let crossings = intersection.vertices();
+    if (crossings.length === 0) {
+        return undefined;
+    }
+    let pieces = crossings.map(vertex => trimEdge(edge, 0, edge.paramAtPoint(vertex.center())));
+    return pieces.reduce((shortest, piece) => (piece.length < shortest.length ? piece : shortest));
 }

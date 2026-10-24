@@ -1,18 +1,23 @@
 import type * as occt from "@roonieone/occt-native";
 
-import { measure, query, shapes, ShapeType, topology } from "@roonieone/occt-native";
+import { measure, mesh, query, shapes, ShapeType, topology } from "@roonieone/occt-native";
 
+import type { ViewportOptions } from "../drafting/viewport.ts";
 import type { Color } from "../geometry/color.ts";
 import type { VectorLike } from "../geometry/vector.ts";
+import type { Joint } from "../joints/joint.ts";
+import type { MeshOptions, Tessellation } from "../mesh/triangulation.ts";
+import type { TrimmingTool } from "../operations/split-pieces.ts";
 import type { Compound } from "./compound.ts";
 import type { Edge } from "./edge.ts";
-import type { GeomType, ShapeTypeName } from "./enums.ts";
+import type { Convexity, GeomType, ShapeTypeName } from "./enums.ts";
 import type { Face } from "./face.ts";
 import type { Shell } from "./shell.ts";
 import type { Solid } from "./solid.ts";
 import type { Vertex } from "./vertex.ts";
 import type { Wire } from "./wire.ts";
 
+import { projectToViewport } from "../drafting/viewport.ts";
 import { GeometryError, InvalidShapeError } from "../errors.ts";
 import { Axis } from "../geometry/axis.ts";
 import { BoundingBox } from "../geometry/bounding-box.ts";
@@ -21,6 +26,9 @@ import { Location } from "../geometry/location.ts";
 import { Plane } from "../geometry/plane.ts";
 import { Transform } from "../geometry/transform.ts";
 import { Vector } from "../geometry/vector.ts";
+import { meshDeflection, tessellationOf } from "../mesh/triangulation.ts";
+import { projectFaces } from "../operations/project-faces.ts";
+import { splitPieces } from "../operations/split-pieces.ts";
 import {
     additionOperands,
     booleanCut,
@@ -30,7 +38,7 @@ import {
     subtractionOperands,
 } from "./boolean.ts";
 import { fromVec3, locationFromMatrix, matrixOf, toVec3 } from "./conversions.ts";
-import { CenterOf } from "./enums.ts";
+import { CenterOf, Keep } from "./enums.ts";
 import { principalInertia } from "./inertia.ts";
 import { intersectionOperand } from "./intersection-operand.ts";
 import { native } from "./kernel.ts";
@@ -50,6 +58,23 @@ export interface FuseOptions {
     readonly glue?: boolean;
     /** Fuzzy tolerance merging nearly coincident geometry. */
     readonly tol?: number;
+}
+
+/** Options for {@link Shape#intersect} and {@link Shape#intersectWith}. */
+export interface IntersectOptions {
+    /**
+     * Also report boundary contacts, where the shapes meet without their interiors overlapping
+     * (build123d `include_touched`); only solids produce them.
+     */
+    readonly includeTouched?: boolean;
+    /** Distance below which geometry counts as coincident; defaults to 1e-6. */
+    readonly tolerance?: number;
+}
+
+/** Options for {@link Shape#touch}. */
+export interface TouchOptions {
+    /** Distance below which two boundaries count as in contact; defaults to 1e-6. */
+    readonly tolerance?: number;
 }
 
 /** Either side of an algebraic operation: one shape or several. */
@@ -86,6 +111,18 @@ export abstract class Shape {
      * solid records `[solid, face]`.
      */
     topoPath: readonly Shape[] = [];
+
+    /** Allocated on first use: most shapes never carry a joint. */
+    #joints: Map<string, Joint> | undefined;
+
+    /**
+     * The joints bound to this shape, by label (build123d `Shape.joints`). A joint registers
+     * itself here when it is created, and copies of this shape carry rebound copies of it.
+     */
+    get joints(): Map<string, Joint> {
+        this.#joints ??= new Map();
+        return this.#joints;
+    }
 
     /**
      * Rank used by booleans to choose the result class: Vertex 0, Edge 1, Wire 1.5, Face 2,
@@ -164,6 +201,17 @@ export abstract class Shape {
     /** OCCT BRepCheck_Analyzer verdict on the shape and all its sub-shapes. */
     get isValid(): boolean {
         return native("Validity check", () => measure.isValid(this.wrapped));
+    }
+
+    /**
+     * How the shape this one was selected from sits around it (build123d `Shape.convexity`).
+     * Only a vertex, edge or face taken from a larger shape is an element of one; every other
+     * shape is the region itself, so the question does not apply.
+     */
+    get convexity(): Convexity {
+        throw new InvalidShapeError(
+            `A ${this.constructor.name} has no convexity - only a Vertex, Edge or Face selected from a larger shape does`,
+        );
     }
 
     /** Whether every nondegenerate edge of each top-level shape has exactly two adjacent faces. */
@@ -499,7 +547,41 @@ export abstract class Shape {
             this.color === undefined
                 ? { label: this.label }
                 : { label: this.label, color: this.color };
-        return new constructor(wrapped, options);
+        let copy = new constructor(wrapped, options);
+        if (this.#joints !== undefined) {
+            for (let joint of this.#joints.values()) {
+                joint.rebind(copy);
+            }
+        }
+        return copy;
+    }
+
+    // ---- Meshing ----
+
+    /**
+     * A copy carrying a triangulation of every face, no finer than `tolerance` (build123d
+     * `Shape.mesh`, which triangulates in place). Meshing it again, tessellating it or writing
+     * it as STL reuses this triangulation when it is fine enough for what is asked.
+     */
+    async mesh(tolerance: number, options: MeshOptions = {}): Promise<this> {
+        if (this.isNull) {
+            throw new InvalidShapeError("Cannot mesh an empty shape");
+        }
+        let meshed = await mesh.triangulate(this.wrapped, meshDeflection(tolerance, options));
+        return this.withWrapped(meshed);
+    }
+
+    /**
+     * A triangulated approximation of this shape: vertices in world coordinates and the index
+     * triples that span them, wound outwards (build123d `Shape.tessellate`).
+     */
+    async tessellate(tolerance: number, options: MeshOptions = {}): Promise<Tessellation> {
+        if (this.isNull) {
+            throw new InvalidShapeError("Cannot tessellate an empty shape");
+        }
+        return tessellationOf(
+            await mesh.tessellate(this.wrapped, meshDeflection(tolerance, options)),
+        );
     }
 
     // ---- Measurement ----
@@ -556,14 +638,20 @@ export abstract class Shape {
      * build123d's `&`: the common part of this shape and every operand (each operand narrows
      * the result further), cleaned; `undefined` when nothing is shared.
      */
-    intersect(...others: (ShapeOperand | Axis | Plane)[]): Shape | undefined {
+    intersect(...others: (ShapeOperand | Axis | Plane)[]): Shape | undefined;
+    intersect(
+        ...args: [...others: (ShapeOperand | Axis | Plane)[], options: IntersectOptions]
+    ): Shape | undefined;
+    intersect(...args: (ShapeOperand | Axis | Plane | IntersectOptions)[]): Shape | undefined {
+        let { operands, options } = intersectArguments(args);
         return intersectShapes(
             this,
-            others.map(other =>
+            operands.map(other =>
                 other instanceof Axis || other instanceof Plane
                     ? intersectionOperand(this, other)
                     : other,
             ),
+            options,
         );
     }
 
@@ -581,10 +669,21 @@ export abstract class Shape {
      * Single-shape intersection, specialised per class (build123d `_intersect`); `intersect`
      * chains it over its operands. The base shape intersects with nothing.
      */
-    intersectWith(other: Shape, tolerance: number): Shape[] | undefined {
+    intersectWith(other: Shape, options: IntersectOptions = {}): Shape[] | undefined {
         void other;
-        void tolerance;
+        void options;
         return undefined;
+    }
+
+    /**
+     * Boundary contacts between this shape and another (build123d `Shape.touch`): where they
+     * meet without their interiors overlapping. Only faces, shells, solids and compounds of
+     * them have any.
+     */
+    touch(other: Shape, options: TouchOptions = {}): ShapeList<Shape> {
+        void other;
+        void options;
+        return new ShapeList<Shape>();
     }
 
     /** Merge faces and edges lying on the same geometry, dropping internal edges. */
@@ -599,6 +698,35 @@ export abstract class Shape {
         return this.withWrapped(native("Fix shape", () => query.fixShape(copy)));
     }
 
+    /**
+     * Hidden-line projection onto a viewport at `viewportOrigin`, as visible and hidden edges
+     * (build123d `project_to_viewport`).
+     */
+    projectToViewport(
+        viewportOrigin: VectorLike,
+        options: ViewportOptions = {},
+    ): [visible: ShapeList<Edge>, hidden: ShapeList<Edge>] {
+        return projectToViewport(this, viewportOrigin, options);
+    }
+
+    /**
+     * Cut this shape with a plane, face or shell and keep the selected pieces (build123d
+     * `Shape.split`). `Keep.Both` returns `[top, bottom]`.
+     */
+    split(tool: TrimmingTool, keep: typeof Keep.Both): [ShapeList<Shape>, ShapeList<Shape>];
+    split(tool: TrimmingTool, keep?: Keep): ShapeList<Shape>;
+    split(
+        tool: TrimmingTool,
+        keep: Keep = Keep.Top,
+    ): ShapeList<Shape> | [ShapeList<Shape>, ShapeList<Shape>] {
+        return splitPieces(this, tool, keep);
+    }
+
+    /** Lay `faces` along `path` on this shape's surface and project them onto it. */
+    projectFaces(faces: Compound | Iterable<Face>, path: Edge | Wire, start = 0): ShapeList<Shape> {
+        return projectFaces(this, faces, path, start);
+    }
+
     /** Release the native shape now; any later use throws. */
     [Symbol.dispose](): void {
         shapes.dispose(this.wrapped);
@@ -607,4 +735,23 @@ export abstract class Shape {
     toString(): string {
         return `${this.constructor.name}(${this.label === "" ? "" : `label=${this.label}`})`;
     }
+}
+
+/** Splits `intersect`'s arguments into its operands and the options object they may end with. */
+function intersectArguments(args: readonly (ShapeOperand | Axis | Plane | IntersectOptions)[]): {
+    operands: (ShapeOperand | Axis | Plane)[];
+    options: IntersectOptions;
+} {
+    let last = args.at(-1);
+    let isOptions =
+        typeof last === "object" &&
+        last !== null &&
+        !(last instanceof Shape) &&
+        !(last instanceof Axis) &&
+        !(last instanceof Plane) &&
+        !(Symbol.iterator in last);
+    return {
+        operands: (isOptions ? args.slice(0, -1) : args) as (ShapeOperand | Axis | Plane)[],
+        options: isOptions ? (last as IntersectOptions) : {},
+    };
 }

@@ -1,19 +1,35 @@
-/** Circular and elliptical curve objects (build123d `CenterArc`, `RadiusArc`, `JernArc`, ...). */
+/** Circular curve objects (build123d `CenterArc`, `RadiusArc`, `JernArc`, ...). */
 
 import type { VectorLike } from "../../geometry/vector.ts";
+import type { Edge } from "../../topology/edge.ts";
+import type { ArcSize } from "./conic-arcs.ts";
 
 import { GeometryError } from "../../errors.ts";
 import { Axis } from "../../geometry/axis.ts";
 import { TOLERANCE } from "../../geometry/constants.ts";
 import { Plane } from "../../geometry/plane.ts";
 import { Vector } from "../../geometry/vector.ts";
+import { isArcLimit, trimToLimit } from "../arc-limit.ts";
 import { BaseEdgeObject } from "../base-object.ts";
-import { makeCircle, makeEllipse, makeTangentArc, makeThreePointArc } from "../edge-makers.ts";
+import { makeCircle, makeTangentArc, makeThreePointArc } from "../edge-makers.ts";
+import { reverseEdge } from "../edge-trim.ts";
 import { AngularDirection } from "../enums.ts";
 
-/** An arc of `arcSize` degrees starting at `startAngle`, counter-clockwise when positive. */
+/**
+ * An arc of `arcSize` degrees starting at `startAngle`, counter-clockwise when positive. Given an
+ * object instead of an angle the circle is trimmed at its first crossing, in whichever direction
+ * gets there first.
+ */
 export class CenterArc extends BaseEdgeObject {
-    constructor(center: VectorLike, radius: number, startAngle: number, arcSize: number) {
+    constructor(center: VectorLike, radius: number, startAngle: number, arcSize: ArcSize) {
+        if (isArcLimit(arcSize)) {
+            let startRadius = new Vector(1, 0, 0).rotate(Axis.Z, startAngle).multiply(radius);
+            let circle = makeCircle(radius, {
+                plane: new Plane({ origin: center, xDir: startRadius, zDir: new Vector(0, 0, 1) }),
+            });
+            super(trimToLimit([circle, reverseEdge(circle)], arcSize, "CenterArc").wrapped);
+            return;
+        }
         let direction =
             arcSize > 0 ? AngularDirection.CounterClockwise : AngularDirection.Clockwise;
         let sweep = (arcSize + 360) % 360;
@@ -96,7 +112,9 @@ export class TangentArc extends BaseEdgeObject {
 
 /**
  * An arc of `arcSize` degrees that leaves `start` along `tangent` and curves by `radius`; a
- * negative `arcSize` curves the other way (build123d `JernArc`).
+ * negative `arcSize` curves the other way. Given an object instead of an angle, the arc runs
+ * from `start` until it first crosses it, curving whichever way gets there sooner (build123d
+ * `JernArc`).
  */
 export class JernArc extends BaseEdgeObject {
     /** Centre of the arc's circle. */
@@ -104,28 +122,59 @@ export class JernArc extends BaseEdgeObject {
     /** Where the arc ends. */
     readonly endOfArc: Vector;
 
-    constructor(start: VectorLike, tangent: VectorLike, radius: number, arcSize: number) {
+    constructor(start: VectorLike, tangent: VectorLike, radius: number, arcSize: ArcSize) {
         let from = Vector.from(start);
         let direction = Vector.from(tangent).normalized();
         let normal = arcNormal(direction);
-        let turn = Math.sign(arcSize) || 1;
-        let center = from.add(
-            direction.rotate(new Axis(from, normal), turn * 90).multiply(Math.abs(radius)),
-        );
-        let arc =
-            Math.abs(arcSize) >= 360
-                ? makeCircle(radius, {
-                      plane: new Plane({ origin: center, xDir: from.sub(center), zDir: normal }),
-                  })
-                : makeTangentArc(
-                      from,
-                      direction,
-                      center.add(from.sub(center).rotate(new Axis(from, normal), arcSize)),
-                  );
+        let arc = isArcLimit(arcSize)
+            ? trimToLimit(tangentCircles(from, direction, normal, radius), arcSize, "JernArc")
+            : tangentArc(from, direction, normal, radius, arcSize);
         super(arc.wrapped);
         this.centerPoint = arc.arcCenter;
         this.endOfArc = arc.positionAt(1);
     }
+}
+
+/** Centre of the circle a tangent arc of `radius` curves around, `turn` deciding which side. */
+function tangentCenter(
+    from: Vector,
+    direction: Vector,
+    normal: Vector,
+    radius: number,
+    turn: number,
+): Vector {
+    return from.add(direction.rotate(new Axis(from, normal), turn * 90).multiply(Math.abs(radius)));
+}
+
+function tangentArc(
+    from: Vector,
+    direction: Vector,
+    normal: Vector,
+    radius: number,
+    arcSize: number,
+): Edge {
+    let center = tangentCenter(from, direction, normal, radius, Math.sign(arcSize) || 1);
+    if (Math.abs(arcSize) >= 360) {
+        return makeCircle(radius, {
+            plane: new Plane({ origin: center, xDir: from.sub(center), zDir: normal }),
+        });
+    }
+    return makeTangentArc(
+        from,
+        direction,
+        center.add(from.sub(center).rotate(new Axis(from, normal), arcSize)),
+    );
+}
+
+/** Both circles of `radius` through `from` tangent to `direction`, each running that way. */
+function tangentCircles(from: Vector, direction: Vector, normal: Vector, radius: number): Edge[] {
+    return [1, -1].map(turn => {
+        let center = tangentCenter(from, direction, normal, radius, turn);
+        let circle = makeCircle(radius, {
+            plane: new Plane({ origin: center, xDir: from.sub(center), zDir: normal }),
+        });
+        return circle.tangentAt(0).dot(direction) < 0 ? reverseEdge(circle) : circle;
+    });
 }
 
 /** The plane an arc leaving `tangent` curves in: the XY plane unless the tangent leaves it. */
@@ -134,31 +183,4 @@ function arcNormal(tangent: Vector): Vector {
     if (Math.abs(tangent.dot(up)) <= TOLERANCE) return up;
     let normal = tangent.cross(up);
     return (normal.length <= TOLERANCE ? tangent.cross(new Vector(1, 0, 0)) : normal).normalized();
-}
-
-export interface EllipticalCenterArcOptions {
-    readonly startAngle?: number;
-    readonly arcSize?: number;
-    /** Degrees the whole arc is turned about the Z axis before it is moved to the centre. */
-    readonly rotation?: number;
-}
-
-/** An arc of an axis-aligned ellipse centred on `center`. */
-export class EllipticalCenterArc extends BaseEdgeObject {
-    constructor(
-        center: VectorLike,
-        xRadius: number,
-        yRadius: number,
-        options: EllipticalCenterArcOptions = {},
-    ) {
-        let startAngle = options.startAngle ?? 0;
-        let arcSize = options.arcSize ?? 90;
-        let arc = makeEllipse(xRadius, yRadius, {
-            startAngle,
-            endAngle: startAngle + arcSize,
-            angularDirection:
-                arcSize >= 0 ? AngularDirection.CounterClockwise : AngularDirection.Clockwise,
-        });
-        super(arc.rotate(Axis.Z, options.rotation ?? 0).translate(Vector.from(center)).wrapped);
-    }
 }
