@@ -157,6 +157,7 @@ classes = [
     "BRepAdaptor_CompCurve",
     "BRepAdaptor_Surface",
     "BRepAdaptor_Curve2d",
+    "BRepLProp",
     "GCPnts_AbscissaPoint",
     "GCPnts_UniformAbscissa",
     "GCPnts_UniformDeflection",

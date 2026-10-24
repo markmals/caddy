@@ -26,6 +26,7 @@ pub mod b_rep_fill;
 pub mod b_rep_fillet_api;
 pub mod b_rep_g_prop;
 pub mod b_rep_int_curve_surface;
+pub mod b_rep_l_prop;
 pub mod b_rep_lib;
 pub mod b_rep_mesh;
 pub mod b_rep_offset;
