@@ -13,6 +13,7 @@ Caddy is a TypeScript-first CAD library for Node.js on native Open CASCADE (OCCT
 | `packages/occt-native/crates/occt-neon` | Neon addon composing the bindings into JS functions |
 | `reference/build123d` | pinned oracle: Python cases → JSON fixtures, TS `oracleSuite` harness |
 | `docs/` | architecture, compatibility inventory, licensing, native bindings, test oracle |
+| `examples/` | runnable scripts using the public API (`node examples/<name>/index.ts`) |
 
 ## Commands
 
@@ -25,6 +26,7 @@ node packages/occt-native/scripts/build-native.ts [--release]      # build addon
 vp test run [path]                                   # Vitest (native tests need the staged addon)
 vp check                                             # oxfmt + oxlint (type-aware) + types
 uv run python reference/build123d/scripts/generate_fixtures.py [--suite NAME] [--check]
+node reference/build123d/scripts/compatibility-status.ts [--check]  # recompute docs/compatibility.{json,md}
 ```
 
 ## Native workflow
@@ -37,7 +39,8 @@ uv run python reference/build123d/scripts/generate_fixtures.py [--suite NAME] [-
 
 ## TypeScript conventions
 
-- Node runs `.ts` directly: relative imports end in `.ts`; erasable syntax only (no `enum`, `namespace`, parameter properties). Enums are `as const` objects plus a union type.
+- Node runs `.ts` directly: relative imports end in `.ts`; erasable syntax only (no `enum`, `namespace`, parameter properties). Enums are `as const` objects plus a union type, with PascalCase members (`Align.Center`) whose values match build123d's.
+- Optional settings (alignment, rotation, tolerances, flags, extra modes) go in a trailing options object (`new Box(1, 2, 3, { align })`, `solid.chamfer(1, edges, { length2 })`, `sortBy(Axis.X, { reverse: true })`) rather than Python-style positional defaults; never a positional boolean. Coordinates and a primary value with its mode stay positional (`new Vector(1, 2)`, `tangentAt(0.5, PositionMode.Length)`).
 - `let` for every binding; `const` only for module-level UPPER_CASE constants (lint-enforced).
 - Strict TS with `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes`.
 - Shapes are immutable: operations return new shapes. build123d operators become methods: `+` union, `-` subtract, `&` intersect, `*` (location) transform/moved, `@` positionAt, `%` tangentAt, `^` locationAt.
@@ -49,4 +52,4 @@ uv run python reference/build123d/scripts/generate_fixtures.py [--suite NAME] [-
 
 ## Status
 
-See `docs/compatibility.md` for what is implemented, tested and oracle-validated.
+See `docs/compatibility.md` for what is implemented, tested and oracle-validated. Its statuses are computed, never hand-edited: change a mapping in `docs/compatibility.json` (`caddy` field) and rerun `compatibility-status.ts`.
