@@ -53,7 +53,7 @@
                 "HArray1_gp_Pnt"
             ],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -186,7 +186,7 @@
             ],
             "native": [],
             "capability": "joints",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -278,7 +278,7 @@
             ],
             "native": [],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -521,7 +521,7 @@
                 "gp_Vec2d"
             ],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -545,7 +545,7 @@
                 "gp_Pnt2d"
             ],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -560,7 +560,7 @@
             ],
             "native": [],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -576,7 +576,7 @@
                 "BRepBuilderAPI_MakePolygon"
             ],
             "capability": "primitives-3d",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -591,7 +591,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -680,7 +680,7 @@
             ],
             "native": [],
             "capability": "joints",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -709,7 +709,7 @@
             "referenceTests": [],
             "native": [],
             "capability": "io",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -726,7 +726,7 @@
                 "gp_Circ"
             ],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -835,7 +835,7 @@
                 "gp_Elips"
             ],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -861,7 +861,7 @@
             ],
             "native": [],
             "capability": "io",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -876,7 +876,7 @@
             ],
             "native": [],
             "capability": "io",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1176,7 +1176,7 @@
                 "gp_Hypr"
             ],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1251,7 +1251,7 @@
             "referenceTests": [],
             "native": [],
             "capability": "joints",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -1353,7 +1353,7 @@
             "referenceTests": [],
             "native": [],
             "capability": "io",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1368,7 +1368,7 @@
             ],
             "native": [],
             "capability": "joints",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1558,7 +1558,7 @@
             ],
             "native": [],
             "capability": "io",
-            "status": "planned",
+            "status": "tested",
             "notes": ""
         },
         {
@@ -1577,7 +1577,7 @@
                 "gp_Parab"
             ],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1818,7 +1818,7 @@
             ],
             "native": [],
             "capability": "joints",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1833,7 +1833,7 @@
             ],
             "native": [],
             "capability": "joints",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1895,7 +1895,7 @@
             ],
             "native": [],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1962,7 +1962,7 @@
                 "TopoDS_Shell"
             ],
             "capability": "topology",
-            "status": "implemented",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -1996,7 +1996,7 @@
                 "TopoDS_Shape"
             ],
             "capability": "topology",
-            "status": "tested",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -2184,7 +2184,7 @@
             ],
             "native": [],
             "capability": "curves",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -2334,7 +2334,7 @@
             ],
             "native": [],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -2410,7 +2410,7 @@
             ],
             "native": [],
             "capability": "io",
-            "status": "implemented",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3179,7 +3179,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3292,7 +3292,7 @@
             ],
             "native": [],
             "capability": "misc",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3347,7 +3347,7 @@
                 "BRepBuilderAPI_MakeFace"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -3599,7 +3599,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4448,7 +4448,7 @@
                 "gp_Ax2"
             ],
             "capability": "io",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4476,7 +4476,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4747,7 +4747,7 @@
                 "BRepBuilderAPI_MakeEdge"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -4758,7 +4758,7 @@
             "referenceTests": [],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5029,7 +5029,7 @@
                 "HArray1_gp_Pnt"
             ],
             "capability": "topology",
-            "status": "tested",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5138,7 +5138,7 @@
             ],
             "native": [],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5193,7 +5193,7 @@
                 "BRepBuilderAPI_MakeEdge"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5228,7 +5228,7 @@
                 "BRep_Tool"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "implemented",
             "notes": ""
         },
         {
@@ -5380,7 +5380,7 @@
                 "gp_Vec"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5486,7 +5486,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5499,7 +5499,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5854,7 +5854,7 @@
                 "TopoDS_Wire"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -5918,7 +5918,7 @@
                 "ShapeAnalysis_Edge"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6025,7 +6025,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "tested",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6441,7 +6441,7 @@
                 "BRepLib_FindSurface"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6473,7 +6473,7 @@
                 "gp_Vec"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6585,7 +6585,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6798,7 +6798,7 @@
                 "TopoDS_Shape"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6823,7 +6823,7 @@
                 "gp_Ax2"
             ],
             "capability": "io",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -6991,7 +6991,7 @@
                 "gp_Trsf"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7016,7 +7016,7 @@
                 "gp_Ax2"
             ],
             "capability": "io",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7042,7 +7042,7 @@
                 "TopoDS_Shell"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7059,7 +7059,7 @@
                 "BRepExtrema_DistShapeShape"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7121,7 +7121,7 @@
                 "TopoDS_Solid"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7201,7 +7201,7 @@
                 "List_TopoDS_Shape"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7236,7 +7236,7 @@
                 "BRepFilletAPI_MakeFillet"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7279,7 +7279,7 @@
                 "gp_Ax2"
             ],
             "capability": "io",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -7955,7 +7955,7 @@
             ],
             "native": [],
             "capability": "selectors",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8482,7 +8482,7 @@
                 "BRepTools"
             ],
             "capability": "io",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8614,7 +8614,7 @@
                 "TopoDS_Compound"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8834,7 +8834,7 @@
                 "gp_Vec"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8869,7 +8869,7 @@
                 "TopLoc_Location"
             ],
             "capability": "io",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -8951,7 +8951,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10139,7 +10139,7 @@
                 "gp_Vec"
             ],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10787,7 +10787,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -10832,7 +10832,7 @@
             ],
             "native": [],
             "capability": "topology",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
@@ -11267,7 +11267,7 @@
                 "gp_Pnt"
             ],
             "capability": "operations",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
