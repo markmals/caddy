@@ -1,6 +1,6 @@
 {
     "name": "@roonieone/occt-native",
-    "version": "0.0.0",
+    "version": "1.0.0-alpha.0",
     "description": "Node-API bindings to the Open CASCADE geometric kernel",
     "license": "Apache-2.0",
     "repository": {

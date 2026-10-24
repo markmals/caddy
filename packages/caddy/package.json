@@ -1,6 +1,6 @@
 {
     "name": "@roonieone/caddy",
-    "version": "0.0.0",
+    "version": "1.0.0-alpha.0",
     "description": "TypeScript-first programmatic CAD modeling on native Open CASCADE",
     "license": "Apache-2.0 AND OFL-1.1",
     "repository": {
