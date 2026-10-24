@@ -3,10 +3,16 @@
 #include "../bindings_common.hxx"
 #include "handles.hxx"
 
+#include <GeomAbs_Shape.hxx>
 #include <ShapeCustom.hxx>
+#include <ShapeCustom_RestrictionParameters.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>
 
 inline std::unique_ptr<ShapeCustom> ShapeCustom_new() { return std::make_unique<ShapeCustom>(); }
+
+inline std::unique_ptr<TopoDS_Shape> ShapeCustom_BSplineRestriction(const TopoDS_Shape& s, double tol3d, double tol2d, int32_t max_degree, int32_t max_nb_segment, GeomAbs_Shape continuity3d, GeomAbs_Shape continuity2d, bool degree, bool rational, const Handle_ShapeCustom_RestrictionParameters& a_parameters) { return std::make_unique<TopoDS_Shape>(ShapeCustom::BSplineRestriction(s, tol3d, tol2d, max_degree, max_nb_segment, continuity3d, continuity2d, degree, rational, a_parameters)); }
 
 inline std::unique_ptr<TopoDS_Shape> ShapeCustom_ConvertToBSpline(const TopoDS_Shape& s, bool extr_mode, bool revol_mode, bool offset_mode, bool plane_mode) { return std::make_unique<TopoDS_Shape>(ShapeCustom::ConvertToBSpline(s, extr_mode, revol_mode, offset_mode, plane_mode)); }
 
@@ -17,3 +23,25 @@ inline std::unique_ptr<TopoDS_Shape> ShapeCustom_DirectFaces(const TopoDS_Shape&
 inline std::unique_ptr<TopoDS_Shape> ShapeCustom_ScaleShape(const TopoDS_Shape& s, double scale) { return std::make_unique<TopoDS_Shape>(ShapeCustom::ScaleShape(s, scale)); }
 
 inline std::unique_ptr<TopoDS_Shape> ShapeCustom_SweptToElementary(const TopoDS_Shape& s) { return std::make_unique<TopoDS_Shape>(ShapeCustom::SweptToElementary(s)); }
+
+inline std::unique_ptr<Handle_ShapeCustom_RestrictionParameters> ShapeCustom_RestrictionParameters_new() { return std::make_unique<Handle_ShapeCustom_RestrictionParameters>(new ShapeCustom_RestrictionParameters()); }
+
+inline bool ShapeCustom_RestrictionParameters_IsInstance_str(const ShapeCustom_RestrictionParameters& self_, rust::Str type_name) { return self_.IsInstance(std::string(type_name).c_str()); }
+
+inline bool ShapeCustom_RestrictionParameters_IsKind_str(const ShapeCustom_RestrictionParameters& self_, rust::Str type_name) { return self_.IsKind(std::string(type_name).c_str()); }
+
+inline std::unique_ptr<Handle_Standard_Type> ShapeCustom_RestrictionParameters_get_type_descriptor() { return std::make_unique<Handle_Standard_Type>(ShapeCustom_RestrictionParameters::get_type_descriptor()); }
+
+inline rust::String ShapeCustom_RestrictionParameters_get_type_name() { const char* text = ShapeCustom_RestrictionParameters::get_type_name(); return rust::String(text != nullptr ? text : ""); }
+
+inline const Standard_Transient& ShapeCustom_RestrictionParameters_as_Standard_Transient(const ShapeCustom_RestrictionParameters& self_) { return self_; }
+inline Standard_Transient& ShapeCustom_RestrictionParameters_as_Standard_Transient_mut(ShapeCustom_RestrictionParameters& self_) { return self_; }
+
+inline std::unique_ptr<Handle_Standard_Transient> Handle_ShapeCustom_RestrictionParameters_to_Standard_Transient(const Handle_ShapeCustom_RestrictionParameters& handle) { return std::make_unique<Handle_Standard_Transient>(handle); }
+inline std::unique_ptr<Handle_ShapeCustom_RestrictionParameters> Handle_ShapeCustom_RestrictionParameters_from_Standard_Transient(const Handle_Standard_Transient& handle) { return std::make_unique<Handle_ShapeCustom_RestrictionParameters>(Handle_ShapeCustom_RestrictionParameters::DownCast(handle)); }
+
+inline std::unique_ptr<Handle_ShapeCustom_RestrictionParameters> Handle_ShapeCustom_RestrictionParameters_null() { return std::make_unique<Handle_ShapeCustom_RestrictionParameters>(); }
+inline bool Handle_ShapeCustom_RestrictionParameters_is_null(const Handle_ShapeCustom_RestrictionParameters& handle) { return handle.IsNull(); }
+inline std::unique_ptr<Handle_ShapeCustom_RestrictionParameters> Handle_ShapeCustom_RestrictionParameters_clone(const Handle_ShapeCustom_RestrictionParameters& handle) { return std::make_unique<Handle_ShapeCustom_RestrictionParameters>(handle); }
+inline const ShapeCustom_RestrictionParameters& Handle_ShapeCustom_RestrictionParameters_get(const Handle_ShapeCustom_RestrictionParameters& handle) { return occt_bindings::handle_get(handle); }
+inline ShapeCustom_RestrictionParameters& Handle_ShapeCustom_RestrictionParameters_get_mut(Handle_ShapeCustom_RestrictionParameters& handle) { return occt_bindings::handle_get(handle); }

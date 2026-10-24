@@ -9,21 +9,25 @@ mod inner {
 
         type Geom2d_BSplineCurve;
         type Geom2d_BoundedCurve;
+        type Geom2d_CartesianPoint;
         type Geom2d_Circle;
         type Geom2d_Conic;
         type Geom2d_Curve;
         type Geom2d_Ellipse;
         type Geom2d_Geometry;
         type Geom2d_Line;
+        type Geom2d_Point;
         type Geom2d_TrimmedCurve;
         type Handle_Geom2d_BSplineCurve;
         type Handle_Geom2d_BoundedCurve;
+        type Handle_Geom2d_CartesianPoint;
         type Handle_Geom2d_Circle;
         type Handle_Geom2d_Conic;
         type Handle_Geom2d_Curve;
         type Handle_Geom2d_Ellipse;
         type Handle_Geom2d_Geometry;
         type Handle_Geom2d_Line;
+        type Handle_Geom2d_Point;
         type Handle_Geom2d_TrimmedCurve;
         type GeomAbs_BSplKnotDistribution = crate::geom_abs::GeomAbs_BSplKnotDistribution;
         type GeomAbs_Shape = crate::geom_abs::GeomAbs_Shape;
@@ -1406,15 +1410,220 @@ mod inner {
         fn Handle_Geom2d_BSplineCurve_clone(handle: &Handle_Geom2d_BSplineCurve) -> UniquePtr<Handle_Geom2d_BSplineCurve>;
         fn Handle_Geom2d_BSplineCurve_get(handle: &Handle_Geom2d_BSplineCurve) -> Result<&Geom2d_BSplineCurve>;
         fn Handle_Geom2d_BSplineCurve_get_mut(handle: Pin<&mut Handle_Geom2d_BSplineCurve>) -> Result<Pin<&mut Geom2d_BSplineCurve>>;
+
+        fn Coord(self: &Geom2d_Point, x: &mut f64, y: &mut f64) -> Result<()>;
+
+        fn Geom2d_Point_Copy(self_: &Geom2d_Point) -> Result<UniquePtr<Handle_Geom2d_Geometry>>;
+
+        fn DecrementRefCounter(self: Pin<&mut Geom2d_Point>) -> Result<i32>;
+
+        fn Delete(self: &Geom2d_Point) -> Result<()>;
+
+        fn Distance(self: &Geom2d_Point, other: &Handle_Geom2d_Point) -> Result<f64>;
+
+        fn Geom2d_Point_DumpJson(self_: &Geom2d_Point, o_stream: Pin<&mut OcctStream>, depth: i32) -> Result<()>;
+
+        fn DynamicType(self: &Geom2d_Point) -> Result<&Handle_Standard_Type>;
+
+        fn GetRefCount(self: &Geom2d_Point) -> Result<i32>;
+
+        fn IncrementRefCounter(self: Pin<&mut Geom2d_Point>) -> Result<()>;
+
+        #[cxx_name = "IsInstance"]
+        fn IsInstance_htype(self: &Geom2d_Point, type_: &Handle_Standard_Type) -> Result<bool>;
+
+        fn Geom2d_Point_IsInstance_str(self_: &Geom2d_Point, type_name: &str) -> Result<bool>;
+
+        #[cxx_name = "IsKind"]
+        fn IsKind_htype(self: &Geom2d_Point, type_: &Handle_Standard_Type) -> Result<bool>;
+
+        fn Geom2d_Point_IsKind_str(self_: &Geom2d_Point, type_name: &str) -> Result<bool>;
+
+        #[cxx_name = "Mirror"]
+        fn Mirror_pnt2d(self: Pin<&mut Geom2d_Point>, p: &gp_Pnt2d) -> Result<()>;
+
+        #[cxx_name = "Mirror"]
+        fn Mirror_ax2d(self: Pin<&mut Geom2d_Point>, a: &gp_Ax2d) -> Result<()>;
+
+        fn Geom2d_Point_Mirrored_pnt2d(self_: &Geom2d_Point, p: &gp_Pnt2d) -> Result<UniquePtr<Handle_Geom2d_Geometry>>;
+
+        fn Geom2d_Point_Mirrored_ax2d(self_: &Geom2d_Point, a: &gp_Ax2d) -> Result<UniquePtr<Handle_Geom2d_Geometry>>;
+
+        fn Geom2d_Point_Pnt2d(self_: &Geom2d_Point) -> Result<UniquePtr<gp_Pnt2d>>;
+
+        fn Rotate(self: Pin<&mut Geom2d_Point>, p: &gp_Pnt2d, ang: f64) -> Result<()>;
+
+        fn Geom2d_Point_Rotated(self_: &Geom2d_Point, p: &gp_Pnt2d, ang: f64) -> Result<UniquePtr<Handle_Geom2d_Geometry>>;
+
+        fn Scale(self: Pin<&mut Geom2d_Point>, p: &gp_Pnt2d, s: f64) -> Result<()>;
+
+        fn Geom2d_Point_Scaled(self_: &Geom2d_Point, p: &gp_Pnt2d, s: f64) -> Result<UniquePtr<Handle_Geom2d_Geometry>>;
+
+        fn SquareDistance(self: &Geom2d_Point, other: &Handle_Geom2d_Point) -> Result<f64>;
+
+        fn Transform(self: Pin<&mut Geom2d_Point>, t: &gp_Trsf2d) -> Result<()>;
+
+        fn Geom2d_Point_Transformed(self_: &Geom2d_Point, t: &gp_Trsf2d) -> Result<UniquePtr<Handle_Geom2d_Geometry>>;
+
+        #[cxx_name = "Translate"]
+        fn Translate_vec2d(self: Pin<&mut Geom2d_Point>, v: &gp_Vec2d) -> Result<()>;
+
+        #[cxx_name = "Translate"]
+        fn Translate_pnt2d2(self: Pin<&mut Geom2d_Point>, p1: &gp_Pnt2d, p2: &gp_Pnt2d) -> Result<()>;
+
+        fn Geom2d_Point_Translated_vec2d(self_: &Geom2d_Point, v: &gp_Vec2d) -> Result<UniquePtr<Handle_Geom2d_Geometry>>;
+
+        fn Geom2d_Point_Translated_pnt2d2(self_: &Geom2d_Point, p1: &gp_Pnt2d, p2: &gp_Pnt2d) -> Result<UniquePtr<Handle_Geom2d_Geometry>>;
+
+        fn X(self: &Geom2d_Point) -> Result<f64>;
+
+        fn Y(self: &Geom2d_Point) -> Result<f64>;
+
+        fn Geom2d_Point_get_type_descriptor() -> Result<UniquePtr<Handle_Standard_Type>>;
+
+        fn Geom2d_Point_get_type_name() -> Result<String>;
+
+        fn Geom2d_Point_as_Geom2d_Geometry(self_: &Geom2d_Point) -> &Geom2d_Geometry;
+        fn Geom2d_Point_as_Geom2d_Geometry_mut(self_: Pin<&mut Geom2d_Point>) -> Pin<&mut Geom2d_Geometry>;
+
+        fn Handle_Geom2d_Point_to_Geom2d_Geometry(handle: &Handle_Geom2d_Point) -> UniquePtr<Handle_Geom2d_Geometry>;
+        /// Null when `handle` does not refer to a `Geom2d_Point`.
+        fn Handle_Geom2d_Point_from_Geom2d_Geometry(handle: &Handle_Geom2d_Geometry) -> UniquePtr<Handle_Geom2d_Point>;
+
+        fn Geom2d_Point_as_Standard_Transient(self_: &Geom2d_Point) -> &Standard_Transient;
+        fn Geom2d_Point_as_Standard_Transient_mut(self_: Pin<&mut Geom2d_Point>) -> Pin<&mut Standard_Transient>;
+
+        fn Handle_Geom2d_Point_to_Standard_Transient(handle: &Handle_Geom2d_Point) -> UniquePtr<Handle_Standard_Transient>;
+        /// Null when `handle` does not refer to a `Geom2d_Point`.
+        fn Handle_Geom2d_Point_from_Standard_Transient(handle: &Handle_Standard_Transient) -> UniquePtr<Handle_Geom2d_Point>;
+
+        fn Handle_Geom2d_Point_null() -> UniquePtr<Handle_Geom2d_Point>;
+        fn Handle_Geom2d_Point_is_null(handle: &Handle_Geom2d_Point) -> bool;
+        fn Handle_Geom2d_Point_clone(handle: &Handle_Geom2d_Point) -> UniquePtr<Handle_Geom2d_Point>;
+        fn Handle_Geom2d_Point_get(handle: &Handle_Geom2d_Point) -> Result<&Geom2d_Point>;
+        fn Handle_Geom2d_Point_get_mut(handle: Pin<&mut Handle_Geom2d_Point>) -> Result<Pin<&mut Geom2d_Point>>;
+
+        fn Geom2d_CartesianPoint_new_pnt2d(p: &gp_Pnt2d) -> Result<UniquePtr<Handle_Geom2d_CartesianPoint>>;
+
+        fn Geom2d_CartesianPoint_new_real2(x: f64, y: f64) -> Result<UniquePtr<Handle_Geom2d_CartesianPoint>>;
+
+        fn Coord(self: &Geom2d_CartesianPoint, x: &mut f64, y: &mut f64) -> Result<()>;
+
+        fn Geom2d_CartesianPoint_Copy(self_: &Geom2d_CartesianPoint) -> Result<UniquePtr<Handle_Geom2d_Geometry>>;
+
+        fn DecrementRefCounter(self: Pin<&mut Geom2d_CartesianPoint>) -> Result<i32>;
+
+        fn Delete(self: &Geom2d_CartesianPoint) -> Result<()>;
+
+        fn Distance(self: &Geom2d_CartesianPoint, other: &Handle_Geom2d_Point) -> Result<f64>;
+
+        fn Geom2d_CartesianPoint_DumpJson(self_: &Geom2d_CartesianPoint, o_stream: Pin<&mut OcctStream>, depth: i32) -> Result<()>;
+
+        fn DynamicType(self: &Geom2d_CartesianPoint) -> Result<&Handle_Standard_Type>;
+
+        fn GetRefCount(self: &Geom2d_CartesianPoint) -> Result<i32>;
+
+        fn IncrementRefCounter(self: Pin<&mut Geom2d_CartesianPoint>) -> Result<()>;
+
+        #[cxx_name = "IsInstance"]
+        fn IsInstance_htype(self: &Geom2d_CartesianPoint, type_: &Handle_Standard_Type) -> Result<bool>;
+
+        fn Geom2d_CartesianPoint_IsInstance_str(self_: &Geom2d_CartesianPoint, type_name: &str) -> Result<bool>;
+
+        #[cxx_name = "IsKind"]
+        fn IsKind_htype(self: &Geom2d_CartesianPoint, type_: &Handle_Standard_Type) -> Result<bool>;
+
+        fn Geom2d_CartesianPoint_IsKind_str(self_: &Geom2d_CartesianPoint, type_name: &str) -> Result<bool>;
+
+        #[cxx_name = "Mirror"]
+        fn Mirror_pnt2d(self: Pin<&mut Geom2d_CartesianPoint>, p: &gp_Pnt2d) -> Result<()>;
+
+        #[cxx_name = "Mirror"]
+        fn Mirror_ax2d(self: Pin<&mut Geom2d_CartesianPoint>, a: &gp_Ax2d) -> Result<()>;
+
+        fn Geom2d_CartesianPoint_Mirrored_pnt2d(self_: &Geom2d_CartesianPoint, p: &gp_Pnt2d) -> Result<UniquePtr<Handle_Geom2d_Geometry>>;
+
+        fn Geom2d_CartesianPoint_Mirrored_ax2d(self_: &Geom2d_CartesianPoint, a: &gp_Ax2d) -> Result<UniquePtr<Handle_Geom2d_Geometry>>;
+
+        fn Geom2d_CartesianPoint_Pnt2d(self_: &Geom2d_CartesianPoint) -> Result<UniquePtr<gp_Pnt2d>>;
+
+        fn Rotate(self: Pin<&mut Geom2d_CartesianPoint>, p: &gp_Pnt2d, ang: f64) -> Result<()>;
+
+        fn Geom2d_CartesianPoint_Rotated(self_: &Geom2d_CartesianPoint, p: &gp_Pnt2d, ang: f64) -> Result<UniquePtr<Handle_Geom2d_Geometry>>;
+
+        fn Scale(self: Pin<&mut Geom2d_CartesianPoint>, p: &gp_Pnt2d, s: f64) -> Result<()>;
+
+        fn Geom2d_CartesianPoint_Scaled(self_: &Geom2d_CartesianPoint, p: &gp_Pnt2d, s: f64) -> Result<UniquePtr<Handle_Geom2d_Geometry>>;
+
+        fn SetCoord(self: Pin<&mut Geom2d_CartesianPoint>, x: f64, y: f64) -> Result<()>;
+
+        fn SetPnt2d(self: Pin<&mut Geom2d_CartesianPoint>, p: &gp_Pnt2d) -> Result<()>;
+
+        fn SetX(self: Pin<&mut Geom2d_CartesianPoint>, x: f64) -> Result<()>;
+
+        fn SetY(self: Pin<&mut Geom2d_CartesianPoint>, y: f64) -> Result<()>;
+
+        fn SquareDistance(self: &Geom2d_CartesianPoint, other: &Handle_Geom2d_Point) -> Result<f64>;
+
+        fn Transform(self: Pin<&mut Geom2d_CartesianPoint>, t: &gp_Trsf2d) -> Result<()>;
+
+        fn Geom2d_CartesianPoint_Transformed(self_: &Geom2d_CartesianPoint, t: &gp_Trsf2d) -> Result<UniquePtr<Handle_Geom2d_Geometry>>;
+
+        #[cxx_name = "Translate"]
+        fn Translate_vec2d(self: Pin<&mut Geom2d_CartesianPoint>, v: &gp_Vec2d) -> Result<()>;
+
+        #[cxx_name = "Translate"]
+        fn Translate_pnt2d2(self: Pin<&mut Geom2d_CartesianPoint>, p1: &gp_Pnt2d, p2: &gp_Pnt2d) -> Result<()>;
+
+        fn Geom2d_CartesianPoint_Translated_vec2d(self_: &Geom2d_CartesianPoint, v: &gp_Vec2d) -> Result<UniquePtr<Handle_Geom2d_Geometry>>;
+
+        fn Geom2d_CartesianPoint_Translated_pnt2d2(self_: &Geom2d_CartesianPoint, p1: &gp_Pnt2d, p2: &gp_Pnt2d) -> Result<UniquePtr<Handle_Geom2d_Geometry>>;
+
+        fn X(self: &Geom2d_CartesianPoint) -> Result<f64>;
+
+        fn Y(self: &Geom2d_CartesianPoint) -> Result<f64>;
+
+        fn Geom2d_CartesianPoint_get_type_descriptor() -> Result<UniquePtr<Handle_Standard_Type>>;
+
+        fn Geom2d_CartesianPoint_get_type_name() -> Result<String>;
+
+        fn Geom2d_CartesianPoint_as_Geom2d_Point(self_: &Geom2d_CartesianPoint) -> &Geom2d_Point;
+        fn Geom2d_CartesianPoint_as_Geom2d_Point_mut(self_: Pin<&mut Geom2d_CartesianPoint>) -> Pin<&mut Geom2d_Point>;
+
+        fn Handle_Geom2d_CartesianPoint_to_Geom2d_Point(handle: &Handle_Geom2d_CartesianPoint) -> UniquePtr<Handle_Geom2d_Point>;
+        /// Null when `handle` does not refer to a `Geom2d_CartesianPoint`.
+        fn Handle_Geom2d_CartesianPoint_from_Geom2d_Point(handle: &Handle_Geom2d_Point) -> UniquePtr<Handle_Geom2d_CartesianPoint>;
+
+        fn Geom2d_CartesianPoint_as_Geom2d_Geometry(self_: &Geom2d_CartesianPoint) -> &Geom2d_Geometry;
+        fn Geom2d_CartesianPoint_as_Geom2d_Geometry_mut(self_: Pin<&mut Geom2d_CartesianPoint>) -> Pin<&mut Geom2d_Geometry>;
+
+        fn Handle_Geom2d_CartesianPoint_to_Geom2d_Geometry(handle: &Handle_Geom2d_CartesianPoint) -> UniquePtr<Handle_Geom2d_Geometry>;
+        /// Null when `handle` does not refer to a `Geom2d_CartesianPoint`.
+        fn Handle_Geom2d_CartesianPoint_from_Geom2d_Geometry(handle: &Handle_Geom2d_Geometry) -> UniquePtr<Handle_Geom2d_CartesianPoint>;
+
+        fn Geom2d_CartesianPoint_as_Standard_Transient(self_: &Geom2d_CartesianPoint) -> &Standard_Transient;
+        fn Geom2d_CartesianPoint_as_Standard_Transient_mut(self_: Pin<&mut Geom2d_CartesianPoint>) -> Pin<&mut Standard_Transient>;
+
+        fn Handle_Geom2d_CartesianPoint_to_Standard_Transient(handle: &Handle_Geom2d_CartesianPoint) -> UniquePtr<Handle_Standard_Transient>;
+        /// Null when `handle` does not refer to a `Geom2d_CartesianPoint`.
+        fn Handle_Geom2d_CartesianPoint_from_Standard_Transient(handle: &Handle_Standard_Transient) -> UniquePtr<Handle_Geom2d_CartesianPoint>;
+
+        fn Handle_Geom2d_CartesianPoint_null() -> UniquePtr<Handle_Geom2d_CartesianPoint>;
+        fn Handle_Geom2d_CartesianPoint_is_null(handle: &Handle_Geom2d_CartesianPoint) -> bool;
+        fn Handle_Geom2d_CartesianPoint_clone(handle: &Handle_Geom2d_CartesianPoint) -> UniquePtr<Handle_Geom2d_CartesianPoint>;
+        fn Handle_Geom2d_CartesianPoint_get(handle: &Handle_Geom2d_CartesianPoint) -> Result<&Geom2d_CartesianPoint>;
+        fn Handle_Geom2d_CartesianPoint_get_mut(handle: Pin<&mut Handle_Geom2d_CartesianPoint>) -> Result<Pin<&mut Geom2d_CartesianPoint>>;
     }
 
     impl UniquePtr<Handle_Geom2d_BSplineCurve> {}
     impl UniquePtr<Handle_Geom2d_BoundedCurve> {}
+    impl UniquePtr<Handle_Geom2d_CartesianPoint> {}
     impl UniquePtr<Handle_Geom2d_Circle> {}
     impl UniquePtr<Handle_Geom2d_Conic> {}
     impl UniquePtr<Handle_Geom2d_Curve> {}
     impl UniquePtr<Handle_Geom2d_Ellipse> {}
     impl UniquePtr<Handle_Geom2d_Geometry> {}
     impl UniquePtr<Handle_Geom2d_Line> {}
+    impl UniquePtr<Handle_Geom2d_Point> {}
     impl UniquePtr<Handle_Geom2d_TrimmedCurve> {}
 }

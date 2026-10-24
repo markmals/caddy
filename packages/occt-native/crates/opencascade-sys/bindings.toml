@@ -162,6 +162,22 @@ classes = [
     "GCPnts_UniformDeflection",
     "GCPnts_QuasiUniformDeflection",
 
+    # 2D constraint solvers (constrained arcs and lines)
+    "Geom2d_Point",
+    "Geom2d_CartesianPoint",
+    "Geom2dAPI_ProjectPointOnCurve",
+    "Geom2dAPI_InterCurveCurve",
+    "Geom2dGcc_QualifiedCurve",
+    "Geom2dGcc_Circ2d2TanRad",
+    "Geom2dGcc_Circ2d2TanOn",
+    "Geom2dGcc_Circ2d3Tan",
+    "Geom2dGcc_Circ2dTanCen",
+    "Geom2dGcc_Circ2dTanOnRad",
+    "Geom2dGcc_Lin2d2Tan",
+    "Geom2dGcc_Lin2dTanObl",
+    "IntAna2d_AnaIntersection",
+    "IntAna2d_IntPoint",
+
     # Construction
     "BRepBuilderAPI_MakeShape",
     "BRepBuilderAPI_ModifyShape",
@@ -230,7 +246,14 @@ classes = [
     "ShapeAnalysis_Curve",
     "ShapeAnalysis_Surface",
     "ShapeCustom",
+    "ShapeCustom_RestrictionParameters",
     "IntTools_FClass2d",
+
+    # Hidden line removal
+    "HLRAlgo_Projector",
+    "HLRBRep_InternalAlgo",
+    "HLRBRep_Algo",
+    "HLRBRep_HLRToShape",
 
     # Measurement and validity
     "GProp_GProps",

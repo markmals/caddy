@@ -7,10 +7,18 @@ mod inner {
     unsafe extern "C++" {
         include!("opencascade-sys/include/generated/shape_custom.hxx");
 
+        type Handle_ShapeCustom_RestrictionParameters;
         type ShapeCustom;
+        type ShapeCustom_RestrictionParameters;
+        type GeomAbs_Shape = crate::geom_abs::GeomAbs_Shape;
+        type Handle_Standard_Transient = crate::standard::Handle_Standard_Transient;
+        type Handle_Standard_Type = crate::standard::Handle_Standard_Type;
+        type Standard_Transient = crate::standard::Standard_Transient;
         type TopoDS_Shape = crate::topo_ds::TopoDS_Shape;
 
         fn ShapeCustom_new() -> Result<UniquePtr<ShapeCustom>>;
+
+        fn ShapeCustom_BSplineRestriction(s: &TopoDS_Shape, tol3d: f64, tol2d: f64, max_degree: i32, max_nb_segment: i32, continuity3d: GeomAbs_Shape, continuity2d: GeomAbs_Shape, degree: bool, rational: bool, a_parameters: &Handle_ShapeCustom_RestrictionParameters) -> Result<UniquePtr<TopoDS_Shape>>;
 
         fn ShapeCustom_ConvertToBSpline(s: &TopoDS_Shape, extr_mode: bool, revol_mode: bool, offset_mode: bool, plane_mode: bool) -> Result<UniquePtr<TopoDS_Shape>>;
 
@@ -21,7 +29,79 @@ mod inner {
         fn ShapeCustom_ScaleShape(s: &TopoDS_Shape, scale: f64) -> Result<UniquePtr<TopoDS_Shape>>;
 
         fn ShapeCustom_SweptToElementary(s: &TopoDS_Shape) -> Result<UniquePtr<TopoDS_Shape>>;
+
+        fn ShapeCustom_RestrictionParameters_new() -> Result<UniquePtr<Handle_ShapeCustom_RestrictionParameters>>;
+
+        fn ConvertBezierSurf(self: Pin<&mut ShapeCustom_RestrictionParameters>) -> Result<&mut bool>;
+
+        fn ConvertConicalSurf(self: Pin<&mut ShapeCustom_RestrictionParameters>) -> Result<&mut bool>;
+
+        fn ConvertCurve2d(self: Pin<&mut ShapeCustom_RestrictionParameters>) -> Result<&mut bool>;
+
+        fn ConvertCurve3d(self: Pin<&mut ShapeCustom_RestrictionParameters>) -> Result<&mut bool>;
+
+        fn ConvertCylindricalSurf(self: Pin<&mut ShapeCustom_RestrictionParameters>) -> Result<&mut bool>;
+
+        fn ConvertExtrusionSurf(self: Pin<&mut ShapeCustom_RestrictionParameters>) -> Result<&mut bool>;
+
+        fn ConvertOffsetCurv2d(self: Pin<&mut ShapeCustom_RestrictionParameters>) -> Result<&mut bool>;
+
+        fn ConvertOffsetCurv3d(self: Pin<&mut ShapeCustom_RestrictionParameters>) -> Result<&mut bool>;
+
+        fn ConvertOffsetSurf(self: Pin<&mut ShapeCustom_RestrictionParameters>) -> Result<&mut bool>;
+
+        fn ConvertPlane(self: Pin<&mut ShapeCustom_RestrictionParameters>) -> Result<&mut bool>;
+
+        fn ConvertRevolutionSurf(self: Pin<&mut ShapeCustom_RestrictionParameters>) -> Result<&mut bool>;
+
+        fn ConvertSphericalSurf(self: Pin<&mut ShapeCustom_RestrictionParameters>) -> Result<&mut bool>;
+
+        fn ConvertToroidalSurf(self: Pin<&mut ShapeCustom_RestrictionParameters>) -> Result<&mut bool>;
+
+        fn DecrementRefCounter(self: Pin<&mut ShapeCustom_RestrictionParameters>) -> Result<i32>;
+
+        fn Delete(self: &ShapeCustom_RestrictionParameters) -> Result<()>;
+
+        fn DynamicType(self: &ShapeCustom_RestrictionParameters) -> Result<&Handle_Standard_Type>;
+
+        fn GMaxDegree(self: Pin<&mut ShapeCustom_RestrictionParameters>) -> Result<&mut i32>;
+
+        fn GMaxSeg(self: Pin<&mut ShapeCustom_RestrictionParameters>) -> Result<&mut i32>;
+
+        fn GetRefCount(self: &ShapeCustom_RestrictionParameters) -> Result<i32>;
+
+        fn IncrementRefCounter(self: Pin<&mut ShapeCustom_RestrictionParameters>) -> Result<()>;
+
+        #[cxx_name = "IsInstance"]
+        fn IsInstance_htype(self: &ShapeCustom_RestrictionParameters, type_: &Handle_Standard_Type) -> Result<bool>;
+
+        fn ShapeCustom_RestrictionParameters_IsInstance_str(self_: &ShapeCustom_RestrictionParameters, type_name: &str) -> Result<bool>;
+
+        #[cxx_name = "IsKind"]
+        fn IsKind_htype(self: &ShapeCustom_RestrictionParameters, type_: &Handle_Standard_Type) -> Result<bool>;
+
+        fn ShapeCustom_RestrictionParameters_IsKind_str(self_: &ShapeCustom_RestrictionParameters, type_name: &str) -> Result<bool>;
+
+        fn SegmentSurfaceMode(self: Pin<&mut ShapeCustom_RestrictionParameters>) -> Result<&mut bool>;
+
+        fn ShapeCustom_RestrictionParameters_get_type_descriptor() -> Result<UniquePtr<Handle_Standard_Type>>;
+
+        fn ShapeCustom_RestrictionParameters_get_type_name() -> Result<String>;
+
+        fn ShapeCustom_RestrictionParameters_as_Standard_Transient(self_: &ShapeCustom_RestrictionParameters) -> &Standard_Transient;
+        fn ShapeCustom_RestrictionParameters_as_Standard_Transient_mut(self_: Pin<&mut ShapeCustom_RestrictionParameters>) -> Pin<&mut Standard_Transient>;
+
+        fn Handle_ShapeCustom_RestrictionParameters_to_Standard_Transient(handle: &Handle_ShapeCustom_RestrictionParameters) -> UniquePtr<Handle_Standard_Transient>;
+        /// Null when `handle` does not refer to a `ShapeCustom_RestrictionParameters`.
+        fn Handle_ShapeCustom_RestrictionParameters_from_Standard_Transient(handle: &Handle_Standard_Transient) -> UniquePtr<Handle_ShapeCustom_RestrictionParameters>;
+
+        fn Handle_ShapeCustom_RestrictionParameters_null() -> UniquePtr<Handle_ShapeCustom_RestrictionParameters>;
+        fn Handle_ShapeCustom_RestrictionParameters_is_null(handle: &Handle_ShapeCustom_RestrictionParameters) -> bool;
+        fn Handle_ShapeCustom_RestrictionParameters_clone(handle: &Handle_ShapeCustom_RestrictionParameters) -> UniquePtr<Handle_ShapeCustom_RestrictionParameters>;
+        fn Handle_ShapeCustom_RestrictionParameters_get(handle: &Handle_ShapeCustom_RestrictionParameters) -> Result<&ShapeCustom_RestrictionParameters>;
+        fn Handle_ShapeCustom_RestrictionParameters_get_mut(handle: Pin<&mut Handle_ShapeCustom_RestrictionParameters>) -> Result<Pin<&mut ShapeCustom_RestrictionParameters>>;
     }
 
+    impl UniquePtr<Handle_ShapeCustom_RestrictionParameters> {}
     impl UniquePtr<ShapeCustom> {}
 }

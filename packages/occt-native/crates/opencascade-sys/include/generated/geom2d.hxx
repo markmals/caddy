@@ -5,12 +5,14 @@
 
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_BoundedCurve.hxx>
+#include <Geom2d_CartesianPoint.hxx>
 #include <Geom2d_Circle.hxx>
 #include <Geom2d_Conic.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Ellipse.hxx>
 #include <Geom2d_Geometry.hxx>
 #include <Geom2d_Line.hxx>
+#include <Geom2d_Point.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <GeomAbs_BSplKnotDistribution.hxx>
 #include <GeomAbs_Shape.hxx>
@@ -632,3 +634,105 @@ inline bool Handle_Geom2d_BSplineCurve_is_null(const Handle_Geom2d_BSplineCurve&
 inline std::unique_ptr<Handle_Geom2d_BSplineCurve> Handle_Geom2d_BSplineCurve_clone(const Handle_Geom2d_BSplineCurve& handle) { return std::make_unique<Handle_Geom2d_BSplineCurve>(handle); }
 inline const Geom2d_BSplineCurve& Handle_Geom2d_BSplineCurve_get(const Handle_Geom2d_BSplineCurve& handle) { return occt_bindings::handle_get(handle); }
 inline Geom2d_BSplineCurve& Handle_Geom2d_BSplineCurve_get_mut(Handle_Geom2d_BSplineCurve& handle) { return occt_bindings::handle_get(handle); }
+
+inline std::unique_ptr<Handle_Geom2d_Geometry> Geom2d_Point_Copy(const Geom2d_Point& self_) { return std::make_unique<Handle_Geom2d_Geometry>(self_.Copy()); }
+
+inline void Geom2d_Point_DumpJson(const Geom2d_Point& self_, OcctStream& o_stream, int32_t depth) { self_.DumpJson(o_stream, depth); }
+
+inline bool Geom2d_Point_IsInstance_str(const Geom2d_Point& self_, rust::Str type_name) { return self_.IsInstance(std::string(type_name).c_str()); }
+
+inline bool Geom2d_Point_IsKind_str(const Geom2d_Point& self_, rust::Str type_name) { return self_.IsKind(std::string(type_name).c_str()); }
+
+inline std::unique_ptr<Handle_Geom2d_Geometry> Geom2d_Point_Mirrored_pnt2d(const Geom2d_Point& self_, const gp_Pnt2d& p) { return std::make_unique<Handle_Geom2d_Geometry>(self_.Mirrored(p)); }
+
+inline std::unique_ptr<Handle_Geom2d_Geometry> Geom2d_Point_Mirrored_ax2d(const Geom2d_Point& self_, const gp_Ax2d& a) { return std::make_unique<Handle_Geom2d_Geometry>(self_.Mirrored(a)); }
+
+inline std::unique_ptr<gp_Pnt2d> Geom2d_Point_Pnt2d(const Geom2d_Point& self_) { return std::make_unique<gp_Pnt2d>(self_.Pnt2d()); }
+
+inline std::unique_ptr<Handle_Geom2d_Geometry> Geom2d_Point_Rotated(const Geom2d_Point& self_, const gp_Pnt2d& p, double ang) { return std::make_unique<Handle_Geom2d_Geometry>(self_.Rotated(p, ang)); }
+
+inline std::unique_ptr<Handle_Geom2d_Geometry> Geom2d_Point_Scaled(const Geom2d_Point& self_, const gp_Pnt2d& p, double s) { return std::make_unique<Handle_Geom2d_Geometry>(self_.Scaled(p, s)); }
+
+inline std::unique_ptr<Handle_Geom2d_Geometry> Geom2d_Point_Transformed(const Geom2d_Point& self_, const gp_Trsf2d& t) { return std::make_unique<Handle_Geom2d_Geometry>(self_.Transformed(t)); }
+
+inline std::unique_ptr<Handle_Geom2d_Geometry> Geom2d_Point_Translated_vec2d(const Geom2d_Point& self_, const gp_Vec2d& v) { return std::make_unique<Handle_Geom2d_Geometry>(self_.Translated(v)); }
+
+inline std::unique_ptr<Handle_Geom2d_Geometry> Geom2d_Point_Translated_pnt2d2(const Geom2d_Point& self_, const gp_Pnt2d& p1, const gp_Pnt2d& p2) { return std::make_unique<Handle_Geom2d_Geometry>(self_.Translated(p1, p2)); }
+
+inline std::unique_ptr<Handle_Standard_Type> Geom2d_Point_get_type_descriptor() { return std::make_unique<Handle_Standard_Type>(Geom2d_Point::get_type_descriptor()); }
+
+inline rust::String Geom2d_Point_get_type_name() { const char* text = Geom2d_Point::get_type_name(); return rust::String(text != nullptr ? text : ""); }
+
+inline const Geom2d_Geometry& Geom2d_Point_as_Geom2d_Geometry(const Geom2d_Point& self_) { return self_; }
+inline Geom2d_Geometry& Geom2d_Point_as_Geom2d_Geometry_mut(Geom2d_Point& self_) { return self_; }
+
+inline std::unique_ptr<Handle_Geom2d_Geometry> Handle_Geom2d_Point_to_Geom2d_Geometry(const Handle_Geom2d_Point& handle) { return std::make_unique<Handle_Geom2d_Geometry>(handle); }
+inline std::unique_ptr<Handle_Geom2d_Point> Handle_Geom2d_Point_from_Geom2d_Geometry(const Handle_Geom2d_Geometry& handle) { return std::make_unique<Handle_Geom2d_Point>(Handle_Geom2d_Point::DownCast(handle)); }
+
+inline const Standard_Transient& Geom2d_Point_as_Standard_Transient(const Geom2d_Point& self_) { return self_; }
+inline Standard_Transient& Geom2d_Point_as_Standard_Transient_mut(Geom2d_Point& self_) { return self_; }
+
+inline std::unique_ptr<Handle_Standard_Transient> Handle_Geom2d_Point_to_Standard_Transient(const Handle_Geom2d_Point& handle) { return std::make_unique<Handle_Standard_Transient>(handle); }
+inline std::unique_ptr<Handle_Geom2d_Point> Handle_Geom2d_Point_from_Standard_Transient(const Handle_Standard_Transient& handle) { return std::make_unique<Handle_Geom2d_Point>(Handle_Geom2d_Point::DownCast(handle)); }
+
+inline std::unique_ptr<Handle_Geom2d_Point> Handle_Geom2d_Point_null() { return std::make_unique<Handle_Geom2d_Point>(); }
+inline bool Handle_Geom2d_Point_is_null(const Handle_Geom2d_Point& handle) { return handle.IsNull(); }
+inline std::unique_ptr<Handle_Geom2d_Point> Handle_Geom2d_Point_clone(const Handle_Geom2d_Point& handle) { return std::make_unique<Handle_Geom2d_Point>(handle); }
+inline const Geom2d_Point& Handle_Geom2d_Point_get(const Handle_Geom2d_Point& handle) { return occt_bindings::handle_get(handle); }
+inline Geom2d_Point& Handle_Geom2d_Point_get_mut(Handle_Geom2d_Point& handle) { return occt_bindings::handle_get(handle); }
+
+inline std::unique_ptr<Handle_Geom2d_CartesianPoint> Geom2d_CartesianPoint_new_pnt2d(const gp_Pnt2d& p) { return std::make_unique<Handle_Geom2d_CartesianPoint>(new Geom2d_CartesianPoint(p)); }
+
+inline std::unique_ptr<Handle_Geom2d_CartesianPoint> Geom2d_CartesianPoint_new_real2(double x, double y) { return std::make_unique<Handle_Geom2d_CartesianPoint>(new Geom2d_CartesianPoint(x, y)); }
+
+inline std::unique_ptr<Handle_Geom2d_Geometry> Geom2d_CartesianPoint_Copy(const Geom2d_CartesianPoint& self_) { return std::make_unique<Handle_Geom2d_Geometry>(self_.Copy()); }
+
+inline void Geom2d_CartesianPoint_DumpJson(const Geom2d_CartesianPoint& self_, OcctStream& o_stream, int32_t depth) { self_.DumpJson(o_stream, depth); }
+
+inline bool Geom2d_CartesianPoint_IsInstance_str(const Geom2d_CartesianPoint& self_, rust::Str type_name) { return self_.IsInstance(std::string(type_name).c_str()); }
+
+inline bool Geom2d_CartesianPoint_IsKind_str(const Geom2d_CartesianPoint& self_, rust::Str type_name) { return self_.IsKind(std::string(type_name).c_str()); }
+
+inline std::unique_ptr<Handle_Geom2d_Geometry> Geom2d_CartesianPoint_Mirrored_pnt2d(const Geom2d_CartesianPoint& self_, const gp_Pnt2d& p) { return std::make_unique<Handle_Geom2d_Geometry>(self_.Mirrored(p)); }
+
+inline std::unique_ptr<Handle_Geom2d_Geometry> Geom2d_CartesianPoint_Mirrored_ax2d(const Geom2d_CartesianPoint& self_, const gp_Ax2d& a) { return std::make_unique<Handle_Geom2d_Geometry>(self_.Mirrored(a)); }
+
+inline std::unique_ptr<gp_Pnt2d> Geom2d_CartesianPoint_Pnt2d(const Geom2d_CartesianPoint& self_) { return std::make_unique<gp_Pnt2d>(self_.Pnt2d()); }
+
+inline std::unique_ptr<Handle_Geom2d_Geometry> Geom2d_CartesianPoint_Rotated(const Geom2d_CartesianPoint& self_, const gp_Pnt2d& p, double ang) { return std::make_unique<Handle_Geom2d_Geometry>(self_.Rotated(p, ang)); }
+
+inline std::unique_ptr<Handle_Geom2d_Geometry> Geom2d_CartesianPoint_Scaled(const Geom2d_CartesianPoint& self_, const gp_Pnt2d& p, double s) { return std::make_unique<Handle_Geom2d_Geometry>(self_.Scaled(p, s)); }
+
+inline std::unique_ptr<Handle_Geom2d_Geometry> Geom2d_CartesianPoint_Transformed(const Geom2d_CartesianPoint& self_, const gp_Trsf2d& t) { return std::make_unique<Handle_Geom2d_Geometry>(self_.Transformed(t)); }
+
+inline std::unique_ptr<Handle_Geom2d_Geometry> Geom2d_CartesianPoint_Translated_vec2d(const Geom2d_CartesianPoint& self_, const gp_Vec2d& v) { return std::make_unique<Handle_Geom2d_Geometry>(self_.Translated(v)); }
+
+inline std::unique_ptr<Handle_Geom2d_Geometry> Geom2d_CartesianPoint_Translated_pnt2d2(const Geom2d_CartesianPoint& self_, const gp_Pnt2d& p1, const gp_Pnt2d& p2) { return std::make_unique<Handle_Geom2d_Geometry>(self_.Translated(p1, p2)); }
+
+inline std::unique_ptr<Handle_Standard_Type> Geom2d_CartesianPoint_get_type_descriptor() { return std::make_unique<Handle_Standard_Type>(Geom2d_CartesianPoint::get_type_descriptor()); }
+
+inline rust::String Geom2d_CartesianPoint_get_type_name() { const char* text = Geom2d_CartesianPoint::get_type_name(); return rust::String(text != nullptr ? text : ""); }
+
+inline const Geom2d_Point& Geom2d_CartesianPoint_as_Geom2d_Point(const Geom2d_CartesianPoint& self_) { return self_; }
+inline Geom2d_Point& Geom2d_CartesianPoint_as_Geom2d_Point_mut(Geom2d_CartesianPoint& self_) { return self_; }
+
+inline std::unique_ptr<Handle_Geom2d_Point> Handle_Geom2d_CartesianPoint_to_Geom2d_Point(const Handle_Geom2d_CartesianPoint& handle) { return std::make_unique<Handle_Geom2d_Point>(handle); }
+inline std::unique_ptr<Handle_Geom2d_CartesianPoint> Handle_Geom2d_CartesianPoint_from_Geom2d_Point(const Handle_Geom2d_Point& handle) { return std::make_unique<Handle_Geom2d_CartesianPoint>(Handle_Geom2d_CartesianPoint::DownCast(handle)); }
+
+inline const Geom2d_Geometry& Geom2d_CartesianPoint_as_Geom2d_Geometry(const Geom2d_CartesianPoint& self_) { return self_; }
+inline Geom2d_Geometry& Geom2d_CartesianPoint_as_Geom2d_Geometry_mut(Geom2d_CartesianPoint& self_) { return self_; }
+
+inline std::unique_ptr<Handle_Geom2d_Geometry> Handle_Geom2d_CartesianPoint_to_Geom2d_Geometry(const Handle_Geom2d_CartesianPoint& handle) { return std::make_unique<Handle_Geom2d_Geometry>(handle); }
+inline std::unique_ptr<Handle_Geom2d_CartesianPoint> Handle_Geom2d_CartesianPoint_from_Geom2d_Geometry(const Handle_Geom2d_Geometry& handle) { return std::make_unique<Handle_Geom2d_CartesianPoint>(Handle_Geom2d_CartesianPoint::DownCast(handle)); }
+
+inline const Standard_Transient& Geom2d_CartesianPoint_as_Standard_Transient(const Geom2d_CartesianPoint& self_) { return self_; }
+inline Standard_Transient& Geom2d_CartesianPoint_as_Standard_Transient_mut(Geom2d_CartesianPoint& self_) { return self_; }
+
+inline std::unique_ptr<Handle_Standard_Transient> Handle_Geom2d_CartesianPoint_to_Standard_Transient(const Handle_Geom2d_CartesianPoint& handle) { return std::make_unique<Handle_Standard_Transient>(handle); }
+inline std::unique_ptr<Handle_Geom2d_CartesianPoint> Handle_Geom2d_CartesianPoint_from_Standard_Transient(const Handle_Standard_Transient& handle) { return std::make_unique<Handle_Geom2d_CartesianPoint>(Handle_Geom2d_CartesianPoint::DownCast(handle)); }
+
+inline std::unique_ptr<Handle_Geom2d_CartesianPoint> Handle_Geom2d_CartesianPoint_null() { return std::make_unique<Handle_Geom2d_CartesianPoint>(); }
+inline bool Handle_Geom2d_CartesianPoint_is_null(const Handle_Geom2d_CartesianPoint& handle) { return handle.IsNull(); }
+inline std::unique_ptr<Handle_Geom2d_CartesianPoint> Handle_Geom2d_CartesianPoint_clone(const Handle_Geom2d_CartesianPoint& handle) { return std::make_unique<Handle_Geom2d_CartesianPoint>(handle); }
+inline const Geom2d_CartesianPoint& Handle_Geom2d_CartesianPoint_get(const Handle_Geom2d_CartesianPoint& handle) { return occt_bindings::handle_get(handle); }
+inline Geom2d_CartesianPoint& Handle_Geom2d_CartesianPoint_get_mut(Handle_Geom2d_CartesianPoint& handle) { return occt_bindings::handle_get(handle); }

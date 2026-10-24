@@ -16,12 +16,14 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_BoundedCurve.hxx>
+#include <Geom2d_CartesianPoint.hxx>
 #include <Geom2d_Circle.hxx>
 #include <Geom2d_Conic.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Ellipse.hxx>
 #include <Geom2d_Geometry.hxx>
 #include <Geom2d_Line.hxx>
+#include <Geom2d_Point.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
@@ -56,6 +58,8 @@
 #include <Geom_SweptSurface.hxx>
 #include <Geom_ToroidalSurface.hxx>
 #include <Geom_TrimmedCurve.hxx>
+#include <HLRBRep_Algo.hxx>
+#include <HLRBRep_InternalAlgo.hxx>
 #include <IGESControl_Controller.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Static.hxx>
@@ -69,6 +73,7 @@
 #include <STEPCAFControl_Controller.hxx>
 #include <STEPControl_Controller.hxx>
 #include <ShapeAnalysis_Surface.hxx>
+#include <ShapeCustom_RestrictionParameters.hxx>
 #include <ShapeFix_Face.hxx>
 #include <ShapeFix_Root.hxx>
 #include <ShapeFix_Shape.hxx>
@@ -160,6 +165,8 @@ typedef opencascade::handle<BRepAdaptor_Curve> Handle_BRepAdaptor_Curve;
 typedef opencascade::handle<BRepAdaptor_CompCurve> Handle_BRepAdaptor_CompCurve;
 typedef opencascade::handle<BRepAdaptor_Surface> Handle_BRepAdaptor_Surface;
 typedef opencascade::handle<BRepAdaptor_Curve2d> Handle_BRepAdaptor_Curve2d;
+typedef opencascade::handle<Geom2d_Point> Handle_Geom2d_Point;
+typedef opencascade::handle<Geom2d_CartesianPoint> Handle_Geom2d_CartesianPoint;
 typedef opencascade::handle<BRepBuilderAPI_Sewing> Handle_BRepBuilderAPI_Sewing;
 typedef opencascade::handle<ShapeUpgrade_UnifySameDomain> Handle_ShapeUpgrade_UnifySameDomain;
 typedef opencascade::handle<ShapeFix_Root> Handle_ShapeFix_Root;
@@ -169,6 +176,9 @@ typedef opencascade::handle<ShapeFix_Wire> Handle_ShapeFix_Wire;
 typedef opencascade::handle<ShapeFix_Solid> Handle_ShapeFix_Solid;
 typedef opencascade::handle<ShapeFix_Wireframe> Handle_ShapeFix_Wireframe;
 typedef opencascade::handle<ShapeAnalysis_Surface> Handle_ShapeAnalysis_Surface;
+typedef opencascade::handle<ShapeCustom_RestrictionParameters> Handle_ShapeCustom_RestrictionParameters;
+typedef opencascade::handle<HLRBRep_InternalAlgo> Handle_HLRBRep_InternalAlgo;
+typedef opencascade::handle<HLRBRep_Algo> Handle_HLRBRep_Algo;
 typedef opencascade::handle<BRepMesh_DiscretRoot> Handle_BRepMesh_DiscretRoot;
 typedef opencascade::handle<BRepMesh_IncrementalMesh> Handle_BRepMesh_IncrementalMesh;
 typedef opencascade::handle<Poly_Triangulation> Handle_Poly_Triangulation;

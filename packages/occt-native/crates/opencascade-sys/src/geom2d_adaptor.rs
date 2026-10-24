@@ -146,5 +146,6 @@ mod inner {
         fn Handle_Geom2dAdaptor_Curve_get_mut(handle: Pin<&mut Handle_Geom2dAdaptor_Curve>) -> Result<Pin<&mut Geom2dAdaptor_Curve>>;
     }
 
+    impl UniquePtr<Geom2dAdaptor_Curve> {}
     impl UniquePtr<Handle_Geom2dAdaptor_Curve> {}
 }
