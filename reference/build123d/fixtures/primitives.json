@@ -1,0 +1,1043 @@
+{
+  "cases": {
+    "detect/box": {
+      "code": [
+        "r0 = Plane.XY.offset(-5) * Pos(-5, -5) * Rectangle(10, 10, align=Align.MIN)",
+        "r1 = Plane.XY.offset(5) * Pos(-5, -5) * Rectangle(10, 10, align=Align.MIN)",
+        "r2 = Plane.YZ.offset(-5) * Pos(-5, -5) * Rectangle(10, 10, align=Align.MIN)",
+        "r3 = Plane.YZ.offset(5) * Pos(-5, -5) * Rectangle(10, 10, align=Align.MIN)",
+        "r4 = Plane.ZX.offset(-5) * Pos(-5, -5) * Rectangle(10, 10, align=Align.MIN)",
+        "r5 = Plane.ZX.offset(5) * Pos(-5, -5) * Rectangle(10, 10, align=Align.MIN)"
+      ],
+      "detected": [
+        {
+          "area": 99.99999999999999,
+          "axis": null,
+          "bounding_box": {
+            "max": [
+              5.0,
+              5.0,
+              -5.0
+            ],
+            "min": [
+              -5.0,
+              -5.0,
+              -5.0
+            ]
+          },
+          "center": [
+            -8.881784197001253e-17,
+            2.0816681711721685e-17,
+            -5.0
+          ],
+          "geom_type": "PLANE",
+          "normal": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "orientation": "FORWARD",
+          "radius": null
+        },
+        {
+          "area": 99.99999999999999,
+          "axis": null,
+          "bounding_box": {
+            "max": [
+              5.0,
+              5.0,
+              5.0
+            ],
+            "min": [
+              -5.0,
+              -5.0,
+              5.0
+            ]
+          },
+          "center": [
+            -1.332267629550188e-16,
+            0.0,
+            5.0
+          ],
+          "geom_type": "PLANE",
+          "normal": [
+            0.0,
+            -0.0,
+            1.0
+          ],
+          "orientation": "FORWARD",
+          "radius": null
+        },
+        {
+          "area": 99.99999999999999,
+          "axis": null,
+          "bounding_box": {
+            "max": [
+              -5.0,
+              5.0,
+              5.0
+            ],
+            "min": [
+              -5.0,
+              -5.0,
+              -5.0
+            ]
+          },
+          "center": [
+            -5.0,
+            -1.1102230246251568e-16,
+            -1.7347234759768074e-17
+          ],
+          "geom_type": "PLANE",
+          "normal": [
+            1.0,
+            0.0,
+            -0.0
+          ],
+          "orientation": "FORWARD",
+          "radius": null
+        },
+        {
+          "area": 99.99999999999999,
+          "axis": null,
+          "bounding_box": {
+            "max": [
+              5.0,
+              5.0,
+              5.0
+            ],
+            "min": [
+              5.0,
+              -5.0,
+              -5.0
+            ]
+          },
+          "center": [
+            5.0,
+            -1.1102230246251568e-16,
+            -1.179611963664229e-16
+          ],
+          "geom_type": "PLANE",
+          "normal": [
+            1.0,
+            0.0,
+            -0.0
+          ],
+          "orientation": "FORWARD",
+          "radius": null
+        },
+        {
+          "area": 99.99999999999999,
+          "axis": null,
+          "bounding_box": {
+            "max": [
+              5.0,
+              -5.0,
+              5.0
+            ],
+            "min": [
+              -5.0,
+              -5.0,
+              -5.0
+            ]
+          },
+          "center": [
+            -2.8865798640254076e-16,
+            -5.0,
+            3.816391647148976e-17
+          ],
+          "geom_type": "PLANE",
+          "normal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": "FORWARD",
+          "radius": null
+        },
+        {
+          "area": 99.99999999999999,
+          "axis": null,
+          "bounding_box": {
+            "max": [
+              5.0,
+              5.0,
+              5.0
+            ],
+            "min": [
+              -5.0,
+              5.0,
+              -5.0
+            ]
+          },
+          "center": [
+            -8.881784197001258e-17,
+            5.0,
+            -2.0816681711721685e-17
+          ],
+          "geom_type": "PLANE",
+          "normal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": "FORWARD",
+          "radius": null
+        }
+      ],
+      "leftover_area": 0.0,
+      "leftover_count": 0,
+      "mesh": {
+        "area": 599.9999999999999,
+        "bounding_box": {
+          "max": [
+            5.0,
+            5.0,
+            5.0
+          ],
+          "min": [
+            -5.0,
+            -5.0,
+            -5.0
+          ]
+        },
+        "face_count": 12
+      },
+      "source": "reference/build123d/fixtures/primitives/detect-box-1.brep"
+    },
+    "detect/cylinder": {
+      "code": [
+        "r0 = Plane.XY.offset(-5) * Pos(-5, -5) * Rectangle(10, 10, align=Align.MIN)",
+        "c1 = Plane.XY.offset(-5) * Face.extrude(Circle(5).edge(), (0, 0, 10))",
+        "r2 = Plane.XY.offset(5) * Pos(-5, -5) * Rectangle(10, 10, align=Align.MIN)"
+      ],
+      "detected": [
+        {
+          "area": 99.99999999999999,
+          "axis": null,
+          "bounding_box": {
+            "max": [
+              5.0,
+              5.0,
+              -5.000000000000001
+            ],
+            "min": [
+              -5.0,
+              -5.0,
+              -5.000000000000001
+            ]
+          },
+          "center": [
+            -1.1102230246251568e-16,
+            -3.8163916471489756e-17,
+            -5.000000000000001
+          ],
+          "geom_type": "PLANE",
+          "normal": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "orientation": "FORWARD",
+          "radius": null
+        },
+        {
+          "area": 314.1592654117005,
+          "axis": {
+            "direction": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "position": [
+              8.557969148152249e-17,
+              -4.625929269271485e-18,
+              -5.0
+            ]
+          },
+          "bounding_box": {
+            "max": [
+              5.0000000008390835,
+              5.0000000008390835,
+              5.0
+            ],
+            "min": [
+              -5.0000000008390835,
+              -5.0000000008390835,
+              -5.0
+            ]
+          },
+          "center": [
+            -5.0000000008390835,
+            6.076974704071632e-16,
+            0.0
+          ],
+          "geom_type": "CYLINDER",
+          "normal": null,
+          "orientation": "FORWARD",
+          "radius": 5.0000000008390835
+        },
+        {
+          "area": 99.99999999999999,
+          "axis": null,
+          "bounding_box": {
+            "max": [
+              5.0,
+              5.0,
+              5.000000000000001
+            ],
+            "min": [
+              -5.0,
+              -5.0,
+              5.000000000000001
+            ]
+          },
+          "center": [
+            -2.8865798640254076e-16,
+            -1.734723475976807e-17,
+            5.000000000000001
+          ],
+          "geom_type": "PLANE",
+          "normal": [
+            0.0,
+            -0.0,
+            1.0
+          ],
+          "orientation": "FORWARD",
+          "radius": null
+        }
+      ],
+      "leftover_area": 0.0,
+      "leftover_count": 0,
+      "mesh": {
+        "area": 465.21788823610245,
+        "bounding_box": {
+          "max": [
+            5.0,
+            5.0,
+            5.0
+          ],
+          "min": [
+            -5.0,
+            -5.0,
+            -5.0
+          ]
+        },
+        "face_count": 60
+      },
+      "source": "reference/build123d/fixtures/primitives/detect-cylinder-1.brep"
+    },
+    "detect/noisy-plate": {
+      "code": [
+        "c0 = Location((3.67318, -5.44156, 0.941152), (-89.9876, 33.5932, -0.006848)) * Face.extrude(Circle(5.03316).edge(), (0, 0, 14.6971))",
+        "None1 = Error in generating planar rectangle",
+        "None2 = Error in generating planar rectangle"
+      ],
+      "detected": [
+        {
+          "area": 464.7867332311155,
+          "axis": {
+            "direction": [
+              0.5532925464243728,
+              0.832986990111188,
+              0.00017993536844059186
+            ],
+            "position": [
+              3.6731812117469693,
+              -5.441558959471782,
+              0.9411518771363916
+            ]
+          },
+          "bounding_box": {
+            "max": [
+              15.997560813916117,
+              9.585783956823954,
+              5.976957210956709
+            ],
+            "min": [
+              -0.5193764171709749,
+              -8.226369505878797,
+              -4.092008920095992
+            ]
+          },
+          "center": [
+            3.546534599399006,
+            3.4645176696996858,
+            0.9424741454303578
+          ],
+          "geom_type": "CYLINDER",
+          "normal": null,
+          "orientation": "FORWARD",
+          "radius": 5.033160878711047
+        },
+        {
+          "area": 120.0251421809792,
+          "axis": null,
+          "bounding_box": {
+            "max": [
+              10.002552044432981,
+              -7.999540571940767,
+              2.999942301748946
+            ],
+            "min": [
+              -9.998808848810217,
+              -8.001511578236117,
+              -3.00090646839316
+            ]
+          },
+          "center": [
+            0.0018715978113831298,
+            -8.000526075088443,
+            -0.00048208332210678256
+          ],
+          "geom_type": "PLANE",
+          "normal": [
+            9.62387089068313e-05,
+            0.9999999953395456,
+            -7.682436170562982e-06
+          ],
+          "orientation": "FORWARD",
+          "radius": null
+        },
+        {
+          "area": 120.11874808932218,
+          "axis": null,
+          "bounding_box": {
+            "max": [
+              10.000094121882405,
+              8.002256839115923,
+              3.003887452271009
+            ],
+            "min": [
+              -10.003050142478786,
+              7.997409524019618,
+              -3.001105940295584
+            ]
+          },
+          "center": [
+            -0.001478010298190946,
+            7.99983318156777,
+            0.0013907559877123794
+          ],
+          "geom_type": "PLANE",
+          "normal": [
+            -0.00022815808182532384,
+            0.9999999728580223,
+            -4.720004514786761e-05
+          ],
+          "orientation": "FORWARD",
+          "radius": null
+        }
+      ],
+      "leftover_area": 806.0590667884946,
+      "leftover_count": 69,
+      "mesh": {
+        "area": 1129.1433363398312,
+        "bounding_box": {
+          "max": [
+            10.002552032470703,
+            8.003535270690918,
+            3.003887176513672
+          ],
+          "min": [
+            -10.003049850463867,
+            -8.00158977508545,
+            -3.0026092529296875
+          ]
+        },
+        "face_count": 80
+      },
+      "source": "reference/build123d/fixtures/primitives/detect-noisy-plate-1.brep"
+    },
+    "detect/plate-with-holes": {
+      "code": [
+        "r0 = Plane.XY.offset(-3) * Pos(-10, -8) * Rectangle(20, 16, align=Align.MIN)",
+        "c1 = Plane.XY.offset(-3) * Face.extrude(Circle(3).edge(), (0, 0, 6))",
+        "c2 = Plane.XY.offset(-3) * Pos(6, 4) * Face.extrude(Circle(1.5).edge(), (0, 0, 6))",
+        "r3 = Plane.XY.offset(3) * Pos(-10, -8) * Rectangle(20, 16, align=Align.MIN)",
+        "r4 = Plane.YZ.offset(-10) * Pos(-8, -3) * Rectangle(16, 6, align=Align.MIN)",
+        "r5 = Plane.YZ.offset(10) * Pos(-8, -3) * Rectangle(16, 6, align=Align.MIN)",
+        "r6 = Plane.ZX.offset(-8) * Pos(-3, -10) * Rectangle(6, 20, align=Align.MIN)",
+        "r7 = Plane.ZX.offset(8) * Pos(-3, -10) * Rectangle(6, 20, align=Align.MIN)"
+      ],
+      "detected": [
+        {
+          "area": 320.0,
+          "axis": null,
+          "bounding_box": {
+            "max": [
+              10.0,
+              8.0,
+              -3.0000000000000004
+            ],
+            "min": [
+              -10.0,
+              -8.0,
+              -3.0000000000000004
+            ]
+          },
+          "center": [
+            -2.220446049250313e-16,
+            -2.3592239273284576e-16,
+            -3.0000000000000004
+          ],
+          "geom_type": "PLANE",
+          "normal": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "orientation": "FORWARD",
+          "radius": null
+        },
+        {
+          "area": 113.09733445068099,
+          "axis": {
+            "direction": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "position": [
+              2.8609468349975692e-08,
+              0.0,
+              -3.0
+            ]
+          },
+          "bounding_box": {
+            "max": [
+              3.0,
+              2.9999999713905314,
+              3.0
+            ],
+            "min": [
+              -2.999999942781063,
+              -2.9999999713905314,
+              -3.0
+            ]
+          },
+          "center": [
+            -2.999999942781063,
+            3.6739403624055655e-16,
+            0.0
+          ],
+          "geom_type": "CYLINDER",
+          "normal": null,
+          "orientation": "REVERSED",
+          "radius": 2.9999999713905314
+        },
+        {
+          "area": 56.548669034516,
+          "axis": {
+            "direction": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "position": [
+              5.99999996717503,
+              3.9999999992075006,
+              -3.0
+            ]
+          },
+          "bounding_box": {
+            "max": [
+              7.500000000860166,
+              5.500000032892637,
+              3.0
+            ],
+            "min": [
+              4.499999933489893,
+              2.499999965522364,
+              -3.0
+            ]
+          },
+          "center": [
+            4.499999933489893,
+            3.9999999992075006,
+            0.0
+          ],
+          "geom_type": "CYLINDER",
+          "normal": null,
+          "orientation": "REVERSED",
+          "radius": 1.5000000336851367
+        },
+        {
+          "area": 320.0,
+          "axis": null,
+          "bounding_box": {
+            "max": [
+              10.0,
+              8.0,
+              3.0
+            ],
+            "min": [
+              -10.0,
+              -8.0,
+              3.0
+            ]
+          },
+          "center": [
+            6.661338147750939e-16,
+            4.683753385137379e-16,
+            3.0
+          ],
+          "geom_type": "PLANE",
+          "normal": [
+            0.0,
+            -0.0,
+            1.0
+          ],
+          "orientation": "FORWARD",
+          "radius": null
+        },
+        {
+          "area": 96.0,
+          "axis": null,
+          "bounding_box": {
+            "max": [
+              -10.0,
+              8.0,
+              3.0
+            ],
+            "min": [
+              -10.0,
+              -8.0,
+              -3.0
+            ]
+          },
+          "center": [
+            -10.0,
+            0.0,
+            -5.204170427930421e-18
+          ],
+          "geom_type": "PLANE",
+          "normal": [
+            1.0,
+            0.0,
+            -0.0
+          ],
+          "orientation": "FORWARD",
+          "radius": null
+        },
+        {
+          "area": 96.0,
+          "axis": null,
+          "bounding_box": {
+            "max": [
+              10.0,
+              8.0,
+              3.0
+            ],
+            "min": [
+              10.0,
+              -8.0,
+              -3.0
+            ]
+          },
+          "center": [
+            10.0,
+            0.0,
+            -5.204170427930421e-18
+          ],
+          "geom_type": "PLANE",
+          "normal": [
+            1.0,
+            0.0,
+            -0.0
+          ],
+          "orientation": "FORWARD",
+          "radius": null
+        },
+        {
+          "area": 120.0,
+          "axis": null,
+          "bounding_box": {
+            "max": [
+              10.0,
+              -8.0,
+              3.0
+            ],
+            "min": [
+              -10.0,
+              -8.0,
+              -3.0
+            ]
+          },
+          "center": [
+            2.9605947323337506e-16,
+            -8.0,
+            5.204170427930421e-18
+          ],
+          "geom_type": "PLANE",
+          "normal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": "FORWARD",
+          "radius": null
+        },
+        {
+          "area": 120.0,
+          "axis": null,
+          "bounding_box": {
+            "max": [
+              10.0,
+              8.0,
+              3.0
+            ],
+            "min": [
+              -10.0,
+              8.0,
+              -3.0
+            ]
+          },
+          "center": [
+            2.9605947323337506e-16,
+            8.0,
+            5.204170427930421e-18
+          ],
+          "geom_type": "PLANE",
+          "normal": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": "FORWARD",
+          "radius": null
+        }
+      ],
+      "leftover_area": 0.0,
+      "leftover_count": 0,
+      "mesh": {
+        "area": 1172.033832995924,
+        "bounding_box": {
+          "max": [
+            10.0,
+            8.0,
+            3.0000000000000004
+          ],
+          "min": [
+            -10.0,
+            -8.0,
+            -3.0
+          ]
+        },
+        "face_count": 124
+      },
+      "source": "reference/build123d/fixtures/primitives/detect-plate-with-holes-1.brep"
+    },
+    "detect/rotated-plate": {
+      "code": [
+        "r0 = Location((12.6603, -1.9282, 3), (-90, 60, 90)) * Rectangle(6, 16, align=Align.MIN)",
+        "r1 = Location((-4.66025, -11.9282, 3), (-90, 60, 90)) * Rectangle(6, 16, align=Align.MIN)",
+        "r2 = Location((4.66025, 11.9282, 3), (-90, -30, 90)) * Rectangle(6, 20, align=Align.MIN)",
+        "r3 = Location((12.6603, -1.9282, 3), (-90, -30, 90)) * Rectangle(6, 20, align=Align.MIN)",
+        "r4 = Plane.XY.offset(-3) * Pos(-12.6603, -11.9282) * Rectangle(25.3205, 23.8564, align=Align.MIN)",
+        "c5 = Plane.XY.offset(-3) * Face.extrude(Circle(3).edge(), (0, 0, 6))",
+        "r6 = Plane.XY.offset(3) * Pos(-12.6603, -11.9282) * Rectangle(25.3205, 23.8564, align=Align.MIN)"
+      ],
+      "detected": [
+        {
+          "area": 96.00000323538703,
+          "axis": null,
+          "bounding_box": {
+            "max": [
+              12.660254478454593,
+              11.928203582763675,
+              3.0
+            ],
+            "min": [
+              4.6602540016174325,
+              -1.9282032251358032,
+              -3.0
+            ]
+          },
+          "center": [
+            8.660254240036013,
+            5.000000178813936,
+            5.2041704279304205e-18
+          ],
+          "geom_type": "PLANE",
+          "normal": [
+            0.8660253963069744,
+            0.500000012951348,
+            0.0
+          ],
+          "orientation": "FORWARD",
+          "radius": null
+        },
+        {
+          "area": 96.00000323538703,
+          "axis": null,
+          "bounding_box": {
+            "max": [
+              -4.6602540016174325,
+              1.9282032251358032,
+              3.0
+            ],
+            "min": [
+              -12.660254478454593,
+              -11.928203582763675,
+              -3.0
+            ]
+          },
+          "center": [
+            -8.660254240036013,
+            -5.000000178813936,
+            5.2041704279304205e-18
+          ],
+          "geom_type": "PLANE",
+          "normal": [
+            0.8660253963069744,
+            0.500000012951348,
+            0.0
+          ],
+          "orientation": "FORWARD",
+          "radius": null
+        },
+        {
+          "area": 120.00000317412062,
+          "axis": null,
+          "bounding_box": {
+            "max": [
+              4.6602540016174325,
+              11.928203582763674,
+              3.0
+            ],
+            "min": [
+              -12.660254478454593,
+              1.9282032251358046,
+              -3.0
+            ]
+          },
+          "center": [
+            -4.00000023841858,
+            6.928203403949739,
+            5.2041704279304205e-18
+          ],
+          "geom_type": "PLANE",
+          "normal": [
+            -0.5000000046558908,
+            0.866025401096359,
+            0.0
+          ],
+          "orientation": "FORWARD",
+          "radius": null
+        },
+        {
+          "area": 120.00000317412062,
+          "axis": null,
+          "bounding_box": {
+            "max": [
+              12.660254478454593,
+              -1.9282032251358046,
+              3.0
+            ],
+            "min": [
+              -4.6602540016174325,
+              -11.928203582763674,
+              -3.0
+            ]
+          },
+          "center": [
+            4.00000023841858,
+            -6.928203403949739,
+            5.2041704279304205e-18
+          ],
+          "geom_type": "PLANE",
+          "normal": [
+            -0.5000000046558908,
+            0.866025401096359,
+            0.0
+          ],
+          "orientation": "FORWARD",
+          "radius": null
+        },
+        {
+          "area": 604.0563713144074,
+          "axis": null,
+          "bounding_box": {
+            "max": [
+              12.66025447845459,
+              11.928203582763672,
+              -3.0000000000000004
+            ],
+            "min": [
+              -12.66025447845459,
+              -11.928203582763672,
+              -3.0000000000000004
+            ]
+          },
+          "center": [
+            1.489207345494251e-16,
+            -6.938893903907228e-17,
+            -3.0000000000000004
+          ],
+          "geom_type": "PLANE",
+          "normal": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "orientation": "FORWARD",
+          "radius": null
+        },
+        {
+          "area": 113.09733517419734,
+          "axis": {
+            "direction": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "position": [
+              -6.019331774535821e-08,
+              -8.052231659521539e-08,
+              -3.0
+            ]
+          },
+          "bounding_box": {
+            "max": [
+              2.9999999303890807,
+              2.999999910060082,
+              3.0
+            ],
+            "min": [
+              -3.0000000507757165,
+              -3.0000000711047154,
+              -3.0
+            ]
+          },
+          "center": [
+            -3.0000000507757165,
+            -8.052231622782135e-08,
+            0.0
+          ],
+          "geom_type": "CYLINDER",
+          "normal": null,
+          "orientation": "REVERSED",
+          "radius": 2.9999999905823986
+        },
+        {
+          "area": 604.0563713144074,
+          "axis": null,
+          "bounding_box": {
+            "max": [
+              12.66025447845459,
+              11.928203582763672,
+              2.9999999999999996
+            ],
+            "min": [
+              -12.66025447845459,
+              -11.928203582763672,
+              2.9999999999999996
+            ]
+          },
+          "center": [
+            7.446036727471253e-17,
+            8.81239525796218e-16,
+            2.9999999999999996
+          ],
+          "geom_type": "PLANE",
+          "normal": [
+            0.0,
+            -0.0,
+            1.0
+          ],
+          "orientation": "FORWARD",
+          "radius": null
+        }
+      ],
+      "leftover_area": 0.0,
+      "leftover_count": 0,
+      "mesh": {
+        "area": 1129.6271710677222,
+        "bounding_box": {
+          "max": [
+            12.66025447845459,
+            11.928203582763672,
+            3.0000000000000004
+          ],
+          "min": [
+            -12.66025447845459,
+            -11.928203582763672,
+            -3.0000000000000004
+          ]
+        },
+        "face_count": 68
+      },
+      "source": "reference/build123d/fixtures/primitives/detect-rotated-plate-1.brep"
+    },
+    "detect/sphere": {
+      "code": [
+        "s0 = Pos((0, 0, 0)) * Sphere(6).faces().filter_by(GeomType.SPHERE)[0]"
+      ],
+      "detected": [
+        {
+          "area": 452.3893469466094,
+          "axis": {
+            "direction": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "position": [
+              1.3629151662366181e-07,
+              0.0,
+              -1.5085820973274892e-08
+            ]
+          },
+          "bounding_box": {
+            "max": [
+              6.000000168319322,
+              6.000000032027805,
+              6.000000016941985
+            ],
+            "min": [
+              -5.999999895736289,
+              -6.000000032027805,
+              -6.000000047113626
+            ]
+          },
+          "center": [
+            -5.999999895736289,
+            7.347880834106869e-16,
+            -1.5085820973274892e-08
+          ],
+          "geom_type": "SPHERE",
+          "normal": null,
+          "orientation": "FORWARD",
+          "radius": 6.000000032027805
+        }
+      ],
+      "leftover_area": 60.72610100214969,
+      "leftover_count": 18,
+      "mesh": {
+        "area": 417.71183112496743,
+        "bounding_box": {
+          "max": [
+            5.849567413330078,
+            5.619647026062012,
+            6.0
+          ],
+          "min": [
+            -5.706338882446289,
+            -5.619647026062012,
+            -6.0
+          ]
+        },
+        "face_count": 80
+      },
+      "source": "reference/build123d/fixtures/primitives/detect-sphere-1.brep"
+    }
+  },
+  "reference": {
+    "build123d": "0.13.0",
+    "occt": "8.0.1",
+    "ocp": "8.0.1.1.0",
+    "python": "3.13.17"
+  },
+  "suite": "primitives"
+}

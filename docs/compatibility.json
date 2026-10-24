@@ -2645,7 +2645,7 @@
                 "TopoDS_Vertex"
             ],
             "capability": "io",
-            "status": "planned",
+            "status": "validated",
             "notes": ""
         },
         {
